@@ -1,0 +1,96 @@
+Name:           @PACKAGE@
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        Libvirt network infrastructure for guest domains
+Group:          Development/System
+License:        GPLv3+
+URL:            http://github.com/ssato/@PACKAGE@
+Source0:        %{name}-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+Requires:       libvirt
+Requires:       augeas
+Obsoletes:      virt-networks
+
+
+%description
+Network and other necessary infrastructure data for libvirt guest domains. It
+contains libvirt network definitions, dnsmasq and iscsi configurations for
+virtualization environment.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure
+make %{?_smp_mflags}
+
+
+%install
+%{__rm} -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%pre
+#if [ $1 = 2 ]; then  # update
+#    ...
+#fi
+
+
+%preun
+if [ $1 = 0 ]; then  # erase
+    echo " "
+    echo "======================================================================"
+    echo "Virtualization networks (net-1, net-2 and net-3) are preserved for "
+    echo "safety reasons. So, please remove/disable them by youself as needed."
+    echo " "
+    echo "  Example: "
+    echo "  for i in 1 2 3; do "
+    echo "      virsh net-destroy net-\$i && virsh net-undefine net-\$i "
+    echo "  done "
+    echo "======================================================================"
+    echo " "
+fi
+
+
+%post
+if [ $1 = 1 ]; then    # install
+    for net in net-1 net-2 net-3; do \
+        /usr/libexec/@PACKAGE@/net-install.py install -a /etc/@PACKAGE@/libvirt/$net.xml
+        chkconfig --add miniascape-$net
+    done
+
+    /usr/libexec/@PACKAGE@/hosts-install.sh @NET_1_NETWORK@.1 master.@NET_1_DOMAIN@
+
+elif [ $1 = 2 ]; then  # update
+    for netxml in net-1.xml net-2.xml net-3.xml; do \
+        /usr/bin/install /etc/@PACKAGE@/libvirt/$netxml /etc/libvirt/qemu/networks
+    done
+    for net in net-1 net-2 net-3; do 
+        service @PACKAGE@-$net condrestart >/dev/null 2>&1 || :
+    done
+fi
+
+
+%clean
+%{__rm} -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+%doc README TODO
+%dir %{_sysconfdir}/@PACKAGE@
+%{_sysconfdir}/@PACKAGE@/dnsmasq/*
+%{_sysconfdir}/@PACKAGE@/libvirt/*
+%{_sysconfdir}/rc.d/init.d/*
+%{_libexecdir}/@PACKAGE@/*
+%dir %{_localstatedir}/run/@PACKAGE@
+%dir %{_localstatedir}/run/@PACKAGE@/dnsmasq
+%dir %{_localstatedir}/lock/subsys/@PACKAGE@
+
+
+%changelog
+* Wed Oct 28 2009 Satoru SATOH <ssato@redhat.com> - 0.1-1
+- Initial packaging

@@ -1,0 +1,80 @@
+@PACKAGE@
+====================
+
+This is a collection of configuration files including libvirt network
+definitions, dnsmasq config files and iSCSI config files for libvirt
+virtualization guest domains.
+
+
+Prerequisites
+-----------------------
+
+ * virsh in libvirt
+ * dnsmasq (must be installed if libvirt is installed)
+
+
+Build
+----------------
+
+ [autoreconf -vfi]
+ ./configure
+
+
+Installation
+---------------------
+
+ make 
+ make install
+
+
+Create [S]RPM
+-----------------------
+
+ make rpm | make srpm
+
+
+Actions needed after post/pre installation, update and uninstallation
+------------------------------------------------------------------------
+
+Post installation
+^^^^^^^^^^^^^^^^^^^^^
+
+Run "/usr/libexec/@PACKAGE@/net-install.py" to install the followings
+ 
+  * /etc/libvirt/qemu/networks/net-{1,2,3}.xml
+
+
+Also, you need to virsh net-start net-{1,2,3} to start networks actually.
+
+[NOTE: If you installing @PACKAGE@ from RPM. The above operation is
+automatically performed in post-install section so that you don't have to do
+the above at all.]
+
+
+Post uninstallation
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The networks for virtualization environments (net-1, net-2 and net-3) are not
+uninstalled automatically.  So, you need to uninstall by yourself if you want
+to eliminate them entirely.
+
+ 1. Shutdown all of virtualization guests using these networks
+ 2. Shutdown and uninstall networks like the followings:
+
+  * "for i in 1 2 3; do virsh destroy net-$i; done"
+  * "for i in 1 2 3; do virsh undefine net-$i; done"
+
+
+Pre/Post update
+^^^^^^^^^^^^^^^^^^^^^
+Pre: perform operations for post-uninstallation
+
+Post: perform operations for post-installation
+
+
+License
+----------------------
+
+This is distributed under GPLv3 or later.
+
+

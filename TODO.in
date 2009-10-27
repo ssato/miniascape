@@ -1,0 +1,25 @@
+TODO List
+==============
+
+ * list and sort out TODOs in this list
+
+ * scripts/vn-manage: handle update correctly
+ * scripts/vn-manage: handle uninstallation correctly
+ * rpm spec: use vn-manage for uninstallation and update
+
+ * option to choose dnsmasq for DNS and DHCP services
+
+ * classify networks and make it selectable
+   * classes: default (net-1:dhcp,net-2 and net-3: host), minimum (net-1 only), etc.
+   * dir [default]: /etc/@PACKAGE@/class/default/{net-*.xml,dhcp/*,named/*}
+   * dir [minimum]: /etc/@PACKAGE@/class/default/{net-1.xml,dhcp/*,named/*}
+
+ * virt-x integration
+
+
+Resolved/Done
+----------------
+ 
+ * multi-binaries-packaging
+ * kickstart integration
+

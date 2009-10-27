@@ -1,0 +1,101 @@
+#! /bin/sh
+#
+# Startup script for the DNS caching server customized for @PACKAGE@
+#
+# LSB init header:
+#
+### BEGIN INIT INFO
+# Provides: @PACKAGE@-net-1
+# Should-Start: libvirtd
+# Default-Start: 3 4 5
+# Short-Description: dnsmasq for libvirt networks
+# Description: This is a dnsmasq init script optimized for @PACKAGE@
+### END INIT INFO
+
+# chkconfig init header:
+#
+# @PACKAGE@-net-1: dnsmasq init script for net-1
+# chkconfig: 345 99 01
+# description: This script starts your DNS caching server
+# processname: dnsmasq
+# pidfile: /var/run/@PACKAGE@/dnsmasq/net-1.pid
+#
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+
+RETVAL=0
+
+EXEC=/usr/sbin/dnsmasq
+if test ! -x $EXEC; then
+    echo -n $"$EXEC does not exist or is not a executable."; warning; echo
+    exit 5
+fi
+
+
+NETWORK=net-1
+
+CONFIG=/etc/@PACKAGE@/dnsmasq/$NETWORK.conf
+PIDFILE=/var/run/@PACKAGE@/dnsmasq/$NETWORK.pid
+LOCKFILE=/var/lock/subsys/@PACKAGE@/dnsmasq-$NETWORK.lock
+
+if test ! -f $CONFIG; then
+    echo -n $"$0: CONFIG '$CONFIG' does not exist."; warning; echo
+    exit 5
+fi
+
+OPTIONS="--conf-file=$CONFIG --pid-file=$PIDFILE"
+
+
+
+case "$1" in
+  start)
+        echo -n "Starting dnsmasq for $NETWORK: "
+        daemon $EXEC $OPTIONS
+	RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && touch $LOCKFILE
+        ;;
+  stop)
+	status -p $PIDFILE dnsmasq
+        ret=$?
+
+        if test $ret eq 0; then
+            echo -n "Shutting down dnsmasq for $NETWORK: "
+            killproc -p $PIDFILE dnsmasq 
+        fi
+	RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f $LOCKFILE $PIDFILE
+        ;;
+  status)
+	status -p $PIDFILE dnsmasq
+	RETVAL=$?
+	;;
+  reload)
+	echo -n "Reloading dnsmasq for $NETWORK: "
+	killproc -p $PIDFILE dnsmasq -HUP
+	RETVAL=$?
+	echo
+	;;
+  restart)
+	$0 stop && $0 start
+	RETVAL=$?
+	;;
+  condrestart)
+	status -p $PIDFILE dnsmasq
+        ret=$?
+
+        if test $ret eq 0; then
+            $0 stop && $0 start
+            RETVAL=$?
+        fi
+	;;
+  *)
+        echo "Usage: $0 {start|stop|restart|reload|condrestart|status}"
+        exit 1
+esac
+
+exit $RETVAL
+

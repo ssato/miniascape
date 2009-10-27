@@ -1,0 +1,8 @@
+<network>
+  <name>net-2</name>
+  <!-- private network:
+  <forward mode='nat'/>
+  -->
+  <bridge name='@NET_2_BRIDGE@'/>
+  <ip address='@NET_2_NETWORK@.1' netmask='255.255.255.0'/>
+</network>

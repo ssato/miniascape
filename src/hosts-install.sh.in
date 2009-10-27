@@ -1,0 +1,21 @@
+#! /bin/bash
+set -e
+
+usage="Usage: $0 IPADDR FQDN"
+
+if test $# -lt 2; then
+  echo $usage
+  exit 1
+fi
+
+IPADDR=$1
+FQDN=$2
+HOSTNAME=${FQDN%%.*}
+
+@AUGTOOL@ -b << EOC
+set /files/etc/hosts/01/ipaddr $IPADDR
+set /files/etc/hosts/01/canonical $FQDN
+set /files/etc/hosts/01/alias[1] $HOSTNAME
+save
+EOC
+
