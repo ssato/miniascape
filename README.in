@@ -1,9 +1,29 @@
 @PACKAGE@
 ====================
 
-This is a collection of configuration files including libvirt network
-definitions, dnsmasq config files and iSCSI config files for libvirt
-virtualization guest domains.
+@PACKAGE@ is a collection of configurations and data to setup libvirt based
+virtualization guests environment quickly.
+
+Main objects are
+
+ * Make network configuration for virtualization guests much easier.
+   (pre-defined libvirt networks and DHCP configs)
+
+ * Does not require expensive high-performance servers. 
+   I try to make it installable on my vaio note pc
+   (vaio type-P: Atom Z540, 64GB SSD, 2 G RAM)
+
+ * Do not intend to replace other feature rich software such like
+   RHEV, cobbler, etc.
+
+
+Files
+-----------------------
+
+ * libvirt network definitions: /etc/@PACKAGE@/libvirt/*.xml
+ * dnsmasq configs: /etc/@PACKAGE@/dnsmasq/*.conf
+ * dnsmasq init scripts (per libvirt networks): /etc/rc.d/init.d/@PACKAGE@-$netname
+ * misc tools: /usr/libexec/@PACKAGE@/*
 
 
 Prerequisites

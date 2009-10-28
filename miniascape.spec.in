@@ -58,7 +58,7 @@ fi
 %post
 if [ $1 = 1 ]; then    # install
     for net in net-1 net-2 net-3; do \
-        /usr/libexec/@PACKAGE@/net-install.py install -a /etc/@PACKAGE@/libvirt/$net.xml
+        /usr/libexec/@PACKAGE@/net-install.py install -a /etc/@PACKAGE@/libvirt/networks/$net.xml
         chkconfig --add miniascape-$net
     done
 
@@ -66,7 +66,7 @@ if [ $1 = 1 ]; then    # install
 
 elif [ $1 = 2 ]; then  # update
     for netxml in net-1.xml net-2.xml net-3.xml; do \
-        /usr/bin/install /etc/@PACKAGE@/libvirt/$netxml /etc/libvirt/qemu/networks
+        /usr/bin/install /etc/@PACKAGE@/libvirt/networks/$netxml /etc/libvirt/qemu/networks
     done
     for net in net-1 net-2 net-3; do 
         service @PACKAGE@-$net condrestart >/dev/null 2>&1 || :
@@ -83,7 +83,8 @@ fi
 %doc README TODO
 %dir %{_sysconfdir}/@PACKAGE@
 %{_sysconfdir}/@PACKAGE@/dnsmasq/*
-%{_sysconfdir}/@PACKAGE@/libvirt/*
+%{_sysconfdir}/@PACKAGE@/libvirt/networks/*
+%dir %{_sysconfdir}/@PACKAGE@/libvirt/domains
 %{_sysconfdir}/rc.d/init.d/*
 %{_libexecdir}/@PACKAGE@/*
 %dir %{_localstatedir}/run/@PACKAGE@
