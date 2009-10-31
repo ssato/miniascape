@@ -1,0 +1,299 @@
+#! /usr/bin/python
+#
+# re-packaging virtualization guest domain from definition file.
+#
+# Copyright (C) 2009 Satoru SATOH <satoru.satoh at gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+
+import commands
+import libxml2
+import libvirt
+import logging
+import optparse
+import os
+import shutil
+import sys
+
+from Cheetah.Template import Template
+
+
+try:
+    import xattr   # pyxattr
+except ImportError:
+    # Make up a 'Null-Object' like class mimics xattr module.
+    class xattr:
+        @classmethod
+        def get_all(*args):
+            return ()
+
+        @classmethod
+        def set(*args):
+            return ()
+
+
+
+RPMNAME_PREFIX = 'vm'
+RPMNAME_SUFFIX = 'image'
+
+
+
+class DomainNotFoundError(Exception): pass
+class SrcIsDirError(Exception): pass
+class DestNotDirError(Exception): pass
+
+
+
+def connect():
+    return libvirt.openReadOnly(None)
+
+
+def run(cmd_str):
+    return commands.getstatusoutput(cmd_str)
+
+
+def package_name(domain_name, prefix=RPMNAME_PREFIX, suffix=RPMNAME_SUFFIX):
+    return '%s-%s-%s' % (domain_name, prefix, suffix)
+
+
+def get_domain_xml(domname):
+    """Get domain xml by name.
+    """
+    conn = connect()
+
+    try:
+        dom = conn.lookupByName(domname)
+        return dom.XMLDesc()
+
+    except libvirt.libvirtError:
+        raise DomainNotFoundError("Not found: '%s'" % domname)
+
+
+def parse_domain_xml(xml):
+    """Parse domain xml string and returns {arch, [image path], ...}
+
+    @see http://libvirt.org/formatdomain.html
+    """
+    try:
+        domspec = libxml2.parseMemory(xml, len(xml))
+        name = domspec.xpathEval('/domain/name')[0].content
+        arch = domspec.xpathEval('/domain/os/type/@arch')[0].content
+        images = [f.content for f in domspec.xpathEval('/domain/devices/disk/source/@file')]
+
+    except IOError:
+        raise RuntimeError("Could not open '%s'" % domainxml)
+    except IndexError:
+        raise RuntimeError("Parse failed: '%s'" % domainxml)
+
+    return {'name': name, 'arch': arch, 'images': images}
+
+
+def base_image_path(image_path):
+    """@return  the path of the base image of given image path or "" (given
+    image not a delta image)
+
+    example log:
+
+    [root@foo ~]# qemu-img info /var/lib/libvirt/images/rhel-5-cluster-4-disk-1.qcow2
+    image: /var/lib/libvirt/images/rhel-5-cluster-4-disk-1.qcow2
+    file format: qcow2
+    virtual size: 5.0G (5368709120 bytes)
+    disk size: 32K
+    cluster_size: 4096
+    backing file: rhel-5-cluster-4-disk-1-base.qcow2 (actual path: /var/lib/libvirt/images/rhel-5-cluster-4-disk-1-base.qcow2)
+    [root@foo ~]#
+    """
+    ret = ""
+
+    (_ext, out) = run("@QEMU_IMG@ info %s" % image_path)
+    if _ext == 0:
+        m = re.match(r'backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>.+)', s)
+        if m:
+            ret = m.groupdict()['base']
+
+    return ret
+
+
+def domain_image_paths(domname):
+    dominfo = parse_domain_xml(get_domain_xml(domain_name))
+    domain_images = dominfo['images']
+
+    domain_images += [bp for bp in [base_image_path(p) for p in domain_images] if bp != '']
+
+    return domain_images
+
+
+def domain_status(conn, domname):
+    """Query the status of the domain by name.
+
+    @return libvirt.VIR_DOMAIN_{RUNNING,SHUTOFF,...}
+
+      * VIR_DOMAIN_RUNNING: running
+      * VIR_DOMAIN_SHUTOFF: stopped
+      * VIR_DOMAIN_NONE: domain is undefined
+      * ...
+    """
+    conn = connect()
+    try:
+        ret = conn.lookupByName(domname).info()[0]  # should be one.
+    except libvirt.libvirtError:
+        logging.debug("The domain '%s' is not defined." % domname)
+        ret = libvirt.VIR_DOMAIN_NONE
+        
+    return ret
+
+
+def createdir(dir, mode=0700):
+    if os.path.exists(dir):
+        logging.warn("The dir already exists: '%s'" % dir)
+        if not os.path.isdir(dir):
+            raise IOError("Not a directory: '%s'" % dir)
+    else:
+        logging.info("Creating a dir: '%s' (mode: %o)" % (dir, mode))
+        os.makedirs(dir, mode)
+
+
+def copyfile(src, dst, force=False):
+    """
+    @param  src  source path
+    @param  dst  destination to copy to. dst may be a dir.
+    """
+    if not force and os.path.exists(dst):
+        logging.error(" Copying destination '%s' already exists!" % dst)
+        return
+
+    # copy itself and its some metadata (owner, mode, etc.)
+    shutil.copy2(src, dst)
+
+    # These are not copyed with the above.
+    _xattrs = dict(xattr.get_all(src))
+    if _xattrs:
+        for k,v in _xattrs.iteritems():
+            xattr.set(dst, k, v)
+
+
+def substfile(src, dst, substs={}):
+    content = open(src).read()
+    for org, new in substs.iteritems():
+        content = content.replace(org, new)
+
+    f = open(dst, 'w')
+    f.write(content)
+    f.close()
+
+
+def buildfile_path(buildfile, prefix='@BUILDFILE_DIR@'):
+    return os.path.join(prefix, buildfile)
+
+
+# actions:
+def do_setup(domain_name):
+    """setup packaging dir.
+    """
+    builddir = package_name(domain_name)
+
+    # TODO: later
+    #xml = get_domain_xml(domain_name)
+    #dominfo = parse_domain_xml(xml)
+    #domain_arch = dominfo['arch']
+
+    domain_images = domain_image_paths(domain_name)
+
+    substs = {'@@DOMAIN_NAME@@': domain_name, '@@DOMAIN_IMAGES@@': ' '.join(domain_images)}
+
+    createdir(builddir)
+    copyfile(buildfile_path('rpm.mk'), builddir)
+    copyfile(buildfile_path('virt-domain.spec.in'), builddir)
+    copyfile(buildfile_path('Makefile.am.in'), os.path.join(builddir, 'Makefile.am'))
+    substfile(buildfile_path('configure.ac.in'), os.path.join(builddir, 'configure.ac'), substs)
+
+    for image in domain_images:
+        copyfile(image, builddir)
+
+
+def do_build(domain_name):
+    """Build RPM of $domain_name
+    """
+    builddir = package_name(domain_name)
+
+    if not os.path.isdir(builddir):
+        do_setup(domain_name)
+
+    run("cd %s && autoreconf -vfi && ./configure" % builddir)
+    run("cd %s && make rpm" % builddir)
+
+
+def option_parser():
+    parser = optparse.OptionParser("%prog [OPTION ...] COMMAND DOMAIN_NAME\n\n"
+        "Commands: setup, build\n")
+    parser.add_option('-v', '--verbose', dest='verbose', action="store_true",
+        default=False, help='verbose mode')
+    parser.add_option('-q', '--quiet', dest='quiet', action="store_true",
+        default=False, help='quiet mode')
+
+    return parser
+
+
+def main():
+    action = do_setup
+    loglevel = logging.INFO
+
+    parser = option_parser()
+    (options, args) = parser.parse_args()
+
+    if options.verbose:
+        loglevel = logging.DEBUG
+    if options.quiet:
+        loglevel = logging.WARN
+
+    # logging.basicConfig() in python older than 2.4 cannot handle kwargs,
+    # then exception 'TypeError' will be thrown.
+    try:
+        logging.basicConfig(level=loglevel)
+
+    except TypeError:
+        # To keep backward compatibility. See above comment also.
+        logging.getLogger().setLevel(loglevel)
+
+    if len(args) < 2:
+        parser.print_help()
+        sys.exit(1)
+
+    if args[0].startswith('setu'):
+        action = do_setup
+    elif args[0].startswith('bui'):
+        action = do_build
+    else:
+        parser.print_usage()
+
+    domain_name = args[1]
+
+    stat = domain_status(domain_name)
+    if stat != libvirt.VIR_DOMAIN_SHUTOFF:
+        if stat == libvirt.VIR_DOMAIN_RUNNING:
+            logging.error(" VM '%s' is still running. Please shutdown it first." % domain_name)
+        else:
+            logging.error(" VM '%s' is unknown." % domain_name)
+
+        sys.exit(1)
+            
+    action(domain_name)
+
+
+if __name__ == '__main__':
+    main()
+
+# vim:sw=4:ts=4:et:ft=python:

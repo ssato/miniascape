@@ -8,6 +8,10 @@ AC_PROG_QEMU_IMG
 #AC_PATH_PROG([AUGTOOL],[augtool])
 AC_SUBST([VIRSH],[/usr/bin/virsh])
 AC_SUBST([AUGTOOL],[/usr/bin/augtool])
+AC_SUBST([QEMU_IMG],[/usr/bin/qemu-img])
+
+dnl FIXME: want to make it configurable
+AC_SUBST([BUILDFILE_DIR],[/usr/share/miniascape/build])
 
 dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
 hwaddr_prefix=54:52:00
@@ -76,6 +80,7 @@ README
 TODO
 miniascape.spec
 data/Makefile
+data/build/Makefile
 data/dnsmasq/Makefile
 data/dnsmasq/miniascape-net-1
 data/dnsmasq/net-1.conf
@@ -87,4 +92,5 @@ data/libvirt/net-2.xml
 data/libvirt/net-3.xml
 src/Makefile
 src/hosts-install.sh
+src/repackage.py
 ])

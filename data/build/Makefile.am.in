@@ -1,0 +1,11 @@
+AUTOMAKE_OPTIONS = foreign
+EXTRA_DIST = README virt-domain.spec rpm.mk
+
+include $(abs_srcdir)/rpm.mk
+
+
+domainimagedir = @localstatedir@/lib/libvirt/images
+domainxmldir = @sysconfdir@/miniascape/domains
+
+dist_domainimage_DATA = @DOMAIN_IMAGES@
+dist_domainxml_DATA = @DOMAIN_XML@

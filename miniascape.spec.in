@@ -90,6 +90,7 @@ fi
 %dir %{_localstatedir}/run/@PACKAGE@
 %dir %{_localstatedir}/run/@PACKAGE@/dnsmasq
 %dir %{_localstatedir}/lock/subsys/@PACKAGE@
+%{_datadir}/@PACKAGE@/build/*
 
 
 %changelog

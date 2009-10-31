@@ -1,0 +1,71 @@
+%define domain_name      @DOMAIN_NAME@
+%define domain_xmldir    %{_sysconfdir}/miniascape/domains
+%define domain_imgdir    %{_localstatedir}/lib/libvirt/images
+
+# disable debuginfo - it's pointless for qemu images.
+%define debug_package   %{nil}
+
+
+Name:           @PACKAGE@
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        KVM/Qemu guest base image and config for %{name}
+Group:          Development/System
+License:        MIT
+URL:            http://localhost
+Source0:        %{name}-%{version}.tar.xz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      @ARCH@
+Requires:       @VIRSH@
+Requires:       augeas
+Requires:       miniascape
+
+
+%description
+Virtualization (KVM/Qemu) guest domain image and data.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure
+make %{?_smp_mflags}
+
+
+%install
+%{__rm} -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%preun
+if [ $1 = 0 ]; then  # erase
+    @VIRSH@ undefine @DOMAIN_NAME@
+fi
+
+
+%post
+if [ $1 = 1 ]; then    # install
+    @VIRSH@ define %{domain_xmldir}/@DOMAIN_NAME@.xml
+elif [ $1 = 2 ]; then  # update
+    @VIRSH@ undefine @DOMAIN_NAME@ && \
+    @VIRSH@ define %{domain_xmldir}/@DOMAIN_NAME@.xml
+fi
+
+
+%clean
+%{__rm} -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+%doc README
+#%config(missingok) %verify(not md5 size mtime) %{_sysconfdir}/libvirt/qemu/@DOMAIN_NAME@.xml
+%config %{domain_xmldir}/@DOMAIN_NAME@.xml
+%{domain_imgdir}/*
+
+
+%changelog
+* @TIMESTAMP@ virt-domain-builder <builder@localhost> - @VERSION@-1
+- Initial packaging.
