@@ -1,1 +1,1 @@
-SUBDIRS = dnsmasq libvirt build
+SUBDIRS = dnsmasq libvirt package

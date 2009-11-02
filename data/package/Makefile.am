@@ -1,4 +1,4 @@
-buildtooldir = @datadir@/@PACKAGE@/build
+buildtooldir = @datadir@/@PACKAGE@/package
 dist_buildtool_DATA = Makefile.am.in configure.ac.in rpm.mk virt-domain.spec.in
 
 CLEANFILES =

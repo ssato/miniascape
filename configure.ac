@@ -80,7 +80,7 @@ README
 TODO
 miniascape.spec
 data/Makefile
-data/build/Makefile
+data/package/Makefile
 data/dnsmasq/Makefile
 data/dnsmasq/miniascape-net-1
 data/dnsmasq/net-1.conf
