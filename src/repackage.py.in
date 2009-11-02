@@ -171,6 +171,8 @@ def copyfile(src, dst, force=False):
     @param  src  source path
     @param  dst  destination to copy to. dst may be a dir.
     """
+    assert src != dst, "src == dst!"
+
     if not force and os.path.exists(dst):
         logging.error(" Copying destination '%s' already exists!" % dst)
         return
@@ -186,6 +188,8 @@ def copyfile(src, dst, force=False):
 
 
 def substfile(src, dst, substs={}):
+    assert src != dst, "src == dst!"
+
     content = open(src).read()
     for org, new in substs.iteritems():
         content = content.replace(org, new)
