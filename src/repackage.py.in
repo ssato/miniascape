@@ -28,7 +28,6 @@ import os
 import shutil
 import sys
 
-from Cheetah.Template import Template
 
 
 try:
@@ -120,7 +119,7 @@ def base_image_path(image_path):
 
     (_ext, out) = run("@QEMU_IMG@ info %s" % image_path)
     if _ext == 0:
-        m = re.match(r'backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>.+)', s)
+        m = re.match(r'backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>.+)\)', s)
         if m:
             ret = m.groupdict()['base']
 

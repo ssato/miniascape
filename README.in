@@ -1,6 +1,12 @@
 @PACKAGE@
 ====================
 
+WARNING: @PACKAGE@ is in pre-alpha state and will heavily udpate day by day, so
+it may not work in your environment or might cause trouble. TRY IT IN YOUR OWN
+RISK, PLEASE.
+
+
+
 @PACKAGE@ is a collection of configurations and data to setup libvirt based
 virtualization guests environment quickly.
 

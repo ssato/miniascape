@@ -61,7 +61,7 @@ case "$1" in
 	status -p $PIDFILE dnsmasq
         ret=$?
 
-        if test $ret eq 0; then
+        if test $ret -eq 0; then
             echo -n "Shutting down dnsmasq for $NETWORK: "
             killproc -p $PIDFILE dnsmasq 
         fi
@@ -87,7 +87,7 @@ case "$1" in
 	status -p $PIDFILE dnsmasq
         ret=$?
 
-        if test $ret eq 0; then
+        if test $ret -eq 0; then
             $0 stop && $0 start
             RETVAL=$?
         fi
