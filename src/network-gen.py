@@ -96,7 +96,7 @@ class DnsmasqConfFmtr(ConfFmtr):
         params = {
             #'domain': self.find('domain').text,
             'listen': self.find('ip').attrib['address'],
-            'range': ','.join(self.find('ip/dhcp/range').values()),
+            'range': ','.join(self.find('ip/dhcp/range').attrib.values()),
         }
 
         tmpl = """
@@ -106,20 +106,20 @@ listen-address=%(listen)s
 except-interface=lo
 dhcp-range=%(range)s
 """
-        return tmpl % headers
+        return tmpl % params
 
     def hosts(self):
         fmt = "dhcp-host=%(mac)s,%(ip)s,%(name)s"
-        return "\n".join([fmt % h.attrib for h in self.find('ip/dhcp/range')])
+        return "\n".join([fmt % h.attrib for h in self._tree.findall('ip/dhcp/host')])
 
 
-LIBVIRT_BACKEND = 1
-DNSMASQ_BACKEND = 2
+LIBVIRT_FMTR = 1
+DNSMASQ_FMTR = 2
 
 
 def option_parser():
     parser = optparse.OptionParser("%prog [OPTION ...] NETWORK_XML")
-    parser.add_option('-f', '--format', default=DNSMASQ_BACKEND, help='output format [dnsmasq]')
+    parser.add_option('-f', '--format', default=DNSMASQ_FMTR, help='output format [dnsmasq]')
     parser.add_option('-o', '--output', default=False, help='output file')
     parser.add_option('-v', '--verbose', action="store_true",
         default=False, help='verbose mode')
@@ -155,7 +155,7 @@ def main():
 
     network_xml = args[0]
 
-    if options.format == DNSMASQ_BACKEND:
+    if options.format == DNSMASQ_FMTR:
         fmtr = DnsmasqConfFmtr(network_xml)
         fmtr.dump(options.output)
     else:
