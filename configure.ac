@@ -4,6 +4,8 @@ AM_INIT_AUTOMAKE
 AC_PROG_MKDIR_P
 AC_PROG_QEMU_IMG
 
+AC_PATH_PROG([PYTHON],[python])
+
 #AC_PATH_PROG([VIRSH],[virsh])
 #AC_PATH_PROG([AUGTOOL],[augtool])
 AC_SUBST([VIRSH],[/usr/bin/virsh])
@@ -83,13 +85,10 @@ data/Makefile
 data/package/Makefile
 data/dnsmasq/Makefile
 data/dnsmasq/miniascape-net-1
-data/dnsmasq/net-1.conf
-data/dnsmasq/net-2.conf
-data/dnsmasq/net-3.conf
 data/libvirt/Makefile
-data/libvirt/net-1.xml
-data/libvirt/net-2.xml
-data/libvirt/net-3.xml
+data/libvirt/net-1.xml.in
+data/libvirt/net-2.xml.in
+data/libvirt/net-3.xml.in
 src/Makefile
 src/hosts-install.sh
 src/repackage.py

@@ -18,17 +18,21 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
+#
+# @see http://libvirt.org/html/libvirt-libvirt.html
+# @see http://libvirt.org/formatnetwork.html
+#
 
-import libxml2
 import libvirt
 import logging
 import optparse
 import sys
 
+import xml.etree.ElementTree as ET  # python >= 2.5
 
 
 VMM = 'qemu:///system'
-(NET_NOT_DEFINED, NET_DEFINED, NET_ACTIVE) = (0, 1, 2)
+(NET_STATE_UNKNOWN, NET_NOT_DEFINED, NET_DEFINED, NET_ACTIVE) = (0, 1, 2, 3)
 
 
 
@@ -38,31 +42,38 @@ def name_from_netxml(netxml):
     @see http://libvirt.org/formatnetwork.html
     """
     name = ''
-
     try:
-        name = libxml2.parseFile(netxml).xpathEval('/network/name')[0].content
+        tree = ET.parse(netxml)
+        elem = tree.find('/network/name')
+        if elem is not None:
+            name = elem.text
+        logging.debug("Network Name = '%s'" % name)
+
     except IOError:
         raise RuntimeError("Could not open '%s'" % netxml)
+
     except IndexError:
         raise RuntimeError("Parse failed: '%s'" % netxml)
 
-    logging.debug("Network Name = '%s'" % name)
     return name
 
 
 
-def __status(conn, network_name):
+def status(network_name):
     """Query the status of the network.
     """
-    if network_name in conn.listNetworks():
-        logging.debug("The network '%s' is active." % network_name)
-        ret = NET_ACTIVE
-    elif network_name in conn.listDefinedNetworks():
-        logging.debug("The network '%s' is defined but inactive." % network_name)
-        ret = NET_DEFINED
-    else:
-        logging.debug("The network '%s' is not defined." % network_name)
-        ret = NET_NOT_DEFINED
+    try:
+        conn = libvirt.openReadOnly(None)
+
+        if network_name in conn.listNetworks():
+            ret = NET_ACTIVE
+        elif network_name in conn.listDefinedNetworks():
+            ret = NET_DEFINED
+        else:
+            ret = NET_NOT_DEFINED
+
+    except libvirt.libvirtError:
+        ret = NET_STATE_UNKNOWN
 
     return ret
 
@@ -72,29 +83,32 @@ class DefinedNetworkException(Exception): pass
 
 
 # actions:
-def do_check(conn, *args):
+def do_check(network_name, *args):
     """Check the network defined.
     """
-    return __status(conn, network_name)
+    return status(network_name)
 
 
-def do_uninstall(conn, network_name, network_xml, force, *args):
+def do_uninstall(network_name, network_xml, force, *args):
     """Uninstall the network.
     """
-    stat = do_check(conn, network_name)
+    stat = status(network_name)
 
-    if stat == NET_ACTIVE:
-        net = conn.networkLookupByName(network_name)
-        if force:
-            logging.debug("Try destroying and undefining the network '%s' ..." % network_name)
-            net.destroy()
-            net.undefine()
-            logging.debug("... Done")
-        else:
-            raise ActiveNetworkException("Network '%s' is defined and active already." % network_name)
+    try:
+        conn = libvirt.open(None)
+    except libvirt.libvirtError:
+        logging.warn("Could not connect to libvirtd")
+        return False
 
-    elif stat == NET_DEFINED:
+    if stat == NET_ACTIVE or stat == NET_DEFINED:
         net = conn.networkLookupByName(network_name)
+
+        if stat == NET_ACTIVE:
+            if force:
+                logging.debug("Try destroying and undefining the network '%s' ..." % network_name)
+                net.destroy()
+            else:
+                raise ActiveNetworkException("Network '%s' is defined and active already." % network_name)
 
         logging.debug("Try undefining the network '%s' ..." % network_name)
         net.undefine()
@@ -102,15 +116,22 @@ def do_uninstall(conn, network_name, network_xml, force, *args):
 
     else:
         logging.warn("Netowrk '%s' is not defined. Nothing to do..." % network_name)
+        return False
 
     return network_name not in conn.listNetworks() + conn.listDefinedNetworks()
 
 
-def do_install(conn, network_name, network_xml, force, autostart, *args):
+def do_install(network_name, network_xml, force, autostart, *args):
     """Install the network.
     """
+    try:
+        conn = libvirt.open(None)
+    except libvirt.libvirtError:
+        logging.error("Could not connect to libvirtd")
+        return False
+
     if force:
-        do_uninstall(conn, network_name, network_xml, force)
+        do_uninstall(network_name, network_xml, force)
         # FIXME: Reopen connection closed.
         conn.close()
         conn = libvirt.open(VMM)
@@ -177,15 +198,15 @@ def main():
 
     if args[0].startswith('inst'):
         action = do_install
-    else:
+    if args[0].startswith('unin'):
         action = do_uninstall
+    else:
+        action = do_check
 
     network_xml = args[1]
     network_name = name_from_netxml(network_xml)
 
-    conn = libvirt.open(VMM)
-
-    ret = action(conn, network_name, network_xml, options.force, options.autostart)
+    ret = action(network_name, network_xml, options.force, options.autostart)
     sys.exit(ret)
 
 

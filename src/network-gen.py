@@ -29,59 +29,69 @@ import xml.etree.ElementTree as ET  # python >= 2.5
 #from Cheetah.Template import Template
 
 
-class ConfFmtr(object):
+class ParamMissingError(Exception): pass
+
+
+
+class LibvirtNetworkConf(dict):
     def __init__(self, netxml):
-        self._netxml = netxml
-        self._tree = ET.parse(netxml)
+        self.parse(netxml)
 
-    def find(self, path):
-        return self._tree.find(path)
-
-    def dump(self, output=None):
-        assert self._netxml != output, "Output file is same as input: '%s'" % output
-
-        if output is None:
-            output = sys.stdout
-        else:
-            output = open(output,'w')
-
-        self._tree.write(output)
-        output.close()
-
-
-class LibvirtConfFmtr(ConfFmtr):
-    """
-    """
-
-    def __init__(self, netxml):
-        ConfFmtr.__init__(self, netxml)
-
-    def remove_hosts(self):
-        """Removes host-ip-mac map elements in network XML.
-
-        @see http://libvirt.org/formatnetwork.html
+    def parse(self, netxml):
+        """@throw ExpatError - Invalid XML or not XML file.
         """
-        ip = self.find('//ip')
-        [ip.remove(e) for e in ip.getiterator('host')]
+        tree = ET.parse(netxml)
 
-    def remove_uuid(self):
-        root = self._tree.getroot()
-        [root.remove(e) for e in root.getiterator('uuid')]
+        # must parameters:
+        elem = tree.find('name')
+        if elem is not None:
+            self['name'] = elem.text
+        else:
+            raise ParamMissingError(" No 'name' is found in '%s'" % netxml)
+
+        elem = tree.find('ip')
+        if elem is not None:
+            listen_address = elem.attrib.get('address')
+            if listen_address:
+                self['listen-address'] = listen_address
+            else:
+                raise ParamMissingError(" No 'address' attr is found in <ip/> in '%s'" % netxml)
+        else:
+            raise ParamMissingError(" No 'ip' is found in '%s'" % netxml)
+
+        # optional parameters:
+        elem = tree.find('domain')
+        if elem is not None:
+            domain = elem.attrib.get('name', False)
+            if domain:
+                self['domain'] = domain
+
+        elem = tree.find('ip/dhcp/range')
+        if elem is not None:
+            (start, end) = (elem.attrib.get('start'), elem.attrib.get('end'))
+            if start and end:
+                self['dhcp-range'] = (start, end)
+
+        elems = tree.findall('ip/dhcp/host')
+        if elem is not None:
+            hs = []
+            for elem in elems:
+                (mac, ip, name) = (elem.attrib.get('mac'), elem.attrib.get('ip'), elem.attrib.get('name'))
+                if mac and ip and name:
+                    hs.append({'mac': mac, 'ip': ip, 'name': name})
+            self['hosts'] = hs
 
 
 
-class DnsmasqConfFmtr(ConfFmtr):
-    """
-    """
+class AConf(object):
     def __init__(self, netxml):
-        ConfFmtr.__init__(self, netxml)
-        self._header = self.header()
-        self._hosts = self.hosts()
+        self.netconf = LibvirtNetworkConf(netxml)
+
+    def format(self):
+        raise NotImplementedError()
 
     def dump(self, output=None):
-        assert self._netxml != output, "Output file is same as input: '%s'" % output
-
-        if output is None:
+        if output is None or output == '-':
             output = sys.stdout
         else:
             output = open(output,'w')
@@ -89,38 +99,46 @@ class DnsmasqConfFmtr(ConfFmtr):
         output.write(self.format())
         output.close()
 
+
+
+class DnsmasqConf(AConf):
+    """dnsmasq.conf writer.
+    """
+
     def format(self):
-        return "\n".join((self._header, self._hosts))
+        configs = [
+            'strict-order',
+            'bind-interfaces',
+            'listen-address=%(listen-address)s' % self.netconf,
+            'except-interface=lo',
+        ]
 
-    def header(self):
-        params = {
-            #'domain': self.find('domain').text,
-            'listen': self.find('ip').attrib['address'],
-            'range': ','.join(self.find('ip/dhcp/range').attrib.values()),
-        }
+        domain = self.netconf.get('domain', False)
+        if domain:
+            configs.append('domain=%s' % domain)
 
-        tmpl = """
-strict-order
-bind-interfaces
-listen-address=%(listen)s
-except-interface=lo
-dhcp-range=%(range)s
-"""
-        return tmpl % params
+        range = self.netconf.get('dhcp-range', False)
+        if range:
+            configs.append('dhcp-range=%s,%s' % range)
 
-    def hosts(self):
-        fmt = "dhcp-host=%(mac)s,%(ip)s,%(name)s"
-        return "\n".join([fmt % h.attrib for h in self._tree.findall('ip/dhcp/host')])
+        hosts = self.netconf.get('hosts')
+        if hosts:
+            for h in hosts:
+                configs.append("dhcp-host=%(mac)s,%(ip)s,%(name)s" % h)
+
+        configs.append('\n')
+
+        return '\n'.join(configs)
 
 
-LIBVIRT_FMTR = 1
-DNSMASQ_FMTR = 2
+
+DNSMASQ_TYPE = 'dnsmasq'
 
 
 def option_parser():
     parser = optparse.OptionParser("%prog [OPTION ...] NETWORK_XML")
-    parser.add_option('-f', '--format', default=DNSMASQ_FMTR, help='output format [dnsmasq]')
-    parser.add_option('-o', '--output', default=False, help='output file')
+    parser.add_option('-T', '--type', default=DNSMASQ_TYPE, help='Config type [%default]')
+    parser.add_option('-o', '--output', default='-', help='output file [%default] (stdout)')
     parser.add_option('-v', '--verbose', action="store_true",
         default=False, help='verbose mode')
     parser.add_option('-q', '--quiet', action="store_true",
@@ -155,9 +173,9 @@ def main():
 
     network_xml = args[0]
 
-    if options.format == DNSMASQ_FMTR:
-        fmtr = DnsmasqConfFmtr(network_xml)
-        fmtr.dump(options.output)
+    if options.type == DNSMASQ_TYPE:
+        writer = DnsmasqConf(network_xml)
+        writer.dump(options.output)
     else:
         pass
 

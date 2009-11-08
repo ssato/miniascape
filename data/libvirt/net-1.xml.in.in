@@ -1,0 +1,90 @@
+<network>
+  <name>net-1</name>
+  <forward mode='nat'/>
+  <bridge name='@NET_1_BRIDGE@' stp='on' delay='0'/>
+  <domain name='@NET_1_DOMAIN@'/>
+  <ip address='@NET_1_NETWORK@.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='@NET_1_NETWORK@.200' end='@NET_1_NETWORK@.254'/>
+      <host mac='@HWADDR_PREFIX@:01:00:11' ip='@NET_1_NETWORK@.11' name='service-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:12' ip='@NET_1_NETWORK@.12' name='service-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:13' ip='@NET_1_NETWORK@.13' name='service-3'/>
+      <host mac='@HWADDR_PREFIX@:01:00:14' ip='@NET_1_NETWORK@.14' name='service-4'/>
+      <host mac='@HWADDR_PREFIX@:01:00:15' ip='@NET_1_NETWORK@.15' name='service-5'/>
+      <host mac='@HWADDR_PREFIX@:01:00:21' ip='@NET_1_NETWORK@.21' name='rhel-5-satellite-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:22' ip='@NET_1_NETWORK@.22' name='rhel-5-satellite-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:23' ip='@NET_1_NETWORK@.23' name='rhel-5-satellite-3'/>
+      <host mac='@HWADDR_PREFIX@:01:00:24' ip='@NET_1_NETWORK@.24' name='rhel-5-proxy-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:25' ip='@NET_1_NETWORK@.25' name='rhel-5-proxy-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:26' ip='@NET_1_NETWORK@.26' name='spacewalk-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:31' ip='@NET_1_NETWORK@.31' name='rhel-3-cluster-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:32' ip='@NET_1_NETWORK@.32' name='rhel-3-cluster-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:33' ip='@NET_1_NETWORK@.33' name='rhel-3-cluster-3'/>
+      <host mac='@HWADDR_PREFIX@:01:00:34' ip='@NET_1_NETWORK@.34' name='rhel-3-cluster-4'/>
+      <host mac='@HWADDR_PREFIX@:01:00:35' ip='@NET_1_NETWORK@.35' name='rhel-3-cluster-5'/>
+      <host mac='@HWADDR_PREFIX@:01:00:41' ip='@NET_1_NETWORK@.41' name='rhel-4-cluster-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:42' ip='@NET_1_NETWORK@.42' name='rhel-4-cluster-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:43' ip='@NET_1_NETWORK@.43' name='rhel-4-cluster-3'/>
+      <host mac='@HWADDR_PREFIX@:01:00:44' ip='@NET_1_NETWORK@.44' name='rhel-4-cluster-4'/>
+      <host mac='@HWADDR_PREFIX@:01:00:45' ip='@NET_1_NETWORK@.45' name='rhel-4-cluster-5'/>
+      <host mac='@HWADDR_PREFIX@:01:00:51' ip='@NET_1_NETWORK@.51' name='rhel-5-cluster-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:52' ip='@NET_1_NETWORK@.52' name='rhel-5-cluster-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:53' ip='@NET_1_NETWORK@.53' name='rhel-5-cluster-3'/>
+      <host mac='@HWADDR_PREFIX@:01:00:54' ip='@NET_1_NETWORK@.54' name='rhel-5-cluster-4'/>
+      <host mac='@HWADDR_PREFIX@:01:00:55' ip='@NET_1_NETWORK@.55' name='rhel-5-cluster-5'/>
+      <host mac='@HWADDR_PREFIX@:01:00:61' ip='@NET_1_NETWORK@.61' name='rhel-5-jboss-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:62' ip='@NET_1_NETWORK@.62' name='rhel-5-jboss-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:63' ip='@NET_1_NETWORK@.63' name='rhel-5-jboss-3'/>
+      <host mac='@HWADDR_PREFIX@:01:00:64' ip='@NET_1_NETWORK@.64' name='rhel-5-jboss-4'/>
+      <host mac='@HWADDR_PREFIX@:01:00:65' ip='@NET_1_NETWORK@.65' name='rhel-5-jboss-5'/>
+      <host mac='@HWADDR_PREFIX@:01:00:71' ip='@NET_1_NETWORK@.71' name='rhel-5-mrg-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:72' ip='@NET_1_NETWORK@.72' name='rhel-5-mrg-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:73' ip='@NET_1_NETWORK@.73' name='rhel-5-mrg-3'/>
+      <host mac='@HWADDR_PREFIX@:01:00:74' ip='@NET_1_NETWORK@.74' name='rhel-5-mrg-4'/>
+      <host mac='@HWADDR_PREFIX@:01:00:75' ip='@NET_1_NETWORK@.75' name='rhel-5-mrg-5'/>
+      <host mac='@HWADDR_PREFIX@:01:00:81' ip='@NET_1_NETWORK@.81' name='rhel-5-appstack-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:82' ip='@NET_1_NETWORK@.82' name='rhel-5-appstack-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:83' ip='@NET_1_NETWORK@.83' name='rhel-5-ds-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:84' ip='@NET_1_NETWORK@.84' name='rhel-5-ds-2'/>
+      <host mac='@HWADDR_PREFIX@:01:00:85' ip='@NET_1_NETWORK@.85' name='rhel-5-luci-1'/>
+      <host mac='@HWADDR_PREFIX@:01:00:86' ip='@NET_1_NETWORK@.86' name='rhel-5-luci-2'/>
+      <host mac='@HWADDR_PREFIX@:01:01:25' ip='@NET_1_NETWORK@.125' name='rhel-21-5-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:26' ip='@NET_1_NETWORK@.126' name='rhel-21-6-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:30' ip='@NET_1_NETWORK@.130' name='rhel-3-0-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:31' ip='@NET_1_NETWORK@.131' name='rhel-3-1-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:32' ip='@NET_1_NETWORK@.132' name='rhel-3-2-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:33' ip='@NET_1_NETWORK@.133' name='rhel-3-3-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:34' ip='@NET_1_NETWORK@.134' name='rhel-3-4-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:35' ip='@NET_1_NETWORK@.135' name='rhel-3-5-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:36' ip='@NET_1_NETWORK@.136' name='rhel-3-6-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:37' ip='@NET_1_NETWORK@.137' name='rhel-3-7-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:38' ip='@NET_1_NETWORK@.138' name='rhel-3-8-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:39' ip='@NET_1_NETWORK@.139' name='rhel-3-9-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:40' ip='@NET_1_NETWORK@.140' name='rhel-4-0-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:41' ip='@NET_1_NETWORK@.141' name='rhel-4-1-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:42' ip='@NET_1_NETWORK@.142' name='rhel-4-2-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:43' ip='@NET_1_NETWORK@.143' name='rhel-4-3-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:44' ip='@NET_1_NETWORK@.144' name='rhel-4-4-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:45' ip='@NET_1_NETWORK@.145' name='rhel-4-5-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:46' ip='@NET_1_NETWORK@.146' name='rhel-4-6-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:47' ip='@NET_1_NETWORK@.147' name='rhel-4-7-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:48' ip='@NET_1_NETWORK@.148' name='rhel-4-8-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:49' ip='@NET_1_NETWORK@.149' name='rhel-4-9-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:50' ip='@NET_1_NETWORK@.150' name='rhel-5-0-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:51' ip='@NET_1_NETWORK@.151' name='rhel-5-1-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:52' ip='@NET_1_NETWORK@.152' name='rhel-5-2-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:53' ip='@NET_1_NETWORK@.153' name='rhel-5-3-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:54' ip='@NET_1_NETWORK@.154' name='rhel-5-4-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:55' ip='@NET_1_NETWORK@.155' name='rhel-5-5-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:60' ip='@NET_1_NETWORK@.160' name='rhel-6-0-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:61' ip='@NET_1_NETWORK@.161' name='rhel-6-1-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:62' ip='@NET_1_NETWORK@.162' name='rhel-6-2-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:63' ip='@NET_1_NETWORK@.163' name='rhel-6-3-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:64' ip='@NET_1_NETWORK@.164' name='rhel-6-4-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:65' ip='@NET_1_NETWORK@.165' name='rhel-6-5-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:80' ip='@NET_1_NETWORK@.180' name='fedora-11-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:81' ip='@NET_1_NETWORK@.181' name='fedora-12-guest-1'/>
+      <host mac='@HWADDR_PREFIX@:01:01:82' ip='@NET_1_NETWORK@.182' name='fedora-13-guest-1'/>
+    </dhcp>
+  </ip>
+</network>

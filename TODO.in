@@ -1,7 +1,7 @@
 TODO
 =====================
 
- * Generate dnsmasq | dhcpd and bind configs from libvirt network XML
+ * Generate dnsmasq | dhcpd and bind configs from libvirt network XML: in progress
  * Make network definitions more configurable
  * Merge ISC DHCP and bind backend as an option instead of dnsmasq
  * Merge build (installation and packaging) scripts from vdbs

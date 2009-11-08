@@ -8,9 +8,11 @@ URL:            http://github.com/ssato/@PACKAGE@
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
-Requires:       libvirt
+BuildRequires:  python
+#Requires:       libvirt
+Requires:       /etc/rc.d/init.d/libvirtd
 Requires:       augeas
-Obsoletes:      virt-networks
+#Obsoletes:      virt-networks
 
 
 %description
@@ -41,6 +43,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %preun
 if [ $1 = 0 ]; then  # erase
+    for net in net-1 net-2 net-3; do \
+        chkconfig --del miniascape-$net
+    done
     echo " "
     echo "======================================================================"
     echo "Virtualization networks (net-1, net-2 and net-3) are preserved for "
@@ -82,8 +87,8 @@ fi
 %defattr(-,root,root,-)
 %doc README TODO
 %dir %{_sysconfdir}/@PACKAGE@
-%{_sysconfdir}/@PACKAGE@/dnsmasq/*
-%{_sysconfdir}/@PACKAGE@/libvirt/networks/*
+%config %{_sysconfdir}/@PACKAGE@/dnsmasq/*
+%config %{_sysconfdir}/@PACKAGE@/libvirt/networks/*
 %dir %{_sysconfdir}/@PACKAGE@/libvirt/domains
 %{_sysconfdir}/rc.d/init.d/*
 %{_libexecdir}/@PACKAGE@/*

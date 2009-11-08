@@ -1,5 +1,0 @@
-<network>
-  <name>net-3</name>
-  <bridge name='@NET_3_BRIDGE@'/>
-  <ip address='@NET_3_NETWORK@.1' netmask='255.255.255.0'/>
-</network>
