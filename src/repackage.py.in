@@ -18,17 +18,24 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
+#
+# @see http://libvirt.org/formatdomain.html
+# @see http://www.qemu.org/qemu-doc.html#SEC19
+#
 
 import commands
-import libxml2
 import libvirt
 import logging
 import optparse
 import os
+import re
 import shutil
 import sys
 
-
+try:
+    import xml.etree.ElementTree as ET  # python >= 2.5
+except ImportError:
+    import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
 
 try:
     import xattr   # pyxattr
@@ -57,7 +64,8 @@ class DestNotDirError(Exception): pass
 
 
 def connect():
-    return libvirt.openReadOnly(None)
+    #return libvirt.openReadOnly(None)
+    return libvirt.openReadOnly('qemu:///system')
 
 
 def run(cmd_str):
@@ -68,34 +76,39 @@ def package_name(domain_name, prefix=RPMNAME_PREFIX, suffix=RPMNAME_SUFFIX):
     return '%s-%s-%s' % (domain_name, prefix, suffix)
 
 
+def is_libvirtd_running():
+    """Is the service "libvirtd" running?
+
+    @return  Bool  True (running) or False (not)
+    """
+    (stat,_out) = run("/etc/init.d/libvirtd status  2>&1 > /dev/null")
+
+    return (stat == 0)
+
+
 def get_domain_xml(domname):
-    """Get domain xml by name.
+    """Get domain xml content by name.
     """
-    conn = connect()
+    if is_libvirtd_running():
+        conn = connect()
 
-    try:
-        dom = conn.lookupByName(domname)
-        return dom.XMLDesc()
+        try:
+            dom = conn.lookupByName(domname)
+            return dom.XMLDesc(0)
 
-    except libvirt.libvirtError:
-        raise DomainNotFoundError("Not found: '%s'" % domname)
+        except libvirt.libvirtError:
+            raise DomainNotFoundError("Not found: '%s'" % domname)
+    else:
+        return open("/etc/libvirtd/qemu/%s.xml" % domname).read()
 
 
-def parse_domain_xml(xml):
+def parse_domain_xml(xmlstr):
     """Parse domain xml string and returns {arch, [image path], ...}
-
-    @see http://libvirt.org/formatdomain.html
     """
-    try:
-        domspec = libxml2.parseMemory(xml, len(xml))
-        name = domspec.xpathEval('/domain/name')[0].content
-        arch = domspec.xpathEval('/domain/os/type/@arch')[0].content
-        images = [f.content for f in domspec.xpathEval('/domain/devices/disk/source/@file')]
-
-    except IOError:
-        raise RuntimeError("Could not open '%s'" % domainxml)
-    except IndexError:
-        raise RuntimeError("Parse failed: '%s'" % domainxml)
+    tree = ET.fromstring(xmlstr)
+    name = tree.findtext('name')
+    arch = tree.find('os/type').attrib.get('arch')
+    images = [e.attrib.get('file') for e in tree.findall('devices/disk/source')]
 
     return {'name': name, 'arch': arch, 'images': images}
 
@@ -117,9 +130,9 @@ def base_image_path(image_path):
     """
     ret = ""
 
-    (_ext, out) = run("@QEMU_IMG@ info %s" % image_path)
-    if _ext == 0:
-        m = re.match(r'backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>.+)\)', s)
+    (stat, out) = run("@QEMU_IMG@ info %s" % image_path)
+    if stat == 0:
+        m = re.match(r'backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>.+)\)', out)
         if m:
             ret = m.groupdict()['base']
 
@@ -127,15 +140,13 @@ def base_image_path(image_path):
 
 
 def domain_image_paths(domname):
-    dominfo = parse_domain_xml(get_domain_xml(domain_name))
-    domain_images = dominfo['images']
+    images = parse_domain_xml(get_domain_xml(domname))['images']
+    base_images = [bp for bp in [base_image_path(p) for p in images] if bp != '']
 
-    domain_images += [bp for bp in [base_image_path(p) for p in domain_images] if bp != '']
-
-    return domain_images
+    return images + base_images
 
 
-def domain_status(conn, domname):
+def domain_status(domname):
     """Query the status of the domain by name.
 
     @return libvirt.VIR_DOMAIN_{RUNNING,SHUTOFF,...}
@@ -145,6 +156,9 @@ def domain_status(conn, domname):
       * VIR_DOMAIN_NONE: domain is undefined
       * ...
     """
+    if not is_libvirtd_running():
+        return libvirt.VIR_DOMAIN_SHUTOFF  # it should be if libvirtd is stopped.
+
     conn = connect()
     try:
         ret = conn.lookupByName(domname).info()[0]  # should be one.
@@ -173,7 +187,7 @@ def copyfile(src, dst, force=False):
     assert src != dst, "src == dst!"
 
     if not force and os.path.exists(dst):
-        logging.error(" Copying destination '%s' already exists!" % dst)
+        logging.error(" Copying destination '%s' already exists! Skipt it." % dst)
         return
 
     # copy itself and its some metadata (owner, mode, etc.)

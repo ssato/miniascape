@@ -13,7 +13,7 @@ AC_SUBST([AUGTOOL],[/usr/bin/augtool])
 AC_SUBST([QEMU_IMG],[/usr/bin/qemu-img])
 
 dnl FIXME: want to make it configurable
-AC_SUBST([BUILDFILE_DIR],[/usr/share/miniascape/build])
+AC_SUBST([BUILDFILE_DIR],[/usr/share/miniascape/package])
 
 dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
 hwaddr_prefix=54:52:00
@@ -92,4 +92,5 @@ data/libvirt/net-3.xml.in
 src/Makefile
 src/hosts-install.sh
 src/repackage.py
+src/tests/Makefile
 ])

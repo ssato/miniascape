@@ -23,7 +23,11 @@ import logging
 import optparse
 import sys
 
-import xml.etree.ElementTree as ET  # python >= 2.5
+try:
+    import xml.etree.ElementTree as ET  # python >= 2.5
+except ImportError:
+    import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
+
 
 # future plan:
 #from Cheetah.Template import Template

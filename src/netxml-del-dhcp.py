@@ -22,7 +22,10 @@
 import optparse
 import sys
 
-import xml.etree.ElementTree as ET  # python >= 2.5
+try:
+    import xml.etree.ElementTree as ET  # python >= 2.5
+except ImportError:
+    import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
 
 
 
@@ -45,14 +48,10 @@ def delete_dhcp_stuff(netxml, output):
     tree.write(output)
 
 
-def option_parser():
+def main():
     parser = optparse.OptionParser("%prog [OPTION ...] NETWORK_XML")
     parser.add_option('-o', '--output', default='-', help='output file [%default] (stdout)')
-    return parser
 
-
-def main():
-    parser = option_parser()
     (options, args) = parser.parse_args()
 
     if len(args) < 1:
@@ -62,7 +61,6 @@ def main():
     network_xml = args[0]
 
     delete_dhcp_stuff(network_xml, options.output)
-
 
 
 if __name__ == '__main__':

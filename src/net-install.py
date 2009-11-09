@@ -28,7 +28,11 @@ import logging
 import optparse
 import sys
 
-import xml.etree.ElementTree as ET  # python >= 2.5
+try:
+    import xml.etree.ElementTree as ET  # python >= 2.5
+except ImportError:
+    import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
+
 
 
 VMM = 'qemu:///system'
@@ -38,8 +42,6 @@ VMM = 'qemu:///system'
 
 def name_from_netxml(netxml):
     """Extract network name from given network xml file.
-
-    @see http://libvirt.org/formatnetwork.html
     """
     name = ''
     try:
@@ -95,7 +97,7 @@ def do_uninstall(network_name, network_xml, force, *args):
     stat = status(network_name)
 
     try:
-        conn = libvirt.open(None)
+        conn = libvirt.open(VMM)
     except libvirt.libvirtError:
         logging.warn("Could not connect to libvirtd")
         return False
@@ -105,8 +107,9 @@ def do_uninstall(network_name, network_xml, force, *args):
 
         if stat == NET_ACTIVE:
             if force:
-                logging.debug("Try destroying and undefining the network '%s' ..." % network_name)
+                logging.debug("Try destroying the network '%s' ..." % network_name)
                 net.destroy()
+                logging.debug("... Done")
             else:
                 raise ActiveNetworkException("Network '%s' is defined and active already." % network_name)
 
@@ -125,7 +128,7 @@ def do_install(network_name, network_xml, force, autostart, *args):
     """Install the network.
     """
     try:
-        conn = libvirt.open(None)
+        conn = libvirt.open(VMM)
     except libvirt.libvirtError:
         logging.error("Could not connect to libvirtd")
         return False
