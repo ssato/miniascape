@@ -12,10 +12,16 @@ IPADDR=$1
 FQDN=$2
 HOSTNAME=${FQDN%%.*}
 
-@AUGTOOL@ -b << EOC
+
+found=$(@AUGTOOL@ match "/files/etc/hosts/*[ipaddr = '$IPADDR']" | sed -nre 's,^/.+,0,p')
+
+if test "x$found" != "x0"; then
+  @AUGTOOL@ -b << EOC
 set /files/etc/hosts/01/ipaddr $IPADDR
 set /files/etc/hosts/01/canonical $FQDN
 set /files/etc/hosts/01/alias[1] $HOSTNAME
 save
 EOC
+
+fi
 
