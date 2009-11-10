@@ -12,6 +12,7 @@ BuildRequires:  python
 #Requires:       libvirt
 Requires:       /etc/rc.d/init.d/libvirtd
 Requires:       augeas
+Requires:       python-augeas
 #Obsoletes:      virt-networks
 
 
