@@ -13,7 +13,6 @@ BuildRequires:  python-nose
 BuildRequires:  python-augeas
 #Requires:       libvirt
 Requires:       /etc/rc.d/init.d/libvirtd
-Requires:       augeas
 Requires:       python-augeas
 #Obsoletes:      virt-networks
 
@@ -47,6 +46,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %preun
 if [ $1 = 0 ]; then  # erase
+    /usr/libexec/@PACKAGE@/hosts_update.py del @NET_1_NETWORK@.1
     for net in net-1 net-2 net-3; do chkconfig --del miniascape-$net; done
     echo " "
     echo "======================================================================"
@@ -73,7 +73,7 @@ if [ $1 = 1 ]; then    # install
         chkconfig --add miniascape-$net
     done
 
-    /usr/libexec/@PACKAGE@/hosts-install.sh @NET_1_NETWORK@.1 master.@NET_1_DOMAIN@
+    /usr/libexec/@PACKAGE@/hosts_update.py add @NET_1_NETWORK@.1 master.@NET_1_DOMAIN@
 
 elif [ $1 = 2 ]; then  # update
     for netxml in net-1.xml net-2.xml net-3.xml; do \

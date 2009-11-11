@@ -6,10 +6,7 @@ AC_PROG_QEMU_IMG
 
 AC_PATH_PROG([PYTHON],[python])
 
-#AC_PATH_PROG([VIRSH],[virsh])
-#AC_PATH_PROG([AUGTOOL],[augtool])
 AC_SUBST([VIRSH],[/usr/bin/virsh])
-AC_SUBST([AUGTOOL],[/usr/bin/augtool])
 AC_SUBST([QEMU_IMG],[/usr/bin/qemu-img])
 
 dnl FIXME: want to make it configurable
@@ -90,7 +87,6 @@ data/libvirt/net-1.xml.in
 data/libvirt/net-2.xml.in
 data/libvirt/net-3.xml.in
 src/Makefile
-src/hosts-install.sh
 src/repackage.py
 src/tests/Makefile
 ])
