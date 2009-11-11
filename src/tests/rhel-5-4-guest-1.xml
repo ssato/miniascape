@@ -1,0 +1,51 @@
+<domain type='kvm'>
+  <name>rhel-5-4-guest-1</name>
+  <uuid>595fd33a-1928-95dc-e6fb-1568885ea628</uuid>
+  <memory>262144</memory>
+  <currentMemory>262144</currentMemory>
+  <vcpu>1</vcpu>
+  <os>
+    <type arch='i686' machine='pc'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <emulator>/usr/bin/qemu-kvm</emulator>
+    <disk type='file' device='disk'>
+      <source file='/var/lib/libvirt/images/rhel-5-4-guest-1-disk-1.qcow2'/>
+      <target dev='hda' bus='ide'/>
+    </disk>
+    <interface type='network'>
+      <mac address='54:52:00:01:01:54'/>
+      <source network='net-1'/>
+    </interface>
+    <interface type='network'>
+      <mac address='54:52:00:11:01:54'/>
+      <source network='net-1'/>
+    </interface>
+    <interface type='network'>
+      <mac address='54:52:00:03:01:54'/>
+      <source network='net-3'/>
+    </interface>
+    <interface type='network'>
+      <mac address='54:52:00:13:01:54'/>
+      <source network='net-3'/>
+    </interface>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target port='0'/>
+    </console>
+    <input type='mouse' bus='ps2'/>
+    <graphics type='vnc' port='-1' autoport='yes' keymap='en-us'/>
+  </devices>
+</domain>

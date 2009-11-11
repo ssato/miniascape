@@ -73,7 +73,7 @@ def run(cmd_str):
 
 
 def package_name(domain_name, prefix=RPMNAME_PREFIX, suffix=RPMNAME_SUFFIX):
-    return '%s-%s-%s' % (domain_name, prefix, suffix)
+    return '%s-%s-%s' % (prefix, domain_name, suffix)
 
 
 def is_libvirtd_running():
@@ -81,7 +81,7 @@ def is_libvirtd_running():
 
     @return  Bool  True (running) or False (not)
     """
-    (stat,_out) = run("/etc/init.d/libvirtd status  2>&1 > /dev/null")
+    (stat,_out) = run("/etc/rc.d/init.d/libvirtd status  2>&1 > /dev/null")
 
     return (stat == 0)
 
@@ -132,9 +132,9 @@ def base_image_path(image_path):
 
     (stat, out) = run("@QEMU_IMG@ info %s" % image_path)
     if stat == 0:
-        m = re.match(r'backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>.+)\)', out)
+        m = re.match(r'.*backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>[^ ]+)\)', out, re.DOTALL)
         if m:
-            ret = m.groupdict()['base']
+            ret = m.groupdict()['base_full']
 
     return ret
 
