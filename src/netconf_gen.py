@@ -130,9 +130,7 @@ class DnsmasqConf(AConf):
             for h in hosts:
                 configs.append("dhcp-host=%(mac)s,%(ip)s,%(name)s" % h)
 
-        configs.append('\n')
-
-        return '\n'.join(configs)
+        return '\n'.join(configs) + '\n'
 
 
 

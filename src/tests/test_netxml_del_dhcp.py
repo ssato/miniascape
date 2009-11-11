@@ -60,6 +60,6 @@ def test_delete_dhcp_stuff():
 
 
 if __name__ == '__main__':
-    nose.main()
+    nose.runmodule()
 
 # vim: set sw=4 ts=4 et:
