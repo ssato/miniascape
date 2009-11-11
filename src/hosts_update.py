@@ -30,7 +30,7 @@ import sys
 
 
 def init(root, flags=augeas.augeas.SAVE_BACKUP):
-    return augeas.augeas(root, flags)
+    return augeas.augeas(root, flags=flags)
 
 
 def ip_match(aug, ip):

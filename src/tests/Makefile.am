@@ -1,4 +1,2 @@
-TESTS_ENVIRONMENT = @PYTHON@ -v
-TESTS =
-
-# @PYTHON@ $(abs_top_srcdir)/src/netconf-gen.py -T dnsmasq -o $@ $<
+TESTS_ENVIRONMENT = NOSE_VERBOSE=3 @PYTHON@
+TESTS = test_hosts_update.py
