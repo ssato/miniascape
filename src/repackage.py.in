@@ -191,13 +191,17 @@ def copyfile(src, dst, force=False):
         return
 
     # copy itself and its some metadata (owner, mode, etc.)
+    logging.info(" Copying '%s' -> '%s'..." % (src,dst))
     shutil.copy2(src, dst)
+    logging.info(" Done.")
 
     # These are not copyed with the above.
     _xattrs = dict(xattr.get_all(src))
     if _xattrs:
+        logging.info(" Copying xattrs...")
         for k,v in _xattrs.iteritems():
             xattr.set(dst, k, v)
+        logging.info(" Done.")
 
 
 def substfile(src, dst, substs={}):
