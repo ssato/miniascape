@@ -30,6 +30,7 @@ virtualization environment.
 %build
 %configure
 make %{?_smp_mflags}
+make check
 
 
 %install
