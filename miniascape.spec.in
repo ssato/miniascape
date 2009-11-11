@@ -10,6 +10,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
 BuildRequires:  python-nose
+BuildRequires:  python-augeas
 #Requires:       libvirt
 Requires:       /etc/rc.d/init.d/libvirtd
 Requires:       augeas
