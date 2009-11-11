@@ -6,8 +6,11 @@ dist_dnsmasqinit_SCRIPTS = @PACKAGE@-net-1 @PACKAGE@-net-2 @PACKAGE@-net-3
 
 CLEANFILES = $(dist_dnsmasqconf_DATA) $(dist_dnsmasqinit_SCRIPTS)
 
+netgen = @PYTHON@ $(abs_top_srcdir)/src/netconf_gen.py -T dnsmasq
+
+
 net-%.conf: $(abs_top_builddir)/data/libvirt/net-%.xml.in
-	@PYTHON@ $(abs_top_srcdir)/src/netconf_gen.py -T dnsmasq -o $@ $<
+	$(netgen) -o $@ $<
 
 @PACKAGE@-net-2: @PACKAGE@-net-1
 	sed -e 's,net-1,net-2,g' $< > $@

@@ -11,10 +11,10 @@ BuildArch:      noarch
 BuildRequires:  python
 BuildRequires:  python-nose
 BuildRequires:  python-augeas
-#Requires:       libvirt
+BuildRequires:  libvirt-python
 Requires:       /etc/rc.d/init.d/libvirtd
 Requires:       python-augeas
-#Obsoletes:      virt-networks
+Requires:       libvirt-python
 
 
 %description
