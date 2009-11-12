@@ -13,8 +13,9 @@ BuildRequires:  python-nose
 BuildRequires:  python-augeas
 BuildRequires:  libvirt-python
 Requires:       /etc/rc.d/init.d/libvirtd
-Requires:       python-augeas
 Requires:       libvirt-python
+Requires:       python-augeas
+Requires:       pyxattr
 
 
 %description

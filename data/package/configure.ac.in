@@ -1,11 +1,13 @@
-AC_INIT([virt-domain-@@DOMAIN_NAME@@],[0.1])
+AC_INIT([vm-@@DOMAIN_NAME@@-image],[0.1])
 AM_INIT_AUTOMAKE
 
+AC_PROG_INSTALL
 AC_PROG_MKDIR_P
+
 AC_PATH_PROG([QEMU_IMG],[qemu-img])
 
 AC_SUBST([DOMAIN_NAME],[@@DOMAIN_NAME@@])
-AC_SUBST([DOMAIN_IMAGES],[@@DOMAIN_IMAGES@@])
+AC_SUBST([DOMAIN_IMAGES],["@@DOMAIN_IMAGES@@"])
 AC_SUBST([DOMAIN_XML],[@@DOMAIN_NAME@@.xml])
 AC_SUBST([ARCH],[i686])
 AC_SUBST([VIRSH],[/usr/bin/virsh])
@@ -18,5 +20,5 @@ AC_SUBST([TIMESTAMP],[$timestamp])
 AC_OUTPUT([
 Makefile
 README
-virt-domain.spec
+vm-image.spec
 ])

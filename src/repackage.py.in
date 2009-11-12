@@ -99,7 +99,7 @@ def get_domain_xml(domname):
         except libvirt.libvirtError:
             raise DomainNotFoundError("Not found: '%s'" % domname)
     else:
-        return open("/etc/libvirtd/qemu/%s.xml" % domname).read()
+        return open("/etc/libvirt/qemu/%s.xml" % domname).read()
 
 
 def parse_domain_xml(xmlstr):
@@ -157,7 +157,8 @@ def domain_status(domname):
       * ...
     """
     if not is_libvirtd_running():
-        return libvirt.VIR_DOMAIN_SHUTOFF  # it should be if libvirtd is stopped.
+        # VM must not be running if libvirtd is stopped.
+        return libvirt.VIR_DOMAIN_SHUTOFF
 
     conn = connect()
     try:
@@ -186,14 +187,14 @@ def copyfile(src, dst, force=False):
     """
     assert src != dst, "src == dst!"
 
-    if not force and os.path.exists(dst):
-        logging.error(" Copying destination '%s' already exists! Skipt it." % dst)
-        return
+    if not os.path.isdir(dst):
+        if not force and os.path.exists(dst):
+            logging.warn(" Copying destination '%s' already exists! Skipt it." % dst)
+            return
 
     # copy itself and its some metadata (owner, mode, etc.)
     logging.info(" Copying '%s' -> '%s'..." % (src,dst))
     shutil.copy2(src, dst)
-    logging.info(" Done.")
 
     # These are not copyed with the above.
     _xattrs = dict(xattr.get_all(src))
@@ -201,7 +202,8 @@ def copyfile(src, dst, force=False):
         logging.info(" Copying xattrs...")
         for k,v in _xattrs.iteritems():
             xattr.set(dst, k, v)
-        logging.info(" Done.")
+
+    logging.info(" Done.")
 
 
 def substfile(src, dst, substs={}):
@@ -231,14 +233,23 @@ def do_setup(domain_name):
     #dominfo = parse_domain_xml(xml)
     #domain_arch = dominfo['arch']
 
+    domxml = get_domain_xml(domain_name)
     domain_images = domain_image_paths(domain_name)
 
-    substs = {'@@DOMAIN_NAME@@': domain_name, '@@DOMAIN_IMAGES@@': ' '.join(domain_images)}
+    substs = {
+        '@@DOMAIN_NAME@@': domain_name,
+        '@@DOMAIN_IMAGES@@': ' '.join((os.path.basename(p) for p in domain_images))
+    }
 
     createdir(builddir)
+
+    open("%s/%s.xml" % (builddir, domain_name), 'w').write(domxml)
+
+    copyfile(buildfile_path('README.in'), builddir)
     copyfile(buildfile_path('rpm.mk'), builddir)
-    copyfile(buildfile_path('virt-domain.spec.in'), builddir)
+    copyfile(buildfile_path('vm-image.spec.in'), builddir)
     copyfile(buildfile_path('Makefile.am.in'), os.path.join(builddir, 'Makefile.am'))
+
     substfile(buildfile_path('configure.ac.in'), os.path.join(builddir, 'configure.ac'), substs)
 
     for image in domain_images:
@@ -253,8 +264,8 @@ def do_build(domain_name):
     if not os.path.isdir(builddir):
         do_setup(domain_name)
 
-    run("cd %s && autoreconf -vfi && ./configure" % builddir)
-    run("cd %s && make rpm" % builddir)
+    os.system("cd %s && autoreconf -vfi && ./configure && make" % builddir)
+    os.system("cd %s && make srpm && make rpm" % builddir)
 
 
 def option_parser():
