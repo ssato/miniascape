@@ -16,6 +16,7 @@ Requires:       /etc/rc.d/init.d/libvirtd
 Requires:       libvirt-python
 Requires:       python-augeas
 Requires:       pyxattr
+Obsoletes:      virt-networks
 
 
 %description
