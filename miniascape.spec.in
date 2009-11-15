@@ -97,6 +97,8 @@ fi
 %dir %{_sysconfdir}/@PACKAGE@
 %config %{_sysconfdir}/@PACKAGE@/dnsmasq/*
 %config %{_sysconfdir}/@PACKAGE@/libvirt/networks/*
+%config %{_sysconfdir}/httpd/conf.d/*
+%config %{_sysconfdir}/nginx/conf.d/*
 %dir %{_sysconfdir}/@PACKAGE@/libvirt/domains
 %{_sysconfdir}/rc.d/init.d/*
 %{_libexecdir}/@PACKAGE@/*
@@ -104,6 +106,7 @@ fi
 %dir %{_localstatedir}/run/@PACKAGE@/dnsmasq
 %dir %{_localstatedir}/lock/subsys/@PACKAGE@
 %{_datadir}/@PACKAGE@/package/*
+%{_datadir}/@PACKAGE@/kickstart/*
 
 
 %changelog

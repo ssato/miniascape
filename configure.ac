@@ -73,6 +73,35 @@ AC_SUBST([NET_2_NETWORK_REVERSED],[`echo "$net_2_network" | sed 's/\([[^.]]*\).\
 AC_SUBST([NET_3_NETWORK_REVERSED],[`echo "$net_3_network" | sed 's/\([[^.]]*\).\([[^.]]*\).\([[^.]]*\)/\3.\2.\1/'`])
 
 
+dnl the server to provide kickstart tree, location and ks.cfg location
+kstree_server=binaries
+kstree_location="http://master/contents"
+ks_location="http://master/ks"
+
+AC_ARG_WITH([kstree_server],
+  [AS_HELP_STRING([--with-kstree-server],[Kickstart tree server. default=$kstree_server])],
+        [kstree_server=$withval])
+AC_SUBST([KSTREE_SERVER],[$kstree_server])
+AC_ARG_WITH([kstree_location],
+  [AS_HELP_STRING([--with-kstree-location],[Kickstart tree location. default=$kstree_location])],
+        [kstree_location=$withval])
+AC_SUBST([KSTREE_LOCATION],[$kstree_location])
+
+AC_ARG_WITH([ks_location],
+  [AS_HELP_STRING([--with-ks-location],[Kickstart file location. default=$ks_location])],
+        [ks_location=$withval])
+AC_SUBST([KS_LOCATION],[$ks_location])
+
+
+dnl Installation key (since RHEL 5)
+installation_key=""
+AC_ARG_WITH([installation_key],
+  [AS_HELP_STRING([--with-installation-key],[RHEL Installation key])],
+        [installation_key=$withval])
+AC_SUBST([INSTALLATION_KEY],[$installation_key])
+
+
+
 AC_OUTPUT([
 Makefile
 README
@@ -87,6 +116,25 @@ data/libvirt/Makefile
 data/libvirt/net-1.xml.in
 data/libvirt/net-2.xml.in
 data/libvirt/net-3.xml.in
+data/kickstart/Makefile
+data/kickstart/httpd/Makefile
+data/kickstart/httpd/apache/Makefile
+data/kickstart/httpd/apache/kickstart.conf
+data/kickstart/httpd/apache/kickstart-dvd.conf
+data/kickstart/httpd/nginx/Makefile
+data/kickstart/httpd/nginx/kickstart.conf
+data/kickstart/kscfgs/Makefile
+data/kickstart/kscfgs/rhel/Makefile
+data/kickstart/kscfgs/rhel/rhel-6-0-i386-min.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-5-cluster.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-5-satellite.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-5-0-i386-min.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-4-0-i386-min.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-4-0-i386-default.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-3-0-i386-min.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-3-0-i386-default.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-3-2-i386-min.ks.cfg
+data/kickstart/kscfgs/rhel/rhel-3-2-i386-default.ks.cfg
 src/Makefile
 src/repackage.py
 src/tests/Makefile

@@ -1,0 +1,54 @@
+## kickstart trees
+
+# Default: Use another http server provides kickstart tree contents.
+#
+<IfModule mod_proxy.c>
+ProxyRequests Off
+
+<Proxy *>
+    Order deny,allow
+    Deny from all
+    Allow from @NET_1_NETWORK@
+    Allow from 127.0.0.1
+</Proxy>
+
+ProxyPass /contents http://@KSTREE_SERVER@/contents
+ProxyPass /isos http://@KSTREE_SERVER@/isos
+ProxyPassReverse /contents http://@KSTREE_SERVER@/contents
+ProxyPassReverse /isos http://@KSTREE_SERVER@/isos
+</IfModule>
+
+#
+# Configuration examples to provide ks tree of which contents are provided via
+# autofs-mounted DVD iso image on local / NFS server.
+#
+# --------------------------------------- httpd configuration --------
+# RewriteEngine On
+# RewriteRule ^/contents/([0-9A-Za-z]+)/([0-9])/([0-9])/([0-9a-z]+)/([a-z]+)/(.*)$ /iso-contents/$1-$2-$3-$4-$5/$6 [L]
+#  
+# #  or more specific to some of versions such as the followings:
+#
+# RewriteRule ^/contents/RHEL/6/0/i386/default/(.*)$ /iso-contents/RHEL-6-0-i386-default/$1 [L]
+#
+# <Directory "/iso-contents">
+#     Options Indexes
+# </Directory>
+# --------------------------------------------------------------------
+#
+# ---------------------- autofs configuration (/etc/auto.iso) --------
+# RHEL-6-0-i386-default   -fstype=iso9660,ro,loop :/net/binaries/Volumes/HacintoshHD/exports/isos/RHEL/6/RHEL6.0-20090709.0-i386-DVD1.iso
+# --------------------------------------------------------------------
+#
+
+
+## kickstart files
+Alias /ks /usr/share/@PACKAGE@
+
+<Directory "/usr/share/@PACKAGE@/kickstart">
+    Order deny,allow
+    Deny from all
+    Allow from @NET_1_NETWORK@
+    Allow from 127.0.0.1
+    AllowOverride None
+    Options Indexes
+</Directory>
