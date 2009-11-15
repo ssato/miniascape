@@ -72,6 +72,13 @@ AC_SUBST([NET_1_NETWORK_REVERSED],[`echo "$net_1_network" | sed 's/\([[^.]]*\).\
 AC_SUBST([NET_2_NETWORK_REVERSED],[`echo "$net_2_network" | sed 's/\([[^.]]*\).\([[^.]]*\).\([[^.]]*\)/\3.\2.\1/'`])
 AC_SUBST([NET_3_NETWORK_REVERSED],[`echo "$net_3_network" | sed 's/\([[^.]]*\).\([[^.]]*\).\([[^.]]*\)/\3.\2.\1/'`])
 
+dnl interface which fence_xvmd listens on.
+virt_network_interface=virbr1
+AC_ARG_WITH([network-interface],
+  [AS_HELP_STRING([--with-networ-interface],
+    [Virt. network interaface which fence_xvmd will listen on. default=$virt_network_interface])],
+      [virt_network_interface=$withval])
+AC_SUBST([VIRT_NETWORK_INTERFACE],[$virt_network_interface])
 
 dnl the server to provide kickstart tree, location and ks.cfg location
 kstree_server=binaries
@@ -112,6 +119,10 @@ data/build/Makefile
 data/package/Makefile
 data/dnsmasq/Makefile
 data/dnsmasq/miniascape-net-1
+data/fenced/Makefile
+data/fenced/init/Makefile
+data/fenced/sysconfig/Makefile
+data/fenced/sysconfig/fence_xvmd
 data/libvirt/Makefile
 data/libvirt/net-1.xml.in
 data/libvirt/net-2.xml.in
