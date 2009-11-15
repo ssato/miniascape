@@ -14,7 +14,7 @@ network --device=eth0 --bootproto=dhcp
 network --device=eth1 --bootproto=dhcp --onboot=no
 network --device=eth2 --bootproto=dhcp
 network --device=eth3 --bootproto=dhcp --onboot=no
-rootpw --iscrypted $1$u3qutDHb$7APw4U/78XZW44uPsoNa41
+rootpw --iscrypted @KS_PASSWORD@
 selinux --permissive
 skipx
 timezone  Asia/Tokyo

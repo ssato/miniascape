@@ -107,6 +107,8 @@ AC_ARG_WITH([installation_key],
         [installation_key=$withval])
 AC_SUBST([INSTALLATION_KEY],[$installation_key])
 
+ks_password="$1$u3qutDHb$7APw4U/78XZW44uPsoNa41"
+AC_SUBST([KS_PASSWORD],[$ks_password])
 
 
 AC_OUTPUT([

@@ -13,7 +13,7 @@ network --device=eth0 --bootproto=dhcp
 network --device=eth1 --bootproto=dhcp
 network --device=eth2 --bootproto=dhcp
 network --device=eth3 --bootproto=dhcp
-rootpw --iscrypted $1$u3qutDHb$7APw4U/78XZW44uPsoNa41
+rootpw --iscrypted @KS_PASSWORD@
 firewall --enabled --port=22:tcp
 authconfig --enableshadow --enablemd5
 timezone Asia/Tokyo
