@@ -5,7 +5,6 @@ AC_PROG_MKDIR_P
 AC_PROG_QEMU_IMG
 
 AC_PATH_PROG([PYTHON],[python])
-
 AC_SUBST([VIRSH],[/usr/bin/virsh])
 
 dnl FIXME: want to make it configurable
@@ -106,8 +105,12 @@ AC_ARG_WITH([rhel_installation_key],
         [rhel_installation_key=$withval])
 AC_SUBST([RHEL_INSTALLATION_KEY],[$rhel_installation_key])
 
-ks_password="$1$u3qutDHb$7APw4U/78XZW44uPsoNa41"
-AC_SUBST([KS_PASSWORD],[$ks_password])
+dnl ks password
+password=""
+AC_ARG_WITH([password],
+  [AS_HELP_STRING([--with-password],[Password for root in VMs.])],
+        [password=$withval])
+AC_SUBST([KS_PASSWORD],[$password])
 
 
 AC_OUTPUT([

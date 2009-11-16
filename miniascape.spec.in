@@ -31,7 +31,7 @@ virtualization environment.
 
 
 %build
-%configure --with-rhel-installation-key=@RHEL_INSTALLATION_KEY@
+%configure --with-rhel-installation-key='@RHEL_INSTALLATION_KEY@' --with-password='@KS_PASSWORD@'
 make %{?_smp_mflags}
 make check
 
