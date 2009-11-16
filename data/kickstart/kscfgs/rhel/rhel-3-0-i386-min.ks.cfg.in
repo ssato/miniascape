@@ -1,6 +1,4 @@
 # RHEL 3 AS i386 - minimal package selection
-#url --url=@KSTREE_LOCATION@/rhel-3-0-i386-default/
-## http://binaries.nrt.redhat.com/contents/RHEL/3/0/i386/default/
 url --url=@KSTREE_LOCATION@/RHEL/3/0/i386/default/
 install
 text

@@ -1,7 +1,7 @@
 #
 # qemu related m4 macros
 #
-# Copyright (c) 2009 Satoru SATOH <ssato@redhat.com>
+# Copyright (c) 2009 Satoru SATOH <satoru.satoh@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the

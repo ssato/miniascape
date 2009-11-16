@@ -49,7 +49,7 @@ rhel-4-8-i386-default.ks.cfg
 
 ## FIXME: It doesn't work.
 # Needs installation key.
-#ifdef $(INSTALLATION_KEY)
+#ifdef $(RHEL_INSTALLATION_KEY)
 #dist_kscfgdata_DATA += rhel-5-cluster.ks.cfg
 #endif
 

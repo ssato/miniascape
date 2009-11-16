@@ -7,7 +7,6 @@ AC_PROG_QEMU_IMG
 AC_PATH_PROG([PYTHON],[python])
 
 AC_SUBST([VIRSH],[/usr/bin/virsh])
-AC_SUBST([QEMU_IMG],[/usr/bin/qemu-img])
 
 dnl FIXME: want to make it configurable
 AC_SUBST([BUILDFILE_DIR],[/usr/share/miniascape/package])
@@ -101,11 +100,11 @@ AC_SUBST([KS_LOCATION],[$ks_location])
 
 
 dnl Installation key (since RHEL 5)
-installation_key=""
-AC_ARG_WITH([installation_key],
-  [AS_HELP_STRING([--with-installation-key],[RHEL Installation key])],
-        [installation_key=$withval])
-AC_SUBST([INSTALLATION_KEY],[$installation_key])
+rhel_installation_key=""
+AC_ARG_WITH([rhel_installation_key],
+  [AS_HELP_STRING([--with-rhel-installation-key],[RHEL Installation key])],
+        [rhel_installation_key=$withval])
+AC_SUBST([RHEL_INSTALLATION_KEY],[$rhel_installation_key])
 
 ks_password="$1$u3qutDHb$7APw4U/78XZW44uPsoNa41"
 AC_SUBST([KS_PASSWORD],[$ks_password])

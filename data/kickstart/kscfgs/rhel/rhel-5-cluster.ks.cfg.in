@@ -30,7 +30,7 @@ timezone  Asia/Tokyo
 install
 zerombr
 autopart
-key @INSTALLATION_KEY@
+key @RHEL_INSTALLATION_KEY@
 services --disable atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd
 reboot
 
