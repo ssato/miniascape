@@ -1,32 +1,25 @@
+server {
+
+    listen          80;
+    server_name     master.@NET_1_DOMAIN@;
+
 # proxy
 
 # @see http://wiki.nginx.org/NginxHttpProxyModule
 # @see http://wiki.nginx.org/NginxLikeApache (Apache ProxyReverse)
 
-#proxy_buffering           on;
-#proxy_cache_min_uses       3;
-#proxy_cache_path          /var/lib/nginx/tmp levels=1:2 keys_zone=cache:10m inactive=10m max_size=1000M;
-#proxy_cache_valid         any 10m;
-#proxy_ignore_client_abort off;
-#proxy_intercept_errors    on;
-#proxy_next_upstream       error timeout invalid_header;
-#proxy_redirect            off;
-#proxy_set_header          X-Forwarded-For $remote_addr;
-#proxy_connect_timeout     60;
-#proxy_send_timeout        60;
-#proxy_read_timeout        60;
+    location /contents/ {
+        proxy_pass http://@KSTREE_SERVER@/contents;
+        #proxy_set_header X-Forwarded-Host $host;
+        #proxy_set_header X-Forwarded-Server $host;
+        #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+    }
 
-location /contents/ {
-    proxy_set_header X-Forwarded-Host $host;
-    proxy_set_header X-Forwarded-Server $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
-    proxy_pass http://@KSTREE_SERVER@/contents;
-}
-
-location /ks/ {
-    root /usr/share/@PACKAGE@/kickstart;
-    autoindex  on;
-    allow @NET_1_NETWORK@;
-    allow 127.0.0.1;
-    deny all;
+    location /ks/ {
+        root /usr/share/@PACKAGE@/kickstart;
+        autoindex  on;
+        allow @NET_1_NETWORK@.0/24;
+        allow 127.0.0.1;
+        deny all;
+    }
 }
