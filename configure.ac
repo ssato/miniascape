@@ -112,6 +112,11 @@ AC_ARG_WITH([password],
         [password=$withval])
 AC_SUBST([KS_PASSWORD],[$password])
 
+dnl http backend
+httpd_backend=nginx
+enable_apache=false
+AM_CONDITIONAL([ENABLE_APACHE], [test x$enable_apache = xtrue])
+
 
 AC_OUTPUT([
 Makefile

@@ -1,1 +1,2 @@
-SUBDIRS = apache nginx
+SUBDIRS = nginx
+SUBDIRS += apache

@@ -17,6 +17,7 @@ Requires:       libvirt-python
 Requires:       python-augeas
 Requires:       pyxattr
 Requires:       fence-agents
+Requires:       nginx
 Obsoletes:      virt-networks
 
 
@@ -50,7 +51,6 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %preun
 if [ $1 = 0 ]; then  # erase
     /usr/libexec/@PACKAGE@/hosts_update.py del @NET_1_NETWORK@.1
-    #for net in net-1 net-2 net-3; do chkconfig --del miniascape-$net; done
     echo " "
     echo "======================================================================"
     echo "Virtualization networks (net-1, net-2 and net-3) are preserved for "
@@ -102,7 +102,7 @@ fi
 %dir %{_localstatedir}/lock/subsys/@PACKAGE@
 %config %{_sysconfdir}/@PACKAGE@/dnsmasq/*
 %config %{_sysconfdir}/@PACKAGE@/libvirt/networks/*
-%config %{_sysconfdir}/httpd/conf.d/*
+#%config %{_sysconfdir}/httpd/conf.d/*
 %config %{_sysconfdir}/nginx/conf.d/*
 %config %{_sysconfdir}/sysconfig/*
 %{_sysconfdir}/rc.d/init.d/*

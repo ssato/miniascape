@@ -7,7 +7,13 @@ TODO
  * Merge build (installation and packaging) scripts from vdbs
  * Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
  * Wrote test codes for scripts
- * Handle rpmlint errors:
+ * Eliminate GNU extensions in Makefile-s:
+
+data/dnsmasq/Makefile.am:12: `%'-style pattern rules are a GNU make extension
+data/libvirt/Makefile.am:6: `%'-style pattern rules are a GNU make extension
+
+
+ * Handle rpmlint errors (see below)
 
 
 [rpmlint errors/warnings]
