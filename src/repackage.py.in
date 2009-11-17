@@ -218,7 +218,7 @@ def substfile(src, dst, substs={}):
     f.close()
 
 
-def buildfile_path(buildfile, prefix='@BUILDFILE_DIR@'):
+def buildfile_path(buildfile, prefix='@REPACKAGEFILE_DIR@'):
     return os.path.join(prefix, buildfile)
 
 
