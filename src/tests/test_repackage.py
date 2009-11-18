@@ -1,6 +1,7 @@
 import glob
 import nose
 import os
+import re
 import sys
 import shutil
 import tempfile
@@ -92,8 +93,19 @@ def test_domain_image_paths():
 def test_domain_status():
     pass
 
+@with_setup(setup, teardown)
 def test_substfile():
-    pass
+    global WORKDIR
+
+    src = '%s/subst_src_0' % WORKDIR
+    dst = src + '.new'
+
+    open(src, 'w').write('aaa=bbb')
+    repackage.substfile(src, dst, {'bbb': 'ccc'})
+
+    assert re.match('aaa=bbb', open(src).read()) is not None
+    assert re.match('aaa=bbb', open(dst).read()) is None
+    assert re.match('aaa=ccc', open(dst).read()) is not None
 
 
 @with_setup(setup, teardown)

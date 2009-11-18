@@ -218,12 +218,12 @@ def substfile(src, dst, substs={}):
     f.close()
 
 
-def buildfile_path(buildfile, prefix='@REPACKAGEFILE_DIR@'):
+def buildfile_path(buildfile, prefix):
     return os.path.join(prefix, buildfile)
 
 
 # actions:
-def do_setup(domain_name):
+def do_setup(domain_name, buildfile_dir, *args):
     """setup packaging dir.
     """
     builddir = package_name(domain_name)
@@ -245,18 +245,18 @@ def do_setup(domain_name):
 
     open("%s/%s.xml" % (builddir, domain_name), 'w').write(domxml)
 
-    copyfile(buildfile_path('README.in'), builddir)
-    copyfile(buildfile_path('rpm.mk'), builddir)
-    copyfile(buildfile_path('vm-image.spec.in'), builddir)
-    copyfile(buildfile_path('Makefile.am.in'), os.path.join(builddir, 'Makefile.am'))
+    copyfile(buildfile_path('README.in', buildfile_dir), builddir)
+    copyfile(buildfile_path('rpm.mk', buildfile_dir), builddir)
+    copyfile(buildfile_path('vm-image.spec.in', buildfile_dir), builddir)
+    copyfile(buildfile_path('Makefile.am.in', buildfile_dir), os.path.join(builddir, 'Makefile.am'))
 
-    substfile(buildfile_path('configure.ac.in'), os.path.join(builddir, 'configure.ac'), substs)
+    substfile(buildfile_path('configure.ac.in', buildfile_dir), os.path.join(builddir, 'configure.ac'), substs)
 
     for image in domain_images:
         copyfile(image, builddir)
 
 
-def do_build(domain_name):
+def do_build(domain_name, *args):
     """Build RPM of $domain_name
     """
     builddir = package_name(domain_name)
@@ -271,6 +271,7 @@ def do_build(domain_name):
 def option_parser():
     parser = optparse.OptionParser("%prog [OPTION ...] COMMAND DOMAIN_NAME\n\n"
         "Commands: setup, build\n")
+    parser.add_option('-p', '--path', default='@REPACKAGEFILE_DIR@', help='path to build data [%default]')
     parser.add_option('-v', '--verbose', dest='verbose', action="store_true",
         default=False, help='verbose mode')
     parser.add_option('-q', '--quiet', dest='quiet', action="store_true",
@@ -312,6 +313,7 @@ def main():
         parser.print_usage()
 
     domain_name = args[1]
+    buildfile_dir = options.path
 
     stat = domain_status(domain_name)
     if stat != libvirt.VIR_DOMAIN_SHUTOFF:
@@ -322,7 +324,7 @@ def main():
 
         sys.exit(1)
             
-    action(domain_name)
+    action(domain_name, buildfile_dir)
 
 
 if __name__ == '__main__':
