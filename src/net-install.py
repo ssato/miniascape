@@ -39,6 +39,17 @@ VMM = 'qemu:///system'
 (NET_STATE_UNKNOWN, NET_NOT_DEFINED, NET_DEFINED, NET_ACTIVE) = (0, 1, 2, 3)
 
 
+def connect_libvirtd(vmm=VMM, readOnly=False):
+    """Open connection to libvirtd.
+    """
+    connect = (readOnly and libvirt.openReadOnly or libvirt.open)
+    try:
+        return connect(vmm)
+    except libvirt.libvirtError:
+        logging.warn("Could not connect to libvirtd.")
+        return False
+
+
 
 def name_from_netxml(netxml):
     """Extract network name from given network xml file.
@@ -64,18 +75,16 @@ def name_from_netxml(netxml):
 def status(network_name):
     """Query the status of the network.
     """
-    try:
-        conn = libvirt.openReadOnly(None)
+    conn = connect_libvirtd(readOnly=True)
+    if not conn:
+        return NET_STATE_UNKNOWN
 
-        if network_name in conn.listNetworks():
-            ret = NET_ACTIVE
-        elif network_name in conn.listDefinedNetworks():
-            ret = NET_DEFINED
-        else:
-            ret = NET_NOT_DEFINED
-
-    except libvirt.libvirtError:
-        ret = NET_STATE_UNKNOWN
+    if network_name in conn.listNetworks():
+        ret = NET_ACTIVE
+    elif network_name in conn.listDefinedNetworks():
+        ret = NET_DEFINED
+    else:
+        ret = NET_NOT_DEFINED
 
     return ret
 
@@ -95,11 +104,10 @@ def do_uninstall(network_name, network_xml, force, *args):
     """Uninstall the network.
     """
     stat = status(network_name)
+    conn = connect_libvirtd()
 
-    try:
-        conn = libvirt.open(VMM)
-    except libvirt.libvirtError:
-        logging.warn("Could not connect to libvirtd")
+    # FIXME: What should be returned if could not connect.
+    if not conn:
         return False
 
     if stat == NET_ACTIVE or stat == NET_DEFINED:
@@ -127,22 +135,25 @@ def do_uninstall(network_name, network_xml, force, *args):
 def do_install(network_name, network_xml, force, autostart, *args):
     """Install the network.
     """
-    try:
-        conn = libvirt.open(VMM)
-    except libvirt.libvirtError:
-        logging.error("Could not connect to libvirtd")
+    conn = connect_libvirtd()
+
+    if not conn:
         return False
 
     if force:
         do_uninstall(network_name, network_xml, force)
         # FIXME: Reopen connection closed.
         conn.close()
-        conn = libvirt.open(VMM)
+        conn = connect_libvirtd()
+        if not conn:
+            return False
 
     conn.networkDefineXML(open(network_xml, 'r').read())
     # FIXME: Reopen connection. It seems needed to apply the changes above.
     conn.close()
-    conn = libvirt.open(VMM)
+    conn = connect_libvirtd()
+    if not conn:
+        return False
 
     net = conn.networkLookupByName(network_name)
 

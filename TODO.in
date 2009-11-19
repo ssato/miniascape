@@ -1,12 +1,12 @@
+=====================
 TODO
 =====================
 
- * Generate dnsmasq | dhcpd and bind configs from libvirt network XML: in progress
  * Make network definitions more configurable
  * Merge ISC DHCP and bind backend as an option instead of dnsmasq
  * Merge build (installation and packaging) scripts from vdbs
  * Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
- * Wrote test codes for scripts
+ * Wrote more test codes for scripts
  * Eliminate GNU extensions in Makefile-s:
 
 data/dnsmasq/Makefile.am:12: `%'-style pattern rules are a GNU make extension
@@ -47,4 +47,9 @@ miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/miniascape-net-1
 1 packages and 0 specfiles checked; 3 errors, 22 warnings.
 ssato@localhost%
 
+
+Completed
+=====================
+
+ * Generate dnsmasq | dhcpd and bind configs from libvirt network XML
 
