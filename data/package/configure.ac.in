@@ -1,0 +1,42 @@
+AC_INIT([vm-rhel-5-4-guest-1-image],[0.1])
+AM_INIT_AUTOMAKE
+
+AC_PROG_INSTALL
+AC_PROG_MKDIR_P
+
+AC_PROG_QEMU_IMG
+AC_PROG_QEMU_KVM
+AC_CHECK_KVM_DEVICE
+
+dnl AC_PROG_VIRTINST
+dnl AC_PROG_VIRSH
+AC_CHECK_SERVICE_LIBVIRTD_RUNNING
+AC_CHECK_DOMAIN_NEW([rhel-5-4-guest-1])
+
+dnl domain profile:
+AC_SUBST([DOMAIN_NAME],[rhel-5-4-guest-1])
+
+dnl ax_virt_domain_memory=256
+dnl ax_virt_domain_vcpus=2
+dnl ax_virt_domain_disk_size=5
+dnl ax_virt_domain_disk_bus=ide
+dnl ax_virt_domain_arch=i686
+dnl ax_virt_domain_cpuset=auto
+dnl ax_virt_domain_keymap=en-us
+dnl ax_virt_domain_disk_perms=rw
+dnl ax_virt_domain_os_variant=rhel5
+dnl ax_virt_domain_install_tree
+dnl ax_virt_domain_install_extras
+
+AX_VIRT_DOMAIN_OPTIONS
+
+timestamp=`LANG=C date +"%a %b %d %Y"`
+AC_SUBST([TIMESTAMP],[$timestamp])
+
+AC_OUTPUT([
+Makefile
+README
+vm-image.spec
+])
+
+dnl vim: set sw=4 ts=4 et:
