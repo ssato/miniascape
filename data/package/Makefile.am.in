@@ -2,5 +2,6 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = README vm-image.spec rpm.mk
 
+SUBDIRS = data
+
 include $(abs_srcdir)/rpm.mk
-include $(abs_srcdir)/build.mk

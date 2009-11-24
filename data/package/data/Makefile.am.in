@@ -1,0 +1,63 @@
+# disk images:
+domain_disk_image_1	= @DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@
+
+virtinst_FLAGS = \
+--name=@DOMAIN_NAME@ \
+--connect=@CONNECT@ \
+--hvm --accelerate \
+--os-variant=@DOMAIN_OS_VARIANT@ \
+--location=@DOMAIN_INSTALL_TREE@ \
+--extra-args="@DOMAIN_INSTALL_EXTRA_ARGS@" \
+--ram=@DOMAIN_MEMORY@ \
+--arch=@DOMAIN_ARCH@ \
+--vcpus=@DOMAIN_VCPUS@ \
+--cpuset=@DOMAIN_CPUSET@ \
+--keymap=@DOMAIN_KEYMAP@ \
+--check-cpu --noreboot \
+--vnc --noautoconsole \
+--disk path=$(abs_builddir)/$(domain_disk_image_1),bus=@DOMAIN_DISK_BUS@,perms=@DOMAIN_DISK_PERMS@ \
+@VIRTINST_NETWORK_OPTS@ \
+--wait=@VIRTINST_WAIT@
+
+create_image	= @QEMU_IMG@ create -f @DOMAIN_DISK_FORMAT@
+is_domain_inactive = $(VIRSH) list | grep -q @DOMAIN_NAME@ >/dev/null 2>/dev/null && false || true
+rewrite_domain_xml_postbuild = sed "/uuid/d"
+
+
+domainimagedir	= @localstatedir@/lib/libvirt/images
+domainxmldir	= @sysconfdir@/miniascape/domains
+domainsysxmldir	= @sysconfdir@/libvirt/qemu
+dist_domainimage_DATA	= $(domain_disk_image_1)
+dist_domainxml_DATA	= @DOMAIN_NAME@.xml
+
+@DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@:
+	$(create_image) $@ @DOMAIN_DISK_SIZE@G
+
+$(dist_domainxml_DATA): $(dist_domainimage_DATA)
+	$(VIRTINST) $(virtinst_FLAGS)
+	$(is_domain_inactive)
+	$(VIRSH) dumpxml $(DOMAIN_NAME) | $(rewrite_domain_xml_postbuild) > $@
+	$(VIRSH) undefine $(DOMAIN_NAME)
+	touch $@
+
+
+# installation rules
+install-data-local:
+	$(INSTALL) -d $(DESTDIR)$(domainimagedir)
+	$(INSTALL) -d $(DESTDIR)$(domainxmldir)
+	$(INSTALL) -d $(DESTDIR)$(domainsysxmldir)
+	$(INSTALL) -m 600 $(dist_domainxml_DATA) $(DESTDIR)$(domainxmldir)
+	$(INSTALL) -m 600 $(dist_domainxml_DATA) $(DESTDIR)$(domainsysxmldir)
+	$(INSTALL) -m 400 $(dist_domainimage_DATA) $(DESTDIR)$(domainimagedir)
+
+
+# installation hooks
+install-data-hook: $(DESTDIR)$(domainimagedir)/@DOMAIN_NAME@-disk-1-base.@DOMAIN_DISK_FORMAT@
+
+$(DESTDIR)$(domainimagedir)/@DOMAIN_NAME@-disk-1-base.@DOMAIN_DISK_FORMAT@:
+	(cd $(DESTDIR)/$(domainimagedir) && \
+	mv @DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@ $@ && \
+	$(create_image) -b $@ @DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@
+
+
+# vim:set ft=make ai si sm:
