@@ -5,8 +5,9 @@ kspassword.py \
 netxml_del_dhcp.py \
 netconf_gen.py \
 net-install.py \
+package.py \
 repackage.py
 
-CLEANFILES = repackage.py
+CLEANFILES = package.py repackage.py
 
 SUBDIRS = tests

@@ -124,8 +124,6 @@ README
 TODO
 miniascape.spec
 data/Makefile
-data/package/Makefile
-data/repackage/Makefile
 data/dnsmasq/Makefile
 data/dnsmasq/miniascape-net-1
 data/fenced/Makefile
@@ -155,7 +153,12 @@ data/kickstart/kscfgs/rhel/rhel-3-0-i386-min.ks.cfg
 data/kickstart/kscfgs/rhel/rhel-3-0-i386-default.ks.cfg
 data/kickstart/kscfgs/rhel/rhel-3-2-i386-min.ks.cfg
 data/kickstart/kscfgs/rhel/rhel-3-2-i386-default.ks.cfg
+data/package/Makefile
+data/package/data/Makefile
+data/package/m4/Makefile
+data/repackage/Makefile
 src/Makefile
+src/package.py
 src/repackage.py
 src/tests/Makefile
 ])
