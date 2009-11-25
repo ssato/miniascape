@@ -96,7 +96,7 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc README TODO
+%doc README
 %dir %{_sysconfdir}/@PACKAGE@
 %dir %{_sysconfdir}/@PACKAGE@/libvirt/domains
 %dir %{_localstatedir}/run/@PACKAGE@

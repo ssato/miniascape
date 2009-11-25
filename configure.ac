@@ -64,7 +64,6 @@ AM_CONDITIONAL([ENABLE_APACHE], [test x$enable_apache = xtrue])
 AC_OUTPUT([
 Makefile
 README
-TODO
 miniascape.spec
 data/Makefile
 data/dnsmasq/Makefile
