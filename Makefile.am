@@ -1,8 +1,9 @@
 AUTOMAKE_OPTIONS = foreign
+EXTRA_DIST = README TODO COPYING @PACKAGE@.spec rpm.mk
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = README TODO COPYING @PACKAGE@.spec rpm.mk
+SUBDIRS  = data src m4
 
-SUBDIRS  = data src
+dist_pkgdata_DATA = rpm.mk
 
 include $(abs_srcdir)/rpm.mk

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 #
-# re-packaging virtualization guest domain from definition file.
+# packaging virtualization guest domain.
 #
 # Copyright (C) 2009 Satoru SATOH <satoru.satoh at gmail.com>
 #
@@ -24,18 +24,12 @@
 #
 
 import commands
-import libvirt
 import logging
 import optparse
 import os
 import re
 import shutil
 import sys
-
-try:
-    import xml.etree.ElementTree as ET  # python >= 2.5
-except ImportError:
-    import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
 
 try:
     import xattr   # pyxattr
@@ -57,15 +51,9 @@ RPMNAME_SUFFIX = 'image'
 
 
 
-class DomainNotFoundError(Exception): pass
 class SrcIsDirError(Exception): pass
 class DestNotDirError(Exception): pass
 
-
-
-def connect():
-    #return libvirt.openReadOnly(None)
-    return libvirt.openReadOnly('qemu:///system')
 
 
 def run(cmd_str):
@@ -74,100 +62,6 @@ def run(cmd_str):
 
 def package_name(domain_name, prefix=RPMNAME_PREFIX, suffix=RPMNAME_SUFFIX):
     return '%s-%s-%s' % (prefix, domain_name, suffix)
-
-
-def is_libvirtd_running():
-    """Is the service "libvirtd" running?
-
-    @return  Bool  True (running) or False (not)
-    """
-    (stat,_out) = run("/etc/rc.d/init.d/libvirtd status  2>&1 > /dev/null")
-
-    return (stat == 0)
-
-
-def get_domain_xml(domname):
-    """Get domain xml content by name.
-    """
-    if is_libvirtd_running():
-        conn = connect()
-
-        try:
-            dom = conn.lookupByName(domname)
-            return dom.XMLDesc(0)
-
-        except libvirt.libvirtError:
-            raise DomainNotFoundError("Not found: '%s'" % domname)
-    else:
-        return open("/etc/libvirt/qemu/%s.xml" % domname).read()
-
-
-def parse_domain_xml(xmlstr):
-    """Parse domain xml string and returns {arch, [image path], ...}
-    """
-    tree = ET.fromstring(xmlstr)
-    name = tree.findtext('name')
-    arch = tree.find('os/type').attrib.get('arch')
-    images = [e.attrib.get('file') for e in tree.findall('devices/disk/source')]
-
-    return {'name': name, 'arch': arch, 'images': images}
-
-
-def base_image_path(image_path):
-    """@return  the path of the base image of given image path or "" (given
-    image not a delta image)
-
-    example log:
-
-    [root@foo ~]# qemu-img info /var/lib/libvirt/images/rhel-5-cluster-4-disk-1.qcow2
-    image: /var/lib/libvirt/images/rhel-5-cluster-4-disk-1.qcow2
-    file format: qcow2
-    virtual size: 5.0G (5368709120 bytes)
-    disk size: 32K
-    cluster_size: 4096
-    backing file: rhel-5-cluster-4-disk-1-base.qcow2 (actual path: /var/lib/libvirt/images/rhel-5-cluster-4-disk-1-base.qcow2)
-    [root@foo ~]#
-    """
-    ret = ""
-
-    (stat, out) = run("@QEMU_IMG@ info %s" % image_path)
-    if stat == 0:
-        m = re.match(r'.*backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>[^ ]+)\)', out, re.DOTALL)
-        if m:
-            ret = m.groupdict()['base_full']
-
-    return ret
-
-
-def domain_image_paths(domname):
-    images = parse_domain_xml(get_domain_xml(domname))['images']
-    base_images = [bp for bp in [base_image_path(p) for p in images] if bp != '']
-
-    return images + base_images
-
-
-def domain_status(domname):
-    """Query the status of the domain by name.
-
-    @return libvirt.VIR_DOMAIN_{RUNNING,SHUTOFF,...}
-
-      * VIR_DOMAIN_RUNNING: running
-      * VIR_DOMAIN_SHUTOFF: stopped
-      * VIR_DOMAIN_NONE: domain is undefined
-      * ...
-    """
-    if not is_libvirtd_running():
-        # VM must not be running if libvirtd is stopped.
-        return libvirt.VIR_DOMAIN_SHUTOFF
-
-    conn = connect()
-    try:
-        ret = conn.lookupByName(domname).info()[0]  # should be one.
-    except libvirt.libvirtError:
-        logging.debug("The domain '%s' is not defined." % domname)
-        ret = libvirt.VIR_DOMAIN_NONE
-        
-    return ret
 
 
 def createdir(dir, mode=0700):
@@ -228,29 +122,24 @@ def do_setup(domain_name, buildfile_dir, *args):
     """
     builddir = package_name(domain_name)
 
-    # TODO: later
-    #xml = get_domain_xml(domain_name)
-    #dominfo = parse_domain_xml(xml)
-    #domain_arch = dominfo['arch']
-
-    domxml = get_domain_xml(domain_name)
-    domain_images = domain_image_paths(domain_name)
-
     substs = {
         '@@DOMAIN_NAME@@': domain_name,
-        '@@DOMAIN_IMAGES@@': ' '.join((os.path.basename(p) for p in domain_images))
     }
 
     createdir(builddir)
+    createdir(os.path.join(builddir, 'data'))
+    createdir(os.path.join(builddir, 'm4'))
 
-    open("%s/%s.xml" % (builddir, domain_name), 'w').write(domxml)
-
-    copyfile(buildfile_path('README.in', buildfile_dir), builddir)
+    #copyfile(buildfile_path('README.in', buildfile_dir), builddir)
     copyfile(buildfile_path('rpm.mk', buildfile_dir), builddir)
     copyfile(buildfile_path('vm-image.spec.in', buildfile_dir), builddir)
     copyfile(buildfile_path('Makefile.am.in', buildfile_dir), os.path.join(builddir, 'Makefile.am'))
 
-    substfile(buildfile_path('configure.ac.in', buildfile_dir), os.path.join(builddir, 'configure.ac'), substs)
+    copyfile(buildfile_path('Makefile.am.in', buildfile_dir + 'data')), os.path.join(builddir, 'data', 'Makefile.am'))
+    copyfile(buildfile_subpath('libvirt.m4', buildfile_dir, 'm4'), os.path.join(builddir, 'm4'))
+    copyfile(buildfile_subpath('qemu.m4', buildfile_dir, 'm4'), os.path.join(builddir, 'm4'))
+    copyfile(buildfile_subpath('rpm.m4', buildfile_dir, 'm4'), os.path.join(builddir, 'm4'))
+    copyfile(buildfile_subpath('virtinst.m4', buildfile_dir, 'm4'), os.path.join(builddir, 'm4'))
 
     for image in domain_images:
         copyfile(image, builddir)
@@ -271,7 +160,7 @@ def do_build(domain_name, *args):
 def option_parser():
     parser = optparse.OptionParser("%prog [OPTION ...] COMMAND DOMAIN_NAME\n\n"
         "Commands: setup, build\n")
-    parser.add_option('-p', '--path', default='@REPACKAGEFILE_DIR@', help='path to build data [%default]')
+    parser.add_option('-p', '--path', default='@PACKAGEFILE_DIR@', help='path to build data [%default]')
     parser.add_option('-v', '--verbose', dest='verbose', action="store_true",
         default=False, help='verbose mode')
     parser.add_option('-q', '--quiet', dest='quiet', action="store_true",

@@ -5,8 +5,10 @@ Summary:        Libvirt network infrastructure for guest domains
 Group:          Development/System
 License:        GPLv3+
 URL:            http://github.com/ssato/@PACKAGE@
-Source0:        %{name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:        %{name}-%{version}.tar.@SOURCE_ZIP_EXT@
+# TODO: Which is better?
+#BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
 BuildRequires:  python
 BuildRequires:  python-nose

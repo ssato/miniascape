@@ -4,17 +4,18 @@ TODO
 
  * Make network definitions more configurable
  * Merge ISC DHCP and bind backend as an option instead of dnsmasq
- * Merge build (installation and packaging) scripts from vdbs
+ * Merge build (installation and packaging) scripts from vdbs: On going
  * Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
  * Wrote more test codes for scripts
+ * Restructure and split tools and reference data
+ * Make http service daemon configurable
+
  * Eliminate GNU extensions in Makefile-s:
 
 data/dnsmasq/Makefile.am:12: `%'-style pattern rules are a GNU make extension
 data/libvirt/Makefile.am:6: `%'-style pattern rules are a GNU make extension
 
-
  * Handle rpmlint errors (see below)
-
 
 [rpmlint errors/warnings]
 

@@ -1,33 +1,9 @@
 #
-# libvirt, virsh and virt-install related m4 macros
+# m4 macros for libvirt and virsh
 #
-# Copyright (c) 2009 Satoru SATOH <satoru.satoh@gmail.com>
+# Copyright (c) 2009 Satoru SATOH <satoru.satoh at gmail.com>
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
-# option) any later version.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-# Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-# As a special exception, the respective Autoconf Macro's copyright owner
-# gives unlimited permission to copy, distribute and modify the configure
-# scripts that are the output of Autoconf when processing the Macro. You
-# need not follow the terms of the GNU General Public License when using
-# or distributing such scripts, even though portions of the text of the
-# Macro appear in them. The GNU General Public License (GPL) does govern
-# all other use of the material that constitutes the Autoconf Macro.
-#
-# This special exception to the GPL applies to versions of the Autoconf
-# Macro released by the Autoconf Macro Archive. When you make and
-# distribute a modified version of the Autoconf Macro, you may extend this
-# special exception to the GPL to apply to your modified version as well.
+# License: see the note in REAMDE[.in] file at the top directory.
 #
 
 #
@@ -89,3 +65,37 @@ AC_DEFUN([AC_CHECK_DOMAIN_NEW],[
         [AC_MSG_RESULT([yes])])
 ])
 
+#
+# AC_DEFINE_LIBVIRT_SIMPLE_NETWORK (INDEX, ADDRESS-BASE, BRIDGE, DOMAIN)
+# - configure parameters for simple libvirt network
+#
+# ex. AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([1],[192.168.51],[virbr1],[net-1.local])
+#
+# FIXME: ugly.
+#
+AC_DEFUN([AC_DEFINE_LIBVIRT_SIMPLE_NETWORK],[
+    libvirt_network_index=$1
+    libvirt_network_base=$2
+    libvirt_network_bridge=$3
+    libvirt_network_domain=$4
+
+    AC_ARG_WITH([network-$1],
+        [AS_HELP_STRING([--with-network-$1],
+            [Base address for the network $1. @<:@default="$2"@:>@])],
+        [AC_SUBST([LIBVIRT_NETWORK_$1_BASE],[$withval])],
+        [AC_SUBST([LIBVIRT_NETWORK_$1_BASE],[$2])])
+
+    AC_ARG_WITH([network-$1-bridge],
+        [AS_HELP_STRING([--with-network-$1-bridge],
+            [Bridge name for the network $1. @<:@default="$3"@:>@])],
+        [AC_SUBST([LIBVIRT_NETWORK_$1_BRIDGE],[$withval])],
+        [AC_SUBST([LIBVIRT_NETWORK_$1_BRIDGE],[$3])])
+
+    AC_ARG_WITH([network-$1-domain],
+        [AS_HELP_STRING([--with-network-$1-domain],
+            [Domain name for the network $1. @<:@default="$4"@:>@])],
+        [AC_SUBST([LIBVIRT_NETWORK_$1_DOMAIN],[$withval])],
+        [AC_SUBST([LIBVIRT_NETWORK_$1_DOMAIN],[$4])])
+
+    AC_SUBST([LIBVIRT_NETWORK_$1_REVERSED],[`echo "$2" | sed 's/\([[^.]]*\).\([[^.]]*\).\([[^.]]*\)/\3.\2.\1/'`])
+])

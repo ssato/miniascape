@@ -3,47 +3,47 @@
   <!-- private network:
   <forward mode='nat'/>
   -->
-  <bridge name='@NET_2_BRIDGE@'/>
-  <domain name='@NET_2_DOMAIN@'/>
-  <ip address='@NET_2_NETWORK@.1' netmask='255.255.255.0'>
+  <bridge name='@LIBVIRT_NETWORK_2_BRIDGE@'/>
+  <domain name='@LIBVIRT_NETWORK_2_DOMAIN@'/>
+  <ip address='@LIBVIRT_NETWORK_2_BASE@.1' netmask='255.255.255.0'>
     <dhcp>
-      <range start='@NET_2_NETWORK@.200' end='@NET_2_NETWORK@.254'/>
-      <host mac='@HWADDR_PREFIX@:02:00:11' ip='@NET_2_NETWORK@.11' name='service-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:12' ip='@NET_2_NETWORK@.12' name='service-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:13' ip='@NET_2_NETWORK@.13' name='service-3'/>
-      <host mac='@HWADDR_PREFIX@:02:00:14' ip='@NET_2_NETWORK@.14' name='service-4'/>
-      <host mac='@HWADDR_PREFIX@:02:00:15' ip='@NET_2_NETWORK@.15' name='service-5'/>
-      <host mac='@HWADDR_PREFIX@:02:00:31' ip='@NET_2_NETWORK@.31' name='rhel-3-cluster-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:32' ip='@NET_2_NETWORK@.32' name='rhel-3-cluster-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:33' ip='@NET_2_NETWORK@.33' name='rhel-3-cluster-3'/>
-      <host mac='@HWADDR_PREFIX@:02:00:34' ip='@NET_2_NETWORK@.34' name='rhel-3-cluster-4'/>
-      <host mac='@HWADDR_PREFIX@:02:00:35' ip='@NET_2_NETWORK@.35' name='rhel-3-cluster-5'/>
-      <host mac='@HWADDR_PREFIX@:02:00:41' ip='@NET_2_NETWORK@.41' name='rhel-4-cluster-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:42' ip='@NET_2_NETWORK@.42' name='rhel-4-cluster-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:43' ip='@NET_2_NETWORK@.43' name='rhel-4-cluster-3'/>
-      <host mac='@HWADDR_PREFIX@:02:00:44' ip='@NET_2_NETWORK@.44' name='rhel-4-cluster-4'/>
-      <host mac='@HWADDR_PREFIX@:02:00:45' ip='@NET_2_NETWORK@.45' name='rhel-4-cluster-5'/>
-      <host mac='@HWADDR_PREFIX@:02:00:51' ip='@NET_2_NETWORK@.51' name='rhel-5-cluster-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:52' ip='@NET_2_NETWORK@.52' name='rhel-5-cluster-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:53' ip='@NET_2_NETWORK@.53' name='rhel-5-cluster-3'/>
-      <host mac='@HWADDR_PREFIX@:02:00:54' ip='@NET_2_NETWORK@.54' name='rhel-5-cluster-4'/>
-      <host mac='@HWADDR_PREFIX@:02:00:55' ip='@NET_2_NETWORK@.55' name='rhel-5-cluster-5'/>
-      <host mac='@HWADDR_PREFIX@:02:00:61' ip='@NET_2_NETWORK@.61' name='rhel-5-jboss-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:62' ip='@NET_2_NETWORK@.62' name='rhel-5-jboss-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:63' ip='@NET_2_NETWORK@.63' name='rhel-5-jboss-3'/>
-      <host mac='@HWADDR_PREFIX@:02:00:64' ip='@NET_2_NETWORK@.64' name='rhel-5-jboss-4'/>
-      <host mac='@HWADDR_PREFIX@:02:00:65' ip='@NET_2_NETWORK@.65' name='rhel-5-jboss-5'/>
-      <host mac='@HWADDR_PREFIX@:02:00:71' ip='@NET_2_NETWORK@.71' name='rhel-5-mrg-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:72' ip='@NET_2_NETWORK@.72' name='rhel-5-mrg-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:73' ip='@NET_2_NETWORK@.73' name='rhel-5-mrg-3'/>
-      <host mac='@HWADDR_PREFIX@:02:00:74' ip='@NET_2_NETWORK@.74' name='rhel-5-mrg-4'/>
-      <host mac='@HWADDR_PREFIX@:02:00:75' ip='@NET_2_NETWORK@.75' name='rhel-5-mrg-5'/>
-      <host mac='@HWADDR_PREFIX@:02:00:81' ip='@NET_2_NETWORK@.81' name='rhel-5-appstack-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:82' ip='@NET_2_NETWORK@.82' name='rhel-5-appstack-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:83' ip='@NET_2_NETWORK@.83' name='rhel-5-ds-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:84' ip='@NET_2_NETWORK@.84' name='rhel-5-ds-2'/>
-      <host mac='@HWADDR_PREFIX@:02:00:85' ip='@NET_2_NETWORK@.85' name='rhel-5-luci-1'/>
-      <host mac='@HWADDR_PREFIX@:02:00:86' ip='@NET_2_NETWORK@.86' name='rhel-5-luci-2'/>
+      <range start='@LIBVIRT_NETWORK_2_BASE@.200' end='@LIBVIRT_NETWORK_2_BASE@.254'/>
+      <host mac='@HWADDR_PREFIX@:02:00:11' ip='@LIBVIRT_NETWORK_2_BASE@.11' name='service-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:12' ip='@LIBVIRT_NETWORK_2_BASE@.12' name='service-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:13' ip='@LIBVIRT_NETWORK_2_BASE@.13' name='service-3'/>
+      <host mac='@HWADDR_PREFIX@:02:00:14' ip='@LIBVIRT_NETWORK_2_BASE@.14' name='service-4'/>
+      <host mac='@HWADDR_PREFIX@:02:00:15' ip='@LIBVIRT_NETWORK_2_BASE@.15' name='service-5'/>
+      <host mac='@HWADDR_PREFIX@:02:00:31' ip='@LIBVIRT_NETWORK_2_BASE@.31' name='rhel-3-cluster-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:32' ip='@LIBVIRT_NETWORK_2_BASE@.32' name='rhel-3-cluster-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:33' ip='@LIBVIRT_NETWORK_2_BASE@.33' name='rhel-3-cluster-3'/>
+      <host mac='@HWADDR_PREFIX@:02:00:34' ip='@LIBVIRT_NETWORK_2_BASE@.34' name='rhel-3-cluster-4'/>
+      <host mac='@HWADDR_PREFIX@:02:00:35' ip='@LIBVIRT_NETWORK_2_BASE@.35' name='rhel-3-cluster-5'/>
+      <host mac='@HWADDR_PREFIX@:02:00:41' ip='@LIBVIRT_NETWORK_2_BASE@.41' name='rhel-4-cluster-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:42' ip='@LIBVIRT_NETWORK_2_BASE@.42' name='rhel-4-cluster-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:43' ip='@LIBVIRT_NETWORK_2_BASE@.43' name='rhel-4-cluster-3'/>
+      <host mac='@HWADDR_PREFIX@:02:00:44' ip='@LIBVIRT_NETWORK_2_BASE@.44' name='rhel-4-cluster-4'/>
+      <host mac='@HWADDR_PREFIX@:02:00:45' ip='@LIBVIRT_NETWORK_2_BASE@.45' name='rhel-4-cluster-5'/>
+      <host mac='@HWADDR_PREFIX@:02:00:51' ip='@LIBVIRT_NETWORK_2_BASE@.51' name='rhel-5-cluster-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:52' ip='@LIBVIRT_NETWORK_2_BASE@.52' name='rhel-5-cluster-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:53' ip='@LIBVIRT_NETWORK_2_BASE@.53' name='rhel-5-cluster-3'/>
+      <host mac='@HWADDR_PREFIX@:02:00:54' ip='@LIBVIRT_NETWORK_2_BASE@.54' name='rhel-5-cluster-4'/>
+      <host mac='@HWADDR_PREFIX@:02:00:55' ip='@LIBVIRT_NETWORK_2_BASE@.55' name='rhel-5-cluster-5'/>
+      <host mac='@HWADDR_PREFIX@:02:00:61' ip='@LIBVIRT_NETWORK_2_BASE@.61' name='rhel-5-jboss-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:62' ip='@LIBVIRT_NETWORK_2_BASE@.62' name='rhel-5-jboss-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:63' ip='@LIBVIRT_NETWORK_2_BASE@.63' name='rhel-5-jboss-3'/>
+      <host mac='@HWADDR_PREFIX@:02:00:64' ip='@LIBVIRT_NETWORK_2_BASE@.64' name='rhel-5-jboss-4'/>
+      <host mac='@HWADDR_PREFIX@:02:00:65' ip='@LIBVIRT_NETWORK_2_BASE@.65' name='rhel-5-jboss-5'/>
+      <host mac='@HWADDR_PREFIX@:02:00:71' ip='@LIBVIRT_NETWORK_2_BASE@.71' name='rhel-5-mrg-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:72' ip='@LIBVIRT_NETWORK_2_BASE@.72' name='rhel-5-mrg-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:73' ip='@LIBVIRT_NETWORK_2_BASE@.73' name='rhel-5-mrg-3'/>
+      <host mac='@HWADDR_PREFIX@:02:00:74' ip='@LIBVIRT_NETWORK_2_BASE@.74' name='rhel-5-mrg-4'/>
+      <host mac='@HWADDR_PREFIX@:02:00:75' ip='@LIBVIRT_NETWORK_2_BASE@.75' name='rhel-5-mrg-5'/>
+      <host mac='@HWADDR_PREFIX@:02:00:81' ip='@LIBVIRT_NETWORK_2_BASE@.81' name='rhel-5-appstack-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:82' ip='@LIBVIRT_NETWORK_2_BASE@.82' name='rhel-5-appstack-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:83' ip='@LIBVIRT_NETWORK_2_BASE@.83' name='rhel-5-ds-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:84' ip='@LIBVIRT_NETWORK_2_BASE@.84' name='rhel-5-ds-2'/>
+      <host mac='@HWADDR_PREFIX@:02:00:85' ip='@LIBVIRT_NETWORK_2_BASE@.85' name='rhel-5-luci-1'/>
+      <host mac='@HWADDR_PREFIX@:02:00:86' ip='@LIBVIRT_NETWORK_2_BASE@.86' name='rhel-5-luci-2'/>
     </dhcp>
   </ip>
 </network>
