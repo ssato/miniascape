@@ -39,6 +39,12 @@ VMM = 'qemu:///system'
 (NET_STATE_UNKNOWN, NET_NOT_DEFINED, NET_DEFINED, NET_ACTIVE) = (0, 1, 2, 3)
 
 
+class ConnectionNotAvailError(Exception): pass
+class ActiveNetworkException(Exception): pass
+class DefinedNetworkException(Exception): pass
+
+
+
 def connect_libvirtd(vmm=VMM, readOnly=False):
     """Open connection to libvirtd.
     """
@@ -46,8 +52,7 @@ def connect_libvirtd(vmm=VMM, readOnly=False):
     try:
         return connect(vmm)
     except libvirt.libvirtError:
-        logging.warn("Could not connect to libvirtd.")
-        return False
+        raise ConnectionNotAvailError("Could not connect to libvirtd.")
 
 
 
@@ -75,9 +80,13 @@ def name_from_netxml(netxml):
 def status(network_name):
     """Query the status of the network.
     """
+    # Alternative way:
+    #try:
+    #    conn = connect_libvirtd(readOnly=True)
+    #except ConnectionNotAvailError:
+    #    return NET_STATE_UNKNOWN
+
     conn = connect_libvirtd(readOnly=True)
-    if not conn:
-        return NET_STATE_UNKNOWN
 
     if network_name in conn.listNetworks():
         ret = NET_ACTIVE
@@ -87,10 +96,6 @@ def status(network_name):
         ret = NET_NOT_DEFINED
 
     return ret
-
-
-class ActiveNetworkException(Exception): pass
-class DefinedNetworkException(Exception): pass
 
 
 # actions:
@@ -105,10 +110,6 @@ def do_uninstall(network_name, network_xml, force, *args):
     """
     stat = status(network_name)
     conn = connect_libvirtd()
-
-    # FIXME: What should be returned if could not connect.
-    if not conn:
-        return False
 
     if stat == NET_ACTIVE or stat == NET_DEFINED:
         net = conn.networkLookupByName(network_name)
@@ -137,23 +138,16 @@ def do_install(network_name, network_xml, force, autostart, *args):
     """
     conn = connect_libvirtd()
 
-    if not conn:
-        return False
-
     if force:
         do_uninstall(network_name, network_xml, force)
         # FIXME: Reopen connection closed.
         conn.close()
         conn = connect_libvirtd()
-        if not conn:
-            return False
 
-    conn.networkDefineXML(open(network_xml, 'r').read())
+    conn.networkDefineXML(open(network_xml).read())
     # FIXME: Reopen connection. It seems needed to apply the changes above.
     conn.close()
     conn = connect_libvirtd()
-    if not conn:
-        return False
 
     net = conn.networkLookupByName(network_name)
 
@@ -169,7 +163,7 @@ def do_install(network_name, network_xml, force, autostart, *args):
 
 def option_parser():
     parser = optparse.OptionParser("%prog [OPTION ...] COMMAND NETWORK_XML\n\n"
-        "Commands: install, uninstall, update\n")
+        "Commands: install, uninstall, update")
     parser.add_option('-f', '--force', dest='force',
         action="store_true", default=False, help='Force action')
     parser.add_option('-v', '--verbose', dest='verbose', action="store_true",

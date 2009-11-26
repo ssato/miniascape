@@ -34,7 +34,7 @@ virtualization environment.
 
 
 %build
-%configure --with-rhel-installation-key='@RHEL_INSTALLATION_KEY@' --with-password='@KS_PASSWORD@'
+%configure --with-rhel-installation-key='@RHEL_INSTALLATION_KEY@' --with-password='@KICKSTART_PASSWORD@'
 make %{?_smp_mflags}
 make check
 
@@ -52,7 +52,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %preun
 if [ $1 = 0 ]; then  # erase
-    /usr/libexec/@PACKAGE@/hosts_update.py del @NET_1_NETWORK@.1
+    /usr/libexec/@PACKAGE@/hosts_update.py del @LIBVIRT_NETWORK_1_BASE@.1
     echo " "
     echo "======================================================================"
     echo "Virtualization networks (net-1, net-2 and net-3) are preserved for "
@@ -78,7 +78,7 @@ if [ $1 = 1 ]; then    # install
         chkconfig --add miniascape-$net
     done
 
-    /usr/libexec/@PACKAGE@/hosts_update.py add @NET_1_NETWORK@.1 master.@NET_1_DOMAIN@
+    /usr/libexec/@PACKAGE@/hosts_update.py add @LIBVIRT_NETWORK_1_BASE@.1 master.@LIBVIRT_NETWORK_1_DOMAIN@
 
 elif [ $1 = 2 ]; then  # update
     for netxml in net-1.xml net-2.xml net-3.xml; do \
@@ -107,6 +107,7 @@ fi
 #%config %{_sysconfdir}/httpd/conf.d/*
 %config %{_sysconfdir}/nginx/conf.d/*
 %config %{_sysconfdir}/sysconfig/*
+%{_sysconfdir}/cluster/*
 %{_sysconfdir}/rc.d/init.d/*
 %{_libexecdir}/@PACKAGE@/*
 %{_datadir}/@PACKAGE@/*
@@ -114,7 +115,6 @@ fi
 %{_datadir}/@PACKAGE@/package/*
 %{_datadir}/@PACKAGE@/repackage/*
 %{_datadir}/@PACKAGE@/kickstart/*
-%{_sysconfdir}/cluster/*
 
 
 %changelog
