@@ -9,6 +9,7 @@ AC_PROG_VIRSH
 AC_CHECK_SOURCE_ZIP
 
 dnl FIXME: want to make it configurable
+AC_SUBST([PACKAGEFILE_DIR],[/usr/share/miniascape])
 AC_SUBST([REPACKAGEFILE_DIR],[/usr/share/miniascape/repackage])
 
 dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.

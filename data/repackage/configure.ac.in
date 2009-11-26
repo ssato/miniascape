@@ -5,14 +5,13 @@ AC_PROG_INSTALL
 AC_PROG_MKDIR_P
 
 AC_PATH_PROG([QEMU_IMG],[qemu-img])
+AC_PATH_PROG([VIRSH],[virsh])
+AC_PATH_PROG([AUGTOOL],[augtool])
 
 AC_SUBST([DOMAIN_NAME],[@@DOMAIN_NAME@@])
 AC_SUBST([DOMAIN_IMAGES],["@@DOMAIN_IMAGES@@"])
 AC_SUBST([DOMAIN_XML],[@@DOMAIN_NAME@@.xml])
 AC_SUBST([ARCH],[i686])
-AC_SUBST([VIRSH],[/usr/bin/virsh])
-AC_SUBST([AUGTOOL],[/usr/bin/augtool])
-
 
 timestamp=`LANG=C date +"%a %b %d %Y"`
 AC_SUBST([TIMESTAMP],[$timestamp])
