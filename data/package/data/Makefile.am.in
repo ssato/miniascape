@@ -1,8 +1,14 @@
-# disk images:
-domain_disk_image_1	= @DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@
+domainimagedir	= @localstatedir@/lib/libvirt/images
+domainxmldir	= @sysconfdir@/miniascape/domains
+domainsysxmldir	= @sysconfdir@/libvirt/qemu
+dist_domainxml_DATA	= $(DOMAIN_NAME).xml
+
+is_domain_inactive = $(VIRSH) list | grep -q $(DOMAIN_NAME) >/dev/null 2>/dev/null && false || true
+rewrite_domain_xml_postbuild = sed "/uuid/d"
+
 
 virtinst_FLAGS = \
---name=@DOMAIN_NAME@ \
+--name=$(DOMAIN_NAME) \
 --connect=@CONNECT@ \
 --hvm --accelerate \
 --os-variant=@DOMAIN_OS_VARIANT@ \
@@ -15,23 +21,72 @@ virtinst_FLAGS = \
 --keymap=@DOMAIN_KEYMAP@ \
 --check-cpu --noreboot \
 --vnc --noautoconsole \
---disk path=$(abs_builddir)/$(domain_disk_image_1),bus=@DOMAIN_DISK_BUS@,perms=@DOMAIN_DISK_PERMS@ \
-@VIRTINST_NETWORK_OPTS@ \
 --wait=@VIRTINST_WAIT@
 
-create_image	= @QEMU_IMG@ create -f @DOMAIN_DISK_FORMAT@
-is_domain_inactive = $(VIRSH) list | grep -q @DOMAIN_NAME@ >/dev/null 2>/dev/null && false || true
-rewrite_domain_xml_postbuild = sed "/uuid/d"
 
-
-domainimagedir	= @localstatedir@/lib/libvirt/images
-domainxmldir	= @sysconfdir@/miniascape/domains
-domainsysxmldir	= @sysconfdir@/libvirt/qemu
+# disk images:
+domain_disk_image_1	= $(DOMAIN_NAME)-disk-1.$(DOMAIN_DISK_1_FORMAT)
 dist_domainimage_DATA	= $(domain_disk_image_1)
-dist_domainxml_DATA	= @DOMAIN_NAME@.xml
+virtinst_FLAGS  += --disk path=$(abs_builddir)/$(domain_disk_image_1),bus=$(DOMAIN_DISK_1_BUS),perms=$(DOMAIN_DISK_1_PERMS)
 
-@DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@:
-	$(create_image) $@ @DOMAIN_DISK_SIZE@G
+$(domain_disk_image_1):
+	$(QEMU_IMG) create -f $(DOMAIN_DISK_1_FORMAT) $@ $(DOMAIN_DISK_1_SIZE)G
+
+install-data-hook: $(DESTDIR)$(domainimagedir)/$(DOMAIN_NAME)-disk-1-base.$(DOMAIN_DISK_1_FORMAT)
+
+$(DESTDIR)$(domainimagedir)/$(DOMAIN_NAME)-disk-1-base.$(DOMAIN_DISK_1_FORMAT):
+	(cd $(DESTDIR)/$(domainimagedir) && \
+	mv $(DOMAIN_NAME)-disk-1.$(DOMAIN_DISK_1_FORMAT) $@ && \
+	$(QEMU_IMG) create -f $(DOMAIN_DISK_1_FORMAT) -b $@ $(DOMAIN_NAME)-disk-1.$(DOMAIN_DISK_1_FORMAT)
+
+ifneq ($(DOMAIN_DISK_2_SIZE)),)
+domain_disk_image_2	= $(DOMAIN_NAME)-disk-2.$(DOMAIN_DISK_2_FORMAT)
+dist_domainimage_DATA += $(domain_disk_image_2)
+virtinst_FLAGS  += --disk path=$(abs_builddir)/$(domain_disk_image_2),bus=$(DOMAIN_DISK_2_BUS),perms=$(DOMAIN_DISK_2_PERMS)
+
+$(domain_disk_image_2):
+	$(QEMU_IMG) create -f $(DOMAIN_DISK_2_FORMAT) $@ $(DOMAIN_DISK_2_SIZE)G
+
+install-data-hook: $(DESTDIR)$(domainimagedir)/$(DOMAIN_NAME)-disk-2-base.$(DOMAIN_DISK_2_FORMAT)
+
+$(DESTDIR)$(domainimagedir)/$(DOMAIN_NAME)-disk-2-base.$(DOMAIN_DISK_2_FORMAT):
+	(cd $(DESTDIR)/$(domainimagedir) && \
+	mv $(DOMAIN_NAME)-disk-2.$(DOMAIN_DISK_2_FORMAT) $@ && \
+	$(QEMU_IMG) create -f $(DOMAIN_DISK_2_FORMAT) -b $@ $(DOMAIN_NAME)-disk-2.$(DOMAIN_DISK_2_FORMAT)
+
+endif
+
+ifneq ($(DOMAIN_DISK_3_SIZE)),)
+domain_disk_image_3	= $(DOMAIN_NAME)-disk-3.$(DOMAIN_DISK_3_FORMAT)
+dist_domainimage_DATA += $(domain_disk_image_3)
+virtinst_FLAGS  += --disk path=$(abs_builddir)/$(domain_disk_image_3),bus=$(DOMAIN_DISK_3_BUS),perms=$(DOMAIN_DISK_3_PERMS)
+
+$(domain_disk_image_3):
+	$(QEMU_IMG) create -f $(DOMAIN_DISK_3_FORMAT) $@ $(DOMAIN_DISK_3_SIZE)G
+
+install-data-hook: $(DESTDIR)$(domainimagedir)/$(DOMAIN_NAME)-disk-3-base.$(DOMAIN_DISK_3_FORMAT)
+
+$(DESTDIR)$(domainimagedir)/$(DOMAIN_NAME)-disk-3-base.$(DOMAIN_DISK_3_FORMAT):
+	(cd $(DESTDIR)/$(domainimagedir) && \
+	mv $(DOMAIN_NAME)-disk-3.$(DOMAIN_DISK_3_FORMAT) $@ && \
+	$(QEMU_IMG) create -f $(DOMAIN_DISK_3_FORMAT) -b $@ $(DOMAIN_NAME)-disk-3.$(DOMAIN_DISK_3_FORMAT)
+
+endif
+
+
+# networks
+virtinst_FLAGS  += --network=$(DOMAIN_NETWORK_1) --mac=$(DOMAIN_NETWOKR_1_MAC)
+
+ifneq ($(DOMAIN_NETWORK_2)),)
+virtinst_FLAGS  += --network=$(DOMAIN_NETWORK_2) --mac=$(DOMAIN_NETWOKR_2_MAC)
+endif
+ifneq ($(DOMAIN_NETWORK_3)),)
+virtinst_FLAGS  += --network=$(DOMAIN_NETWORK_3) --mac=$(DOMAIN_NETWOKR_3_MAC)
+endif
+ifneq ($(DOMAIN_NETWORK_4)),)
+virtinst_FLAGS  += --network=$(DOMAIN_NETWORK_4) --mac=$(DOMAIN_NETWOKR_4_MAC)
+endif
+
 
 $(dist_domainxml_DATA): $(dist_domainimage_DATA)
 	$(VIRTINST) $(virtinst_FLAGS)
@@ -42,22 +97,13 @@ $(dist_domainxml_DATA): $(dist_domainimage_DATA)
 
 
 # installation rules
-install-data-local:
+install-data-local: $(dist_domainxml_DATA)
 	$(INSTALL) -d $(DESTDIR)$(domainimagedir)
 	$(INSTALL) -d $(DESTDIR)$(domainxmldir)
 	$(INSTALL) -d $(DESTDIR)$(domainsysxmldir)
 	$(INSTALL) -m 600 $(dist_domainxml_DATA) $(DESTDIR)$(domainxmldir)
 	$(INSTALL) -m 600 $(dist_domainxml_DATA) $(DESTDIR)$(domainsysxmldir)
-	$(INSTALL) -m 400 $(dist_domainimage_DATA) $(DESTDIR)$(domainimagedir)
-
-
-# installation hooks
-install-data-hook: $(DESTDIR)$(domainimagedir)/@DOMAIN_NAME@-disk-1-base.@DOMAIN_DISK_FORMAT@
-
-$(DESTDIR)$(domainimagedir)/@DOMAIN_NAME@-disk-1-base.@DOMAIN_DISK_FORMAT@:
-	(cd $(DESTDIR)/$(domainimagedir) && \
-	mv @DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@ $@ && \
-	$(create_image) -b $@ @DOMAIN_NAME@-disk-1.@DOMAIN_DISK_FORMAT@
-
+	for img in $(dist_domainimage_DATA); do \
+		$(INSTALL) -m 400 $$img $(DESTDIR)$(domainimagedir); done
 
 # vim:set ft=make ai si sm:

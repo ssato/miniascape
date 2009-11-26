@@ -18,30 +18,21 @@ AC_DEFUN([AC_PROG_VIRTINST],[
 
 
 #
-# AX_VIRT_DOMAIN_OPTIONS
+# AC_VIRTINST_DOMAIN_OPTIONS
 #
 # Configure virt domain profile passed to virt-install's options lator.
 #
-AC_DEFUN([AX_VIRT_DOMAIN_OPTIONS],[
+AC_DEFUN([AC_VIRTINST_DOMAIN_OPTIONS],[
     AC_REQUIRE([AC_PROG_VIRTINST])
 
-    dnl set defaults if empty.
-    dnl TODO: How to specify those before/when this macro called.
-    AS_IF([test -z "$ax_virt_connect"],[connect="qemu:///system"],[])
-    AS_IF([test -z "$ax_virt_domain_memory"],[domain_memory=256],[])
-    AS_IF([test -z "$ax_virt_domain_arch"],[domain_arch=i686],[])
-    AS_IF([test -z "$ax_virt_domain_vcpus"],[domain_vcpus=1],[])
-    AS_IF([test -z "$ax_virt_domain_cpuset"],[domain_cpuset=auto],[])
-    AS_IF([test -z "$ax_virt_domain_keymap"],[domain_keymap=en-US],[])
-    AS_IF([test -z "$ax_virt_domain_disk_size"],[domain_disk_size=5],[])
-    AS_IF([test -z "$ax_virt_domain_disk_bus"],[domain_disk_bus=ide],[])
-    AS_IF([test -z "$ax_virt_domain_disk_perms"],[domain_disk_perms=rw],[])
-    AS_IF([test -z "$ax_virt_domain_disk_format"],[domain_disk_format=qcow2],[])
-    AS_IF([test -z "$ax_virt_domain_networks"],[domain_networks=""],[])
-    AS_IF([test -z "$ax_virt_domain_install_tree"],[domain_install_tree=""],[])
-    AS_IF([test -z "$ax_virt_domain_install_extras"],[domain_install_extras=""],[])
-    AS_IF([test -z "$ax_virt_domain_os_variant"],[domain_os_variant="rhel5"],[])
-    AS_IF([test -z "$ax_virt_virtinst_wait"],[virtinst_wait=20],[])
+    connect="qemu:///system"
+    domain_memory=256
+    domain_arch=i686
+    domain_vcpus=1
+    domain_cpuset=auto
+    domain_keymap=en-US
+    domain_os_variant="rhel5"
+    virtinst_wait=20
 
     dnl TODO: support xen and qemu:///session.
     AC_ARG_WITH([connect],
@@ -80,53 +71,6 @@ AC_DEFUN([AX_VIRT_DOMAIN_OPTIONS],[
         [domain_keymap="$withval"],[])
     AC_SUBST([DOMAIN_KEYMAP],["$domain_keymap"])
 
-    AC_ARG_WITH([domain-disk-size],
-        [AS_HELP_STRING([--with-domain-disk-size],
-            [Domain disk size in GByte. @<:@default="$domain_disk_size"@:>@])],
-        [domain_disk_size="$withval"],[])
-    AC_SUBST([DOMAIN_DISK_SIZE],["$domain_disk_size"])
-
-    AC_ARG_WITH([domain-disk-bus],
-        [AS_HELP_STRING([--with-domain-disk-bus],
-            [Domain disk bus type. @<:@default="$domain_disk_bus"@:>@])],
-        [domain_disk_bus="$withval"],[])
-    AC_SUBST([DOMAIN_DISK_BUS],["$domain_disk_bus"])
-
-    AC_ARG_WITH([domain-disk-perms],
-        [AS_HELP_STRING([--with-domain-disk-perms],
-            [Domain disk permission type; rw/ro/sh. @<:@default="$domain_disk_perms"@:>@])],
-        [domain_disk_perms="$withval"],[])
-    AC_SUBST([DOMAIN_DISK_PERMS],["$domain_disk_perms"])
-
-    AC_ARG_WITH([domain-disk-format],
-        [AS_HELP_STRING([--with-domain-disk-format],
-            [Domain disk format type. @<:@default="$domain_disk_format"@:>@])],
-        [domain_disk_format="$withval"],[])
-    AC_SUBST([DOMAIN_DISK_FORMAT],["$domain_disk_format"])
-
-    dnl TODO: How to specify multiple networs and mac addresses at once.
-    AC_ARG_WITH([domain-networks],
-        [AS_HELP_STRING([--with-domain-networks],
-            [Domain networks. ";" separated list of comma separated network and mac, e.g. network:net-1,aa:bb:cc:00:00:01;network:net-2,aa:bb:cc:00:00:02. @<:@default="$domain_networks"@:>@])],
-        [domain_networks="$withval"],[])
-    AS_IF([test -n "$domain_networks"],
-        [network_opts="--network="`echo $domain_networks | sed "s/;/ --network=/g; s/,/ --mac=/g"`],
-        [network_opts="--nonetworks"])
-    AC_SUBST([VIRTINST_NETWORK_OPTS],[$network_opts])
-    AC_SUBST([DOMAIN_NETWORKS],["$domain_networks"])
-
-    AC_ARG_WITH([domain-install-tree],
-        [AS_HELP_STRING([--with-domain-install-tree],
-            [Domain installation tree location. @<:@default="$domain_install_tree"@:>@])],
-        [domain_install_tree="$withval"],[])
-    AC_SUBST([DOMAIN_INSTALL_TREE],["$domain_install_tree"])
-
-    AC_ARG_WITH([domain-install-extras],
-        [AS_HELP_STRING([--with-domain-install-extras],
-            [Domain installation extra args. @<:@default="$domain_install_extras"@:>@])],
-        [domain_install_extras="$withval"],[])
-    AC_SUBST([DOMAIN_INSTALL_EXTRA_ARGS],["$domain_install_extras"])
-
     AC_ARG_WITH([domain-os-variant],
         [AS_HELP_STRING([--with-domain-os-variant],
             [Domain os variant. @<:@default="$domain_os_variant"@:>@])],
@@ -140,3 +84,88 @@ AC_DEFUN([AX_VIRT_DOMAIN_OPTIONS],[
     AC_SUBST([VIRTINST_WAIT],["$virtinst_wait"])
 
 ])
+
+#
+# AC_VIRTINST_DOMAIN_DISK_OPTIONS (DISK-INDEX)
+#
+# Configure virt domain disk profile passed to virt-install's options lator.
+#
+AC_DEFUN([AC_VIRTINST_DOMAIN_DISK_OPTIONS],[
+    domain_disk_size=5
+    domain_disk_bus=ide
+    domain_disk_perms=rw
+    domain_disk_format=qcow2
+
+    AC_ARG_WITH([domain-disk-$1-size],
+        [AS_HELP_STRING([--with-domain-disk-$1-size],
+            [Domain disk size in GByte. @<:@default="$domain_disk_size"@:>@])],
+        [domain_disk_size="$withval"],[])
+    AC_SUBST([DOMAIN_DISK_$1_SIZE],["$domain_disk_size"])
+
+    AC_ARG_WITH([domain-disk-$1-bus],
+        [AS_HELP_STRING([--with-domain-disk-$1-bus],
+            [Domain disk bus type. @<:@default="$domain_disk_bus"@:>@])],
+        [domain_disk_bus="$withval"],[])
+    AC_SUBST([DOMAIN_DISK_$1_BUS],["$domain_disk_bus"])
+
+    AC_ARG_WITH([domain-disk-$1-perms],
+        [AS_HELP_STRING([--with-domain-disk-$1-perms],
+            [Domain disk permission type; rw/ro/sh. @<:@default="$domain_disk_perms"@:>@])],
+        [domain_disk_perms="$withval"],[])
+    AC_SUBST([DOMAIN_DISK_$1_PERMS],["$domain_disk_perms"])
+
+    AC_ARG_WITH([domain-disk-$1-format],
+        [AS_HELP_STRING([--with-domain-disk-$1-format],
+            [Domain disk format type. @<:@default="$domain_disk_format"@:>@])],
+        [domain_disk_format="$withval"],[])
+    AC_SUBST([DOMAIN_DISK_$1_FORMAT],["$domain_disk_format"])
+])
+
+#
+# AC_VIRTINST_DOMAIN_NETWORK_OPTIONS (NET-INDEX, NETWORK, MAC)
+#
+# Configure virt domain network profile passed to virt-install's options lator.
+#
+AC_DEFUN([AC_VIRTINST_DOMAIN_NETWORK_OPTIONS],[
+    dnl AC_REQUIRE([AC_PROG_VIRTINST])
+
+    dnl FIXME: what should be done if python and python-virtinst is not installed.
+    AS_IF([test -n "$2"],[domain_network=$2],[domain_network=network:default])
+    AS_IF([test -n "$3"],[domain_network_mac=$3],
+        [domain_network_mac=`python -c "from virtinst.util import randomMAC; print randomMAC('qemu')"`])
+
+    AC_ARG_WITH([domain-network-$1],
+        [AS_HELP_STRING([--with-domain-network-$1],
+            [Domain network. @<:@default="$domain_network"@:>@])],
+        [domain_network="$withval"],[])
+    AC_SUBST([DOMAIN_NETWORK_$1],["$domain_network"])
+
+    AC_ARG_WITH([domain-network-$1-mac],
+        [AS_HELP_STRING([--with-domain-network-$1-mac],
+            [Domain network. @<:@default="$domain_network_mac"@:>@])],
+        [domain_network_mac="$withval"],[])
+    AC_SUBST([DOMAIN_NETWORK_$1_MAC],["$domain_network_mac"])
+])
+
+#
+# AC_VIRTINST_DOMAIN_INSTALL_OPTIONS (INSTALL-SOURCE, INSTALL-EXTRAS)
+#
+# Configure virt domain installatin options passed to virt-install.
+#
+AC_DEFUN([AC_VIRTINST_DOMAIN_INSTALL_OPTIONS],[
+    domain_install_source=$1
+    domain_install_extras=$2
+
+    AC_ARG_WITH([domain-install-source],
+        [AS_HELP_STRING([--with-domain-install-source],
+            [Domain installation source location. @<:@default="$domain_install_source"@:>@])],
+        [domain_install_source="$withval"],[])
+    AC_SUBST([DOMAIN_INSTALL_SOURCE],["$domain_install_source"])
+
+    AC_ARG_WITH([domain-install-extras],
+        [AS_HELP_STRING([--with-domain-install-extras],
+            [Domain installation extra args. @<:@default="$domain_install_extras"@:>@])],
+        [domain_install_extras="$withval"],[])
+    AC_SUBST([DOMAIN_INSTALL_EXTRA_ARGS],["$domain_install_extras"])
+])
+

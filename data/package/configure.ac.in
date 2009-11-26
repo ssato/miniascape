@@ -3,7 +3,6 @@ AM_INIT_AUTOMAKE
 
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
-
 AC_PROG_QEMU_IMG
 AC_PROG_QEMU_KVM
 AC_CHECK_KVM_DEVICE
@@ -16,23 +15,15 @@ AC_CHECK_DOMAIN_NEW([@@DOMAIN_NAME@@])
 dnl domain profile:
 AC_SUBST([DOMAIN_NAME],[@@DOMAIN_NAME@@])
 
-dnl FIXME: how to initialize domain profile?
-dnl ax_virt_domain_memory=256
-dnl ax_virt_domain_vcpus=2
-dnl ax_virt_domain_disk_size=5
-dnl ax_virt_domain_disk_bus=ide
-dnl ax_virt_domain_arch=i686
-dnl ax_virt_domain_cpuset=auto
-dnl ax_virt_domain_keymap=en-us
-dnl ax_virt_domain_disk_perms=rw
-dnl ax_virt_domain_os_variant=rhel5
-dnl ax_virt_domain_install_tree
-dnl ax_virt_domain_install_extras
-dnl ax_virt_domain_networks="network:net-1,54:52:00:01:01:54;network:net-1,54:52:00:11:01:54;network:net-3,54:52:00:03:01:54;network:net-3,54:52:00:13:01:54"
-ax_virt_domain_install_tree=http://master/contents/RHEL/5/4/i386/default
-ax_virt_domain_install_extras="ks=http://master/ks/rhel-5-4-i386-min.ks.cfg ksdevice=eth0"
-
-AX_VIRT_DOMAIN_OPTIONS
+AC_VIRTINST_DOMAIN_OPTIONS
+AC_VIRTINST_DOMAIN_DISK_OPTIONS([1])
+AC_VIRTINST_DOMAIN_NETWORK_OPTIONS([1],[network:net-1],[54:52:00:01:01:54])
+AC_VIRTINST_DOMAIN_NETWORK_OPTIONS([2],[network:net-1],[54:52:00:11:01:54])
+AC_VIRTINST_DOMAIN_NETWORK_OPTIONS([3],[network:net-3],[54:52:00:03:01:54])
+AC_VIRTINST_DOMAIN_NETWORK_OPTIONS([4],[network:net-3],[54:52:00:13:01:54])
+AC_VIRTINST_DOMAIN_INSTALL_OPTIONS(
+    [http://master/contents/RHEL/5/4/i386/default],
+    ["ks=http://master/ks/rhel-5-4-i386-min.ks.cfg ksdevice=eth0"])
 
 timestamp=`LANG=C date +"%a %b %d %Y"`
 AC_SUBST([TIMESTAMP],[$timestamp])

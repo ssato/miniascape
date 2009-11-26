@@ -16,12 +16,12 @@ Main objects are
  * Make network configuration for virtualization guests much easier.
    (pre-defined libvirt networks and DHCP configs)
 
- * Does not require expensive high-performance servers. 
-   I try to make it installable on my vaio note pc
+ * Lightweight; Does not require expensive high-performance servers. 
+   I try to make it installable on my non-high power vaio note pc
    (vaio type-P: Atom Z540, 64GB SSD, 2 G RAM)
 
  * Do not intend to replace other feature rich software such like
-   RHEV, cobbler, etc.
+   RHEV, RHN Satellite and cobbler, etc.
 
 
 Files

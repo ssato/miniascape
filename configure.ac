@@ -12,8 +12,7 @@ dnl FIXME: want to make it configurable
 AC_SUBST([REPACKAGEFILE_DIR],[/usr/share/miniascape/repackage])
 
 dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
-hwaddr_prefix=54:52:00
-AC_SUBST([HWADDR_PREFIX],[$hwaddr_prefix])
+AC_SUBST([HWADDR_PREFIX],[54:52:00])
 
 dnl libvirt networks (kept for reference).
 AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([1],[192.168.51],[virbr1],[net-1.local])
