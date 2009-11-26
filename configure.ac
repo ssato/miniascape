@@ -21,43 +21,16 @@ AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([3],[192.168.53],[virbr3],[net-3.local])
 AC_SUBST([LIBVIRT_PRIMARY_NETWORK_BRIDGE],[virbr1])
 
 dnl the server to provide kickstart tree, location and ks.cfg location
-kstree_server=binaries
-kstree_location="http://master/contents"
-ks_location="http://master/ks"
-
-AC_ARG_WITH([kstree_server],
-  [AS_HELP_STRING([--with-kstree-server],[Kickstart tree server. default=$kstree_server])],
-        [kstree_server=$withval])
-AC_SUBST([KSTREE_SERVER],[$kstree_server])
-AC_ARG_WITH([kstree_location],
-  [AS_HELP_STRING([--with-kstree-location],[Kickstart tree location. default=$kstree_location])],
-        [kstree_location=$withval])
-AC_SUBST([KSTREE_LOCATION],[$kstree_location])
-
-AC_ARG_WITH([ks_location],
-  [AS_HELP_STRING([--with-ks-location],[Kickstart file location. default=$ks_location])],
-        [ks_location=$withval])
-AC_SUBST([KS_LOCATION],[$ks_location])
-
+AC_DEFINE_KICKSTART([binaries],[http://master/contents],[http://master/ks])
 
 dnl Installation key (since RHEL 5)
-rhel_installation_key=""
-AC_ARG_WITH([rhel_installation_key],
-  [AS_HELP_STRING([--with-rhel-installation-key],[RHEL Installation key])],
-        [rhel_installation_key=$withval])
-AC_SUBST([RHEL_INSTALLATION_KEY],[$rhel_installation_key])
+AC_DEFINE_RHEL_INSTALLATION_KEY([])
 
 dnl ks password
-password=""
-AC_ARG_WITH([password],
-  [AS_HELP_STRING([--with-password],[Password for root in VMs.])],
-        [password=$withval])
-AC_SUBST([KS_PASSWORD],[$password])
+AC_DEFINE_KICKSTART_PASSWORD([])
 
 dnl http backend
-httpd_backend=nginx
-enable_apache=false
-AM_CONDITIONAL([ENABLE_APACHE], [test x$enable_apache = xtrue])
+AC_HTTPD_BACKEND
 
 
 AC_OUTPUT([
