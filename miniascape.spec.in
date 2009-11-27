@@ -110,10 +110,7 @@ fi
 %{_sysconfdir}/rc.d/init.d/*
 %{_libexecdir}/@PACKAGE@/*
 %{_datadir}/@PACKAGE@/*
-%{_datadir}/@PACKAGE@/m4/*
-%{_datadir}/@PACKAGE@/package/*
-%{_datadir}/@PACKAGE@/repackage/*
-%{_datadir}/@PACKAGE@/kickstart/*
+%{_datadir}/@PACKAGE@/*/*
 %{_localstatedir}/lib/@PACKAGE@/dnsmasq/*
 
 
