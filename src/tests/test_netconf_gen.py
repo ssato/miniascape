@@ -18,8 +18,11 @@ import netconf_gen as netconf
 
 WORKDIR = None
 
-NETXML_SRC = '../../data/libvirt/net-1.xml.in.in'
+NETXML_SRC = 'net-1.xml'
 NETXML_0 = None
+
+DNSMASQ_NET_CONF = 'net-1.conf'
+DNSMASQ_NET_HOSTSFILE = 'net-1.hostsfile'
 
 
 def setup():
@@ -27,6 +30,8 @@ def setup():
 
     WORKDIR = tempfile.mkdtemp()
     shutil.copy2(NETXML_SRC, WORKDIR)
+    shutil.copy2(DNSMASQ_NET_CONF, WORKDIR)
+    shutil.copy2(DNSMASQ_NET_HOSTSFILE, WORKDIR)
 
     NETXML_0 = os.path.join(WORKDIR, os.path.basename(NETXML_SRC))
 
@@ -73,26 +78,22 @@ def test_LibvirtNetworkConf_new():
 @with_setup(setup, teardown)
 def test_DnsmasqConf():
     global NETXML_0
+    global DNSMASQ_NET_CONF, DNSMASQ_NET_HOSTSFILE
     netxml = NETXML_0
 
     nconf = netconf.LibvirtNetworkConf(netxml)
     dnsmasqconf = netconf.DnsmasqConf(netxml)
 
-    nconf['range'] = "%s,%s" % nconf['dhcp-range']
+    ref_conf_data = open(DNSMASQ_NET_CONF).read()
+    ref_hostsfile_data = open(DNSMASQ_NET_HOSTSFILE).read()
 
-    rdata = """strict-order
-bind-interfaces
-listen-address=%(listen-address)s
-except-interface=lo
-domain=%(domain)s
-dhcp-range=%(range)s
-""" % nconf
+    (conf_data, hostsfile_data) = dnsmasqconf.format()
 
-    hs = ["dhcp-host=%(mac)s,%(ip)s,%(name)s" % h for h in nconf['hosts']]
+    assert ref_conf_data == conf_data, "\n\nref:\n'%s'\n\ndnsmasqconf:\n'%s'\n" % \
+        (ref_conf_data, conf_data)
 
-    rdata += "\n".join(hs) + '\n'
-
-    assert rdata == dnsmasqconf.format(), "\n\nref:\n'%s'\n\ndnsmasqconf:\n'%s'\n" % (rdata, dnsmasqconf.format())
+    assert ref_hostsfile_data == hostsfile_data, "\n\nref:\n'%s'\n\ndnsmasqhostsfile:\n'%s'\n" % \
+        (ref_hostsfile_data, hostsfile_data)
 
 
 if __name__ == '__main__':

@@ -33,6 +33,9 @@ except ImportError:
 #from Cheetah.Template import Template
 
 
+DNSMASQ_TYPE = 'dnsmasq'
+
+
 class ParamMissingError(Exception): pass
 
 
@@ -40,6 +43,9 @@ class ParamMissingError(Exception): pass
 class LibvirtNetworkConf(dict):
     def __init__(self, netxml):
         self.parse(netxml)
+
+    def name(self):
+        return self['name']
 
     def parse(self, netxml):
         """@throw ExpatError - Invalid XML or not XML file.
@@ -91,6 +97,9 @@ class AConf(object):
     def __init__(self, netxml):
         self.netconf = LibvirtNetworkConf(netxml)
 
+    def name(self):
+        return self.netconf.name()
+
     def format(self):
         raise NotImplementedError()
 
@@ -109,6 +118,27 @@ class DnsmasqConf(AConf):
     """dnsmasq.conf writer.
     """
 
+    def dump(self, conf=None, hostsfile=None):
+        if conf == '-':
+            out = sys.stdout
+        else:
+            if conf is None:
+                conf = "%s.conf" % self.name()
+
+            out = open(conf,'w')
+
+        if hostsfile is None:
+            hostsfile = "%s.hostsfile" % self.name()
+        out2 = open(hostsfile,'w')
+
+        (conf_data,hostsfile_data) = self.format()
+
+        out.write(conf_data)
+        out.close()
+
+        out2.write(hostsfile_data)
+        out2.close()
+
     def format(self):
         configs = [
             'strict-order',
@@ -116,6 +146,7 @@ class DnsmasqConf(AConf):
             'listen-address=%(listen-address)s' % self.netconf,
             'except-interface=lo',
         ]
+        hosts = []
 
         domain = self.netconf.get('domain', False)
         if domain:
@@ -125,16 +156,16 @@ class DnsmasqConf(AConf):
         if range:
             configs.append('dhcp-range=%s,%s' % range)
 
-        hosts = self.netconf.get('hosts')
-        if hosts:
-            for h in hosts:
-                configs.append("dhcp-host=%(mac)s,%(ip)s,%(name)s" % h)
+        hs = self.netconf.get('hosts')
+        if hs:
+            for h in hs:
+                hosts.append("dhcp-host=%(mac)s,%(ip)s,%(name)s" % h)
 
-        return '\n'.join(configs) + '\n'
+        conf_data = '\n'.join(configs) + '\n'
+        hostsfile_data = '\n'.join(hosts) + '\n'
 
+        return (conf_data, hostsfile_data)
 
-
-DNSMASQ_TYPE = 'dnsmasq'
 
 
 def option_parser():
@@ -145,6 +176,11 @@ def option_parser():
         default=False, help='verbose mode')
     parser.add_option('-q', '--quiet', action="store_true",
         default=False, help='quiet mode')
+
+    dog = optparse.OptionGroup(parser, "Options for dnsmasq")
+    dog.add_option('', '--hostsfile', default=None,
+        help='Specify hostsfile name. [Default: ./$network.hostsfile]')
+    parser.add_option_group(dog)
 
     return parser
 
@@ -177,7 +213,7 @@ def main():
 
     if options.type == DNSMASQ_TYPE:
         writer = DnsmasqConf(network_xml)
-        writer.dump(options.output)
+        writer.dump(options.output, options.hostsfile)
     else:
         pass
 

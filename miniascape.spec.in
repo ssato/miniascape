@@ -97,7 +97,6 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc README
-%dir %{_sysconfdir}/@PACKAGE@
 %dir %{_sysconfdir}/@PACKAGE@/libvirt/domains
 %dir %{_localstatedir}/run/@PACKAGE@
 %dir %{_localstatedir}/run/@PACKAGE@/dnsmasq
@@ -115,6 +114,7 @@ fi
 %{_datadir}/@PACKAGE@/package/*
 %{_datadir}/@PACKAGE@/repackage/*
 %{_datadir}/@PACKAGE@/kickstart/*
+%{_localstatedir}/lib/@PACKAGE@/dnsmasq/*
 
 
 %changelog
