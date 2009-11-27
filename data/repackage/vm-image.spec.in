@@ -21,6 +21,7 @@ Requires:       augeas
 Requires:       qemu-img
 Requires:       miniascape
 Requires:       /sbin/service
+Provides:       vm-@DOMAIN_NAME@
 
 
 %description

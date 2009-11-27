@@ -55,10 +55,11 @@ except ImportError:
 
 
 
-RPMNAME_PREFIX = 'vm'
-RPMNAME_SUFFIX = 'image'
-
 PACKAGE_DATA_DIR = '@PACKAGE_DATA_DIR@'
+DOMAIN_VARIANT = '@DOMAIN_VARIANT@'
+
+RPMNAME_PREFIX = 'vm'
+RPMNAME_SUFFIX = DOMAIN_VARIANT
 
 
 
@@ -224,7 +225,7 @@ def substfile(src, dst, substs={}):
 
 
 # actions:
-def do_repackage_setup(domain_name, libpath, *args):
+def do_repackage_setup(libpath, domain_name, domain_variant):
     """setup packaging dir and files to re-package vm images.
     """
     builddir = package_name(domain_name)
@@ -233,6 +234,7 @@ def do_repackage_setup(domain_name, libpath, *args):
 
     substs = {
         '@@DOMAIN_NAME@@': domain_name,
+        '@@DOMAIN_VARIANT@@': domain_variant,
         '@@DOMAIN_IMAGES@@': ' '.join((os.path.basename(p) for p in domain_images))
     }
 
@@ -251,13 +253,14 @@ def do_repackage_setup(domain_name, libpath, *args):
         copyfile(image, builddir)
 
 
-def do_package_setup(domain_name, libpath, *args):
+def do_package_setup(libpath, domain_name, domain_variant):
     """setup packaging dir and files to package vm images.
     """
     builddir = package_name(domain_name)
 
     substs = {
         '@@DOMAIN_NAME@@': domain_name,
+        '@@DOMAIN_VARIANT@@': domain_variant,
     }
 
     createdir(builddir)
@@ -313,6 +316,7 @@ def option_parser():
         "Commands: pack[age] and repack[age]")
     parser.add_option('-L', '--libpath', default=PACKAGE_DATA_DIR,
         help='Path to search library files [%default]')
+    parser.add_option('', '--variant', default=DOMAIN_VARIANT, help='Domain variant [%default]')
     parser.add_option('-v', '--verbose', dest='verbose', action="store_true",
         default=False, help='verbose mode')
     parser.add_option('-q', '--quiet', dest='quiet', action="store_true",
@@ -370,7 +374,7 @@ def main():
     else:
         parser.print_usage()
 
-    setup_fun(domain_name, options.libpath)
+    setup_fun(options.libpath, domain_name, options.variant)
 
     if options.build or options.package:
         ret = do_build(domain_name)

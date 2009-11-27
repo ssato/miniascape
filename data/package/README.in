@@ -1,1 +1,4 @@
 @PACKAGE@ is the KVM/Qemu VM image.
+
+Name: @DOMAIN_NAME@
+Variant: @DOMAIN_VARIANT@
