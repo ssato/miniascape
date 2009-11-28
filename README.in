@@ -36,6 +36,7 @@ Files
 Prerequisites
 ====================
 
+ * GNU make
  * virsh in libvirt
  * dnsmasq (must be installed if libvirt is installed)
 
