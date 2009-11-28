@@ -11,11 +11,11 @@ $(rpmdirs):
 rpm: $(rpmspec) dist-$(SOURCE_ZIP) $(rpmdirs)
 	cp -f $(abs_builddir)/$(PACKAGE)-$(VERSION).tar.$(SOURCE_ZIP_EXT) $(rpmdir)/SOURCES/
 	$(RPMBUILD) $(RPMBUILD_FLAGS) -bb $(rpmspec)
-	mv $(rpmdir)/RPMS/$(ARCH)/* $(abs_builddir)
+	mv $(rpmdir)/RPMS/*/*.rpm $(abs_builddir)
 
 srpm: $(rpmspec) dist-$(SOURCE_ZIP) $(rpmdirs)
 	cp -f $(abs_builddir)/$(PACKAGE)-$(VERSION).tar.$(SOURCE_ZIP_EXT) $(rpmdir)/SOURCES/
 	$(RPMBUILD) $(RPMBUILD_FLAGS) -bs $(rpmspec)
-	mv $(rpmdir)/SRPMS/* $(abs_builddir)
+	mv $(rpmdir)/SRPMS/*.rpm $(abs_builddir)
 
 .PHONY: rpm srpm

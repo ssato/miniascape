@@ -260,7 +260,8 @@ def test_do_build__repackage():
     package.do_build(DOMNAME, builddir)
 
 
-@with_setup(build_setup, teardown)
+#@with_setup(build_setup, teardown)
+@with_setup(build_setup)
 def test_do_package__repackage():
     global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMXML, DOMNAME
 

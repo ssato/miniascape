@@ -13,7 +13,12 @@ BuildArch:      noarch
 BuildRequires:  python
 BuildRequires:  python-nose
 BuildRequires:  python-augeas
+BuildRequires:  pyxattr
 BuildRequires:  libvirt-python
+BuildRequires:  autoconf
+BuildRequires:  automake
+BuildRequires:  rpm-build
+BuildRequires:  qemu-img
 Requires:       /etc/rc.d/init.d/libvirtd
 Requires:       libvirt-python
 Requires:       python-augeas
@@ -21,6 +26,7 @@ Requires:       pyxattr
 Requires:       fence-agents
 Requires:       nginx
 Requires:       rpm-build
+Requires:       qemu-img
 Obsoletes:      virt-networks
 
 

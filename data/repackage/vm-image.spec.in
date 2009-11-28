@@ -33,7 +33,7 @@ Virtualization (KVM/Qemu) guest domain image and data.
 
 
 %build
-autoreconf -vfi
+#autoreconf -vfi
 %configure
 make %{?_smp_mflags}
 
