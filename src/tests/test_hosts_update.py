@@ -27,7 +27,7 @@ HOST_0 = 'test-1'
 def setup():
     global WORKDIR, AUG
 
-    WORKDIR = tempfile.mkdtemp()
+    WORKDIR = tempfile.mkdtemp(dir=os.curdir)
     etcdir = os.path.join(WORKDIR, 'etc')
     os.makedirs(etcdir)
 

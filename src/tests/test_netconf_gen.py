@@ -28,7 +28,7 @@ DNSMASQ_NET_HOSTSFILE = 'net-1.hostsfile'
 def setup():
     global WORKDIR, NETXML_SRC, NETXML_0
 
-    WORKDIR = tempfile.mkdtemp()
+    WORKDIR = tempfile.mkdtemp(dir=os.curdir)
     shutil.copy2(NETXML_SRC, WORKDIR)
     shutil.copy2(DNSMASQ_NET_CONF, WORKDIR)
     shutil.copy2(DNSMASQ_NET_HOSTSFILE, WORKDIR)

@@ -36,6 +36,8 @@ NORM_IMG_1 = 'test-domain-1-disk-1.qcow2'
 DELTA_IMG_1 = 'test-domain-1-disk-2.qcow2'
 DELTA_IMG_1_BASE = 'test-domain-1-disk-2-base.qcow2'
 
+IMGS_IN_DOMXML = [pathjoin('@TESTDIR@', i) for i in (NORM_IMG_1, DELTA_IMG_1)]
+
 
 
 def create_image(image_dir, image_name):
@@ -59,11 +61,11 @@ def copytree(srcdir, dstdir):
     os.system('cp -r %s %s' % (srcdir, dstdir))
 
 
-def copy_build_data(topdir):
-    shutil.copy2('../../rpm.mk', topdir)
-    copytree('../../m4/', topdir)
-    copytree('../../data/package/', topdir)
-    copytree('../../data/repackage/', topdir)
+def copy_build_data(dstdir):
+    shutil.copy2('../../rpm.mk', dstdir)
+    copytree('../../m4/', dstdir)
+    copytree('../../data/package/', dstdir)
+    copytree('../../data/repackage/', dstdir)
 
 
 def prune_dir(dir):
@@ -83,7 +85,7 @@ def prune_dir(dir):
 def setup():
     global WORKDIR
 
-    WORKDIR = tempfile.mkdtemp()
+    WORKDIR = tempfile.mkdtemp(dir=os.curdir)
 
 
 def image_setup():
@@ -97,6 +99,9 @@ def image_setup():
     create_image(BUILD_SRCDIR, NORM_IMG_1)
     create_delta_image(BUILD_SRCDIR, DELTA_IMG_1_BASE, DELTA_IMG_1)
 
+    xmlcontent = open(DOMXML).read().replace('@TESTDIR@', BUILD_SRCDIR)
+    open(pathjoin(BUILD_SRCDIR, DOMXML),'w').write(xmlcontent)
+
 
 def build_setup():
     global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMNAME, DOMXML
@@ -107,9 +112,6 @@ def build_setup():
     os.mkdir(BUILD_DATADIR)
 
     copy_build_data(BUILD_DATADIR)
-
-    xmlcontent = open(DOMXML).read().replace('@TESTDIR@', BUILD_SRCDIR)
-    open(pathjoin(BUILD_SRCDIR, DOMXML),'w').write(xmlcontent)
 
 
 def teardown():
@@ -150,9 +152,6 @@ def test_is_libvirtd_running():
 def test_get_domain_xml():
     pass
 
-def test_domain_image_paths():
-    pass
-
 def test_domain_status():
     pass
 
@@ -185,15 +184,15 @@ def test_createdir():
 
 
 def test_parse_domain_xml():
-    global DOMNAME, DOMXML
+    global DOMNAME, DOMXML, IMGS_IN_DOMXML
 
     dominfo = package.parse_domain_xml(open(DOMXML).read())
     arch = 'i686'
-    images = sorted(["@TESTDIR@/%s-disk-1.qcow2" % DOMNAME, ])
+    images = sorted(IMGS_IN_DOMXML)
 
     assert DOMNAME == dominfo['name']
     assert arch == dominfo['arch']
-    assert all([x == y for x, y in zip(images, dominfo['images'])])
+    assert all((x == y for x, y in zip(images, dominfo['images'])))
 
 
 @with_setup(image_setup, teardown)
@@ -218,6 +217,22 @@ def test_base_image_path_delta_image():
         "image = '%s', base = '%s'" % (ipath, bpath)
 
 
+@with_setup(image_setup, teardown)
+def test_domain_image_paths():
+    global BUILD_SRCDIR, DOMXML, IMGS_IN_DOMXML, DELTA_IMG_1_BASE
+
+    domxml_content = open(pathjoin(BUILD_SRCDIR, DOMXML)).read()
+    ref_images = sorted(
+        [p.replace('@TESTDIR@', BUILD_SRCDIR) for p in IMGS_IN_DOMXML] + \
+            [pathjoin(BUILD_SRCDIR, DELTA_IMG_1_BASE)]
+    )
+
+    images = sorted(package.domain_image_paths(domxml_content))
+
+    assert all((x == y for x, y in zip(images, ref_images))), \
+        "images = '%s', ref_images = '%s'" % (str(images),str(ref_images))
+
+
 @with_setup(setup, teardown)
 def test_copyfile():
     global WORKDIR, DOMXML
@@ -230,9 +245,37 @@ def test_copyfile():
 
 @with_setup(build_setup, teardown)
 def test_do_repackage_setup():
-    global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMXML
+    global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMXML, DOMNAME
 
-    package.do_repackage_setup(BUILD_DATADIR, DOMNAME, 'minimal', pathjoin(BUILD_SRCDIR, DOMXML))
+    builddir = package.make_builddir(WORKDIR, DOMNAME)
+    package.do_repackage_setup(BUILD_DATADIR, DOMNAME, 'minimal', pathjoin(BUILD_SRCDIR, DOMXML), builddir)
+
+
+@with_setup(build_setup, teardown)
+def test_do_build__repackage():
+    global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMXML, DOMNAME
+
+    builddir = package.make_builddir(WORKDIR, DOMNAME)
+    package.do_repackage_setup(BUILD_DATADIR, DOMNAME, 'minimal', pathjoin(BUILD_SRCDIR, DOMXML), builddir)
+    package.do_build(DOMNAME, builddir)
+
+
+@with_setup(build_setup, teardown)
+def test_do_package__repackage():
+    global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMXML, DOMNAME
+
+    builddir = package.make_builddir(WORKDIR, DOMNAME)
+    package.do_repackage_setup(BUILD_DATADIR, DOMNAME, 'minimal', pathjoin(BUILD_SRCDIR, DOMXML), builddir)
+    package.do_build(DOMNAME, builddir)
+    package.do_package(DOMNAME, builddir)
+
+
+@with_setup(build_setup, teardown)
+def test_do_package_setup():
+    global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMXML, DOMNAME
+
+    builddir = package.make_builddir(WORKDIR, DOMNAME)
+    package.do_package_setup(BUILD_DATADIR, DOMNAME, 'minimal', builddir)
 
 
 if __name__ == '__main__':

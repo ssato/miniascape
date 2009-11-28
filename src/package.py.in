@@ -1,6 +1,7 @@
 #! /usr/bin/python
 #
-# [re-]packaging virtualization guest domain from definition file.
+# * repackage virtualization guest domain from definition file
+# * build and package virtualization guest domain
 #
 # Copyright (C) 2009 Satoru SATOH <satoru.satoh at gmail.com>
 #
@@ -32,7 +33,7 @@ import re
 import shutil
 import sys
 
-from os.path import join
+from os.path import join as pathjoin
 
 try:
     import xml.etree.ElementTree as ET  # python >= 2.5
@@ -56,7 +57,7 @@ except ImportError:
 
 
 PACKAGE_DATA_DIR = '@PACKAGE_DATA_DIR@'
-DOMAIN_VARIANT = '@DOMAIN_VARIANT@'
+DOMAIN_VARIANT = 'minimal'
 
 RPMNAME_PREFIX = 'vm'
 RPMNAME_SUFFIX = DOMAIN_VARIANT
@@ -224,12 +225,14 @@ def substfile(src, dst, substs={}):
     f.close()
 
 
+def make_builddir(workdir, domain_name):
+    return pathjoin(workdir, package_name(domain_name))
+
+
 # actions:
-def do_repackage_setup(libpath, domain_name, domain_variant, domain_xml=False, *args):
+def do_repackage_setup(libpath, domain_name, domain_variant, domain_xml, builddir, *args):
     """setup packaging dir and files to re-package vm images.
     """
-    builddir = package_name(domain_name)
-
     if domain_xml:
         domxml_content = open(domain_xml).read()
     else:
@@ -238,59 +241,60 @@ def do_repackage_setup(libpath, domain_name, domain_variant, domain_xml=False, *
     domain_images = domain_image_paths(domxml_content)
 
     substs = {
-        '@@DOMAIN_NAME@@': domain_name,
-        '@@DOMAIN_VARIANT@@': domain_variant,
-        '@@DOMAIN_IMAGES@@': ' '.join((os.path.basename(p) for p in domain_images))
+        '%%DOMAIN_NAME%%': domain_name,
+        '%%DOMAIN_VARIANT%%': domain_variant,
+        '%%DOMAIN_IMAGES%%': ' '.join((os.path.basename(p) for p in domain_images))
     }
 
     createdir(builddir)
+    createdir(pathjoin(builddir, 'm4'))
 
     open("%s/%s.xml" % (builddir, domain_name), 'w').write(domxml_content)
 
-    copyfile(join(libpath, 'rpm.mk'), builddir)
-    copyfile(join(libpath, 'repackage', 'Makefile.am.in'), join(builddir, 'Makefile.am'))
-    copyfile(join(libpath, 'repackage', 'README.in'), builddir)
-    copyfile(join(libpath, 'repackage', 'vm-image.spec.in'), builddir)
+    copyfile(pathjoin(libpath, 'rpm.mk'), builddir)
+    copyfile(pathjoin(libpath, 'm4', 'qemu.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, 'm4', 'rpm.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, 'repackage', 'Makefile.am.in'), pathjoin(builddir, 'Makefile.am'))
+    copyfile(pathjoin(libpath, 'repackage', 'README.in'), builddir)
+    copyfile(pathjoin(libpath, 'repackage', 'vm-image.spec.in'), \
+        pathjoin(builddir, 'vm-%s-%s.spec.in' % (domain_name, domain_variant)))
 
-    substfile(join(libpath, 'repackage', 'configure.ac.in'), join(builddir, 'configure.ac'), substs)
+    substfile(pathjoin(libpath, 'repackage', 'configure.ac.in'), pathjoin(builddir, 'configure.ac'), substs)
 
     for image in domain_images:
         copyfile(image, builddir)
 
 
-def do_package_setup(libpath, domain_name, domain_variant, *args):
+def do_package_setup(libpath, domain_name, domain_variant, builddir, *args):
     """setup packaging dir and files to package vm images.
     """
-    builddir = package_name(domain_name)
-
     substs = {
-        '@@DOMAIN_NAME@@': domain_name,
-        '@@DOMAIN_VARIANT@@': domain_variant,
+        '%%DOMAIN_NAME%%': domain_name,
+        '%%DOMAIN_VARIANT%%': domain_variant,
     }
 
     createdir(builddir)
-    createdir(join(builddir, 'data'))
-    createdir(join(builddir, 'm4'))
+    createdir(pathjoin(builddir, 'data'))
+    createdir(pathjoin(builddir, 'm4'))
 
     # configure.ac.in  data  vm-image.spec.in
-    copyfile(join(libpath, 'rpm.mk'), builddir)
-    copyfile(join(libpath, 'm4', 'libvirt.m4'), join(builddir, 'm4'))
-    copyfile(join(libpath, 'm4', 'qemu.m4'), join(builddir, 'm4'))
-    copyfile(join(libpath, 'm4', 'rpm.m4'), join(builddir, 'm4'))
-    copyfile(join(libpath, 'm4', 'virtinst.m4'), join(builddir, 'm4'))
-    copyfile(join(libpath, 'package', 'Makefile.am.in'), join(builddir, 'Makefile.am'))
-    copyfile(join(libpath, 'package', 'README.in'), builddir)
-    copyfile(join(libpath, 'package', 'vm-image.spec.in'), builddir)
-    copyfile(join(libpath, 'package', 'data', 'Makefile.am.in'), join(builddir, 'data', 'Makefile.am'))
+    copyfile(pathjoin(libpath, 'rpm.mk'), builddir)
+    copyfile(pathjoin(libpath, 'm4', 'libvirt.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, 'm4', 'qemu.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, 'm4', 'rpm.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, 'm4', 'virtinst.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, 'package', 'Makefile.am.in'), pathjoin(builddir, 'Makefile.am'))
+    copyfile(pathjoin(libpath, 'package', 'README.in'), builddir)
+    copyfile(pathjoin(libpath, 'package', 'vm-image.spec.in'), \
+        pathjoin(builddir, 'vm-%s-%s.spec.in' % (domain_name, domain_variant)))
+    copyfile(pathjoin(libpath, 'package', 'data', 'Makefile.am.in'), pathjoin(builddir, 'data', 'Makefile.am'))
 
-    substfile(join(libpath, 'package', 'configure.ac.in'), join(builddir, 'configure.ac'), substs)
+    substfile(pathjoin(libpath, 'package', 'configure.ac.in'), pathjoin(builddir, 'configure.ac'), substs)
 
 
-def do_build(domain_name):
+def do_build(domain_name, builddir):
     """Build domain $domain_name.
     """
-    builddir = package_name(domain_name)
-
     if not os.path.isdir(builddir):
         raise RuntimeError("build dir is not ready! 'setup' it first.")
 
@@ -301,11 +305,9 @@ def do_build(domain_name):
     return stat
 
 
-def do_package(domain_name):
+def do_package(domain_name, builddir):
     """Build [s]rpm of $domain_name
     """
-    builddir = package_name(domain_name)
-
     if not os.path.isdir(builddir):
         raise RuntimeError("build dir is not ready! 'setup' and 'build' it first.")
 
@@ -321,6 +323,7 @@ def option_parser():
         "Commands: pack[age] and repack[age]")
     parser.add_option('-L', '--libpath', default=PACKAGE_DATA_DIR,
         help='Path to search library files [%default]')
+    parser.add_option('', '--workdir', default=os.curdir, help='Working directory [%default]')
     parser.add_option('', '--variant', default=DOMAIN_VARIANT, help='Domain variant [%default]')
     parser.add_option('-v', '--verbose', dest='verbose', action="store_true",
         default=False, help='verbose mode')
@@ -365,33 +368,32 @@ def main():
         sys.exit(1)
 
     domain_name = args[1]
+    builddir = make_builddir(options.workdir, domain_name)
 
     if args[0].startswith('pack'):
-        setup_fun = do_package_setup
+        do_package_setup(options.libpath, domain_name, options.variant, builddir)
 
     elif args[0].startswith('repack'):
-        setup_fun = do_repackage_setup
-
         stat = domain_status(domain_name)
         if stat != libvirt.VIR_DOMAIN_SHUTOFF:
             if stat == libvirt.VIR_DOMAIN_RUNNING:
                 logging.error(" VM '%s' is still running. Please shutdown it first." % domain_name)
             else:
-                logging.error(" VM '%s' is unknown." % domain_name)
+                logging.error(" VM '%s' is unknown state." % domain_name)
 
             sys.exit(1)
+
+        do_repackage_setup(options.libpath, domain_name, options.variant, options.xml, workdir)
     else:
         parser.print_usage()
 
-    setup_fun(options.libpath, domain_name, options.variant, options.xml)
-
     if options.build or options.package:
-        ret = do_build(domain_name)
+        ret = do_build(domain_name, builddir)
         if ret != 0:
             raise RuntimeError("build failed.")
 
     if options.package:
-        ret = do_package(domain_name)
+        ret = do_package(domain_name, builddir)
 
     sys.exit(ret)
 

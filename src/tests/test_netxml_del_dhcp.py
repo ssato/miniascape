@@ -25,7 +25,7 @@ NETXML_0 = None
 def setup():
     global WORKDIR, NETXML_SRC, NETXML_0
 
-    WORKDIR = tempfile.mkdtemp()
+    WORKDIR = tempfile.mkdtemp(dir=os.curdir)
     shutil.copy2(NETXML_SRC, WORKDIR)
 
     NETXML_0 = os.path.join(WORKDIR, os.path.basename(NETXML_SRC))

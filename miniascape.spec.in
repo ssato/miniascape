@@ -20,6 +20,7 @@ Requires:       python-augeas
 Requires:       pyxattr
 Requires:       fence-agents
 Requires:       nginx
+Requires:       rpm-build
 Obsoletes:      virt-networks
 
 
