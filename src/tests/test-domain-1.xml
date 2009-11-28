@@ -1,6 +1,6 @@
 <domain type='kvm'>
-  <name>rhel-5-4-guest-1</name>
-  <uuid>595fd33a-1928-95dc-e6fb-1568885ea628</uuid>
+  <name>test-domain-1</name>
+  <uuid>xxxxxxxx-yyyy-yyyy-zzzz-123456789012</uuid>
   <memory>262144</memory>
   <currentMemory>262144</currentMemory>
   <vcpu>1</vcpu>
@@ -20,23 +20,27 @@
   <devices>
     <emulator>/usr/bin/qemu-kvm</emulator>
     <disk type='file' device='disk'>
-      <source file='/var/lib/libvirt/images/rhel-5-4-guest-1-disk-1.qcow2'/>
+      <source file='@TESTDIR@/test-domain-1-disk-1.qcow2'/>
       <target dev='hda' bus='ide'/>
     </disk>
+    <disk type='file' device='disk'>
+      <source file='@TESTDIR@/test-domain-1-disk-2.qcow2'/>
+      <target dev='hdb' bus='ide'/>
+    </disk>
     <interface type='network'>
-      <mac address='54:52:00:01:01:54'/>
+      <mac address='54:52:00:00:00:01'/>
       <source network='net-1'/>
     </interface>
     <interface type='network'>
-      <mac address='54:52:00:11:01:54'/>
+      <mac address='54:52:00:00:00:02'/>
       <source network='net-1'/>
     </interface>
     <interface type='network'>
-      <mac address='54:52:00:03:01:54'/>
+      <mac address='54:52:00:00:00:03'/>
       <source network='net-3'/>
     </interface>
     <interface type='network'>
-      <mac address='54:52:00:13:01:54'/>
+      <mac address='54:52:00:00:00:04'/>
       <source network='net-3'/>
     </interface>
     <serial type='pty'>

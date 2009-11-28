@@ -12,16 +12,72 @@ except ImportError:
     import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
 
 from nose.tools import with_setup
+from os.path import join as pathjoin
 
 sys.path.append('../')
 import package
 
+try:
+    all
+except NameError:
+    def all(xs):
+        return [x for x in xs if not x] == []
+
+
 
 WORKDIR = None
-DOMNAME = 'rhel-5-4-guest-1'
-BASE_IMG = 'base.img'
-DELTA_IMG = 'delta.img'
+BUILD_SRCDIR = None
+BUILD_DATADIR = None
 
+DOMNAME = 'test-domain-1'
+DOMXML = DOMNAME + '.xml'
+
+NORM_IMG_1 = 'test-domain-1-disk-1.qcow2'
+DELTA_IMG_1 = 'test-domain-1-disk-2.qcow2'
+DELTA_IMG_1_BASE = 'test-domain-1-disk-2-base.qcow2'
+
+
+
+def create_image(image_dir, image_name):
+    os.system("cd %s && qemu-img create -f qcow2 %s 1M 2>&1 >/dev/null" \
+        % (image_dir, image_name))
+
+
+def create_delta_image(image_dir, base_image_name, image_name):
+    if not os.path.exists(pathjoin(image_dir, base_image_name)):
+        create_image(image_dir, base_image_name)
+
+    os.system("cd %s && qemu-img create -f qcow2 -b %s %s 2>&1 >/dev/null" \
+        % (image_dir, base_image_name, image_name))
+
+
+def copytree(srcdir, dstdir):
+    """cp -r srcdir dstdir
+    """
+    assert srcdir != dstdir, "src = %s, dst = %s" % (srcdir, dstdir)
+
+    os.system('cp -r %s %s' % (srcdir, dstdir))
+
+
+def copy_build_data(topdir):
+    shutil.copy2('../../rpm.mk', topdir)
+    copytree('../../m4/', topdir)
+    copytree('../../data/package/', topdir)
+    copytree('../../data/repackage/', topdir)
+
+
+def prune_dir(dir):
+    if not os.path.exists(dir):
+        return  # Nothing to do.
+
+    for x in glob.glob(pathjoin(dir, '*')):
+        if os.path.isdir(x):
+            prune_dir(x)
+        else:
+            os.remove(x)
+
+    if os.path.exists(dir):
+        os.removedirs(dir)
 
 
 def setup():
@@ -31,31 +87,38 @@ def setup():
 
 
 def image_setup():
-    global WORKDIR, BASE_IMG, DELTA_IMG
+    global WORKDIR, BUILD_SRCDIR, DELTA_IMG_1, DELTA_IMG_1_BASE
 
     setup()
-    os.system("cd %s && qemu-img create -f qcow2 %s 1M 2>&1 >/dev/null" % (WORKDIR, BASE_IMG))
-    os.system("cd %s && qemu-img create -f qcow2 -b %s %s 2>&1 >/dev/null" % (WORKDIR, BASE_IMG, DELTA_IMG))
+
+    BUILD_SRCDIR = pathjoin(WORKDIR, 'original_images')
+    os.mkdir(BUILD_SRCDIR)
+
+    create_image(BUILD_SRCDIR, NORM_IMG_1)
+    create_delta_image(BUILD_SRCDIR, DELTA_IMG_1_BASE, DELTA_IMG_1)
+
+
+def build_setup():
+    global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMNAME, DOMXML
+
+    image_setup()
+
+    BUILD_DATADIR = pathjoin(WORKDIR, 'build_data')
+    os.mkdir(BUILD_DATADIR)
+
+    copy_build_data(BUILD_DATADIR)
+
+    xmlcontent = open(DOMXML).read().replace('@TESTDIR@', BUILD_SRCDIR)
+    open(pathjoin(BUILD_SRCDIR, DOMXML),'w').write(xmlcontent)
 
 
 def teardown():
     global WORKDIR
 
-    [os.remove(f) for f in glob.glob("%s/*" % WORKDIR)]
-
-    if os.path.exists(WORKDIR):
-        os.rmdir(WORKDIR)
-
-
-try:
-    all
-except NameError:
-    def all(xs):
-        return [x for x in xs if not x] == []
+    prune_dir(WORKDIR)
 
 
 # tests:
-
 def test_run():
     cmds = 'ls /proc/sys/fs/file-nr'
 
@@ -93,6 +156,7 @@ def test_domain_image_paths():
 def test_domain_status():
     pass
 
+
 @with_setup(setup, teardown)
 def test_substfile():
     global WORKDIR
@@ -112,7 +176,7 @@ def test_substfile():
 def test_createdir():
     global WORKDIR
 
-    dir = '%s/test-1' % WORKDIR
+    dir = pathjoin(WORKDIR, 'test-1')
     package.createdir(dir)
 
     assert os.path.isdir(dir)
@@ -121,42 +185,54 @@ def test_createdir():
 
 
 def test_parse_domain_xml():
-    global DOMNAME
+    global DOMNAME, DOMXML
 
-    domxml = "%s.xml" % DOMNAME
-    content = open(domxml).read()
-
-    dominfo = package.parse_domain_xml(content)
-    name = DOMNAME
+    dominfo = package.parse_domain_xml(open(DOMXML).read())
     arch = 'i686'
-    images = sorted(["/var/lib/libvirt/images/%s-disk-1.qcow2" % DOMNAME, ])
+    images = sorted(["@TESTDIR@/%s-disk-1.qcow2" % DOMNAME, ])
 
-    assert name == dominfo['name']
+    assert DOMNAME == dominfo['name']
     assert arch == dominfo['arch']
     assert all([x == y for x, y in zip(images, dominfo['images'])])
 
 
 @with_setup(image_setup, teardown)
-def test_base_image_path():
-    global WORKDIR, BASE_IMG, DELTA_IMG
+def test_base_image_path_normal_image():
+    global BUILD_SRCDIR, NORM_IMG_1
 
-    bpath = "%s/%s" % (WORKDIR, BASE_IMG)
-    dpath = "%s/%s" % (WORKDIR, DELTA_IMG)
-    path = package.base_image_path(dpath)
-    print "***\npath = '%s'\n***\n" % path
+    ipath = pathjoin(BUILD_SRCDIR, NORM_IMG_1)
+    bpath = package.base_image_path(ipath)
 
-    assert bpath == path, "delta = %s, base = %s, base = %s (result)" % (bpath, dpath, path)
+    assert bpath == "", "image = '%s', base = '%s'" % (ipath, bpath)
 
 
 @with_setup(image_setup, teardown)
+def test_base_image_path_delta_image():
+    global BUILD_SRCDIR, DELTA_IMG_1_BASE, DELTA_IMG_1 
+
+    ipath = pathjoin(BUILD_SRCDIR, DELTA_IMG_1)
+    bpath = package.base_image_path(ipath)
+
+    assert bpath != "", "image = '%s', base = '%s'" % (ipath, bpath)
+    assert bpath == pathjoin(BUILD_SRCDIR, DELTA_IMG_1_BASE), \
+        "image = '%s', base = '%s'" % (ipath, bpath)
+
+
+@with_setup(setup, teardown)
 def test_copyfile():
-    global WORKDIR, BASE_IMG
+    global WORKDIR, DOMXML
 
-    img = "%s/%s" % (WORKDIR, BASE_IMG)
+    copyto = pathjoin(WORKDIR, DOMXML + '.copy')
+    package.copyfile(DOMXML, copyto)
 
-    package.copyfile(img, img + ".copy")
+    assert os.path.exists(copyto)
 
-    assert os.path.exists(img + ".copy")
+
+@with_setup(build_setup, teardown)
+def test_do_repackage_setup():
+    global WORKDIR, BUILD_SRCDIR, BUILD_DATADIR, DOMXML
+
+    package.do_repackage_setup(BUILD_DATADIR, DOMNAME, 'minimal', pathjoin(BUILD_SRCDIR, DOMXML))
 
 
 if __name__ == '__main__':

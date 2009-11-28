@@ -75,6 +75,5 @@ data/repackage/Makefile
 m4/Makefile
 src/Makefile
 src/package.py
-src/repackage.py
 src/tests/Makefile
 ])

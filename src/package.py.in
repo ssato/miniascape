@@ -121,7 +121,7 @@ def parse_domain_xml(xmlstr):
 
 def base_image_path(image_path):
     """@return  the path of the base image of given image path or "" (given
-    image not a delta image)
+    image not a delta image).
 
     example log:
 
@@ -145,8 +145,8 @@ def base_image_path(image_path):
     return ret
 
 
-def domain_image_paths(domname):
-    images = parse_domain_xml(get_domain_xml(domname))['images']
+def domain_image_paths(domain_xml_content):
+    images = parse_domain_xml(domain_xml_content)['images']
     base_images = [bp for bp in [base_image_path(p) for p in images] if bp != '']
 
     return images + base_images
@@ -225,12 +225,17 @@ def substfile(src, dst, substs={}):
 
 
 # actions:
-def do_repackage_setup(libpath, domain_name, domain_variant):
+def do_repackage_setup(libpath, domain_name, domain_variant, domain_xml=False, *args):
     """setup packaging dir and files to re-package vm images.
     """
     builddir = package_name(domain_name)
-    domxml_content = get_domain_xml(domain_name)
-    domain_images = domain_image_paths(domain_name)
+
+    if domain_xml:
+        domxml_content = open(domain_xml).read()
+    else:
+        domxml_content = get_domain_xml(domain_name)
+
+    domain_images = domain_image_paths(domxml_content)
 
     substs = {
         '@@DOMAIN_NAME@@': domain_name,
@@ -253,7 +258,7 @@ def do_repackage_setup(libpath, domain_name, domain_variant):
         copyfile(image, builddir)
 
 
-def do_package_setup(libpath, domain_name, domain_variant):
+def do_package_setup(libpath, domain_name, domain_variant, *args):
     """setup packaging dir and files to package vm images.
     """
     builddir = package_name(domain_name)
@@ -328,6 +333,10 @@ def option_parser():
     sog.add_option('', '--package', action="store_true", default=False, help='Setup, build and package')
     parser.add_option_group(sog)
 
+    rog = optparse.OptionGroup(parser, "Options for 'repackage'")
+    rog.add_option('', '--xml', default=False, help='Domain XML in full path.')
+    parser.add_option_group(rog)
+
     return parser
 
 
@@ -374,7 +383,7 @@ def main():
     else:
         parser.print_usage()
 
-    setup_fun(options.libpath, domain_name, options.variant)
+    setup_fun(options.libpath, domain_name, options.variant, options.xml)
 
     if options.build or options.package:
         ret = do_build(domain_name)
