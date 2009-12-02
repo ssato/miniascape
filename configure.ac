@@ -37,7 +37,6 @@ AC_HTTPD_BACKEND
 
 AC_OUTPUT([
 Makefile
-README
 miniascape.spec
 data/Makefile
 data/dnsmasq/Makefile

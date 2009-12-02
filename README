@@ -1,14 +1,14 @@
 ====================
-@PACKAGE@
+miniascape
 ====================
 
-WARNING: @PACKAGE@ is in pre-alpha state and will heavily udpate day by day, so
+WARNING: miniascape is in pre-alpha state and will heavily udpate day by day, so
 it may not work in your environment or might cause trouble. TRY IT IN YOUR OWN
 RISK, PLEASE.
 
 
 
-@PACKAGE@ is a collection of configurations and data to setup libvirt based
+miniascape is a collection of configurations and data to setup libvirt based
 virtualization guests environment quickly.
 
 Main objects are
@@ -27,10 +27,10 @@ Main objects are
 Files
 ====================
 
- * libvirt network definitions: /etc/@PACKAGE@/libvirt/*.xml
- * dnsmasq configs: /etc/@PACKAGE@/dnsmasq/*.conf
- * dnsmasq init scripts (per libvirt networks): /etc/rc.d/init.d/@PACKAGE@-$netname
- * misc tools: /usr/libexec/@PACKAGE@/*
+ * libvirt network definitions: /etc/miniascape/libvirt/*.xml
+ * dnsmasq configs: /etc/miniascape/dnsmasq/*.conf
+ * dnsmasq init scripts (per libvirt networks): /etc/rc.d/init.d/miniascape-$netname
+ * misc tools: /usr/libexec/miniascape/*
 
 
 Prerequisites
@@ -67,14 +67,14 @@ Actions needed after post/pre installation, update and uninstallation
 Post installation
 ^^^^^^^^^^^^^^^^^^^^^
 
-Run "/usr/libexec/@PACKAGE@/net-install.py" to install the followings
+Run "/usr/libexec/miniascape/net-install.py" to install the followings
  
   * /etc/libvirt/qemu/networks/net-{1,2,3}.xml
 
 
 Also, you need to virsh net-start net-{1,2,3} to start networks actually.
 
-[NOTE: If you installing @PACKAGE@ from RPM. The above operation is
+[NOTE: If you installing miniascape from RPM. The above operation is
 automatically performed in post-install section so that you don't have to do
 the above at all.]
 
