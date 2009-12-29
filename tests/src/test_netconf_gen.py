@@ -12,7 +12,6 @@ except ImportError:
 
 from nose.tools import with_setup
 
-sys.path.append('../')
 import netconf_gen as netconf
 
 

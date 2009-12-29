@@ -1,3 +1,4 @@
+import commands
 import glob
 import nose
 import os
@@ -14,7 +15,6 @@ except ImportError:
 from nose.tools import with_setup
 from os.path import join as pathjoin
 
-sys.path.append('../')
 import package
 
 try:
@@ -95,6 +95,7 @@ def image_setup():
 
     BUILD_SRCDIR = pathjoin(WORKDIR, 'original_images')
     os.mkdir(BUILD_SRCDIR)
+    (_ret, _out) = commands.getstatusoutput("chcon -R -t virt_image_t %s" % BUILD_SRCDIR)
 
     create_image(BUILD_SRCDIR, NORM_IMG_1)
     create_delta_image(BUILD_SRCDIR, DELTA_IMG_1_BASE, DELTA_IMG_1)

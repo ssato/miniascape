@@ -75,4 +75,6 @@ m4/Makefile
 src/Makefile
 src/package.py
 src/tests/Makefile
+tests/Makefile
+tests/src/Makefile
 ])

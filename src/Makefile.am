@@ -8,5 +8,3 @@ net-install.py \
 package.py
 
 CLEANFILES = package.py
-
-SUBDIRS = tests

@@ -7,8 +7,7 @@ import tempfile
 
 from nose.tools import with_setup, assert_raises
 
-sys.path.append('../')
-import hosts_update as hu
+import hosts_update
 
 
 WORKDIR = None
@@ -33,7 +32,7 @@ def setup():
 
     shutil.copy2('/etc/hosts', etcdir)
 
-    AUG = hu.init(WORKDIR)
+    AUG = hosts_update.init(WORKDIR)
 
 
 def teardown():
@@ -54,42 +53,42 @@ def teardown():
 def test_ip_match():
     global AUG, IP_00, IP_1, WORKDIR
 
-    assert hu.ip_match(AUG, IP_00) != [], "IP = %s" % IP_00 + \
+    assert hosts_update.ip_match(AUG, IP_00) != [], "IP = %s" % IP_00 + \
         "\n\n/etc/hosts:\n%s\n" % open('%s/etc/hosts' % WORKDIR).read()
-    assert hu.ip_match(AUG, IP_1) == [], open('%s/etc/hosts' % WORKDIR).read()
+    assert hosts_update.ip_match(AUG, IP_1) == [], open('%s/etc/hosts' % WORKDIR).read()
 
 
 @with_setup(setup, teardown)
 def test_ip_add():
     global AUG, IP_0, FQDN_0, HOST_0
 
-    hu.ip_add(AUG, IP_0, FQDN_0, HOST_0)
-    assert hu.ip_match(AUG, IP_0) != []
+    hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0)
+    assert hosts_update.ip_match(AUG, IP_0) != []
 
 
 @with_setup(setup, teardown)
 def test_ip_add_force():
     global AUG, IP_0, FQDN_0, HOST_0
 
-    hu.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
-    hu.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
-    assert hu.ip_match(AUG, IP_0) != []
+    hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
+    hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
+    assert hosts_update.ip_match(AUG, IP_0) != []
 
 
 @with_setup(setup, teardown)
 def test_ip_remove_exist():
     global AUG, IP_0
 
-    hu.ip_remove(AUG, IP_0)
-    assert hu.ip_match(AUG, IP_0) == []
+    hosts_update.ip_remove(AUG, IP_0)
+    assert hosts_update.ip_match(AUG, IP_0) == []
 
 
 @with_setup(setup, teardown)
 def test_ip_remove_not_exist():
     global AUG, IP_1
 
-    hu.ip_remove(AUG, IP_1)
-    assert hu.ip_match(AUG, IP_1) == []
+    hosts_update.ip_remove(AUG, IP_1)
+    assert hosts_update.ip_match(AUG, IP_1) == []
 
 
 if __name__ == '__main__':

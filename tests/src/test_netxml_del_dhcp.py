@@ -12,7 +12,6 @@ except ImportError:
 
 from nose.tools import with_setup
 
-sys.path.append('../')
 import netxml_del_dhcp as ndd
 
 
