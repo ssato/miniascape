@@ -38,6 +38,8 @@ AC_HTTPD_BACKEND
 AC_OUTPUT([
 Makefile
 miniascape.spec
+aux/Makefile
+aux/m4/Makefile
 data/Makefile
 data/dnsmasq/Makefile
 data/dnsmasq/miniascape-net-1
@@ -71,10 +73,9 @@ data/kickstart/kscfgs/rhel/rhel-3-2-i386-default.ks.cfg
 data/package/Makefile
 data/package/data/Makefile
 data/repackage/Makefile
-m4/Makefile
 src/Makefile
 src/package.py
-src/tests/Makefile
 tests/Makefile
 tests/src/Makefile
+tests/src/globals.py
 ])

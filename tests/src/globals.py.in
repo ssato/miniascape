@@ -1,0 +1,126 @@
+import commands
+import glob
+import os
+import shutil
+import tempfile
+
+try:
+    all
+except NameError:
+    def all(xs):
+        return [x for x in xs if not x] == []
+
+
+
+WORKDIR = None
+BUILD_SRCDIR = '@abs_top_srcdir@'
+BUILD_DATADIR = '@abs_top_builddir@'
+
+TEST_IMAGES_DIR = None
+TEST_BUILD_DIR = None
+
+
+DOMNAME = 'test-domain-1'
+DOMXML = DOMNAME + '.xml'
+
+NORM_IMG_1 = 'test-domain-1-disk-1.qcow2'
+DELTA_IMG_1 = 'test-domain-1-disk-2.qcow2'
+DELTA_IMG_1_BASE = 'test-domain-1-disk-2-base.qcow2'
+
+IMGS_IN_DOMXML = [os.path.join('@TESTDIR@', i) for i in (NORM_IMG_1, DELTA_IMG_1)]
+
+
+
+def runcmd(cmd_str, dir=None):
+    if dir is not None:
+        cmd_str = "cd %s && %s" % (dir, cmd_str)
+    (stat, out) = commands.getstatusoutput(cmd_str)
+    if stat == 0:
+        return out
+    else:
+        raise RuntimeError(" Failed to run cmd: '%s'\nerror msg was '%s'" % (cmd_str, out))
+
+
+def create_image(image_dir, image_name):
+    #os.system("cd %s && qemu-img create -f qcow2 %s 1M 2>&1 >/dev/null" % (image_dir, image_name))
+    cmd = "qemu-img create -f qcow2 %s 1M" % os.path.join(image_dir, image_name)
+    runcmd(cmd)
+
+
+def create_delta_image(image_dir, base_image_name, image_name):
+    if not os.path.exists(os.path.join(image_dir, base_image_name)):
+        create_image(image_dir, base_image_name)
+
+    #os.system("cd %s && qemu-img create -f qcow2 -b %s %s 2>&1 >/dev/null" % (image_dir, base_image_name, image_name))
+    cmd = "qemu-img create -f qcow2 -b %s %s" % (base_image_name, image_name)
+    runcmd(cmd, image_dir)
+
+
+def copytree(srcdir, dstdir):
+    """cp -r srcdir dstdir
+    """
+    assert srcdir != dstdir, "src = %s, dst = %s" % (srcdir, dstdir)
+
+    runcmd('cp -rf %s %s' % (srcdir, dstdir))
+
+
+def prune_dir(dir):
+    if not os.path.exists(dir):
+        return  # Nothing to do.
+
+    for x in glob.glob(os.path.join(dir, '*')):
+        if os.path.isdir(x):
+            prune_dir(x)
+        else:
+            os.remove(x)
+
+    if os.path.exists(dir):
+        os.removedirs(dir)
+
+
+def setupdir():
+    return tempfile.mkdtemp(dir=os.curdir)
+
+
+def cleanupdir(dir):
+    prune_dir(dir)
+
+
+def setup_build_data(dstdir):
+    global BUILD_SRCDIR
+
+    shutil.copy2(os.path.join(BUILD_SRCDIR, 'aux/rpm.mk'), dstdir)
+    copytree(os.path.join(BUILD_SRCDIR, 'aux/m4/'), dstdir)
+    copytree(os.path.join(BUILD_SRCDIR, 'data/package/'), dstdir)
+    copytree(os.path.join(BUILD_SRCDIR, 'data/repackage/'), dstdir)
+
+
+def images_setup():
+    global WORKDIR, TEST_IMAGES_DIR, DELTA_IMG_1, DELTA_IMG_1_BASE
+
+    setup()
+
+    TEST_IMAGES_DIR = os.path.join(WORKDIR, 'images')
+
+    os.mkdir(TEST_IMAGES_DIR)
+    runcmd("chcon -R -t virt_image_t %s" % TEST_IMAGES_DIR)
+
+    create_image(TEST_IMAGES_DIR, NORM_IMG_1)
+    create_delta_image(TEST_IMAGES_DIR, DELTA_IMG_1_BASE, DELTA_IMG_1)
+
+    xmlcontent = open(DOMXML).read().replace('@TESTDIR@', TEST_IMAGES_DIR)
+    open(os.path.join(TEST_IMAGES_DIR, DOMXML),'w').write(xmlcontent)
+
+
+def build_setup():
+    global WORKDIR, TEST_BUILD_DIR, DOMNAME, DOMXML
+
+    images_setup()
+
+    TEST_BUILD_DIR = os.path.join(WORKDIR, 'build_data')
+    os.mkdir(TEST_BUILD_DIR)
+
+    setup_build_data(TEST_BUILD_DIR)
+
+
+# vim: set sw=4 ts=4 et:

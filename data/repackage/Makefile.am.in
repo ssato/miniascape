@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = README @PACKAGE@.spec rpm.mk
-ACLOCAL_AMFLAGS = -I m4
+EXTRA_DIST = README @PACKAGE@.spec aux/rpm.mk
+ACLOCAL_AMFLAGS = -I aux/m4
 
-include $(abs_srcdir)/rpm.mk
+include $(abs_srcdir)/aux/rpm.mk
 
 
 domainimagedir = @localstatedir@/lib/libvirt/images

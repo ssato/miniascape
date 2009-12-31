@@ -62,6 +62,8 @@ DOMAIN_VARIANT = 'minimal'
 RPMNAME_PREFIX = 'vm'
 RPMNAME_SUFFIX = DOMAIN_VARIANT
 
+AUXDIR = 'aux'
+M4DIR = pathjoin(AUXDIR, 'm4')
 
 
 class DomainNotFoundError(Exception): pass
@@ -247,13 +249,13 @@ def do_repackage_setup(libpath, domain_name, domain_variant, domain_xml, builddi
     }
 
     createdir(builddir)
-    createdir(pathjoin(builddir, 'm4'))
+    createdir(pathjoin(builddir, M4DIR))
 
     open("%s/%s.xml" % (builddir, domain_name), 'w').write(domxml_content)
 
-    copyfile(pathjoin(libpath, 'rpm.mk'), builddir)
-    copyfile(pathjoin(libpath, 'm4', 'qemu.m4'), pathjoin(builddir, 'm4'))
-    copyfile(pathjoin(libpath, 'm4', 'rpm.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, AUXDIR, 'rpm.mk'), pathjoin(builddir, AUXDIR))
+    copyfile(pathjoin(libpath, M4DIR, 'qemu.m4'), pathjoin(builddir, M4DIR))
+    copyfile(pathjoin(libpath, M4DIR, 'rpm.m4'), pathjoin(builddir, M4DIR))
     copyfile(pathjoin(libpath, 'repackage', 'Makefile.am.in'), pathjoin(builddir, 'Makefile.am'))
     copyfile(pathjoin(libpath, 'repackage', 'README.in'), builddir)
     copyfile(pathjoin(libpath, 'repackage', 'vm-image.spec.in'), \
@@ -275,14 +277,14 @@ def do_package_setup(libpath, domain_name, domain_variant, builddir, *args):
 
     createdir(builddir)
     createdir(pathjoin(builddir, 'data'))
-    createdir(pathjoin(builddir, 'm4'))
+    createdir(pathjoin(builddir, M4DIR))
 
     # configure.ac.in  data  vm-image.spec.in
-    copyfile(pathjoin(libpath, 'rpm.mk'), builddir)
-    copyfile(pathjoin(libpath, 'm4', 'libvirt.m4'), pathjoin(builddir, 'm4'))
-    copyfile(pathjoin(libpath, 'm4', 'qemu.m4'), pathjoin(builddir, 'm4'))
-    copyfile(pathjoin(libpath, 'm4', 'rpm.m4'), pathjoin(builddir, 'm4'))
-    copyfile(pathjoin(libpath, 'm4', 'virtinst.m4'), pathjoin(builddir, 'm4'))
+    copyfile(pathjoin(libpath, AUXDIR, 'rpm.mk'), pathjoin(builddir, AUXDIR))
+    copyfile(pathjoin(libpath, M4DIR, 'libvirt.m4'), pathjoin(builddir, M4DIR))
+    copyfile(pathjoin(libpath, M4DIR, 'qemu.m4'), pathjoin(builddir, M4DIR))
+    copyfile(pathjoin(libpath, M4DIR, 'rpm.m4'), pathjoin(builddir, M4DIR))
+    copyfile(pathjoin(libpath, M4DIR, 'virtinst.m4'), pathjoin(builddir, M4DIR))
     copyfile(pathjoin(libpath, 'package', 'Makefile.am.in'), pathjoin(builddir, 'Makefile.am'))
     copyfile(pathjoin(libpath, 'package', 'README.in'), builddir)
     copyfile(pathjoin(libpath, 'package', 'vm-image.spec.in'), \

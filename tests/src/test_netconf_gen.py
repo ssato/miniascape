@@ -1,9 +1,6 @@
-import glob
 import nose
 import os
-import sys
 import shutil
-import tempfile
 
 try:
     import xml.etree.ElementTree as ET  # python >= 2.5
@@ -12,6 +9,7 @@ except ImportError:
 
 from nose.tools import with_setup
 
+from globals import *
 import netconf_gen as netconf
 
 
@@ -27,7 +25,7 @@ DNSMASQ_NET_HOSTSFILE = 'net-1.hostsfile'
 def setup():
     global WORKDIR, NETXML_SRC, NETXML_0
 
-    WORKDIR = tempfile.mkdtemp(dir=os.curdir)
+    WORKDIR = setupdir()
     shutil.copy2(NETXML_SRC, WORKDIR)
     shutil.copy2(DNSMASQ_NET_CONF, WORKDIR)
     shutil.copy2(DNSMASQ_NET_HOSTSFILE, WORKDIR)
@@ -37,11 +35,7 @@ def setup():
 
 def teardown():
     global WORKDIR
-
-    [os.remove(f) for f in glob.glob("%s/*" % WORKDIR)]
-
-    if os.path.exists(WORKDIR):
-        os.rmdir(WORKDIR)
+    cleanupdir(WORKDIR)
 
 
 @with_setup(setup, teardown)

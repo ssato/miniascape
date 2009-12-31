@@ -161,12 +161,12 @@ License
 ====================
 
 This is distributed under GPLv3 or later except for the Autoconf macros under
-m4 subdir.
+aux/m4 subdir.
 
 See COPYING for details about GPLv3.
 
 
-Special exception m4/*.m4
+Special exception aux/m4/*.m4
 ----------------------------------
 
 As a special exception, I gives unlimited permission to copy, distribute and
@@ -176,7 +176,7 @@ using or distributing such scripts, even though portions of the text of the
 Macro appear in them. The GNU General Public License (GPL) does govern all
 other use of the material that constitutes the Autoconf Macro.
 
-This special exception to the GPL applies to the Autoconf macro under m4/
+This special exception to the GPL applies to the Autoconf macro under aux/m4/
 subdir only.  When you make and distribute a modified version of these Autoconf
 Macro, you may extend this special exception to the GPL to apply to your
 modified version as well.

@@ -1,9 +1,6 @@
-import glob
 import nose
 import os
-import sys
 import shutil
-import tempfile
 
 try:
     import xml.etree.ElementTree as ET  # python >= 2.5
@@ -12,7 +9,9 @@ except ImportError:
 
 from nose.tools import with_setup
 
+from globals import *
 import netxml_del_dhcp as ndd
+
 
 
 WORKDIR = None
@@ -21,10 +20,11 @@ NETXML_SRC = '../../data/libvirt/net-1.xml.in.in'
 NETXML_0 = None
 
 
+
 def setup():
     global WORKDIR, NETXML_SRC, NETXML_0
 
-    WORKDIR = tempfile.mkdtemp(dir=os.curdir)
+    WORKDIR = setupdir()
     shutil.copy2(NETXML_SRC, WORKDIR)
 
     NETXML_0 = os.path.join(WORKDIR, os.path.basename(NETXML_SRC))
@@ -32,11 +32,7 @@ def setup():
 
 def teardown():
     global WORKDIR
-
-    [os.remove(f) for f in glob.glob("%s/*" % WORKDIR)]
-
-    if os.path.exists(WORKDIR):
-        os.rmdir(WORKDIR)
+    cleanupdir(WORKDIR)
 
 
 def path_not_exist(xml, path):

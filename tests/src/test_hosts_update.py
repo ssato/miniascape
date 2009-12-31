@@ -1,52 +1,44 @@
-import glob
 import nose
 import os
-import sys
 import shutil
-import tempfile
 
 from nose.tools import with_setup, assert_raises
+from globals import *
 
 import hosts_update
+
 
 
 WORKDIR = None
 AUG = None
 
 IP_00 = '127.0.0.1'  # Must exists in /etc/hosts.
-
-# "300.0.0.1" is invalid IP address for hosts and must not exist in /etc/hosts.
-# Even if it's invalid, it is suitable for testing purpose.
-IP_0 = '300.0.0.1'
-IP_1 = '300.0.0.2'
 FQDN_0 = 'test-1.example.com'
 HOST_0 = 'test-1'
 
+# "300.0.0.1" is invalid IP address for hosts and must not exist in /etc/hosts.
+# Because it's invalid, it should be suitable for testing purpose.
+IP_0 = '300.0.0.1'
+IP_1 = '300.0.0.2'
+
+
 
 def setup():
-    global WORKDIR, AUG
+    global WORKDIR, AUG, BUILD_SRCDIR
 
-    WORKDIR = tempfile.mkdtemp(dir=os.curdir)
+    WORKDIR = setupdir()
+    print "BUILD_SRCDIR = " + BUILD_SRCDIR
+    print "BUILD_DATADIR = " + BUILD_DATADIR
     etcdir = os.path.join(WORKDIR, 'etc')
     os.makedirs(etcdir)
-
-    shutil.copy2('/etc/hosts', etcdir)
+    shutil.copy2(os.path.join(BUILD_SRCDIR, 'tests/src/hosts'), etcdir)
 
     AUG = hosts_update.init(WORKDIR)
 
 
 def teardown():
     global WORKDIR
-
-    etcdir = "%s/etc" % WORKDIR
-
-    [os.remove(f) for f in glob.glob("%s/*" % etcdir)]
-
-    if os.path.exists(etcdir):
-        os.rmdir(etcdir)
-
-    if os.path.exists(WORKDIR):
-        os.rmdir(WORKDIR)
+    cleanupdir(WORKDIR)
 
 
 @with_setup(setup, teardown)
@@ -59,32 +51,27 @@ def test_ip_match():
 
 
 @with_setup(setup, teardown)
-def test_ip_add():
+def test_ip_add_remove():
     global AUG, IP_0, FQDN_0, HOST_0
 
     hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0)
     assert hosts_update.ip_match(AUG, IP_0) != []
-
-
-@with_setup(setup, teardown)
-def test_ip_add_force():
-    global AUG, IP_0, FQDN_0, HOST_0
-
-    hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
-    hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
-    assert hosts_update.ip_match(AUG, IP_0) != []
-
-
-@with_setup(setup, teardown)
-def test_ip_remove_exist():
-    global AUG, IP_0
 
     hosts_update.ip_remove(AUG, IP_0)
     assert hosts_update.ip_match(AUG, IP_0) == []
 
 
 @with_setup(setup, teardown)
-def test_ip_remove_not_exist():
+def test_ip_add__force():
+    global AUG, IP_0, FQDN_0, HOST_0
+
+    hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
+    hosts_update.ip_add(AUG, IP_0, FQDN_0, HOST_0, True)
+    assert hosts_update.ip_match(AUG, IP_0) != []
+
+
+@with_setup(setup, teardown)
+def test_ip_remove__not_exist():
     global AUG, IP_1
 
     hosts_update.ip_remove(AUG, IP_1)

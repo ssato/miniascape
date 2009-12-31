@@ -5,6 +5,7 @@ test_netconf_gen.py \
 test_package.py
 
 EXTRA_DIST = $(python_test_scripts) \
+globals.py.in hosts \
 net-1.conf net-1.hostsfile net-1.xml \
 test-domain-1.xml
 
