@@ -4,6 +4,7 @@ hosts_update.py \
 kspassword.py \
 netxml_del_dhcp.py \
 netconf_gen.py \
+netxmlto.py \
 net-install.py \
 package.py
 
