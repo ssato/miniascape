@@ -18,71 +18,75 @@ AC_DEFUN([AC_PROG_VIRTINST],[
 
 
 #
-# AC_VIRTINST_DOMAIN_OPTIONS
+# AC_WITH_VIRTINST_SPEC ([SPEC]) - Set virt-install options for domain.
 #
-# Configure virt domain profile passed to virt-install's options lator.
-#
-AC_DEFUN([AC_VIRTINST_DOMAIN_OPTIONS],[
+AC_DEFUN([AC_WITH_VIRTINST_SPEC],[
     AC_REQUIRE([AC_PROG_VIRTINST])
 
-    connect="qemu:///system"
-    domain_memory=256
-    domain_arch=i686
-    domain_vcpus=1
-    domain_cpuset=auto
-    domain_keymap=en-US
-    domain_os_variant="rhel5"
-    virtinst_wait=20
+    AS_IF([test -n "$1"],[specfile=$1],[specfile=domain-profile.sh])
 
-    dnl TODO: support xen and qemu:///session.
-    AC_ARG_WITH([connect],
-        [AS_HELP_STRING([--with-connect],
-            [Hypervisor connection. @<:@default="$connect"@:>@])],
-        [connect="$withval"],[])
-    AC_SUBST([CONNECT],["$connect"])
+    dnl AC_ARG_WITH([virtinst-spec],
+    dnl     [AS_HELP_STRING([--with-virtinst-spec=SPEC_FILE],
+    dnl         [Spec file path to set virtinst options. @<:@default="$specfile"@:>@])],
+    dnl     [specfile="$withval"])
 
-    AC_ARG_WITH([domain-memory],
-        [AS_HELP_STRING([--with-domain-memory],
-            [Domain RAM size in kbyte. @<:@default="$domain_memory"@:>@])],
-        [domain_memory="$withval"],[])
-    AC_SUBST([DOMAIN_MEMORY],["$domain_memory"])
+    AS_IF([test -f $specfile],[. $specfile],[AC_MSG_ERROR([Could not load $specfile])])
 
-    AC_ARG_WITH([domain-arch],
-        [AS_HELP_STRING([--with-domain-arch],
-            [Domain arch. @<:@default="$domain_arch"@:>@])],
-        [domain_arch="$withval"],[])
-    AC_SUBST([DOMAIN_ARCH],["$domain_arch"])
+    AS_IF([test "x$CONNECT" = "x"],[CONNECT="qemu:///system"],[])
+    AS_IF([test "x$DOMAIN_MEMORY" = "x"],[DOMAIN_MEMORY=256],[])
+    AS_IF([test "x$DOMAIN_ARCH" = "x"],[DOMAIN_ARCH=i686],[])
+    AS_IF([test "x$DOMAIN_VCPUS" = "x"],[DOMAIN_VCPUS=1],[])
+    AS_IF([test "x$DOMAIN_CPUSET" = "x"],[DOMAIN_CPUSET=auto],[])
+    AS_IF([test "x$DOMAIN_KEYMAP" = "x"],[DOMAIN_KEYMAP=en-US],[])
+    AS_IF([test "x$DOMAIN_OS_VARIANT" = "x"],[DOMAIN_OS_VARIANT="rhel5"],[])
+    AS_IF([test "x$VIRTINST_WAIT" = "x"],[VIRTINST_WAIT=20],[])
 
-    AC_ARG_WITH([domain-vcpus],
-        [AS_HELP_STRING([--with-domain-vcpus],
-            [Domain number of CPUs. @<:@default="$domain_vcpus"@:>@])],
-        [domain_vcpus="$withval"],[])
-    AC_SUBST([DOMAIN_VCPUS],["$domain_vcpus"])
+    AS_IF([test "x$DOMAIN_DISK_1_SIZE" = "x"],[DOMAIN_DISK_1_SIZE=5],[])
+    AS_IF([test "x$DOMAIN_DISK_1_BUS" = "x"],[DOMAIN_DISK_1_BUS=ide],[])
+    AS_IF([test "x$DOMAIN_DISK_1_PERMS" = "x"],[DOMAIN_DISK_1_PERMS=rw],[])
+    AS_IF([test "x$DOMAIN_DISK_1_FORMAT" = "x"],[DOMAIN_DISK_1_FORMAT=qcow2],[])
 
-    AC_ARG_WITH([domain-cpuset],
-        [AS_HELP_STRING([--with-domain-cpuset],
-            [Domain CPU set. @<:@default="$domain_cpuset"@:>@])],
-        [domain_cpuset="$withval"],[])
-    AC_SUBST([DOMAIN_CPUSET],["$domain_cpuset"])
+    AS_IF([test "x$DOMAIN_NETWORK_1" = "x"],[DOMAIN_NETWORK_1=network:net-1],[])
+    AS_IF([test "x$DOMAIN_NETWORK_2" = "x"],[DOMAIN_NETWORK_2=network:net-1],[])
+    AS_IF([test "x$DOMAIN_NETWORK_3" = "x"],[DOMAIN_NETWORK_3=network:net-3],[])
+    AS_IF([test "x$DOMAIN_NETWORK_4" = "x"],[DOMAIN_NETWORK_4=network:net-3],[])
+    AS_IF([test "x$DOMAIN_NETWORK_1_MAC" = "x"],
+        [DOMAIN_NETWORK_1_MAC=`python -c "from virtinst.util import randomMAC; print randomMAC('qemu')"`],[])
+    AS_IF([test "x$DOMAIN_NETWORK_2_MAC" = "x"],
+        [DOMAIN_NETWORK_2_MAC=`python -c "from virtinst.util import randomMAC; print randomMAC('qemu')"`],[])
+    AS_IF([test "x$DOMAIN_NETWORK_3_MAC" = "x"],
+        [DOMAIN_NETWORK_3_MAC=`python -c "from virtinst.util import randomMAC; print randomMAC('qemu')"`],[])
+    AS_IF([test "x$DOMAIN_NETWORK_4_MAC" = "x"],
+        [DOMAIN_NETWORK_4_MAC=`python -c "from virtinst.util import randomMAC; print randomMAC('qemu')"`],[])
 
-    AC_ARG_WITH([domain-keymap],
-        [AS_HELP_STRING([--with-domain-keymap],
-            [Domain keymap. @<:@default="$domain_keymap"@:>@])],
-        [domain_keymap="$withval"],[])
-    AC_SUBST([DOMAIN_KEYMAP],["$domain_keymap"])
+    AS_IF([test "x$DOMAIN_INSTALL_SOURCE" = "x"],[AC_MSG_ERROR([DOMAIN_INSTALL_SOURCE must be set]),[])
+    AS_IF([test "x$DOMAIN_INSTALL_EXTRA_ARGS" = "x"],[AC_MSG_ERROR([DOMAIN_INSTALL_EXTRA_ARGS must be set]),[])
 
-    AC_ARG_WITH([domain-os-variant],
-        [AS_HELP_STRING([--with-domain-os-variant],
-            [Domain os variant. @<:@default="$domain_os_variant"@:>@])],
-        [domain_os_variant="$withval"],[])
-    AC_SUBST([DOMAIN_OS_VARIANT],["$domain_os_variant"])
+    AC_SUBST([CONNECT],[$CONNECT])
+    AC_SUBST([DOMAIN_MEMORY],[$DOMAIN_MEMORY])
+    AC_SUBST([DOMAIN_ARCH],[$DOMAIN_ARCH])
+    AC_SUBST([DOMAIN_VCPUS],[$DOMAIN_VCPUS])
+    AC_SUBST([DOMAIN_CPUSET],[$DOMAIN_CPUSET])
+    AC_SUBST([DOMAIN_KEYMAP],[$DOMAIN_KEYMAP])
+    AC_SUBST([DOMAIN_OS_VARIANT],[$DOMAIN_OS_VARIANT])
+    AC_SUBST([VIRTINST_WAIT],[$VIRTINST_WAIT])
 
-    AC_ARG_WITH([virtinst-wait],
-        [AS_HELP_STRING([--with-virtinst-wait],
-            [Wait to complete installation in minutes. @<:@default="$virtinst_wait"@:>@])],
-        [virtinst_wait="$withval"],[])
-    AC_SUBST([VIRTINST_WAIT],["$virtinst_wait"])
+    AC_SUBST([DOMAIN_DISK_1_SIZE],[$DOMAIN_DISK_1_SIZE])
+    AC_SUBST([DOMAIN_DISK_1_BUS],[$DOMAIN_DISK_1_BUS])
+    AC_SUBST([DOMAIN_DISK_1_PERMS],[$DOMAIN_DISK_1_PERMS])
+    AC_SUBST([DOMAIN_DISK_1_FORMAT],[$DOMAIN_DISK_1_FORMAT])
 
+    AC_SUBST([DOMAIN_NETWORK_1],[$DOMAIN_NETWORK_1])
+    AC_SUBST([DOMAIN_NETWORK_2],[$DOMAIN_NETWORK_2])
+    AC_SUBST([DOMAIN_NETWORK_3],[$DOMAIN_NETWORK_3])
+    AC_SUBST([DOMAIN_NETWORK_4],[$DOMAIN_NETWORK_4])
+    AC_SUBST([DOMAIN_NETWORK_1_MAC],[$DOMAIN_NETWORK_1_MAC])
+    AC_SUBST([DOMAIN_NETWORK_2_MAC],[$DOMAIN_NETWORK_2_MAC])
+    AC_SUBST([DOMAIN_NETWORK_3_MAC],[$DOMAIN_NETWORK_3_MAC])
+    AC_SUBST([DOMAIN_NETWORK_4_MAC],[$DOMAIN_NETWORK_4_MAC])
+
+    AC_SUBST([DOMAIN_INSTALL_SOURCE],[$DOMAIN_INSTALL_SOURCE])
+    AC_SUBST([DOMAIN_INSTALL_EXTRA_ARGS],[$DOMAIN_INSTALL_EXTRA_ARGS])
 ])
 
 #
@@ -146,26 +150,3 @@ AC_DEFUN([AC_VIRTINST_DOMAIN_NETWORK_OPTIONS],[
         [domain_network_mac="$withval"],[])
     AC_SUBST([DOMAIN_NETWORK_$1_MAC],["$domain_network_mac"])
 ])
-
-#
-# AC_VIRTINST_DOMAIN_INSTALL_OPTIONS (INSTALL-SOURCE, INSTALL-EXTRAS)
-#
-# Configure virt domain installatin options passed to virt-install.
-#
-AC_DEFUN([AC_VIRTINST_DOMAIN_INSTALL_OPTIONS],[
-    domain_install_source=$1
-    domain_install_extras=$2
-
-    AC_ARG_WITH([domain-install-source],
-        [AS_HELP_STRING([--with-domain-install-source],
-            [Domain installation source location. @<:@default="$domain_install_source"@:>@])],
-        [domain_install_source="$withval"],[])
-    AC_SUBST([DOMAIN_INSTALL_SOURCE],["$domain_install_source"])
-
-    AC_ARG_WITH([domain-install-extras],
-        [AS_HELP_STRING([--with-domain-install-extras],
-            [Domain installation extra args. @<:@default="$domain_install_extras"@:>@])],
-        [domain_install_extras="$withval"],[])
-    AC_SUBST([DOMAIN_INSTALL_EXTRA_ARGS],["$domain_install_extras"])
-])
-
