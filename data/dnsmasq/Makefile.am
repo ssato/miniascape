@@ -24,5 +24,4 @@ net-%.conf: $(abs_top_builddir)/data/libvirt/net-%.xml.in
 
 install-data-hook:
 	$(MKDIR_P) $(DESTDIR)@localstatedir@/run/@PACKAGE@/dnsmasq
-	$(MKDIR_P) $(DESTDIR)@localstatedir@/lock/subsys/@PACKAGE@
 
