@@ -1,0 +1,8 @@
+#! /bin/bash
+
+for netxml in net-1.xml net-2.xml net-3.xml; do \
+        /usr/bin/install /etc/@PACKAGE@/libvirt/networks/$netxml /etc/libvirt/qemu/networks
+done
+for net in net-1 net-2 net-3; do 
+        service @PACKAGE@-$net condrestart >/dev/null 2>&1 || :
+done

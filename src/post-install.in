@@ -1,0 +1,14 @@
+#! /bin/bash
+set -e
+
+for net in net-1 net-2 net-3; do \
+        # FIXME: It does not work. Disabled it temporarily.
+        #/usr/libexec/@PACKAGE@/net-install.py install -a /etc/@PACKAGE@/libvirt/networks/$net.xml
+        /sbin/service libvirtd status >/dev/null 2>&1 && \
+                virsh net-define /etc/@PACKAGE@/libvirt/networks/$net.xml && \
+                virsh net-autostart $net && virsh net-start $net || :
+        chkconfig --add miniascape-$net
+done
+
+/usr/libexec/@PACKAGE@/hosts_update.py add @LIBVIRT_NETWORK_1_BASE@.1 master.@LIBVIRT_NETWORK_1_DOMAIN@
+

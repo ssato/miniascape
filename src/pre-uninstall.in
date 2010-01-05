@@ -1,0 +1,20 @@
+#! /bin/bash
+set -e
+
+
+/usr/libexec/@PACKAGE@/hosts_update.py del @LIBVIRT_NETWORK_1_BASE@.1
+
+for net in net-1 net-2 net-3; do chkconfig --del miniascape-$net done
+
+cat << EOF
+===========================================================================
+Virtualization networks (net-1, net-2 and net-3) are preserved for safety
+reasons. So, please remove/disable them by youself as needed.
+
+  Example:
+  for i in 1 2 3; do
+      virsh net-destroy net-\$i && virsh net-undefine net-\$i
+  done
+===========================================================================
+EOF
+
