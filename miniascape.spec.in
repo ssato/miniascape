@@ -23,8 +23,6 @@ Requires:       /etc/rc.d/init.d/libvirtd
 Requires:       libvirt-python
 Requires:       python-augeas
 Requires:       pyxattr
-Requires:       fence-agents
-Requires:       nginx
 Requires:       rpm-build
 Requires:       qemu-img
 #Obsoletes:      virt-networks
@@ -34,6 +32,17 @@ Requires:       qemu-img
 Network and other necessary infrastructure data for libvirt guest domains. It
 contains libvirt network definitions, dnsmasq and iscsi configurations for
 virtualization environment.
+
+
+%package        cluster
+Summary:        Cluster related configurations for guest cluster nodes
+Group:          Development/System
+Requires:       @PACKAGE@
+Requires:       fence-agents
+
+
+%description    cluster
+Cluster related configurations for guest cluster nodes
 
 
 %prep
@@ -59,44 +68,16 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %preun
 if [ $1 = 0 ]; then  # erase
-    /usr/libexec/@PACKAGE@/hosts_update.py del @LIBVIRT_NETWORK_1_BASE@.1
-    for net in net-1 net-2 net-3; do \
-        chkconfig --del miniascape-$net
-    done
-    echo " "
-    echo "======================================================================"
-    echo "Virtualization networks (net-1, net-2 and net-3) are preserved for "
-    echo "safety reasons. So, please remove/disable them by youself as needed."
-    echo " "
-    echo "  Example: "
-    echo "  for i in 1 2 3; do "
-    echo "      virsh net-destroy net-\$i && virsh net-undefine net-\$i "
-    echo "  done "
-    echo "======================================================================"
-    echo " "
+    /usr/libexec/@PACKAGE@/pre-uninstall
 fi
 
 
 %post
 if [ $1 = 1 ]; then    # install
-    for net in net-1 net-2 net-3; do \
-        # FIXME: It does not work. Disabled it temporarily.
-        #/usr/libexec/@PACKAGE@/net-install.py install -a /etc/@PACKAGE@/libvirt/networks/$net.xml
-        /sbin/service libvirtd status >/dev/null 2>&1 && \
-                virsh net-define /etc/@PACKAGE@/libvirt/networks/$net.xml && \
-                virsh net-autostart $net && virsh net-start $net || :
-        chkconfig --add miniascape-$net
-    done
-
-    /usr/libexec/@PACKAGE@/hosts_update.py add @LIBVIRT_NETWORK_1_BASE@.1 master.@LIBVIRT_NETWORK_1_DOMAIN@
+    /usr/libexec/@PACKAGE@/post-install
 
 elif [ $1 = 2 ]; then  # update
-    for netxml in net-1.xml net-2.xml net-3.xml; do \
-        /usr/bin/install /etc/@PACKAGE@/libvirt/networks/$netxml /etc/libvirt/qemu/networks
-    done
-    for net in net-1 net-2 net-3; do 
-        service @PACKAGE@-$net condrestart >/dev/null 2>&1 || :
-    done
+    /usr/libexec/@PACKAGE@/post-update
 fi
 
 
@@ -112,15 +93,18 @@ fi
 %dir %{_localstatedir}/run/@PACKAGE@/dnsmasq
 %config %{_sysconfdir}/@PACKAGE@/dnsmasq/*
 %config %{_sysconfdir}/@PACKAGE@/libvirt/networks/*
-#%config %{_sysconfdir}/httpd/conf.d/*
 %config %{_sysconfdir}/nginx/conf.d/*
-%config %{_sysconfdir}/sysconfig/*
-%{_sysconfdir}/cluster/*
-%{_sysconfdir}/rc.d/init.d/*
+%{_sysconfdir}/rc.d/init.d/miniascape-*
 %{_libexecdir}/@PACKAGE@/*
 %{_datadir}/@PACKAGE@/*
 %{_datadir}/@PACKAGE@/*/*
 %{_localstatedir}/lib/@PACKAGE@/dnsmasq/*
+
+
+%files  cluster
+%config(noreplace) %{_sysconfdir}/sysconfig/fence_xvmd
+%{_sysconfdir}/cluster/*
+%{_sysconfdir}/rc.d/init.d/fence_xvmd
 
 
 %changelog

@@ -6,6 +6,9 @@ netxml_del_dhcp.py \
 netconf_gen.py \
 netxmlto.py \
 net-install.py \
-package.py
+package.py \
+pre-uninstall \
+post-install \
+post-update
 
-CLEANFILES = package.py
+DISTCLEANFILES = package.py pre-uninstall

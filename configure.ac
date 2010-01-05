@@ -75,6 +75,9 @@ data/package/data/Makefile
 data/repackage/Makefile
 src/Makefile
 src/package.py
+src/post-install
+src/post-update
+src/pre-uninstall
 tests/Makefile
 tests/src/Makefile
 tests/src/globals.py
