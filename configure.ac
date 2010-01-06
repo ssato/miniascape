@@ -9,6 +9,7 @@ AC_PROG_VIRSH
 AC_CHECK_SOURCE_ZIP
 
 dnl FIXME: want to make it configurable
+AC_SUBST([PACKAGE_DATA_DIR],[/usr/share/miniascape])
 AC_SUBST([PACKAGEFILE_DIR],[/usr/share/miniascape])
 AC_SUBST([REPACKAGEFILE_DIR],[/usr/share/miniascape/repackage])
 AC_SUBST([ARCH],[noarch])

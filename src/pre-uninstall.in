@@ -4,7 +4,7 @@ set -e
 
 /usr/libexec/@PACKAGE@/hosts_update.py del @LIBVIRT_NETWORK_1_BASE@.1
 
-for net in net-1 net-2 net-3; do chkconfig --del miniascape-$net done
+for net in net-1 net-2 net-3; do chkconfig --del miniascape-$net; done
 
 cat << EOF
 ===========================================================================

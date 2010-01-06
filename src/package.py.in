@@ -122,6 +122,15 @@ def parse_domain_xml(xmlstr):
     return {'name': name, 'arch': arch, 'images': images}
 
 
+def domainname_from_xml(xml):
+    """Parse domain xml file and returns domain name.
+    """
+    xml_content = open(xml).read()
+    name = parse_domain_xml(xml_content).get('name')
+
+    return name
+
+
 def base_image_path(image_path):
     """@return  the path of the base image of given image path or "" (given
     image not a delta image).
@@ -307,6 +316,19 @@ def do_build(domain_name, builddir):
     return stat
 
 
+def do_dist(domain_name, builddir):
+    """Build dist.
+    """
+    if not os.path.isdir(builddir):
+        raise RuntimeError("build dir is not ready! 'setup' it first.")
+
+    (stat, out) = run("cd %s && (test -f configure || autoreconf -vfi) && ./configure && make dist-@SOURCE_ZIP@" % builddir)
+    if stat != 0:
+        raise RuntimeError("Build stopped during 'make dist': '%s'" % out)
+
+    return stat
+
+
 def do_package(domain_name, builddir):
     """Build [s]rpm of $domain_name
     """
@@ -321,8 +343,14 @@ def do_package(domain_name, builddir):
 
 
 def option_parser():
-    parser = optparse.OptionParser("%prog [OPTION ...] COMMAND DOMAIN_NAME\n\n"
-        "Commands: pack[age] and repack[age]")
+    parser = optparse.OptionParser("""%prog COMMAND [OPTION ...] [ARGS ...]
+Commands: pack[age] and repack[age]
+
+Examples:
+    %prog pack dom-1 
+    %prog repack dom-1.xml 
+"""
+    )
     parser.add_option('-L', '--libpath', default=PACKAGE_DATA_DIR,
         help='Path to search library files [%default]')
     parser.add_option('', '--workdir', default=os.curdir, help='Working directory [%default]')
@@ -338,18 +366,30 @@ def option_parser():
     sog.add_option('', '--package', action="store_true", default=False, help='Setup, build and package')
     parser.add_option_group(sog)
 
-    rog = optparse.OptionGroup(parser, "Options for 'repackage'")
-    rog.add_option('', '--xml', default=False, help='Domain XML in full path.')
-    parser.add_option_group(rog)
+    #rog = optparse.OptionGroup(parser, "Options for 'repackage'")
+    #rog.add_option('', '--xml', default=False, help='Domain XML in full path.')
+    #parser.add_option_group(rog)
 
     return parser
 
 
-def main():
+def main(argv=sys.argv):
     loglevel = logging.INFO
 
     parser = option_parser()
-    (options, args) = parser.parse_args()
+
+    if len(argv) < 2:
+        parser.print_usage()
+        sys.exit(1)
+
+    cmd = argv[1]
+
+    if cmd.startswith('pack'):
+        cmd = 'package'
+    elif cmd.startswith('repack'):
+        cmd = 'repackage'
+
+    (options, args) = parser.parse_args(argv[2:])
 
     if options.verbose:
         loglevel = logging.DEBUG
@@ -365,17 +405,25 @@ def main():
         # To keep backward compatibility. See above comment also.
         logging.getLogger().setLevel(loglevel)
 
-    if len(args) < 2:
-        parser.print_usage()
-        sys.exit(1)
+    if cmd == 'package':
+        if len(args) < 1:
+            print >> sys.stderr, "%s pack[age] DOMAIN_NAME [OPTIONS...]" % sys.argv[0]
+            sys.exit(1)
 
-    domain_name = args[1]
-    builddir = make_builddir(options.workdir, domain_name)
+        domain_name = args[0]
+        builddir = make_builddir(options.workdir, domain_name)
 
-    if args[0].startswith('pack'):
         do_package_setup(options.libpath, domain_name, options.variant, builddir)
 
-    elif args[0].startswith('repack'):
+    elif cmd == 'repackage':
+        if len(args) < 1:
+            print >> sys.stderr, "%s repack[age] DOMAIN_XML [OPTIONS...]" % sys.argv[0]
+            sys.exit(1)
+
+        domain_xml = args[0]
+        domain_name = domainname_from_xml(domain_xml)
+        builddir = make_builddir(options.workdir, domain_name)
+
         stat = domain_status(domain_name)
         if stat != libvirt.VIR_DOMAIN_SHUTOFF:
             if stat == libvirt.VIR_DOMAIN_RUNNING:
@@ -385,14 +433,20 @@ def main():
 
             sys.exit(1)
 
-        do_repackage_setup(options.libpath, domain_name, options.variant, options.xml, workdir)
+        do_repackage_setup(options.libpath, domain_name, options.variant, domain_xml, builddir)
     else:
         parser.print_usage()
+        sys.exit(1)
 
+    ret = 0
     if options.build or options.package:
         ret = do_build(domain_name, builddir)
         if ret != 0:
             raise RuntimeError("build failed.")
+
+    ret = do_build(domain_name, builddir)
+    if ret != 0:
+        raise RuntimeError("'make dist' failed.")
 
     if options.package:
         ret = do_package(domain_name, builddir)
