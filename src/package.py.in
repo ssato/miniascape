@@ -444,7 +444,7 @@ def main(argv=sys.argv):
         if ret != 0:
             raise RuntimeError("build failed.")
 
-    ret = do_build(domain_name, builddir)
+    ret = do_dist(domain_name, builddir)
     if ret != 0:
         raise RuntimeError("'make dist' failed.")
 

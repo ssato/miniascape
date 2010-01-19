@@ -74,6 +74,9 @@ data/kickstart/kscfgs/rhel/rhel-3-2-i386-default.ks.cfg
 data/package/Makefile
 data/package/data/Makefile
 data/repackage/Makefile
+refdata/Makefile
+refdata/networks/Makefile
+refdata/networks/miniascape-net-1
 src/Makefile
 src/package.py
 src/post-install

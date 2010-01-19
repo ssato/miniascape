@@ -41,6 +41,19 @@ Prerequisites
  * dnsmasq (must be installed if libvirt is installed)
 
 
+
+RHEL 5
+-----------------------
+
+The followings are not included in RHEL. You have to get them from EPEL repository.
+
+ * pyattr
+ * python-cheetah
+ * python-elementtree
+ * python-nose
+
+
+
 Build
 ====================
 

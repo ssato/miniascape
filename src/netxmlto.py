@@ -30,13 +30,17 @@ except ImportError:
     import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
 
 
-# future plan:
-#from Cheetah.Template import Template
+from Cheetah.Template import Template
 
 
 
 DNSMASQ_TYPE = 'dnsmasq'
 
+
+
+def tmpl_compile(template_path, params, output_f):
+    tmpl = Template(file=template_path, searchList=params)
+    output_f.write(tmpl.respond())
 
 
 def delete_dhcp_stuff(netxml, output):
