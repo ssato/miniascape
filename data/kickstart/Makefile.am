@@ -1,1 +1,1 @@
-SUBDIRS = httpd kscfgs
+SUBDIRS = rhel
