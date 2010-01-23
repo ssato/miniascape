@@ -1,0 +1,135 @@
+name: net-3
+bridge: @LIBVIRT_NETWORK_3_BRIDGE@
+domain: @LIBVIRT_NETWORK_3_DOMAIN@
+gateway: @LIBVIRT_NETWORK_3_BASE@.1
+netmask: 255.255.255.0
+
+libvirt_network_dhcp_enabled: 0
+
+dhcp_start: @LIBVIRT_NETWORK_3_BASE@.200
+dhcp_end: @LIBVIRT_NETWORK_3_BASE@.254
+
+hosts:
+  - hwaddr: @HWADDR_PREFIX@:03:01:25
+    ip: @NET_3_NETWORK@.125
+    name: rhel-21-5-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:26
+    ip: @NET_3_NETWORK@.126
+    name: rhel-21-6-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:30
+    ip: @NET_3_NETWORK@.130
+    name: rhel-3-0-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:31
+    ip: @NET_3_NETWORK@.131
+    name: rhel-3-1-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:32
+    ip: @NET_3_NETWORK@.132
+    name: rhel-3-2-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:33
+    ip: @NET_3_NETWORK@.133
+    name: rhel-3-3-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:34
+    ip: @NET_3_NETWORK@.134
+    name: rhel-3-4-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:35
+    ip: @NET_3_NETWORK@.135
+    name: rhel-3-5-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:36
+    ip: @NET_3_NETWORK@.136
+    name: rhel-3-6-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:37
+    ip: @NET_3_NETWORK@.137
+    name: rhel-3-7-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:38
+    ip: @NET_3_NETWORK@.138
+    name: rhel-3-8-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:39
+    ip: @NET_3_NETWORK@.139
+    name: rhel-3-9-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:40
+    ip: @NET_3_NETWORK@.140
+    name: rhel-4-0-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:41
+    ip: @NET_3_NETWORK@.141
+    name: rhel-4-1-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:42
+    ip: @NET_3_NETWORK@.142
+    name: rhel-4-2-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:43
+    ip: @NET_3_NETWORK@.143
+    name: rhel-4-3-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:44
+    ip: @NET_3_NETWORK@.144
+    name: rhel-4-4-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:45
+    ip: @NET_3_NETWORK@.145
+    name: rhel-4-5-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:46
+    ip: @NET_3_NETWORK@.146
+    name: rhel-4-6-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:47
+    ip: @NET_3_NETWORK@.147
+    name: rhel-4-7-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:48
+    ip: @NET_3_NETWORK@.148
+    name: rhel-4-8-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:49
+    ip: @NET_3_NETWORK@.149
+    name: rhel-4-9-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:50
+    ip: @NET_3_NETWORK@.150
+    name: rhel-5-0-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:51
+    ip: @NET_3_NETWORK@.151
+    name: rhel-5-1-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:52
+    ip: @NET_3_NETWORK@.152
+    name: rhel-5-2-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:53
+    ip: @NET_3_NETWORK@.153
+    name: rhel-5-3-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:54
+    ip: @NET_3_NETWORK@.154
+    name: rhel-5-4-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:55
+    ip: @NET_3_NETWORK@.155
+    name: rhel-5-5-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:60
+    ip: @NET_3_NETWORK@.160
+    name: rhel-6-0-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:61
+    ip: @NET_3_NETWORK@.161
+    name: rhel-6-1-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:62
+    ip: @NET_3_NETWORK@.162
+    name: rhel-6-2-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:63
+    ip: @NET_3_NETWORK@.163
+    name: rhel-6-3-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:64
+    ip: @NET_3_NETWORK@.164
+    name: rhel-6-4-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:65
+    ip: @NET_3_NETWORK@.165
+    name: rhel-6-5-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:80
+    ip: @NET_3_NETWORK@.180
+    name: fedora-guest-0
+  - hwaddr: @HWADDR_PREFIX@:03:01:81
+    ip: @NET_3_NETWORK@.181
+    name: fedora-11-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:82
+    ip: @NET_3_NETWORK@.182
+    name: fedora-12-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:83
+    ip: @NET_3_NETWORK@.183
+    name: fedora-13-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:84
+    ip: @NET_3_NETWORK@.184
+    name: fedora-14-guest-1
+  - hwaddr: @HWADDR_PREFIX@:03:01:85
+    ip: @NET_3_NETWORK@.185
+    name: fedora-15-guest-1
+
+
+

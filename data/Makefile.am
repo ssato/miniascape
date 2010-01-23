@@ -1,1 +1,1 @@
-SUBDIRS = dnsmasq fenced kickstart libvirt package repackage
+SUBDIRS = kickstart package repackage

@@ -1,26 +1,26 @@
 #! /bin/sh
 #
-# Startup script for the DNS caching server customized for @PACKAGE@
+# Startup script for dnsmasq to assign static ip for libvirt domains.
 #
 # chkconfig init header:
 #
-# @PACKAGE@-net-1: dnsmasq init script for net-1
+# dnsmasq-net-1: dnsmasq init script for net-1
 # chkconfig: - 99 01
 # description: This script starts your DNS caching server
 # processname: dnsmasq
-# pidfile: /var/run/@PACKAGE@/dnsmasq/net-1.pid
+# pidfile: /var/run/dnsmasq-net-1.pid
 #
 # LSB init header:
 #
 ### BEGIN INIT INFO
-# Provides: @PACKAGE@-net-1
+# Provides: dnsmasq-net-1
 # Required-Stop:
 # Required-Start: libvirtd
 # Default-Start: 3 4 5
 # Default-Stop: 0 1 6
 # Should-Start: $network
 # Short-Description: dnsmasq for libvirt networks
-# Description: This is a dnsmasq init script optimized for @PACKAGE@
+# Description: This is a dnsmasq init script to assign ip for libvirt domains
 ### END INIT INFO
 
 # Source function library.
@@ -41,7 +41,7 @@ NETWORK=net-1
 CONFIG=/etc/@PACKAGE@/dnsmasq/$NETWORK.conf
 HOSTSFILE=/var/lib/@PACKAGE@/dnsmasq/$NETWORK.hostsfile
 PIDFILE=/var/run/@PACKAGE@/dnsmasq/$NETWORK.pid
-LOCKFILE=/var/lock/subsys/@PACKAGE@-net-1
+LOCKFILE=/var/lock/subsys/dnsmasq-net-1
 
 OPTIONS="--conf-file=$CONFIG --pid-file=$PIDFILE"
 

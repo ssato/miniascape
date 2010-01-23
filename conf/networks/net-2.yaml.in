@@ -1,0 +1,232 @@
+name: net-2
+#forward: nat
+bridge: @LIBVIRT_NETWORK_2_BRIDGE@
+domain: @LIBVIRT_NETWORK_2_DOMAIN@
+gateway: @LIBVIRT_NETWORK_2_BASE@.1
+netmask: 255.255.255.0
+
+libvirt_network_dhcp_enabled: 0
+
+dhcp_start: @LIBVIRT_NETWORK_2_BASE@.200
+dhcp_end: @LIBVIRT_NETWORK_2_BASE@.254
+
+hosts:
+  - hwaddr: @HWADDR_PREFIX@:02:00:10
+    ip: @NET_2_NETWORK@.10
+    name: service-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:11
+    ip: @NET_2_NETWORK@.11
+    name: service-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:12
+    ip: @NET_2_NETWORK@.12
+    name: service-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:13
+    ip: @NET_2_NETWORK@.13
+    name: service-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:14
+    ip: @NET_2_NETWORK@.14
+    name: service-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:15
+    ip: @NET_2_NETWORK@.15
+    name: service-5
+  - hwaddr: @HWADDR_PREFIX@:02:00:16
+    ip: @NET_2_NETWORK@.16
+    name: service-6
+  - hwaddr: @HWADDR_PREFIX@:02:00:17
+    ip: @NET_2_NETWORK@.17
+    name: service-7
+  - hwaddr: @HWADDR_PREFIX@:02:00:18
+    ip: @NET_2_NETWORK@.18
+    name: service-8
+  - hwaddr: @HWADDR_PREFIX@:02:00:19
+    ip: @NET_2_NETWORK@.19
+    name: service-9
+  - hwaddr: @HWADDR_PREFIX@:02:00:30
+    ip: @NET_2_NETWORK@.30
+    name: jboss-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:31
+    ip: @NET_2_NETWORK@.31
+    name: jboss-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:32
+    ip: @NET_2_NETWORK@.32
+    name: jboss-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:33
+    ip: @NET_2_NETWORK@.33
+    name: jboss-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:34
+    ip: @NET_2_NETWORK@.34
+    name: jboss-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:35
+    ip: @NET_2_NETWORK@.35
+    name: jboss-5
+  - hwaddr: @HWADDR_PREFIX@:02:00:36
+    ip: @NET_2_NETWORK@.36
+    name: jboss-6
+  - hwaddr: @HWADDR_PREFIX@:02:00:37
+    ip: @NET_2_NETWORK@.37
+    name: jboss-7
+  - hwaddr: @HWADDR_PREFIX@:02:00:38
+    ip: @NET_2_NETWORK@.38
+    name: jboss-8
+  - hwaddr: @HWADDR_PREFIX@:02:00:39
+    ip: @NET_2_NETWORK@.39
+    name: jboss-9
+  - hwaddr: @HWADDR_PREFIX@:02:00:40
+    ip: @NET_2_NETWORK@.40
+    name: rhel-4-cluster-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:41
+    ip: @NET_2_NETWORK@.41
+    name: rhel-4-cluster-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:42
+    ip: @NET_2_NETWORK@.42
+    name: rhel-4-cluster-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:43
+    ip: @NET_2_NETWORK@.43
+    name: rhel-4-cluster-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:44
+    ip: @NET_2_NETWORK@.44
+    name: rhel-4-cluster-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:45
+    ip: @NET_2_NETWORK@.45
+    name: rhel-4-cluster-5
+  - hwaddr: @HWADDR_PREFIX@:02:00:50
+    ip: @NET_2_NETWORK@.50
+    name: rhel-5-luci-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:51
+    ip: @NET_2_NETWORK@.51
+    name: rhel-5-cluster-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:52
+    ip: @NET_2_NETWORK@.52
+    name: rhel-5-cluster-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:53
+    ip: @NET_2_NETWORK@.53
+    name: rhel-5-cluster-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:54
+    ip: @NET_2_NETWORK@.54
+    name: rhel-5-cluster-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:55
+    ip: @NET_2_NETWORK@.55
+    name: rhel-5-cluster-5
+  - hwaddr: @HWADDR_PREFIX@:02:00:56
+    ip: @NET_2_NETWORK@.56
+    name: rhel-5-cluster-6
+  - hwaddr: @HWADDR_PREFIX@:02:00:57
+    ip: @NET_2_NETWORK@.57
+    name: rhel-5-cluster-7
+  - hwaddr: @HWADDR_PREFIX@:02:00:58
+    ip: @NET_2_NETWORK@.58
+    name: rhel-5-cluster-8
+  - hwaddr: @HWADDR_PREFIX@:02:00:59
+    ip: @NET_2_NETWORK@.59
+    name: rhel-5-cluster-9
+  - hwaddr: @HWADDR_PREFIX@:02:00:60
+    ip: @NET_2_NETWORK@.60
+    name: rhel-6-luci-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:61
+    ip: @NET_2_NETWORK@.61
+    name: rhel-6-cluster-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:62
+    ip: @NET_2_NETWORK@.62
+    name: rhel-6-cluster-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:63
+    ip: @NET_2_NETWORK@.63
+    name: rhel-6-cluster-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:64
+    ip: @NET_2_NETWORK@.64
+    name: rhel-6-cluster-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:65
+    ip: @NET_2_NETWORK@.65
+    name: rhel-6-cluster-5
+  - hwaddr: @HWADDR_PREFIX@:02:00:66
+    ip: @NET_2_NETWORK@.66
+    name: rhel-6-cluster-6
+  - hwaddr: @HWADDR_PREFIX@:02:00:67
+    ip: @NET_2_NETWORK@.67
+    name: rhel-6-cluster-7
+  - hwaddr: @HWADDR_PREFIX@:02:00:68
+    ip: @NET_2_NETWORK@.68
+    name: rhel-6-cluster-8
+  - hwaddr: @HWADDR_PREFIX@:02:00:69
+    ip: @NET_2_NETWORK@.69
+    name: rhel-6-cluster-9
+  - hwaddr: @HWADDR_PREFIX@:02:00:70
+    ip: @NET_2_NETWORK@.70
+    name: fedora-luci-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:71
+    ip: @NET_2_NETWORK@.71
+    name: fedora-cluster-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:72
+    ip: @NET_2_NETWORK@.72
+    name: fedora-cluster-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:73
+    ip: @NET_2_NETWORK@.73
+    name: fedora-cluster-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:74
+    ip: @NET_2_NETWORK@.74
+    name: fedora-cluster-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:75
+    ip: @NET_2_NETWORK@.75
+    name: fedora-cluster-5
+  - hwaddr: @HWADDR_PREFIX@:02:00:76
+    ip: @NET_2_NETWORK@.76
+    name: fedora-cluster-6
+  - hwaddr: @HWADDR_PREFIX@:02:00:77
+    ip: @NET_2_NETWORK@.77
+    name: fedora-cluster-7
+  - hwaddr: @HWADDR_PREFIX@:02:00:78
+    ip: @NET_2_NETWORK@.78
+    name: fedora-cluster-8
+  - hwaddr: @HWADDR_PREFIX@:02:00:79
+    ip: @NET_2_NETWORK@.79
+    name: fedora-cluster-9
+  - hwaddr: @HWADDR_PREFIX@:02:00:80
+    ip: @NET_2_NETWORK@.80
+    name: rhel-5-mrg-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:81
+    ip: @NET_2_NETWORK@.81
+    name: rhel-5-mrg-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:82
+    ip: @NET_2_NETWORK@.82
+    name: rhel-5-mrg-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:83
+    ip: @NET_2_NETWORK@.83
+    name: rhel-5-mrg-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:84
+    ip: @NET_2_NETWORK@.84
+    name: rhel-5-mrg-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:85
+    ip: @NET_2_NETWORK@.85
+    name: rhel-5-mrg-5
+  - hwaddr: @HWADDR_PREFIX@:02:00:86
+    ip: @NET_2_NETWORK@.86
+    name: rhel-5-mrg-6
+  - hwaddr: @HWADDR_PREFIX@:02:00:87
+    ip: @NET_2_NETWORK@.87
+    name: rhel-5-mrg-7
+  - hwaddr: @HWADDR_PREFIX@:02:00:88
+    ip: @NET_2_NETWORK@.88
+    name: rhel-5-mrg-8
+  - hwaddr: @HWADDR_PREFIX@:02:00:89
+    ip: @NET_2_NETWORK@.89
+    name: rhel-5-mrg-9
+  - hwaddr: @HWADDR_PREFIX@:02:00:90
+    ip: @NET_2_NETWORK@.90
+    name: rhel-5-generic-0
+  - hwaddr: @HWADDR_PREFIX@:02:00:91
+    ip: @NET_2_NETWORK@.91
+    name: rhel-5-generic-1
+  - hwaddr: @HWADDR_PREFIX@:02:00:92
+    ip: @NET_2_NETWORK@.92
+    name: rhel-5-generic-2
+  - hwaddr: @HWADDR_PREFIX@:02:00:93
+    ip: @NET_2_NETWORK@.93
+    name: rhel-5-generic-3
+  - hwaddr: @HWADDR_PREFIX@:02:00:94
+    ip: @NET_2_NETWORK@.94
+    name: rhel-5-generic-4
+  - hwaddr: @HWADDR_PREFIX@:02:00:95
+    ip: @NET_2_NETWORK@.95
+    name: rhel-5-generic-5
+
+
+
