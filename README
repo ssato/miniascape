@@ -29,7 +29,7 @@ Files
 
  * libvirt network definitions: /etc/miniascape/libvirt/*.xml
  * dnsmasq configs: /etc/miniascape/dnsmasq/*.conf
- * dnsmasq init scripts (per libvirt networks): /etc/rc.d/init.d/miniascape-$netname
+ * dnsmasq init scripts per libvirt network: /etc/rc.d/init.d/dnsmasq-$netname
  * misc tools: /usr/libexec/miniascape/*
 
 
@@ -51,6 +51,7 @@ The followings are not included in RHEL. You have to get them from EPEL reposito
  * python-cheetah
  * python-elementtree
  * python-nose
+ * PyYAML
 
 
 

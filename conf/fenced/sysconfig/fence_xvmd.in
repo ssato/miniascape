@@ -1,8 +1,0 @@
-## /etc/sysconfig/fence_xvmd
-
-# Make fence_xvmd only listen on xenbr1
-# EXTRA_DAEMON_OPTS="-I xenbr1"
-
-# Make fence_xvmd only listen on virbr0 and use ipv6
-#EXTRA_DAEMON_OPTS="-I @VIRT_NETWORK_INTERFACE@ -i ipv6"
-EXTRA_DAEMON_OPTS="-I @LIBVIRT_PRIMARY_NETWORK_BRIDGE@"

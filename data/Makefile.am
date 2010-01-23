@@ -1,1 +1,1 @@
-SUBDIRS = kickstart package repackage
+SUBDIRS = templates kickstart package repackage
