@@ -1,0 +1,42 @@
+#! /bin/bash
+#
+# Un-register libvirt network.
+#
+
+netname=$1
+netxml=$netname.xml
+
+if test -z "$netname"; then
+  echo "Usage: $0 NET_NAME"
+  exit 1
+fi
+
+
+/sbin/service libvirtd status 2>/dev/null >/dev/null
+is_libvirtd_running=$?
+
+if test $is_libvirtd_running -ne 0; then
+  echo -ne "libvirtd is not running. Just removing files..."
+
+  rm -f /etc/libvirt/qemu/networks/autostart/$netxml
+  rm -f /etc/libvirt/qemu/networks/$netxml
+
+  echo -ne "Done\n"
+
+  exit 0
+fi
+
+
+net_exists=$(@VIRSH@ net-list --all | sed -nre "s/^($netname).*/\1/p")
+net_active=$(@VIRSH@ net-list | sed -nre "s/^($netname).*/\1/p")
+
+if test -z "$net_exists"; then
+  echo "Network $netname does not exist! Nothing to do."
+  #exit 1
+elif test -z "$net_active"; then
+  @VIRSH@ net-undefine $netname
+else
+  @VIRSH@ net-destroy $netname && @VIRSH@ net-undefine $netname
+fi
+
+# vim:set ft=sh sw=2 ts=2 et ai si sm:
