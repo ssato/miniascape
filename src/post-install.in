@@ -1,7 +1,18 @@
 #! /bin/bash
 set -e
 
+prefix=@prefix@
+libexecdir=@libexecdir@
+
+confdir=@sysconfdir@/@PACKAGE@/networks
+netxml_tmpl=@datadir@/@PACKAGE@/templates/networks/net-x.xml.tmpl
+
+
 for net in net-1 net-2 net-3; do \
+
+    $libexecdir/net-configure.py \
+        --conf $./i/usr/local/etc/miniascape/networks/net-1.yaml --netxml-template ./i/usr/local/share/miniascape/templates/networks/net-x.xml.tmpl --dnsmasq-conf-template ./i/usr/local/share/miniascape/templates/networks/dnsmasq/net-x.conf.tmpl --dnsmasq-hostsfile-template ./i/usr/local/share/miniascape/templates/networks/dnsmasq/net-x.hostsfile.tmpl --netxml o/net-1.xml --dnsmasq-conf o/dnsmasq-net-1.conf --dnsmasq-hostsfile o/dnsmasq-net-1.hostsfile net-1
+
     # FIXME: It does not work. Disabled it temporarily.
     #/usr/libexec/@PACKAGE@/net-install.py install -a /etc/@PACKAGE@/libvirt/networks/$net.xml
     /sbin/service libvirtd status >/dev/null 2>&1 && \
@@ -12,3 +23,5 @@ done
 
 /usr/libexec/@PACKAGE@/hosts_update.py add @LIBVIRT_NETWORK_1_BASE@.1 master.@LIBVIRT_NETWORK_1_DOMAIN@
 
+
+# vim: set sw=4 ts=4 et:
