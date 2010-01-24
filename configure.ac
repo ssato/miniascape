@@ -18,9 +18,9 @@ dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
 AC_SUBST([HWADDR_PREFIX],[54:52:00])
 
 dnl libvirt networks (kept for reference).
-AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([1],[192.168.51],[virbr1],[net-1.local])
-AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([2],[192.168.52],[virbr2],[net-2.local])
-AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([3],[192.168.53],[virbr3],[net-3.local])
+AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([1],[192.168.151],[virbr1],[net-1.local])
+AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([2],[192.168.152],[virbr2],[net-2.local])
+AC_DEFINE_LIBVIRT_SIMPLE_NETWORK([3],[192.168.153],[virbr3],[net-3.local])
 AC_SUBST([LIBVIRT_PRIMARY_NETWORK_BRIDGE],[virbr1])
 
 dnl the server to provide kickstart tree, location and ks.cfg location

@@ -1,382 +1,383 @@
-name: net-1
-forward: nat
-bridge: @LIBVIRT_NETWORK_1_BRIDGE@
-domain: @LIBVIRT_NETWORK_1_DOMAIN@
-gateway: @LIBVIRT_NETWORK_1_BASE@.1
-netmask: 255.255.255.0
+network:
+  name: net-1
+  forward: nat
+  bridge: @LIBVIRT_NETWORK_1_BRIDGE@
+  domain: @LIBVIRT_NETWORK_1_DOMAIN@
+  gateway: @LIBVIRT_NETWORK_1_BASE@.1
+  netmask: 255.255.255.0
 
-libvirt_network_dhcp_enabled: 0
+  libvirt_network_dhcp_enabled: 0
 
-dhcp_start: @LIBVIRT_NETWORK_1_BASE@.200
-dhcp_end: @LIBVIRT_NETWORK_1_BASE@.254
+  dhcp_start: @LIBVIRT_NETWORK_1_BASE@.200
+  dhcp_end: @LIBVIRT_NETWORK_1_BASE@.254
 
-hosts:
-  - hwaddr: @HWADDR_PREFIX@:01:00:10
-    ip: @LIBVIRT_NETWORK_1_BASE@.10
-    name: service-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:11
-    ip: @LIBVIRT_NETWORK_1_BASE@.11
-    name: service-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:12
-    ip: @LIBVIRT_NETWORK_1_BASE@.12
-    name: service-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:13
-    ip: @LIBVIRT_NETWORK_1_BASE@.13
-    name: service-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:14
-    ip: @LIBVIRT_NETWORK_1_BASE@.14
-    name: service-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:15
-    ip: @LIBVIRT_NETWORK_1_BASE@.15
-    name: service-5
-  - hwaddr: @HWADDR_PREFIX@:01:00:16
-    ip: @LIBVIRT_NETWORK_1_BASE@.16
-    name: service-6
-  - hwaddr: @HWADDR_PREFIX@:01:00:17
-    ip: @LIBVIRT_NETWORK_1_BASE@.17
-    name: service-7
-  - hwaddr: @HWADDR_PREFIX@:01:00:18
-    ip: @LIBVIRT_NETWORK_1_BASE@.18
-    name: service-8
-  - hwaddr: @HWADDR_PREFIX@:01:00:19
-    ip: @LIBVIRT_NETWORK_1_BASE@.19
-    name: service-9
-  - hwaddr: @HWADDR_PREFIX@:01:00:20
-    ip: @LIBVIRT_NETWORK_1_BASE@.20
-    name: satellite-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:21
-    ip: @LIBVIRT_NETWORK_1_BASE@.21
-    name: satellite-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:22
-    ip: @LIBVIRT_NETWORK_1_BASE@.22
-    name: satellite-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:23
-    ip: @LIBVIRT_NETWORK_1_BASE@.23
-    name: spacewalk-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:24
-    ip: @LIBVIRT_NETWORK_1_BASE@.24
-    name: spacewalk-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:25
-    ip: @LIBVIRT_NETWORK_1_BASE@.25
-    name: rhnproxy-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:26
-    ip: @LIBVIRT_NETWORK_1_BASE@.26
-    name: rhnproxy-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:27
-    ip: @LIBVIRT_NETWORK_1_BASE@.27
-    name: rhnproxy-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:28
-    ip: @LIBVIRT_NETWORK_1_BASE@.28
-    name: jon-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:29
-    ip: @LIBVIRT_NETWORK_1_BASE@.29
-    name: jon-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:30
-    ip: @LIBVIRT_NETWORK_1_BASE@.30
-    name: jboss-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:31
-    ip: @LIBVIRT_NETWORK_1_BASE@.31
-    name: jboss-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:32
-    ip: @LIBVIRT_NETWORK_1_BASE@.32
-    name: jboss-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:33
-    ip: @LIBVIRT_NETWORK_1_BASE@.33
-    name: jboss-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:34
-    ip: @LIBVIRT_NETWORK_1_BASE@.34
-    name: jboss-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:35
-    ip: @LIBVIRT_NETWORK_1_BASE@.35
-    name: jboss-5
-  - hwaddr: @HWADDR_PREFIX@:01:00:36
-    ip: @LIBVIRT_NETWORK_1_BASE@.36
-    name: jboss-6
-  - hwaddr: @HWADDR_PREFIX@:01:00:37
-    ip: @LIBVIRT_NETWORK_1_BASE@.37
-    name: jboss-7
-  - hwaddr: @HWADDR_PREFIX@:01:00:38
-    ip: @LIBVIRT_NETWORK_1_BASE@.38
-    name: jboss-8
-  - hwaddr: @HWADDR_PREFIX@:01:00:39
-    ip: @LIBVIRT_NETWORK_1_BASE@.39
-    name: jboss-9
-  - hwaddr: @HWADDR_PREFIX@:01:00:40
-    ip: @LIBVIRT_NETWORK_1_BASE@.40
-    name: rhel-4-cluster-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:41
-    ip: @LIBVIRT_NETWORK_1_BASE@.41
-    name: rhel-4-cluster-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:42
-    ip: @LIBVIRT_NETWORK_1_BASE@.42
-    name: rhel-4-cluster-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:43
-    ip: @LIBVIRT_NETWORK_1_BASE@.43
-    name: rhel-4-cluster-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:44
-    ip: @LIBVIRT_NETWORK_1_BASE@.44
-    name: rhel-4-cluster-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:45
-    ip: @LIBVIRT_NETWORK_1_BASE@.45
-    name: rhel-4-cluster-5
-  - hwaddr: @HWADDR_PREFIX@:01:00:50
-    ip: @LIBVIRT_NETWORK_1_BASE@.50
-    name: rhel-5-luci-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:51
-    ip: @LIBVIRT_NETWORK_1_BASE@.51
-    name: rhel-5-cluster-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:52
-    ip: @LIBVIRT_NETWORK_1_BASE@.52
-    name: rhel-5-cluster-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:53
-    ip: @LIBVIRT_NETWORK_1_BASE@.53
-    name: rhel-5-cluster-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:54
-    ip: @LIBVIRT_NETWORK_1_BASE@.54
-    name: rhel-5-cluster-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:55
-    ip: @LIBVIRT_NETWORK_1_BASE@.55
-    name: rhel-5-cluster-5
-  - hwaddr: @HWADDR_PREFIX@:01:00:56
-    ip: @LIBVIRT_NETWORK_1_BASE@.56
-    name: rhel-5-cluster-6
-  - hwaddr: @HWADDR_PREFIX@:01:00:57
-    ip: @LIBVIRT_NETWORK_1_BASE@.57
-    name: rhel-5-cluster-7
-  - hwaddr: @HWADDR_PREFIX@:01:00:58
-    ip: @LIBVIRT_NETWORK_1_BASE@.58
-    name: rhel-5-cluster-8
-  - hwaddr: @HWADDR_PREFIX@:01:00:59
-    ip: @LIBVIRT_NETWORK_1_BASE@.59
-    name: rhel-5-cluster-9
-  - hwaddr: @HWADDR_PREFIX@:01:00:60
-    ip: @LIBVIRT_NETWORK_1_BASE@.60
-    name: rhel-6-luci-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:61
-    ip: @LIBVIRT_NETWORK_1_BASE@.61
-    name: rhel-6-cluster-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:62
-    ip: @LIBVIRT_NETWORK_1_BASE@.62
-    name: rhel-6-cluster-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:63
-    ip: @LIBVIRT_NETWORK_1_BASE@.63
-    name: rhel-6-cluster-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:64
-    ip: @LIBVIRT_NETWORK_1_BASE@.64
-    name: rhel-6-cluster-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:65
-    ip: @LIBVIRT_NETWORK_1_BASE@.65
-    name: rhel-6-cluster-5
-  - hwaddr: @HWADDR_PREFIX@:01:00:66
-    ip: @LIBVIRT_NETWORK_1_BASE@.66
-    name: rhel-6-cluster-6
-  - hwaddr: @HWADDR_PREFIX@:01:00:67
-    ip: @LIBVIRT_NETWORK_1_BASE@.67
-    name: rhel-6-cluster-7
-  - hwaddr: @HWADDR_PREFIX@:01:00:68
-    ip: @LIBVIRT_NETWORK_1_BASE@.68
-    name: rhel-6-cluster-8
-  - hwaddr: @HWADDR_PREFIX@:01:00:69
-    ip: @LIBVIRT_NETWORK_1_BASE@.69
-    name: rhel-6-cluster-9
-  - hwaddr: @HWADDR_PREFIX@:01:00:70
-    ip: @LIBVIRT_NETWORK_1_BASE@.70
-    name: fedora-luci-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:71
-    ip: @LIBVIRT_NETWORK_1_BASE@.71
-    name: fedora-cluster-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:72
-    ip: @LIBVIRT_NETWORK_1_BASE@.72
-    name: fedora-cluster-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:73
-    ip: @LIBVIRT_NETWORK_1_BASE@.73
-    name: fedora-cluster-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:74
-    ip: @LIBVIRT_NETWORK_1_BASE@.74
-    name: fedora-cluster-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:75
-    ip: @LIBVIRT_NETWORK_1_BASE@.75
-    name: fedora-cluster-5
-  - hwaddr: @HWADDR_PREFIX@:01:00:76
-    ip: @LIBVIRT_NETWORK_1_BASE@.76
-    name: fedora-cluster-6
-  - hwaddr: @HWADDR_PREFIX@:01:00:77
-    ip: @LIBVIRT_NETWORK_1_BASE@.77
-    name: fedora-cluster-7
-  - hwaddr: @HWADDR_PREFIX@:01:00:78
-    ip: @LIBVIRT_NETWORK_1_BASE@.78
-    name: fedora-cluster-8
-  - hwaddr: @HWADDR_PREFIX@:01:00:79
-    ip: @LIBVIRT_NETWORK_1_BASE@.79
-    name: fedora-cluster-9
-  - hwaddr: @HWADDR_PREFIX@:01:00:80
-    ip: @LIBVIRT_NETWORK_1_BASE@.80
-    name: rhel-5-mrg-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:81
-    ip: @LIBVIRT_NETWORK_1_BASE@.81
-    name: rhel-5-mrg-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:82
-    ip: @LIBVIRT_NETWORK_1_BASE@.82
-    name: rhel-5-mrg-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:83
-    ip: @LIBVIRT_NETWORK_1_BASE@.83
-    name: rhel-5-mrg-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:84
-    ip: @LIBVIRT_NETWORK_1_BASE@.84
-    name: rhel-5-mrg-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:85
-    ip: @LIBVIRT_NETWORK_1_BASE@.85
-    name: rhel-5-mrg-5
-  - hwaddr: @HWADDR_PREFIX@:01:00:86
-    ip: @LIBVIRT_NETWORK_1_BASE@.86
-    name: rhel-5-mrg-6
-  - hwaddr: @HWADDR_PREFIX@:01:00:87
-    ip: @LIBVIRT_NETWORK_1_BASE@.87
-    name: rhel-5-mrg-7
-  - hwaddr: @HWADDR_PREFIX@:01:00:88
-    ip: @LIBVIRT_NETWORK_1_BASE@.88
-    name: rhel-5-mrg-8
-  - hwaddr: @HWADDR_PREFIX@:01:00:89
-    ip: @LIBVIRT_NETWORK_1_BASE@.89
-    name: rhel-5-mrg-9
-  - hwaddr: @HWADDR_PREFIX@:01:00:90
-    ip: @LIBVIRT_NETWORK_1_BASE@.90
-    name: rhel-5-generic-0
-  - hwaddr: @HWADDR_PREFIX@:01:00:91
-    ip: @LIBVIRT_NETWORK_1_BASE@.91
-    name: rhel-5-generic-1
-  - hwaddr: @HWADDR_PREFIX@:01:00:92
-    ip: @LIBVIRT_NETWORK_1_BASE@.92
-    name: rhel-5-generic-2
-  - hwaddr: @HWADDR_PREFIX@:01:00:93
-    ip: @LIBVIRT_NETWORK_1_BASE@.93
-    name: rhel-5-generic-3
-  - hwaddr: @HWADDR_PREFIX@:01:00:94
-    ip: @LIBVIRT_NETWORK_1_BASE@.94
-    name: rhel-5-generic-4
-  - hwaddr: @HWADDR_PREFIX@:01:00:95
-    ip: @LIBVIRT_NETWORK_1_BASE@.95
-    name: rhel-5-generic-5
-  - hwaddr: @HWADDR_PREFIX@:01:01:25
-    ip: @LIBVIRT_NETWORK_1_BASE@.125
-    name: rhel-21-5-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:26
-    ip: @LIBVIRT_NETWORK_1_BASE@.126
-    name: rhel-21-6-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:30
-    ip: @LIBVIRT_NETWORK_1_BASE@.130
-    name: rhel-3-0-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:31
-    ip: @LIBVIRT_NETWORK_1_BASE@.131
-    name: rhel-3-1-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:32
-    ip: @LIBVIRT_NETWORK_1_BASE@.132
-    name: rhel-3-2-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:33
-    ip: @LIBVIRT_NETWORK_1_BASE@.133
-    name: rhel-3-3-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:34
-    ip: @LIBVIRT_NETWORK_1_BASE@.134
-    name: rhel-3-4-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:35
-    ip: @LIBVIRT_NETWORK_1_BASE@.135
-    name: rhel-3-5-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:36
-    ip: @LIBVIRT_NETWORK_1_BASE@.136
-    name: rhel-3-6-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:37
-    ip: @LIBVIRT_NETWORK_1_BASE@.137
-    name: rhel-3-7-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:38
-    ip: @LIBVIRT_NETWORK_1_BASE@.138
-    name: rhel-3-8-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:39
-    ip: @LIBVIRT_NETWORK_1_BASE@.139
-    name: rhel-3-9-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:40
-    ip: @LIBVIRT_NETWORK_1_BASE@.140
-    name: rhel-4-0-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:41
-    ip: @LIBVIRT_NETWORK_1_BASE@.141
-    name: rhel-4-1-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:42
-    ip: @LIBVIRT_NETWORK_1_BASE@.142
-    name: rhel-4-2-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:43
-    ip: @LIBVIRT_NETWORK_1_BASE@.143
-    name: rhel-4-3-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:44
-    ip: @LIBVIRT_NETWORK_1_BASE@.144
-    name: rhel-4-4-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:45
-    ip: @LIBVIRT_NETWORK_1_BASE@.145
-    name: rhel-4-5-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:46
-    ip: @LIBVIRT_NETWORK_1_BASE@.146
-    name: rhel-4-6-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:47
-    ip: @LIBVIRT_NETWORK_1_BASE@.147
-    name: rhel-4-7-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:48
-    ip: @LIBVIRT_NETWORK_1_BASE@.148
-    name: rhel-4-8-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:49
-    ip: @LIBVIRT_NETWORK_1_BASE@.149
-    name: rhel-4-9-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:50
-    ip: @LIBVIRT_NETWORK_1_BASE@.150
-    name: rhel-5-0-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:51
-    ip: @LIBVIRT_NETWORK_1_BASE@.151
-    name: rhel-5-1-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:52
-    ip: @LIBVIRT_NETWORK_1_BASE@.152
-    name: rhel-5-2-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:53
-    ip: @LIBVIRT_NETWORK_1_BASE@.153
-    name: rhel-5-3-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:54
-    ip: @LIBVIRT_NETWORK_1_BASE@.154
-    name: rhel-5-4-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:55
-    ip: @LIBVIRT_NETWORK_1_BASE@.155
-    name: rhel-5-5-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:60
-    ip: @LIBVIRT_NETWORK_1_BASE@.160
-    name: rhel-6-0-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:61
-    ip: @LIBVIRT_NETWORK_1_BASE@.161
-    name: rhel-6-1-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:62
-    ip: @LIBVIRT_NETWORK_1_BASE@.162
-    name: rhel-6-2-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:63
-    ip: @LIBVIRT_NETWORK_1_BASE@.163
-    name: rhel-6-3-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:64
-    ip: @LIBVIRT_NETWORK_1_BASE@.164
-    name: rhel-6-4-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:65
-    ip: @LIBVIRT_NETWORK_1_BASE@.165
-    name: rhel-6-5-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:80
-    ip: @LIBVIRT_NETWORK_1_BASE@.180
-    name: fedora-guest-0
-  - hwaddr: @HWADDR_PREFIX@:01:01:81
-    ip: @LIBVIRT_NETWORK_1_BASE@.181
-    name: fedora-11-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:82
-    ip: @LIBVIRT_NETWORK_1_BASE@.182
-    name: fedora-12-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:83
-    ip: @LIBVIRT_NETWORK_1_BASE@.183
-    name: fedora-13-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:84
-    ip: @LIBVIRT_NETWORK_1_BASE@.184
-    name: fedora-14-guest-1
-  - hwaddr: @HWADDR_PREFIX@:01:01:85
-    ip: @LIBVIRT_NETWORK_1_BASE@.185
-    name: fedora-15-guest-1
+  hosts:
+    - hwaddr: "@HWADDR_PREFIX@:01:00:10"
+      ip: @LIBVIRT_NETWORK_1_BASE@.10
+      name: service-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:11"
+      ip: @LIBVIRT_NETWORK_1_BASE@.11
+      name: service-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:12"
+      ip: @LIBVIRT_NETWORK_1_BASE@.12
+      name: service-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:13"
+      ip: @LIBVIRT_NETWORK_1_BASE@.13
+      name: service-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:14"
+      ip: @LIBVIRT_NETWORK_1_BASE@.14
+      name: service-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:15"
+      ip: @LIBVIRT_NETWORK_1_BASE@.15
+      name: service-5
+    - hwaddr: "@HWADDR_PREFIX@:01:00:16"
+      ip: @LIBVIRT_NETWORK_1_BASE@.16
+      name: service-6
+    - hwaddr: "@HWADDR_PREFIX@:01:00:17"
+      ip: @LIBVIRT_NETWORK_1_BASE@.17
+      name: service-7
+    - hwaddr: "@HWADDR_PREFIX@:01:00:18"
+      ip: @LIBVIRT_NETWORK_1_BASE@.18
+      name: service-8
+    - hwaddr: "@HWADDR_PREFIX@:01:00:19"
+      ip: @LIBVIRT_NETWORK_1_BASE@.19
+      name: service-9
+    - hwaddr: "@HWADDR_PREFIX@:01:00:20"
+      ip: @LIBVIRT_NETWORK_1_BASE@.20
+      name: satellite-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:21"
+      ip: @LIBVIRT_NETWORK_1_BASE@.21
+      name: satellite-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:22"
+      ip: @LIBVIRT_NETWORK_1_BASE@.22
+      name: satellite-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:23"
+      ip: @LIBVIRT_NETWORK_1_BASE@.23
+      name: spacewalk-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:24"
+      ip: @LIBVIRT_NETWORK_1_BASE@.24
+      name: spacewalk-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:25"
+      ip: @LIBVIRT_NETWORK_1_BASE@.25
+      name: rhnproxy-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:26"
+      ip: @LIBVIRT_NETWORK_1_BASE@.26
+      name: rhnproxy-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:27"
+      ip: @LIBVIRT_NETWORK_1_BASE@.27
+      name: rhnproxy-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:28"
+      ip: @LIBVIRT_NETWORK_1_BASE@.28
+      name: jon-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:29"
+      ip: @LIBVIRT_NETWORK_1_BASE@.29
+      name: jon-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:30"
+      ip: @LIBVIRT_NETWORK_1_BASE@.30
+      name: jboss-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:31"
+      ip: @LIBVIRT_NETWORK_1_BASE@.31
+      name: jboss-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:32"
+      ip: @LIBVIRT_NETWORK_1_BASE@.32
+      name: jboss-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:33"
+      ip: @LIBVIRT_NETWORK_1_BASE@.33
+      name: jboss-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:34"
+      ip: @LIBVIRT_NETWORK_1_BASE@.34
+      name: jboss-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:35"
+      ip: @LIBVIRT_NETWORK_1_BASE@.35
+      name: jboss-5
+    - hwaddr: "@HWADDR_PREFIX@:01:00:36"
+      ip: @LIBVIRT_NETWORK_1_BASE@.36
+      name: jboss-6
+    - hwaddr: "@HWADDR_PREFIX@:01:00:37"
+      ip: @LIBVIRT_NETWORK_1_BASE@.37
+      name: jboss-7
+    - hwaddr: "@HWADDR_PREFIX@:01:00:38"
+      ip: @LIBVIRT_NETWORK_1_BASE@.38
+      name: jboss-8
+    - hwaddr: "@HWADDR_PREFIX@:01:00:39"
+      ip: @LIBVIRT_NETWORK_1_BASE@.39
+      name: jboss-9
+    - hwaddr: "@HWADDR_PREFIX@:01:00:40"
+      ip: @LIBVIRT_NETWORK_1_BASE@.40
+      name: rhel-4-cluster-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:41"
+      ip: @LIBVIRT_NETWORK_1_BASE@.41
+      name: rhel-4-cluster-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:42"
+      ip: @LIBVIRT_NETWORK_1_BASE@.42
+      name: rhel-4-cluster-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:43"
+      ip: @LIBVIRT_NETWORK_1_BASE@.43
+      name: rhel-4-cluster-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:44"
+      ip: @LIBVIRT_NETWORK_1_BASE@.44
+      name: rhel-4-cluster-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:45"
+      ip: @LIBVIRT_NETWORK_1_BASE@.45
+      name: rhel-4-cluster-5
+    - hwaddr: "@HWADDR_PREFIX@:01:00:50"
+      ip: @LIBVIRT_NETWORK_1_BASE@.50
+      name: rhel-5-luci-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:51"
+      ip: @LIBVIRT_NETWORK_1_BASE@.51
+      name: rhel-5-cluster-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:52"
+      ip: @LIBVIRT_NETWORK_1_BASE@.52
+      name: rhel-5-cluster-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:53"
+      ip: @LIBVIRT_NETWORK_1_BASE@.53
+      name: rhel-5-cluster-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:54"
+      ip: @LIBVIRT_NETWORK_1_BASE@.54
+      name: rhel-5-cluster-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:55"
+      ip: @LIBVIRT_NETWORK_1_BASE@.55
+      name: rhel-5-cluster-5
+    - hwaddr: "@HWADDR_PREFIX@:01:00:56"
+      ip: @LIBVIRT_NETWORK_1_BASE@.56
+      name: rhel-5-cluster-6
+    - hwaddr: "@HWADDR_PREFIX@:01:00:57"
+      ip: @LIBVIRT_NETWORK_1_BASE@.57
+      name: rhel-5-cluster-7
+    - hwaddr: "@HWADDR_PREFIX@:01:00:58"
+      ip: @LIBVIRT_NETWORK_1_BASE@.58
+      name: rhel-5-cluster-8
+    - hwaddr: "@HWADDR_PREFIX@:01:00:59"
+      ip: @LIBVIRT_NETWORK_1_BASE@.59
+      name: rhel-5-cluster-9
+    - hwaddr: "@HWADDR_PREFIX@:01:00:60"
+      ip: @LIBVIRT_NETWORK_1_BASE@.60
+      name: rhel-6-luci-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:61"
+      ip: @LIBVIRT_NETWORK_1_BASE@.61
+      name: rhel-6-cluster-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:62"
+      ip: @LIBVIRT_NETWORK_1_BASE@.62
+      name: rhel-6-cluster-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:63"
+      ip: @LIBVIRT_NETWORK_1_BASE@.63
+      name: rhel-6-cluster-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:64"
+      ip: @LIBVIRT_NETWORK_1_BASE@.64
+      name: rhel-6-cluster-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:65"
+      ip: @LIBVIRT_NETWORK_1_BASE@.65
+      name: rhel-6-cluster-5
+    - hwaddr: "@HWADDR_PREFIX@:01:00:66"
+      ip: @LIBVIRT_NETWORK_1_BASE@.66
+      name: rhel-6-cluster-6
+    - hwaddr: "@HWADDR_PREFIX@:01:00:67"
+      ip: @LIBVIRT_NETWORK_1_BASE@.67
+      name: rhel-6-cluster-7
+    - hwaddr: "@HWADDR_PREFIX@:01:00:68"
+      ip: @LIBVIRT_NETWORK_1_BASE@.68
+      name: rhel-6-cluster-8
+    - hwaddr: "@HWADDR_PREFIX@:01:00:69"
+      ip: @LIBVIRT_NETWORK_1_BASE@.69
+      name: rhel-6-cluster-9
+    - hwaddr: "@HWADDR_PREFIX@:01:00:70"
+      ip: @LIBVIRT_NETWORK_1_BASE@.70
+      name: fedora-luci-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:71"
+      ip: @LIBVIRT_NETWORK_1_BASE@.71
+      name: fedora-cluster-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:72"
+      ip: @LIBVIRT_NETWORK_1_BASE@.72
+      name: fedora-cluster-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:73"
+      ip: @LIBVIRT_NETWORK_1_BASE@.73
+      name: fedora-cluster-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:74"
+      ip: @LIBVIRT_NETWORK_1_BASE@.74
+      name: fedora-cluster-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:75"
+      ip: @LIBVIRT_NETWORK_1_BASE@.75
+      name: fedora-cluster-5
+    - hwaddr: "@HWADDR_PREFIX@:01:00:76"
+      ip: @LIBVIRT_NETWORK_1_BASE@.76
+      name: fedora-cluster-6
+    - hwaddr: "@HWADDR_PREFIX@:01:00:77"
+      ip: @LIBVIRT_NETWORK_1_BASE@.77
+      name: fedora-cluster-7
+    - hwaddr: "@HWADDR_PREFIX@:01:00:78"
+      ip: @LIBVIRT_NETWORK_1_BASE@.78
+      name: fedora-cluster-8
+    - hwaddr: "@HWADDR_PREFIX@:01:00:79"
+      ip: @LIBVIRT_NETWORK_1_BASE@.79
+      name: fedora-cluster-9
+    - hwaddr: "@HWADDR_PREFIX@:01:00:80"
+      ip: @LIBVIRT_NETWORK_1_BASE@.80
+      name: rhel-5-mrg-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:81"
+      ip: @LIBVIRT_NETWORK_1_BASE@.81
+      name: rhel-5-mrg-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:82"
+      ip: @LIBVIRT_NETWORK_1_BASE@.82
+      name: rhel-5-mrg-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:83"
+      ip: @LIBVIRT_NETWORK_1_BASE@.83
+      name: rhel-5-mrg-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:84"
+      ip: @LIBVIRT_NETWORK_1_BASE@.84
+      name: rhel-5-mrg-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:85"
+      ip: @LIBVIRT_NETWORK_1_BASE@.85
+      name: rhel-5-mrg-5
+    - hwaddr: "@HWADDR_PREFIX@:01:00:86"
+      ip: @LIBVIRT_NETWORK_1_BASE@.86
+      name: rhel-5-mrg-6
+    - hwaddr: "@HWADDR_PREFIX@:01:00:87"
+      ip: @LIBVIRT_NETWORK_1_BASE@.87
+      name: rhel-5-mrg-7
+    - hwaddr: "@HWADDR_PREFIX@:01:00:88"
+      ip: @LIBVIRT_NETWORK_1_BASE@.88
+      name: rhel-5-mrg-8
+    - hwaddr: "@HWADDR_PREFIX@:01:00:89"
+      ip: @LIBVIRT_NETWORK_1_BASE@.89
+      name: rhel-5-mrg-9
+    - hwaddr: "@HWADDR_PREFIX@:01:00:90"
+      ip: @LIBVIRT_NETWORK_1_BASE@.90
+      name: rhel-5-generic-0
+    - hwaddr: "@HWADDR_PREFIX@:01:00:91"
+      ip: @LIBVIRT_NETWORK_1_BASE@.91
+      name: rhel-5-generic-1
+    - hwaddr: "@HWADDR_PREFIX@:01:00:92"
+      ip: @LIBVIRT_NETWORK_1_BASE@.92
+      name: rhel-5-generic-2
+    - hwaddr: "@HWADDR_PREFIX@:01:00:93"
+      ip: @LIBVIRT_NETWORK_1_BASE@.93
+      name: rhel-5-generic-3
+    - hwaddr: "@HWADDR_PREFIX@:01:00:94"
+      ip: @LIBVIRT_NETWORK_1_BASE@.94
+      name: rhel-5-generic-4
+    - hwaddr: "@HWADDR_PREFIX@:01:00:95"
+      ip: @LIBVIRT_NETWORK_1_BASE@.95
+      name: rhel-5-generic-5
+    - hwaddr: "@HWADDR_PREFIX@:01:01:25"
+      ip: @LIBVIRT_NETWORK_1_BASE@.125
+      name: rhel-21-5-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:26"
+      ip: @LIBVIRT_NETWORK_1_BASE@.126
+      name: rhel-21-6-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:30"
+      ip: @LIBVIRT_NETWORK_1_BASE@.130
+      name: rhel-3-0-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:31"
+      ip: @LIBVIRT_NETWORK_1_BASE@.131
+      name: rhel-3-1-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:32"
+      ip: @LIBVIRT_NETWORK_1_BASE@.132
+      name: rhel-3-2-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:33"
+      ip: @LIBVIRT_NETWORK_1_BASE@.133
+      name: rhel-3-3-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:34"
+      ip: @LIBVIRT_NETWORK_1_BASE@.134
+      name: rhel-3-4-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:35"
+      ip: @LIBVIRT_NETWORK_1_BASE@.135
+      name: rhel-3-5-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:36"
+      ip: @LIBVIRT_NETWORK_1_BASE@.136
+      name: rhel-3-6-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:37"
+      ip: @LIBVIRT_NETWORK_1_BASE@.137
+      name: rhel-3-7-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:38"
+      ip: @LIBVIRT_NETWORK_1_BASE@.138
+      name: rhel-3-8-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:39"
+      ip: @LIBVIRT_NETWORK_1_BASE@.139
+      name: rhel-3-9-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:40"
+      ip: @LIBVIRT_NETWORK_1_BASE@.140
+      name: rhel-4-0-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:41"
+      ip: @LIBVIRT_NETWORK_1_BASE@.141
+      name: rhel-4-1-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:42"
+      ip: @LIBVIRT_NETWORK_1_BASE@.142
+      name: rhel-4-2-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:43"
+      ip: @LIBVIRT_NETWORK_1_BASE@.143
+      name: rhel-4-3-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:44"
+      ip: @LIBVIRT_NETWORK_1_BASE@.144
+      name: rhel-4-4-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:45"
+      ip: @LIBVIRT_NETWORK_1_BASE@.145
+      name: rhel-4-5-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:46"
+      ip: @LIBVIRT_NETWORK_1_BASE@.146
+      name: rhel-4-6-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:47"
+      ip: @LIBVIRT_NETWORK_1_BASE@.147
+      name: rhel-4-7-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:48"
+      ip: @LIBVIRT_NETWORK_1_BASE@.148
+      name: rhel-4-8-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:49"
+      ip: @LIBVIRT_NETWORK_1_BASE@.149
+      name: rhel-4-9-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:50"
+      ip: @LIBVIRT_NETWORK_1_BASE@.150
+      name: rhel-5-0-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:51"
+      ip: @LIBVIRT_NETWORK_1_BASE@.151
+      name: rhel-5-1-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:52"
+      ip: @LIBVIRT_NETWORK_1_BASE@.152
+      name: rhel-5-2-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:53"
+      ip: @LIBVIRT_NETWORK_1_BASE@.153
+      name: rhel-5-3-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:54"
+      ip: @LIBVIRT_NETWORK_1_BASE@.154
+      name: rhel-5-4-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:55"
+      ip: @LIBVIRT_NETWORK_1_BASE@.155
+      name: rhel-5-5-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:60"
+      ip: @LIBVIRT_NETWORK_1_BASE@.160
+      name: rhel-6-0-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:61"
+      ip: @LIBVIRT_NETWORK_1_BASE@.161
+      name: rhel-6-1-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:62"
+      ip: @LIBVIRT_NETWORK_1_BASE@.162
+      name: rhel-6-2-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:63"
+      ip: @LIBVIRT_NETWORK_1_BASE@.163
+      name: rhel-6-3-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:64"
+      ip: @LIBVIRT_NETWORK_1_BASE@.164
+      name: rhel-6-4-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:65"
+      ip: @LIBVIRT_NETWORK_1_BASE@.165
+      name: rhel-6-5-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:80"
+      ip: @LIBVIRT_NETWORK_1_BASE@.180
+      name: fedora-guest-0
+    - hwaddr: "@HWADDR_PREFIX@:01:01:81"
+      ip: @LIBVIRT_NETWORK_1_BASE@.181
+      name: fedora-11-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:82"
+      ip: @LIBVIRT_NETWORK_1_BASE@.182
+      name: fedora-12-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:83"
+      ip: @LIBVIRT_NETWORK_1_BASE@.183
+      name: fedora-13-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:84"
+      ip: @LIBVIRT_NETWORK_1_BASE@.184
+      name: fedora-14-guest-1
+    - hwaddr: "@HWADDR_PREFIX@:01:01:85"
+      ip: @LIBVIRT_NETWORK_1_BASE@.185
+      name: fedora-15-guest-1
 
 
 
