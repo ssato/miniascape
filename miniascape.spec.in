@@ -1,7 +1,7 @@
 Name:           @PACKAGE@
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        Libvirt network infrastructure for guest domains
+Summary:        Micro cloud build tools and runtime environments
 Group:          Development/System
 License:        GPLv3+
 URL:            http://github.com/ssato/@PACKAGE@
@@ -11,21 +11,23 @@ Source0:        %{name}-%{version}.tar.@SOURCE_ZIP_EXT@
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
 BuildRequires:  python
-BuildRequires:  python-nose
-BuildRequires:  python-augeas
-BuildRequires:  pyxattr
-BuildRequires:  libvirt-python
-BuildRequires:  autoconf
-BuildRequires:  automake
-BuildRequires:  rpm-build
-BuildRequires:  qemu-img
-Requires:       /etc/rc.d/init.d/libvirtd
+## Needed for 'make check':
+#BuildRequires:  python-nose
+#BuildRequires:  python-augeas
+#BuildRequires:  pyxattr
+#BuildRequires:  libvirt-python
+#BuildRequires:  autoconf
+#BuildRequires:  automake
+#BuildRequires:  rpm-build
+#BuildRequires:  qemu-img
+Requires:       autoconf
+Requires:       automake
+Requires:       libvirt
 Requires:       libvirt-python
-Requires:       python-augeas
+#Requires:       python-augeas
 Requires:       pyxattr
 Requires:       rpm-build
 Requires:       qemu-img
-#Obsoletes:      virt-networks
 
 
 %description
@@ -52,7 +54,7 @@ Cluster related configurations for guest cluster nodes
 %build
 %configure --with-rhel-installation-key='@RHEL_INSTALLATION_KEY@' --with-password='@KICKSTART_PASSWORD@'
 make %{?_smp_mflags}
-make check
+#make check
 
 
 %install
@@ -88,17 +90,14 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc README
-%dir %{_sysconfdir}/@PACKAGE@/libvirt/domains
-%dir %{_localstatedir}/run/@PACKAGE@
-%dir %{_localstatedir}/run/@PACKAGE@/dnsmasq
-%config %{_sysconfdir}/@PACKAGE@/dnsmasq/*
-%config %{_sysconfdir}/@PACKAGE@/libvirt/networks/*
+%dir %{_localstatedir}/lib/@PACKAGE@
+%config %{_sysconfdir}/@PACKAGE@/networks/*
 %config %{_sysconfdir}/nginx/conf.d/*
-%{_sysconfdir}/rc.d/init.d/miniascape-*
+%{_sysconfdir}/rc.d/init.d/dnsmasq-*
 %{_libexecdir}/@PACKAGE@/*
 %{_datadir}/@PACKAGE@/*
 %{_datadir}/@PACKAGE@/*/*
-%{_localstatedir}/lib/@PACKAGE@/dnsmasq/*
+%{_datadir}/@PACKAGE@/*/*/*
 
 
 %files  cluster
