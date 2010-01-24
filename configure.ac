@@ -82,8 +82,8 @@ src/package.py
 src/post-install
 src/post-update
 src/pre-uninstall
-src/virt-net-register
-src/virt-net-unregister
+src/net-register
+src/net-unregister
 tests/Makefile
 tests/src/Makefile
 tests/src/globals.py
