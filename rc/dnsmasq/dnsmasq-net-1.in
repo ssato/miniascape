@@ -38,8 +38,8 @@ fi
 
 NETWORK=net-1
 
-CONFIG=/var/lib/@PACKAGE@/dnsmasq/$NETWORK.conf
-HOSTSFILE=/var/lib/@PACKAGE@/dnsmasq/$NETWORK.hostsfile
+CONFIG=/var/lib/@PACKAGE@/networks/dnsmasq/$NETWORK.conf
+HOSTSFILE=/var/lib/@PACKAGE@/networks/dnsmasq/$NETWORK.hostsfile
 PIDFILE=/var/run/dnsmasq-$NETWORK.pid
 LOCKFILE=/var/lock/subsys/dnsmasq-$NETWORK
 
