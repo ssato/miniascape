@@ -6,5 +6,5 @@ SUBDIRS = dnsmasq
 
 temploutdir = @localstatedir@/lib/@PACKAGE@/networks
 install-data-hook:
-	$(MKDIR_P) $(temploutdir)
+	$(MKDIR_P) $(DESTDIR)$(temploutdir)
 

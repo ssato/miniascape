@@ -1,1 +1,1 @@
-SUBDIRS = networks fenced
+SUBDIRS = kickstart networks fenced

@@ -38,21 +38,18 @@ fi
 
 NETWORK=net-1
 
-CONFIG=/etc/@PACKAGE@/dnsmasq/$NETWORK.conf
+CONFIG=/var/lib/@PACKAGE@/dnsmasq/$NETWORK.conf
 HOSTSFILE=/var/lib/@PACKAGE@/dnsmasq/$NETWORK.hostsfile
-PIDFILE=/var/run/@PACKAGE@/dnsmasq/$NETWORK.pid
-LOCKFILE=/var/lock/subsys/dnsmasq-net-1
+PIDFILE=/var/run/dnsmasq-$NETWORK.pid
+LOCKFILE=/var/lock/subsys/dnsmasq-$NETWORK
 
-OPTIONS="--conf-file=$CONFIG --pid-file=$PIDFILE"
+OPTIONS="--conf-file=$CONFIG --pid-file=$PIDFILE --dhcp-hostsfile=$HOSTSFILE"
 
 if test ! -f $CONFIG; then
     echo -n $"$0: CONFIG '$CONFIG' does not exist."; warning; echo
     exit 5
 fi
-
-if test -s $HOSTSFILE; then
-    OPTIONS="$OPTIONS --dhcp-hostsfile=$HOSTSFILE"
-else
+if test ! -f $HOSTSFILE; then
     echo -n $"$0: dhcp hostsfile '$HOSTSFILE' does not exist or zero contents."; warning; echo
 fi
 
