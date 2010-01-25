@@ -19,17 +19,19 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 #
-# @see http://www.augeas.net/tour.html
-# @see http://www.augeas.net/docs/api.html
+# @see http://pyyaml.org/wiki/PyYAMLDocumentation
+# @see http://cheetahtemplate.org/learn.html
+# @see http://libvirt.org/formatnetwork.html
+# @see http://www.thekelleys.org.uk/dnsmasq/doc.html
+# @see http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
 #
 
+import Cheetah.Template
 import errno
 import optparse
 import os
 import sys
 import yaml  # PyYAML
-
-from Cheetah.Template import Template
 
 
 # FIXME: These should be dynamically configured at './configure' time.
@@ -44,7 +46,7 @@ DNSMASQ_CONF_DIR = '/var/lib/miniascape/dnsmasq'
 
 
 def compile(template_path, params):
-    tmpl = Template(file=template_path, searchList=params)
+    tmpl = Cheetah.Template.Template(file=template_path, searchList=params)
     return tmpl.respond()
 
 
