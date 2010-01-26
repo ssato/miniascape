@@ -1,2 +1,5 @@
+if USE_APACHE
+SUBDIRS = apache
+else
 SUBDIRS = nginx
-SUBDIRS += apache
+endif

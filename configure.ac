@@ -6,7 +6,11 @@ AC_PROG_QEMU_IMG
 AC_PROG_RPMBUILD
 AC_PATH_PROG([PYTHON],[python])
 AC_PROG_VIRSH
-AC_CHECK_SOURCE_ZIP
+
+dnl Disabled for a while; xz is not available on RHEL 5.
+dnl AC_CHECK_SOURCE_ZIP
+AC_SUBST([SOURCE_ZIP],[gzip])
+AC_SUBST([SOURCE_ZIP_EXT],[gz])
 
 dnl FIXME: want to make it configurable
 AC_SUBST([PACKAGE_DATA_DIR],[/usr/share/miniascape])
@@ -33,7 +37,9 @@ dnl ks password
 AC_DEFINE_KICKSTART_PASSWORD([])
 
 dnl http backend
-AC_HTTPD_BACKEND
+dnl AC_HTTPD_BACKEND
+httpd_backend="nginx"dnl or 'apache'
+AM_CONDITIONAL([USE_APACHE],[test x$httpd_backend = "xapache"])
 
 
 AC_OUTPUT([
