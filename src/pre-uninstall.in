@@ -2,6 +2,7 @@
 set -e
 
 prefix=@prefix@
+exec_prefix=@exec_prefix@
 libexecdir=@libexecdir@
 
 for net in net-1 net-2 net-3; do
