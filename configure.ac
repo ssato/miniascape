@@ -38,7 +38,7 @@ AC_DEFINE_KICKSTART_PASSWORD([])
 
 dnl http backend
 dnl AC_HTTPD_BACKEND
-httpd_backend="nginx"dnl or 'apache'
+httpd_backend="nginx"
 AM_CONDITIONAL([USE_APACHE],[test x$httpd_backend = "xapache"])
 
 
