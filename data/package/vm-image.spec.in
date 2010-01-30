@@ -17,9 +17,8 @@ Source0:        %{name}-%{version}.tar.@SOURCE_ZIP_EXT@
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      @ARCH@
 Requires:       @VIRSH@
-Requires:       augeas
-Requires:       qemu-img
 Requires:       miniascape
+Requires:       /usr/bin/qemu-img
 Requires:       /sbin/service
 Provides:       vm-@DOMAIN_NAME@
 

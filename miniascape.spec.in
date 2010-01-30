@@ -15,11 +15,11 @@ BuildRequires:  python
 #BuildRequires:  python-nose
 #BuildRequires:  python-augeas
 #BuildRequires:  pyxattr
-#BuildRequires:  libvirt-python
+BuildRequires:  libvirt-python
 #BuildRequires:  autoconf
 #BuildRequires:  automake
-#BuildRequires:  rpm-build
-#BuildRequires:  qemu-img
+BuildRequires:  rpm-build
+BuildRequires:  /usr/bin/qemu-img
 Requires:       autoconf
 Requires:       automake
 Requires:       libvirt
@@ -27,7 +27,7 @@ Requires:       libvirt-python
 #Requires:       python-augeas
 Requires:       pyxattr
 Requires:       rpm-build
-Requires:       qemu-img
+Requires:       /usr/bin/qemu-img
 
 
 %description
@@ -91,6 +91,8 @@ fi
 %defattr(-,root,root,-)
 %doc README
 %dir %{_localstatedir}/lib/@PACKAGE@
+%dir %{_localstatedir}/lib/@PACKAGE@/networks
+%dir %{_localstatedir}/lib/@PACKAGE@/networks/dnsmasq
 %config %{_sysconfdir}/@PACKAGE@/networks/*
 %config %{_sysconfdir}/nginx/conf.d/*
 %{_sysconfdir}/rc.d/init.d/dnsmasq-*

@@ -62,6 +62,8 @@ conf/kickstart/nginx/Makefile
 conf/kickstart/nginx/kickstart.conf
 data/Makefile
 data/kickstart/Makefile
+data/kickstart/debian/Makefile
+data/kickstart/debian/lenny-preseed.cfg
 data/kickstart/rhel/Makefile
 data/kickstart/rhel/rhel-6-0-i386-min.ks.cfg
 data/kickstart/rhel/rhel-5-cluster.ks.cfg

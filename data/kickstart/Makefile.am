@@ -1,1 +1,1 @@
-SUBDIRS = rhel
+SUBDIRS = rhel debian

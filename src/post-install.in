@@ -7,7 +7,7 @@ libexecdir=@libexecdir@
 
 confdir=@sysconfdir@/@PACKAGE@/networks
 tmpldir=@datadir@/@PACKAGE@/templates/networks
-outdir=@localstatedir@/@PACKAGE@/networks
+outdir=@localstatedir@/lib/@PACKAGE@/networks
 
 virsh=@VIRSH@
 
@@ -26,14 +26,14 @@ for net in net-1 net-2 net-3; do \
     dnsmasq=dnsmasq-$net
 
     # 1. create network xml
-    $libexecdir/net-configure.py --conf $conf \
+    $libexecdir/@PACKAGE@/net-configure.py --conf $conf \
         --netxml-template $netxml_tmpl --dnsmasq-conf-template $dnsmasq_conf_tmpl \
             --dnsmasq-hostsfile-template $dnsmasq_hostsfile_tmpl \
         --netxml $netxml --dnsmasq-conf $dnsmasq_conf --dnsmasq-hostsfile $dnsmasq_hostsfile \
         $net
 
     # 2. register network
-    $libexecdir/net-register $netxml
+    $libexecdir/@PACKAGE@/net-register $netxml
 
     # 3. activate dnsmasq service for this network
     chkconfig --add $dnsmasq
@@ -43,7 +43,6 @@ for net in net-1 net-2 net-3; do \
     is_libvirtd_running=$?
 
     if test $is_libvirtd_running -eq 0; then
-        $virsh net-start $net
         /sbin/service $dnsmasq start
     fi
 done

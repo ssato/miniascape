@@ -41,7 +41,7 @@ NETXML_TMPL_DIR = '/usr/share/miniascape/templates/networks'
 DNSMASQ_TMPL_DIR = os.path.join(NETXML_TMPL_DIR, 'dnsmasq')
 
 NETXML_CONF_DIR = '/var/lib/miniascape/networks'
-DNSMASQ_CONF_DIR = '/var/lib/miniascape/dnsmasq'
+DNSMASQ_CONF_DIR = '/var/lib/miniascape/networks/dnsmasq'
 
 
 
