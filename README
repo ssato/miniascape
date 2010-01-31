@@ -78,27 +78,25 @@ Create [S]RPM
 Actions needed after post/pre installation, update and uninstallation
 ------------------------------------------------------------------------
 
-Post installation
-^^^^^^^^^^^^^^^^^^^^^
-
-Run "/usr/libexec/miniascape/net-install.py" to install the followings
- 
-  * /etc/libvirt/qemu/networks/net-{1,2,3}.xml
+If you installed from rpm, you need nothing to do.
 
 
-Also, you need to virsh net-start net-{1,2,3} to start networks actually.
+Post installation / updates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-[NOTE: If you installing miniascape from RPM. The above operation is
-automatically performed in post-install section so that you don't have to do
-the above at all.]
+Go through the following steps for each libvirt networks (net-1,2,3):
+
+  1. chkconfig --add dnsmasq-$net
+  2. /usr/sbin/miniascape net register $net
 
 
 Pre uninstallation
 ^^^^^^^^^^^^^^^^^^^^^
 
-for each network:
-    chkconfig --del dnsmasq-$net
-    /usr/sbin/miniascape net unregister $network
+Go through the following steps for each libvirt networks (net-1,2,3):
+
+  1. chkconfig --del dnsmasq-$net
+  2. /usr/sbin/miniascape net unregister $net
 
 
 Post uninstallation
