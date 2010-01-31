@@ -1,0 +1,11 @@
+#! /bin/sh
+set -e
+# set -x
+
+if test $# -lt 1; then
+    echo "Usage: $0 FENCE_KEY_PATH"
+    exit 1
+fi
+
+dd if=/dev/urandom of=$1 bs=4k count=1
+

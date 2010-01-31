@@ -109,5 +109,9 @@ fi
 
 
 %changelog
+* Sun Jan 31 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99-1
+- A lot of packaging bug fixes
+- Restructured modules
+
 * Wed Oct 28 2009 Satoru SATOH <satoru.satoh@gmail.com> - 0.1-1
 - Initial packaging
