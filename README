@@ -136,27 +136,13 @@ TODO
 ssato@localhost% rpmlint miniascape-0.1.99-1.fc11.noarch.rpm
 miniascape.noarch: E: explicit-lib-dependency libvirt
 miniascape.noarch: E: explicit-lib-dependency libvirt-python
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/nginx/conf.d/kickstart.conf
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/networks/net-2.yaml
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/networks/net-1.yaml
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/networks/net-3.yaml
-miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/dnsmasq-net-1
-miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/dnsmasq-net-1
-miniascape.noarch: E: incoherent-subsys /etc/rc.d/init.d/dnsmasq-net-1 dnsmasq-$NETWORK
 miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-1
-miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/dnsmasq-net-3
-miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/dnsmasq-net-3
-miniascape.noarch: E: incoherent-subsys /etc/rc.d/init.d/dnsmasq-net-3 dnsmasq-$NETWORK
 miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-3
-miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/dnsmasq-net-2
-miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/dnsmasq-net-2
-miniascape.noarch: E: incoherent-subsys /etc/rc.d/init.d/dnsmasq-net-2 dnsmasq-$NETWORK
 miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-2
-miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/fence_xvmd
-miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/fence_xvmd
 miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/fence_xvmd
-1 packages and 0 specfiles checked; 13 errors, 8 warnings.
+1 packages and 0 specfiles checked; 2 errors, 4 warnings.
 ssato@localhost%
+
 
 Completed / Done
 ----------------------

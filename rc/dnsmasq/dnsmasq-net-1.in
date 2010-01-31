@@ -42,7 +42,7 @@ prefix=@prefix@
 CONFIG=@localstatedir@/lib/@PACKAGE@/networks/dnsmasq/$NETWORK.conf
 HOSTSFILE=@localstatedir@/lib/@PACKAGE@/networks/dnsmasq/$NETWORK.hostsfile
 PIDFILE=@localstatedir@/run/dnsmasq-$NETWORK.pid
-LOCKFILE=@localstatedir@/lock/subsys/dnsmasq-$NETWORK
+LOCKFILE=@localstatedir@/lock/subsys/dnsmasq-net-1  # suppress rpmlint errors
 
 OPTIONS="--conf-file=$CONFIG --pid-file=$PIDFILE --dhcp-hostsfile=$HOSTSFILE"
 

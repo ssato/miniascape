@@ -16,21 +16,25 @@ BuildRequires:  python-cheetah
 #BuildRequires:  python-nose
 #BuildRequires:  python-augeas
 #BuildRequires:  pyxattr
-BuildRequires:  libvirt-python
 #BuildRequires:  autoconf
 #BuildRequires:  automake
+BuildRequires:  PyYAML
+BuildRequires:  libvirt-python
 BuildRequires:  rpm-build
 BuildRequires:  /usr/bin/qemu-img
 Requires:       autoconf
 Requires:       automake
 Requires:       libvirt
 Requires:       libvirt-python
+Requires:       PyYAML
 Requires:       python-cheetah
 #Requires:       python-augeas
 Requires:       pyxattr
 Requires:       rpm-build
 Requires:       /usr/bin/qemu-img
 Requires:       fence-agents
+Requires(preun):/sbin/service, /sbin/chkconfig
+Requires(post): /sbin/service, /sbin/chkconfig
 
 
 %description
@@ -44,12 +48,13 @@ Summary:        Reference data for @PACKAGE@
 Group:          Development/System
 Requires:       @PACKAGE@
 Provides:       @PACKAGE@-data
-Requires(preun):/sbin/service, /sbin/chkconfig
-Requires(post): /sbin/service, /sbin/chkconfig
+Requires(preun):/sbin/service
+Requires(post): /sbin/service
 
 
 %description    refdata
-@PACKAGE@ reference data.
+@PACKAGE@ reference data. Actually, it just contains network
+registration/update/unregistration scriptlets.
 
 
 %prep
@@ -115,8 +120,10 @@ fi
 %defattr(-,root,root,-)
 %doc README
 %dir %{_localstatedir}/lib/@PACKAGE@
-%config %{_sysconfdir}/@PACKAGE@/networks/*
-%config %{_sysconfdir}/nginx/conf.d/*
+%config(noreplace) %{_sysconfdir}/@PACKAGE@/networks/*
+%config(noreplace) %{_sysconfdir}/nginx/conf.d/*
+%config(noreplace) %{_sysconfdir}/sysconfig/fence_xvmd
+%config(noreplace) %{_sysconfdir}/cluster/*
 %{_sbindir}/*
 %{_sysconfdir}/rc.d/init.d/dnsmasq-*
 %{_sysconfdir}/rc.d/init.d/fence_xvmd
@@ -124,14 +131,12 @@ fi
 %{_datadir}/@PACKAGE@/*/*.*
 %{_datadir}/@PACKAGE@/*/*/*.*
 %{_datadir}/@PACKAGE@/*/*/*/*.*
+%{_localstatedir}/lib/@PACKAGE@/networks/*.xml
+%{_localstatedir}/lib/@PACKAGE@/networks/dnsmasq/*
 
 
 %files  refdata
 %defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/sysconfig/fence_xvmd
-%{_sysconfdir}/cluster/*
-%{_localstatedir}/lib/@PACKAGE@/networks/*.xml
-%{_localstatedir}/lib/@PACKAGE@/networks/dnsmasq/*
 
 
 %changelog
