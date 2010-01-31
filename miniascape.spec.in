@@ -11,6 +11,7 @@ Source0:        %{name}-%{version}.tar.@SOURCE_ZIP_EXT@
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
 BuildRequires:  python
+BuildRequires:  python-cheetah
 ## Needed for 'make check':
 #BuildRequires:  python-nose
 #BuildRequires:  python-augeas
@@ -24,10 +25,12 @@ Requires:       autoconf
 Requires:       automake
 Requires:       libvirt
 Requires:       libvirt-python
+Requires:       python-cheetah
 #Requires:       python-augeas
 Requires:       pyxattr
 Requires:       rpm-build
 Requires:       /usr/bin/qemu-img
+Requires:       fence-agents
 
 
 %description
@@ -36,15 +39,17 @@ contains libvirt network definitions, dnsmasq and iscsi configurations for
 virtualization environment.
 
 
-%package        cluster
-Summary:        Cluster related configurations for guest cluster nodes
+%package        refdata
+Summary:        Reference data for @PACKAGE@
 Group:          Development/System
 Requires:       @PACKAGE@
-Requires:       fence-agents
+Provides:       @PACKAGE@-data
+Requires(preun):/sbin/service, /sbin/chkconfig
+Requires(post): /sbin/service, /sbin/chkconfig
 
 
-%description    cluster
-Cluster related configurations for guest cluster nodes
+%description    refdata
+@PACKAGE@ reference data.
 
 
 %prep
@@ -68,18 +73,30 @@ make install DESTDIR=$RPM_BUILD_ROOT
 #fi
 
 
-%preun
+%preun  refdata
 if [ $1 = 0 ]; then  # erase
-    /usr/libexec/@PACKAGE@/pre-uninstall
+    for net in net-1 net-2 net-3; do
+        chkconfig --del dnsmasq-$net
+        %{_sbindir}/miniascape net unregister $net
+    done
 fi
 
 
-%post
+%post  refdata
 if [ $1 = 1 ]; then    # install
-    /usr/libexec/@PACKAGE@/post-install
+    for net in net-1 net-2 net-3; do
+        dnsmasq=dnsmasq-$net
 
+        %{_sbindir}/miniascape net register $net
+
+        /sbin/chkconfig --add $dnsmasq
+        /sbin/service libvirtd status 2>/dev/null >/dev/null && /sbin/service $dnsmasq start || :
+    done
 elif [ $1 = 2 ]; then  # update
-    /usr/libexec/@PACKAGE@/post-update
+    for net in net-1 net-2 net-3; do
+        %{_sbindir}/miniascape net register $net
+        /sbin/service $dnsmasq condrestart
+    done
 fi
 
 
@@ -91,27 +108,32 @@ fi
 %defattr(-,root,root,-)
 %doc README
 %dir %{_localstatedir}/lib/@PACKAGE@
-%dir %{_localstatedir}/lib/@PACKAGE@/networks
-%dir %{_localstatedir}/lib/@PACKAGE@/networks/dnsmasq
 %config %{_sysconfdir}/@PACKAGE@/networks/*
 %config %{_sysconfdir}/nginx/conf.d/*
+%{_sbindir}/*
 %{_sysconfdir}/rc.d/init.d/dnsmasq-*
+%{_sysconfdir}/rc.d/init.d/fence_xvmd
 %{_libexecdir}/@PACKAGE@/*
-%{_datadir}/@PACKAGE@/*
-%{_datadir}/@PACKAGE@/*/*
-%{_datadir}/@PACKAGE@/*/*/*
+%{_datadir}/@PACKAGE@/*/*.*
+%{_datadir}/@PACKAGE@/*/*/*.*
+%{_datadir}/@PACKAGE@/*/*/*/*.*
 
 
-%files  cluster
+%files  refdata
+%defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/sysconfig/fence_xvmd
 %{_sysconfdir}/cluster/*
-%{_sysconfdir}/rc.d/init.d/fence_xvmd
+%{_localstatedir}/lib/@PACKAGE@/networks/*.xml
+%{_localstatedir}/lib/@PACKAGE@/networks/dnsmasq/*
 
 
 %changelog
 * Sun Jan 31 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99-1
 - A lot of packaging bug fixes
 - Restructured modules
+- Merged cluster sub-package
+- Split net [de]activatin scriptlets into refdata sub-package
+- Cleanup-ed file list
 
 * Wed Oct 28 2009 Satoru SATOH <satoru.satoh@gmail.com> - 0.1-1
 - Initial packaging

@@ -87,9 +87,7 @@ rc/dnsmasq/dnsmasq-net-1
 rc/fenced/Makefile
 src/Makefile
 src/package.py
-src/post-install
-src/post-update
-src/pre-uninstall
+src/miniascape
 src/net-register
 src/net-unregister
 tests/Makefile
