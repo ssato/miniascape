@@ -132,6 +132,35 @@ network:
     - hwaddr: "@HWADDR_PREFIX@:03:01:85"
       ip: @LIBVIRT_NETWORK_3_BASE@.185
       name: fedora-15-guest-1
-
+    - hwaddr: "@HWADDR_PREFIX@:03:01:90"
+      ip: @LIBVIRT_NETWORK_3_BASE@.190
+      name: debian-0
+    - hwaddr: "@HWADDR_PREFIX@:03:01:91"
+      ip: @LIBVIRT_NETWORK_3_BASE@.191
+      name: debian-1
+    - hwaddr: "@HWADDR_PREFIX@:03:01:92"
+      ip: @LIBVIRT_NETWORK_3_BASE@.192
+      name: debian-2
+    - hwaddr: "@HWADDR_PREFIX@:03:01:93"
+      ip: @LIBVIRT_NETWORK_3_BASE@.193
+      name: debian-3
+    - hwaddr: "@HWADDR_PREFIX@:03:01:94"
+      ip: @LIBVIRT_NETWORK_3_BASE@.194
+      name: debian-4
+    - hwaddr: "@HWADDR_PREFIX@:03:01:95"
+      ip: @LIBVIRT_NETWORK_3_BASE@.195
+      name: debian-5
+    - hwaddr: "@HWADDR_PREFIX@:03:01:96"
+      ip: @LIBVIRT_NETWORK_3_BASE@.196
+      name: debian-6
+    - hwaddr: "@HWADDR_PREFIX@:03:01:97"
+      ip: @LIBVIRT_NETWORK_3_BASE@.197
+      name: debian-7
+    - hwaddr: "@HWADDR_PREFIX@:03:01:98"
+      ip: @LIBVIRT_NETWORK_3_BASE@.198
+      name: debian-8
+    - hwaddr: "@HWADDR_PREFIX@:03:01:99"
+      ip: @LIBVIRT_NETWORK_3_BASE@.199
+      name: debian-9
 
 
