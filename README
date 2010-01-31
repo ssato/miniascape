@@ -27,18 +27,18 @@ Main objects are
 Files
 ====================
 
- * libvirt network definitions: /etc/miniascape/libvirt/*.xml
- * dnsmasq configs: /etc/miniascape/dnsmasq/*.conf
+ * libvirt network definitions: /etc/miniascape/networks/*.yaml
  * dnsmasq init scripts per libvirt network: /etc/rc.d/init.d/dnsmasq-$netname
+ * fence_xvmd init scripts: /etc/rc.d/init.d/fence_xvmd
  * misc tools: /usr/libexec/miniascape/*
 
 
 Prerequisites
 ====================
 
- * GNU make
+ * make
  * virsh in libvirt
- * dnsmasq (must be installed if libvirt is installed)
+ * dnsmasq - should be installed along with libvirt
 
 
 
@@ -93,6 +93,14 @@ automatically performed in post-install section so that you don't have to do
 the above at all.]
 
 
+Pre uninstallation
+^^^^^^^^^^^^^^^^^^^^^
+
+for each network:
+    chkconfig --del dnsmasq-$net
+    /usr/sbin/miniascape net unregister $network
+
+
 Post uninstallation
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -109,57 +117,56 @@ to eliminate them entirely.
 
 Pre/Post update
 ^^^^^^^^^^^^^^^^^^^^^
-Pre: perform operations for post-uninstallation
 
-Post: perform operations for post-installation
+ * Pre: perform operations for post-uninstallation
+ * Post: perform operations for post-installation
+
+
 
 
 TODO
 =====================
 
- * Make network definitions more configurable
- * Merge build (installation and packaging) scripts from vdbs: On going
- * Restructure and split tools and reference data
  * Wrote more test codes for scripts
  * Make http service daemon configurable
  * Merge ISC DHCP and bind backend as an option instead of dnsmasq
  * Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
-
- * Eliminate GNU extensions in Makefile-s:
-
-data/dnsmasq/Makefile.am:12: `%'-style pattern rules are a GNU make extension
-data/libvirt/Makefile.am:6: `%'-style pattern rules are a GNU make extension
-
  * Handle rpmlint errors (see below)
 
 [rpmlint errors/warnings]
 
-ssato@localhost% rpmlint miniascape-0.1-1.fc11.noarch.rpm
-miniascape.noarch: I: checking
+ssato@localhost% rpmlint miniascape-0.1.99-1.fc11.noarch.rpm
+miniascape.noarch: E: explicit-lib-dependency libvirt
 miniascape.noarch: E: explicit-lib-dependency libvirt-python
-miniascape.noarch: W: incoherent-version-in-changelog 0.1-1 ['0.1.99-1.fc12', '0.1.99-1']
 miniascape.noarch: W: conffile-without-noreplace-flag /etc/nginx/conf.d/kickstart.conf
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/dnsmasq/net-3.conf
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/libvirt/networks/net-2.xml
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/sysconfig/fence_xvmd
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/dnsmasq/net-2.conf
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/libvirt/networks/net-1.xml
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/libvirt/networks/net-3.xml
-miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/dnsmasq/net-1.conf
-miniascape.noarch: W: non-conffile-in-etc /etc/cluster/fence_xvm.key
-miniascape.noarch: W: dangerous-command-in-%post install
+miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/networks/net-2.yaml
+miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/networks/net-1.yaml
+miniascape.noarch: W: conffile-without-noreplace-flag /etc/miniascape/networks/net-3.yaml
+miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/dnsmasq-net-1
+miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/dnsmasq-net-1
+miniascape.noarch: E: incoherent-subsys /etc/rc.d/init.d/dnsmasq-net-1 dnsmasq-$NETWORK
+miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-1
+miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/dnsmasq-net-3
+miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/dnsmasq-net-3
+miniascape.noarch: E: incoherent-subsys /etc/rc.d/init.d/dnsmasq-net-3 dnsmasq-$NETWORK
+miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-3
+miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/dnsmasq-net-2
+miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/dnsmasq-net-2
+miniascape.noarch: E: incoherent-subsys /etc/rc.d/init.d/dnsmasq-net-2 dnsmasq-$NETWORK
+miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-2
+miniascape.noarch: E: init-script-without-chkconfig-postin /etc/rc.d/init.d/fence_xvmd
+miniascape.noarch: E: init-script-without-chkconfig-preun /etc/rc.d/init.d/fence_xvmd
 miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/fence_xvmd
-miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/miniascape-net-3
-miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/miniascape-net-2
-miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/miniascape-net-1
-1 packages and 0 specfiles checked; 1 errors, 15 warnings.
+1 packages and 0 specfiles checked; 13 errors, 8 warnings.
 ssato@localhost%
-
 
 Completed / Done
 ----------------------
 
- * Generate dnsmasq | dhcpd and bind configs from libvirt network XML
+ * Eliminate GNU extensions in Makefiles
+ * Restructure and split tools and reference data
+ * Merge build (installation and packaging) scripts from vdbs
+ * Make network definitions more configurable
 
 
 

@@ -73,29 +73,36 @@ make install DESTDIR=$RPM_BUILD_ROOT
 #fi
 
 
-%preun  refdata
+%preun
 if [ $1 = 0 ]; then  # erase
-    for net in net-1 net-2 net-3; do
-        chkconfig --del dnsmasq-$net
-        %{_sbindir}/miniascape net unregister $net
-    done
+    for net in net-1 net-2 net-3; do chkconfig --del dnsmasq-$net; done
+fi
+
+
+%preun  refdata
+if [ $1 = 0 ]; then
+    for net in net-1 net-2 net-3; do %{_sbindir}/miniascape net unregister $net; done
+fi
+
+
+%post
+if [ $1 = 1 ]; then    # install
+    for net in net-1 net-2 net-3; do /sbin/chkconfig --add dnsmasq-$net; done
+elif [ $1 = 2 ]; then  # update
+    for net in net-1 net-2 net-3; do /sbin/service dnsmasq-$net condrestart; done
 fi
 
 
 %post  refdata
-if [ $1 = 1 ]; then    # install
+if [ $1 = 1 ]; then
     for net in net-1 net-2 net-3; do
-        dnsmasq=dnsmasq-$net
-
         %{_sbindir}/miniascape net register $net
-
-        /sbin/chkconfig --add $dnsmasq
-        /sbin/service libvirtd status 2>/dev/null >/dev/null && /sbin/service $dnsmasq start || :
+        /sbin/service libvirtd status 2>/dev/null >/dev/null && /sbin/service dnsmasq-$net start || :
     done
-elif [ $1 = 2 ]; then  # update
+elif [ $1 = 2 ]; then
     for net in net-1 net-2 net-3; do
         %{_sbindir}/miniascape net register $net
-        /sbin/service $dnsmasq condrestart
+        /sbin/service dnsmasq-$net condrestart
     done
 fi
 
