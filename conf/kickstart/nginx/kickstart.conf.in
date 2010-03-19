@@ -8,7 +8,7 @@ server {
 # @see http://wiki.nginx.org/NginxLikeApache (Apache ProxyReverse)
 
     location /contents/ {
-        proxy_pass http://@KSTREE_SERVER@/contents;
+        proxy_pass http://@KICKSTART_TREE_SERVER@/contents;
         #proxy_set_header X-Forwarded-Host $host;
         #proxy_set_header X-Forwarded-Server $host;
         #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
@@ -17,7 +17,7 @@ server {
     location /ks/ {
         root /usr/share/@PACKAGE@/kickstart;
         autoindex  on;
-        allow @NET_1_NETWORK@.0/24;
+        allow @LIBVIRT_NETWORK_1_BASE@.0/24;
         allow 127.0.0.1;
         deny all;
     }
