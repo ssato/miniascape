@@ -48,8 +48,8 @@ Summary:        Reference data for @PACKAGE@
 Group:          Development/System
 Requires:       @PACKAGE@
 Provides:       @PACKAGE@-data
-Requires(preun):/sbin/service
-Requires(post): /sbin/service
+Requires(preun):/sbin/service, %{_sbindir}/miniascape
+Requires(post): /sbin/service, %{_sbindir}/miniascape
 
 
 %description    refdata
