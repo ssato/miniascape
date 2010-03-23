@@ -8,8 +8,8 @@ RISK, PLEASE.
 
 
 
-miniascape is a collection of configurations and data to setup 'micro cloud' -
-libvirt based virtualization guests environment quickly.
+miniascape is a collection of configurations and data to setup libvirt based
+virtualization guests environment quickly.
 
 Main objects are
 
