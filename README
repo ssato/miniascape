@@ -125,23 +125,55 @@ Pre/Post update
 TODO
 =====================
 
- * Wrote more test codes for scripts
- * Make http service daemon configurable
- * Merge ISC DHCP and bind backend as an option instead of dnsmasq
- * Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
- * Handle rpmlint errors (see below)
+* Wrote more test codes for scripts
+* Make http service daemon configurable
+* Merge ISC DHCP and bind backend as an option instead of dnsmasq
+* Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
+* Handle rpmlint errors (see below)
 
-[rpmlint errors/warnings]
+::
 
-ssato@localhost% rpmlint miniascape-0.1.99-1.fc11.noarch.rpm
-miniascape.noarch: E: explicit-lib-dependency libvirt
-miniascape.noarch: E: explicit-lib-dependency libvirt-python
-miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-1
-miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-3
-miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-2
-miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/fence_xvmd
-1 packages and 0 specfiles checked; 2 errors, 4 warnings.
-ssato@localhost%
+        ssato@localhost% rpmlint miniascape-0.1.99-1.fc11.noarch.rpm
+        miniascape.noarch: E: explicit-lib-dependency libvirt
+        miniascape.noarch: E: explicit-lib-dependency libvirt-python
+        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-1
+        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-3
+        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-2
+        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/fence_xvmd
+        1 packages and 0 specfiles checked; 2 errors, 4 warnings.
+        ssato@localhost%
+
+
+* Handle errors in pre/post scripts:
+
+::
+
+        ssato@localhost% sudo rpm -Uvh miniascape-refdata-0.1.99-1.fc11.noarch.rpm
+        Preparing...                ########################################### [100%]
+           1:miniascape-refdata     ########################################### [100%]
+        Network net-1 already exists. Redefine it by yourself later:
+           ex. /usr/libexec/miniascape/virt-net-unregister net-1 && \
+               /usr/libexec/miniascape/virt-net-register /var/lib/miniascape/networks/net-1.xml
+
+        Starting dnsmasq for net-1:
+        dnsmasq: failed to bind listening socket for 192.168.151.1: Address already in use
+        [FAILED]
+        Network net-2 already exists. Redefine it by yourself later:
+           ex. /usr/libexec/miniascape/virt-net-unregister net-2 && \
+               /usr/libexec/miniascape/virt-net-register /var/lib/miniascape/networks/net-2.xml
+
+        Starting dnsmasq for net-2:
+        dnsmasq: failed to bind listening socket for 192.168.152.1: Address already in use
+        [FAILED]
+        Network net-3 already exists. Redefine it by yourself later:
+           ex. /usr/libexec/miniascape/virt-net-unregister net-3 && \
+               /usr/libexec/miniascape/virt-net-register /var/lib/miniascape/networks/net-3.xml
+
+        Starting dnsmasq for net-3:
+        dnsmasq: failed to bind listening socket for 192.168.153.1: Address already in use
+        [FAILED]
+        ssato@localhost%
+
 
 
 Completed / Done
