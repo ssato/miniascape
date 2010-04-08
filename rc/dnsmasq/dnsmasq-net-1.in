@@ -60,10 +60,11 @@ case "$1" in
   start)
         echo -n "Starting dnsmasq for $NETWORK: "
 
-        # Ugly hack:
-        libvirt_dnsmasq_pid=$(ps aux | sed -rn "s,^nobody\s+([0-9]+).*dnsmasq .*$NETWORK.pid.*,\1,p")
-        if test -n "$libvirt_dnsmasq_pid"; then
-            kill $libvirt_dnsmasq_pid
+        # FIXME: Ugly hack:
+        libvirt_dnsmasq_pidfile=/var/run/libvirt/network/$NETWORK.pid
+        if test -f $libvirt_dnsmasq_pidfile; then
+            libvirt_dnsmasq_pid=$(cat $libvirt_dnsmasq_pidfile)
+            test -n "$libvirt_dnsmasq_pid" && kill $libvirt_dnsmasq_pid
         fi
 
         daemon $EXEC $OPTIONS
