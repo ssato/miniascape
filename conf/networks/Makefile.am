@@ -1,13 +1,15 @@
 netconfdir = @sysconfdir@/@PACKAGE@/networks
 netxmldir = @localstatedir@/lib/@PACKAGE@/networks
 dnsmasqdir = $(netxmldir)/dnsmasq
+iptablesdir = $(netconfdir)
 
 dist_netconf_DATA = net-1.yaml net-2.yaml net-3.yaml
 dist_netxml_DATA = net-1.xml net-2.xml net-3.xml
 dist_dnsmasq_DATA = net-1.conf net-2.conf net-3.conf \
 net-1.hostsfile net-2.hostsfile net-3.hostsfile
+dist_iptables_DATA = iptables.add
 
-DISTCLEANFILES = $(dist_netconf_DATA)
+DISTCLEANFILES = $(dist_netconf_DATA) $(dist_iptables_DATA)
 CLEANFILES = $(dist_netxml_DATA) $(dist_dnsmasq_DATA)
 
 

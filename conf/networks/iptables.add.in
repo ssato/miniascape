@@ -1,0 +1,36 @@
+## NAT rules:
+-A POSTROUTING -s @LIBVIRT_NETWORK_1_BASE@.0/24 ! -d @LIBVIRT_NETWORK_1_BASE@.0/24 -j MASQUERADE 
+##
+##
+## Filters:
+##
+## * dns (udp:53)
+## * bootp (*:67)
+## * http (tcp:80)
+## * https (tcp:443)
+## * NFSv4 (tcp:2049)
+## * iSCSI target (tcp:3260)
+##
+-A INPUT -i virbr1 -p udp -m udp --dport 53 -j ACCEPT 
+-A INPUT -i virbr1 -p tcp -m tcp --dport 53 -j ACCEPT 
+-A INPUT -i virbr1 -p udp -m udp --dport 67 -j ACCEPT 
+-A INPUT -i virbr1 -p tcp -m tcp --dport 67 -j ACCEPT 
+-A INPUT -i virbr1 -p tcp -m tcp --dport 80 -j ACCEPT 
+-A INPUT -i virbr1 -p tcp -m tcp --dport 443 -j ACCEPT 
+-A INPUT -i virbr1 -p tcp -m tcp --dport 3260 -j ACCEPT 
+-A INPUT -i virbr2 -p udp -m udp --dport 53 -j ACCEPT 
+-A INPUT -i virbr2 -p tcp -m tcp --dport 53 -j ACCEPT 
+-A INPUT -i virbr3 -p udp -m udp --dport 53 -j ACCEPT 
+-A INPUT -i virbr3 -p tcp -m tcp --dport 53 -j ACCEPT 
+-A FORWARD -i virbr1 -o virbr1 -j ACCEPT 
+-A FORWARD -i virbr2 -o virbr2 -j ACCEPT 
+-A FORWARD -i virbr3 -o virbr3 -j ACCEPT 
+-A FORWARD -d @LIBVIRT_NETWORK_1_BASE@.0/24 -o virbr1 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+-A FORWARD -s @LIBVIRT_NETWORK_1_BASE@.0/24 -i virbr1 -j ACCEPT 
+-A FORWARD -o virbr1 -j REJECT --reject-with icmp-port-unreachable 
+-A FORWARD -i virbr1 -j REJECT --reject-with icmp-port-unreachable 
+-A FORWARD -o virbr2 -j REJECT --reject-with icmp-port-unreachable 
+-A FORWARD -i virbr2 -j REJECT --reject-with icmp-port-unreachable 
+-A FORWARD -o virbr3 -j REJECT --reject-with icmp-port-unreachable 
+-A FORWARD -i virbr3 -j REJECT --reject-with icmp-port-unreachable 
+COMMIT

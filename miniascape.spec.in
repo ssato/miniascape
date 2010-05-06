@@ -48,8 +48,8 @@ Summary:        Reference data for @PACKAGE@
 Group:          Development/System
 Requires:       @PACKAGE@
 Provides:       @PACKAGE@-data
-Requires(preun):/sbin/service
-Requires(post): /sbin/service
+Requires(preun):/sbin/service, %{_sbindir}/miniascape
+Requires(post): /sbin/service, %{_sbindir}/miniascape
 
 
 %description    refdata
@@ -80,7 +80,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %preun
 if [ $1 = 0 ]; then  # erase
-    for net in net-1 net-2 net-3; do chkconfig --del dnsmasq-$net; done
+    for net in net-1 net-2 net-3; do
+        /sbin/service dnsmasq-$net status 2>/dev/null >/dev/null && /sbin/service dnsmasq-$net stop || :
+        chkconfig --del dnsmasq-$net
+    done
 fi
 
 

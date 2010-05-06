@@ -47,7 +47,7 @@ Alias /ks /usr/share/@PACKAGE@
 <Directory "/usr/share/@PACKAGE@/kickstart">
     Order deny,allow
     Deny from all
-    Allow from @NET_1_NETWORK@
+    Allow from @LIBVIRT_NETWORK_1_BASE@
     Allow from 127.0.0.1
     AllowOverride None
     Options Indexes

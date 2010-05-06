@@ -41,10 +41,11 @@ NETWORK=net-1
 prefix=@prefix@
 CONFIG=@localstatedir@/lib/@PACKAGE@/networks/dnsmasq/$NETWORK.conf
 HOSTSFILE=@localstatedir@/lib/@PACKAGE@/networks/dnsmasq/$NETWORK.hostsfile
+LEASEFILE=@localstatedir@/lib/@PACKAGE@/networks/dnsmasq/$NETWORK.leases
 PIDFILE=@localstatedir@/run/dnsmasq-$NETWORK.pid
 LOCKFILE=@localstatedir@/lock/subsys/dnsmasq-net-1  # suppress rpmlint errors
 
-OPTIONS="--conf-file=$CONFIG --pid-file=$PIDFILE --dhcp-hostsfile=$HOSTSFILE"
+OPTIONS="--conf-file=$CONFIG --pid-file=$PIDFILE --dhcp-hostsfile=$HOSTSFILE --dhcp-leasefile=$LEASEFILE"
 
 if test ! -f $CONFIG; then
     echo -n $"$0: CONFIG '$CONFIG' does not exist."; warning; echo
@@ -58,6 +59,14 @@ fi
 case "$1" in
   start)
         echo -n "Starting dnsmasq for $NETWORK: "
+
+        # FIXME: Ugly hack:
+        libvirt_dnsmasq_pidfile=/var/run/libvirt/network/$NETWORK.pid
+        if test -f $libvirt_dnsmasq_pidfile; then
+            libvirt_dnsmasq_pid=$(cat $libvirt_dnsmasq_pidfile)
+            test -n "$libvirt_dnsmasq_pid" && kill $libvirt_dnsmasq_pid
+        fi
+
         daemon $EXEC $OPTIONS
 	RETVAL=$?
         echo

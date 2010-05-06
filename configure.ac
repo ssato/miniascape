@@ -51,6 +51,7 @@ conf/Makefile
 conf/fenced/Makefile
 conf/fenced/fence_xvmd
 conf/networks/Makefile
+conf/networks/iptables.add
 conf/networks/net-1.yaml
 conf/networks/net-2.yaml
 conf/networks/net-3.yaml
