@@ -29,7 +29,7 @@ import yaml  # PyYAML
 
 
 
-SITE_CONFIG = '/etc/miniascape/config'
+SITE_CONFIG = '/etc/miniascape/profiles/site.cfg'
 
 TEMPLATE = r"""
 $virtinst \
@@ -51,7 +51,7 @@ $virtinst \
 #end if
 --wait=$wait \
 #for $disk in $disks
---disk path=$disk.path,bus=$disk.bus,perms=$disk.perms \
+--disk $disk.disk \
 #end for
 #for $netif in $networks
 --network=$netif.network --mac=$netif.mac \

@@ -1,6 +1,6 @@
 Name:           @PACKAGE@
 Version:        @VERSION@
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Micro cloud build tools and runtime environments
 Group:          Development/System
 License:        GPLv3+
@@ -121,6 +121,7 @@ fi
 %doc README
 %dir %{_localstatedir}/lib/@PACKAGE@
 %config(noreplace) %{_sysconfdir}/@PACKAGE@/networks/*
+%config(noreplace) %{_sysconfdir}/@PACKAGE@/profiles/*
 %config(noreplace) %{_sysconfdir}/nginx/conf.d/*
 %config(noreplace) %{_sysconfdir}/sysconfig/fence_xvmd
 %config(noreplace) %{_sysconfdir}/cluster/*
@@ -140,6 +141,9 @@ fi
 
 
 %changelog
+* Fri May  7 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99-2
+- Added build profiles and virt-install wrapper script
+
 * Sun Jan 31 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99-1
 - A lot of packaging bug fixes
 - Restructured modules

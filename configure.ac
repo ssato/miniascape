@@ -81,6 +81,9 @@ data/repackage/Makefile
 data/templates/Makefile
 data/templates/networks/Makefile
 data/templates/networks/dnsmasq/Makefile
+data/profiles/Makefile
+data/profiles/rhel/Makefile
+data/profiles/rhel/rhel-3-0-i386-min.cfg
 rc/Makefile
 rc/dnsmasq/Makefile
 rc/dnsmasq/dnsmasq-net-1

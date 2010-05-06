@@ -1,0 +1,19 @@
+name: rhel-3-0-guest-1
+
+os_variant: rhel3
+location: @KICKSTART_TREE_LOCATION@/RHEL/3/0/i386/default
+extra_args: "ks=@KICKSTART_CFG_LOCATION@/rhel-3-0-i386-min.ks.cfg ksdevice=eth0"
+
+disks:
+  - disk: path=/var/lib/libvirt/images/rhel-3-0-guest-1-disk-1.qcow2,bus=ide
+
+networks:
+  - network: network:net-1
+    mac: 54:52:00:01:01:30
+  - network: network:net-1
+    mac: 54:52:00:11:01:30
+  - network: network:net-3
+    mac: 54:52:00:03:01:30
+  - network: network:net-3
+    mac: 54:52:00:13:01:30
+
