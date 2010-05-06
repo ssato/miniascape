@@ -7,7 +7,8 @@ package.py \
 net-configure.py \
 net-install.py \
 net-register \
-net-unregister
+net-unregister \
+virtinst.py
 
 dist_sbin_SCRIPTS = miniascape
 
