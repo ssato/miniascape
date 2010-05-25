@@ -1,0 +1,28 @@
+# config
+
+[commands]
+qemu_img = @QEMU_IMG@
+virt_install = @VIRTINST@
+svc_libvirtd = /etc/init.d/libvirtd
+
+
+[dirs]
+auxdir = @@pkgdatadir@@/aux
+m4dir = %(auxdir)s/m4
+
+
+[package]
+domain_variant = minimal 
+name_prefix = vm
+name_suffix = %(domain_variant)s
+srczip_ext = xz
+
+
+[virtinst]
+templatesdir = @@pkgdatadir@@/templates/virtinst
+
+site_config = @@pkgsysconfdir@@/profiles/site.cfg
+template = %(templatesdir)s/virtinst.tmpl
+
+
+# vim:sw=4:ts=4:et:
