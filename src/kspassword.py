@@ -2,33 +2,32 @@
 #
 # Generate encoded password string to embedded in ks.cfg.
 #
-# Copyright (C) 2009 Satoru SATOH <satoru.satoh at gmail.com>
-#
-# License: MIT
+# Copyright (C) 2010 Satoru SATOH <satoru.satoh at gmail.com>
 #
 
-
-import crypt
-import random
-import string
+import errno
+import getpass
+import optparse
 import sys
 
-
-def encode(s):
-    return crypt.crypt(
-        s,
-        '$1$' + ''.join(
-            [random.choice(string.letters + string.digits + './') for i in range(8)]
-        )
-    )
+from miniascape.utils import kickstart_password
 
 
-def main(args=sys.argv):
-    if len(args) < 2:
-        print >> sys.stderr, "Usage: %s password" % args[0]
-        sys.exit(-1)
+def main():
+    p = optparse.OptionParser("%prog [OPTION ...] [PASSWORD]")
+    p.add_option('-p', '--prompt', action="store_true", default=False, help='Password prompt mode')
+    (options, args) = p.parse_args()
 
-    print encode(args[1])
+    if options.prompt:
+        pwd = getpass.getpass()
+    else:
+        if len(args) < 1:
+            p.print_help()
+            sys.exit(errno.EINVAL)
+        else:
+            pwd = args[0]
+
+    print kickstart_password(pwd)
 
 
 if __name__ == '__main__':

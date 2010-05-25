@@ -32,7 +32,7 @@ import yaml  # PyYAML
 def kickstart_password(pswd):
     """Generate encoded string for kickstart config from given password.
 
-    >>> kp = kspassword('password')
+    >>> kp = kickstart_password('password')
     >>> assert isinstance(kp, str)
     >>> assert len(kp) == 34
     """
