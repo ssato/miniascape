@@ -1,4 +1,4 @@
-AC_INIT([miniascape],[0.1.99])
+AC_INIT([miniascape],[0.1.99.1])
 AM_INIT_AUTOMAKE
 
 AC_PROG_MKDIR_P
@@ -6,6 +6,10 @@ AC_PROG_QEMU_IMG
 AC_PROG_RPMBUILD
 AC_PATH_PROG([PYTHON],[python])
 AC_PROG_VIRSH
+AC_PROG_SERVICE_LIBVIRTD
+
+AC_CHECK_PYTHON_MODULE_PATH
+
 
 dnl Disabled for a while; xz is not available on RHEL 5.
 dnl AC_CHECK_SOURCE_ZIP
@@ -48,6 +52,7 @@ miniascape.spec
 aux/Makefile
 aux/m4/Makefile
 conf/Makefile
+conf/config.in
 conf/fenced/Makefile
 conf/fenced/fence_xvmd
 conf/networks/Makefile
@@ -85,6 +90,7 @@ data/templates/networks/dnsmasq/Makefile
 data/profiles/Makefile
 data/profiles/rhel/Makefile
 data/profiles/rhel/rhel-3-0-i386-min.cfg
+miniascape/Makefile
 rc/Makefile
 rc/dnsmasq/Makefile
 rc/dnsmasq/dnsmasq-net-1

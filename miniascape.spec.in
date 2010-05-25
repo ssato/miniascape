@@ -1,6 +1,9 @@
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+
+
 Name:           @PACKAGE@
 Version:        @VERSION@
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        Micro cloud build tools and runtime environments
 Group:          Development/System
 License:        GPLv3+
@@ -137,6 +140,7 @@ fi
 %{_datadir}/@PACKAGE@/*/*/*/*.*
 %{_localstatedir}/lib/@PACKAGE@/networks/*.xml
 %{_localstatedir}/lib/@PACKAGE@/networks/dnsmasq/*
+%{python_sitelib}/*
 
 
 %files  refdata
@@ -144,6 +148,9 @@ fi
 
 
 %changelog
+* Wed May 25 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99.1-1
+- Added python modules
+
 * Fri May  7 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99-2
 - Added build profiles and virt-install wrapper script
 
