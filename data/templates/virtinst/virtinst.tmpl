@@ -1,0 +1,28 @@
+$virtinst \
+--hvm \
+--accelerate \
+--name=$name \
+--connect=$connect \
+--ram=$ram \
+--arch=$arch \
+--vcpus=$vcpus \
+#if $getVar('cpuset', '')
+--cpuset=$cpuset \
+#end if
+--keymap=$keymap \
+--os-variant=$os_variant \
+--location=$location \
+#if $getVar('extra_args', '')
+--extra-args="$extra_args" \
+#end if
+--wait=$wait \
+#for $disk in $disks
+--disk $disk.disk \
+#end for
+#for $netif in $networks
+--network=$netif.network --mac=$netif.mac \
+#end for
+--check-cpu \
+--noreboot \
+--vnc \
+--noautoconsole

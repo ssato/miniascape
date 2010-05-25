@@ -1,1 +1,1 @@
-SUBDIRS = networks
+SUBDIRS = networks virtinst

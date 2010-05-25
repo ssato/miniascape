@@ -1,10 +1,10 @@
 #
-# This is the site global profile configuration file.
+# This is the site global profile data.
 #
 # @see virt-install(1)
 #
 
-virtinst: /usr/bin/virt-install
+virtinst: @VIRTINST@
 
 # hypervisor connection
 connect: qemu:///system

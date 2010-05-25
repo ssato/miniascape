@@ -125,6 +125,17 @@ Pre/Post update
 TODO
 =====================
 
+upstream works
+-------------------
+
+* -config ffile option for virt-install
+* enhancement for qemu-img to get base image path of delta image
+* more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic
+
+
+miniascape itself
+-----------------------
+
 * Wrote more test codes for scripts
 * Make http service daemon configurable
 * Merge ISC DHCP and bind backend as an option instead of dnsmasq
@@ -176,8 +187,21 @@ TODO
 
 
 
+
 Completed / Done
 ----------------------
+
+upstream works
+-------------------
+
+* dnsmasq backend for libvirt
+  * Generate hostsfile (host-ip-mac mapping file) and pass --dhcp-hostsfile
+    with its path to dnsmasq started from libvirtd:
+    completed. it works since libvirt 0.8.1.
+
+
+miniascape itself
+-------------------
 
  * Eliminate GNU extensions in Makefiles
  * Restructure and split tools and reference data

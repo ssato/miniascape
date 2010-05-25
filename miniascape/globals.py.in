@@ -16,8 +16,13 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 #
+import os.path
 
-PKG_CONFIG_PATH = '@sysconfdir@/@PACKAGE@/config' 
 
+# defaults:
+PKG_DATADIR = '@@pkgdatadir@@'
+PKG_SYSCONFDIR = '@@pkgsysconfdir@@'
+
+PKG_CONFIG_PATH = os.path.join(PKG_SYSCONFDIR, 'config')
 
 # vim:sw=4:ts=4:et:ft=python:

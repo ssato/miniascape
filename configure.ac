@@ -87,7 +87,9 @@ data/repackage/Makefile
 data/templates/Makefile
 data/templates/networks/Makefile
 data/templates/networks/dnsmasq/Makefile
+data/templates/virtinst/Makefile
 data/profiles/Makefile
+data/profiles/site.cfg
 data/profiles/rhel/Makefile
 data/profiles/rhel/rhel-3-0-i386-min.cfg
 miniascape/Makefile

@@ -59,7 +59,7 @@ def compile_template(file=None, source=None, params={}, **kwargs):
         return Cheetah.Template.Template(searchList=params, **kwargs).respond()
 
 
-def runcmd(cmd_str, dryrun=False):
+def runcmd(cmd_str):
     """Execute given command sequence.
     """
     return commands.getstatusoutput(cmd_str)
