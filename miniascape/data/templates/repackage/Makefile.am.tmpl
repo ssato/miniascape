@@ -1,0 +1,19 @@
+AUTOMAKE_OPTIONS = foreign
+EXTRA_DIST = @PACKAGE@.spec.in aux/rpm.mk
+ACLOCAL_AMFLAGS = -I aux/m4
+
+include $(abs_srcdir)/aux/rpm.mk
+
+
+domainxmldir = @_DOMAIN_XMLDIR@
+dist_domainxml_DATA = $domain.xml
+
+domainsysxmldir = @sysconfdir@/libvirt/qemu
+dist_domainsysxml_DATA = $(dist_domainxml_DATA)
+
+domainimagedir = @localstatedir@/lib/libvirt/images
+dist_domainimage_DATA =
+#for $image in $domain.images
+dist_domainimage_DATA += $image
+#end for
+

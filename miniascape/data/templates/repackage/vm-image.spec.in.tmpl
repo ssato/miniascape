@@ -1,0 +1,80 @@
+%define domain_name     $domain.name
+%define domain_xml      %{domain_name}.xml
+%define domain_xml_path @_DOMAIN_XMLDIR@/%{domain_xml}
+%define domain_arch     %(xpathp -x '/domain/os/type/@arch' ${domain_xml} || echo "i686")
+
+
+#raw
+%define image_u          %(id qemu > /dev/null 2> /dev/null && echo qemu || echo root)
+%define image_g          %(id qemu > /dev/null 2> /dev/null && echo qemu || echo root)
+
+
+# disable debuginfo - it's pointless for packagedvm instances.
+%define debug_package   %{nil}
+
+
+Name:           @PACKAGE@
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        KVM/Qemu guest base image and config for %{name}
+Group:          Development/System
+License:        MIT
+URL:            http://localhost
+Source0:        %{name}-%{version}.tar.@SOURCE_ZIP_EXT@
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      %{domain_arch}
+Requires:       @VIRSH@
+Requires:       /sbin/service
+Provides:       vm-%{domain_name}
+
+
+%description
+Virtualization (KVM/Qemu) guest domain image and data.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure
+make %{?_smp_mflags}
+
+
+%install
+%{__rm} -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%preun
+if [ $1 = 0 ]; then  # erase
+    /sbin/service libvirtd status >/dev/null 2>&1 && @VIRSH@ undefine %{domain_name} || :
+fi
+
+
+%post
+if [ $1 = 1 ]; then    # install
+    /sbin/service libvirtd status >/dev/null 2>&1 && @VIRSH@ define %{domain_xml_path} || :
+elif [ $1 = 2 ]; then  # update
+    /sbin/service libvirtd status >/dev/null 2>&1 && \
+        (@VIRSH@ undefine %{domain_name} && @VIRSH@ define %{domain_xml_path}) || :
+fi
+
+
+%clean
+%{__rm} -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+%doc README
+%config(missingok) %verify(not md5 size mtime) %{_sysconfdir}/libvirt/qemu/%{domain_xml}
+%config %{domain_xml_path}
+%defattr(-,%{image_u},%{image_g},-)
+%{_localstatedir}/lib/libvirt/images/*
+
+
+%changelog
+* @TIMESTAMP@ vm-builder <vm-builder@localhost> - @VERSION@-1
+- Initial packaging.
+#end raw

@@ -1,0 +1,58 @@
+#! /bin/bash
+#
+# Un-register libvirt network.
+#
+# Copyright (C) 2010 Satoru SATOH <satoru.satoh at gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+
+netname=$1
+netxml=$netname.xml
+
+if test -z "$netname"; then
+  echo "Usage: $0 NET_NAME"
+  exit 1
+fi
+
+
+/sbin/service libvirtd status 2>/dev/null >/dev/null
+is_libvirtd_running=$?
+
+if test $is_libvirtd_running -ne 0; then
+  echo -ne "libvirtd is not running. Just removing files..."
+
+  rm -f /etc/libvirt/qemu/networks/autostart/$netxml
+  rm -f /etc/libvirt/qemu/networks/$netxml
+
+  echo -ne "Done\n"
+
+  exit 0
+fi
+
+
+net_exists=$(@VIRSH@ net-list --all | sed -nre "s/^($netname).*/\1/p")
+net_active=$(@VIRSH@ net-list | sed -nre "s/^($netname).*/\1/p")
+
+if test -z "$net_exists"; then
+  echo "Network $netname does not exist! Nothing to do."
+  #exit 1
+elif test -z "$net_active"; then
+  @VIRSH@ net-undefine $netname
+else
+  @VIRSH@ net-destroy $netname && @VIRSH@ net-undefine $netname
+fi
+
+# vim:set ft=sh sw=2 ts=2 et ai si sm:

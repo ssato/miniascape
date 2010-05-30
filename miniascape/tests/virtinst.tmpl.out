@@ -1,0 +1,23 @@
+/usr/bin/virt-install \
+--hvm \
+--accelerate \
+--name=rhel-5-5-guest-1 \
+--connect=qemu:///system \
+--ram=512 \
+--arch=i686 \
+--vcpus=2 \
+--cpuset=auto \
+--keymap=en-us \
+--os-variant=rhel5 \
+--location=http://master/kstree/RHEL/5/5/i386/default \
+--extra-args="ks=http://master/ks/rhel-5-5-i386-min.ks.cfg ksdevice=eth0" \
+--wait=20 \
+--disk path=/var/lib/libvirt/images/rhel-5-5-guest-1-disk-1.qcow2,bus=virtio \
+--network=network:net-1 --mac=54:52:00:01:01:55 \
+--network=network:net-1 --mac=54:52:00:11:01:55 \
+--network=network:net-3 --mac=54:52:00:03:01:55 \
+--network=network:net-3 --mac=54:52:00:13:01:55 \
+--check-cpu \
+--noreboot \
+--vnc \
+--noautoconsole

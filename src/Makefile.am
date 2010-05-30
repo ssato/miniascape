@@ -9,7 +9,4 @@ net-register \
 net-unregister \
 virtinst.py
 
-dist_sbin_SCRIPTS = miniascape
-
-
-DISTCLEANFILES = package.py pre-uninstall miniascape net-register net-unregister
+DISTCLEANFILES = package.py pre-uninstall net-register net-unregister

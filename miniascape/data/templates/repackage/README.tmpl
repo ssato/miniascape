@@ -1,0 +1,11 @@
+This is a packatedvm (KVM/Qemu) instance.
+
+* Name: $domain.name
+#if $getVar('variant', '')
+* Variant: $variant
+#end if
+* Images:
+#for $image in $domain.images
+  * $image
+#end for
+

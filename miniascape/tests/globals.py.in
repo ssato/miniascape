@@ -1,0 +1,72 @@
+import glob
+import miniascape.config
+import os
+import tempfile
+
+try:
+    all
+except NameError:
+    def all(xs):
+        return [x for x in xs if not x] == []
+
+
+
+TEST_CONFIG_FILE = '@abs_top_builddir@/etc/config'
+TEST_VIRTINST_TEMPLATE ='@abs_top_srcdir@/data/templates/virtinst/virtinst.tmpl' 
+TEST_VIRTINST_OUT ='@abs_top_srcdir@/tests/virtinst.tmpl.out' 
+
+TEST_VIRTINST_PARAMS = {
+    'virtinst': '/usr/bin/virt-install',
+    'name': 'rhel-5-5-guest-1',
+    'connect': 'qemu:///system',
+    'ram': '512',
+    'arch': 'i686',
+    'vcpus': '2',
+    'cpuset': 'auto',
+    'keymap': 'en-us',
+    'os_variant': 'rhel5',
+    'location': 'http://master/kstree/RHEL/5/5/i386/default',
+    'extra_args': 'ks=http://master/ks/rhel-5-5-i386-min.ks.cfg ksdevice=eth0',
+    'wait': '20',
+    'disks': [{'disk': 'path=/var/lib/libvirt/images/rhel-5-5-guest-1-disk-1.qcow2,bus=virtio'},],
+    'networks': [
+        {'network': 'network:net-1', 'mac': '54:52:00:01:01:55'},
+        {'network': 'network:net-1', 'mac': '54:52:00:11:01:55'},
+        {'network': 'network:net-3', 'mac': '54:52:00:03:01:55'},
+        {'network': 'network:net-3', 'mac': '54:52:00:13:01:55'},
+    ],
+}
+
+
+
+
+def setupdir():
+    return tempfile.mkdtemp(prefix='@abs_top_builddir@/tests/work')
+
+
+def prune_dir(dir):
+    if not os.path.exists(dir):
+        return  # Nothing to do.
+
+    for x in glob.glob(os.path.join(dir, '*')):
+        if os.path.isdir(x):
+            prune_dir(x)
+        else:
+            os.remove(x)
+
+    if os.path.exists(dir):
+        os.removedirs(dir)
+
+
+def cleanupdir(dir):
+    prune_dir(dir)
+
+
+def create_config(config_file=TEST_CONFIG_FILE):
+    config = miniascape.config.Config()
+    config.init(config_file)
+
+    return config
+
+
+# vim: set sw=4 ts=4 et:

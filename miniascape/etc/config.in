@@ -1,0 +1,25 @@
+# config
+
+[commands]
+qemu_img = @QEMU_IMG@
+virt_install = @VIRTINST@
+svc_libvirtd = @SERVICE_LIBVIRTD@
+
+
+[dirs]
+auxdir = @_PACKAGE_DATADIR@/aux
+m4dir = %(auxdir)s/m4
+
+
+[package]
+domain_variant = minimal 
+name_prefix = vm
+name_suffix = %(domain_variant)s
+srczip_ext = xz
+
+
+[virtinst]
+site_config = @_PACKAGE_SYSCONFDIR@/profiles/site.cfg
+template = @_PACKAGE_DATADIR@/templates/virtinst/virtinst.tmpl
+
+

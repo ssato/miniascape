@@ -1,0 +1,19 @@
+AC_INIT([vm-$domain.name-$variant],[0.1])
+AM_INIT_AUTOMAKE
+AC_CONFIG_SRCDIR([vm-$domain.name-${variant}.spec.in])
+AC_CONFIG_MACRO_DIR([aux/m4])
+
+AC_PROG_QEMU_IMG
+AC_PROG_VIRSH
+AC_PROG_SERVICE_LIBVIRTD
+AC_PROG_RPMBUILD
+
+AC_CHECK_SOURCE_ZIP
+
+timestamp=`LANG=C date +"%a %b %d %Y"`
+AC_SUBST([TIMESTAMP],[$timestamp])
+
+AC_OUTPUT([
+Makefile
+vm-$domain.name-${variant}.spec
+])
