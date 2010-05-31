@@ -23,6 +23,7 @@
 #
 
 import libvirt
+import logging
 import re
 
 import miniascape as m
@@ -36,7 +37,6 @@ except ImportError:
 
 
 def svc_libvirtd(pkg_config_path=PKG_CONFIG_PATH):
-    c = m.config.getInstance(pkg_config_path)
 
     return c.commands.svc_libvirtd
 
@@ -46,7 +46,8 @@ def is_libvirtd_running(pkg_config_path=PKG_CONFIG_PATH):
 
     @return  Bool  True (running) or False (not)
     """
-    (stat, _out) = m.utils.runcmd("%s status 2>&1 > /dev/null" % svc_libvirtd(pkg_config_path))
+    c = m.config.getInstance(pkg_config_path)
+    (stat, _out) = m.utils.runcmd("%s status 2>&1 > /dev/null" % c.commands.svc_libvirtd)
 
     return (stat == 0)
 
@@ -57,13 +58,49 @@ def install_domain(domain_xml, pkg_config_path=PKG_CONFIG_PATH):
 
     @domain_xml   Domain XML file path
     """
-    if not is_libvirtd_running(pkg_config_path):
+    c = m.config.getInstance(pkg_config_path)
+
+    if is_libvirtd_running(pkg_config_path):
+        try:
+            conn = libvirt.open('qemu:///system')
+            dom = conn.defineXML(domain_xml)
+            return True
+
+        except libvirt.libvirtError, m:
+            logging.info(" errmsg='%s'" % m)
+            return False
+    else:
+        logging.info(" libvirtd service is not running.")
         return False
 
-    conn = libvirt.open('qemu:///system')
-    dom = conn.defineXML(domain_xml)
 
-    return True
+def uninstall_domain(domain_name, pkg_config_path=PKG_CONFIG_PATH):
+    """
+    Uninstall guest domain from its XML definition file.
+
+    @domain_name  Guest domain name
+    """
+    c = m.config.getInstance(pkg_config_path)
+
+    if is_libvirtd_running(pkg_config_path):
+        try:
+            conn = libvirt.open('qemu:///system')
+            dom = conn.lookupByName(domain_name)
+            status = dom.info()[0]
+        
+            if status == libvirt.VIR_DOMAIN_SHUTOFF:
+                dom.undefine()
+                return True
+            else:
+                logging.info(" Domain %s is not shutoff." % domain_name)
+                return False
+
+        except libvirt.libvirtError, m:
+            logging.info(" errmsg='%s'" % m)
+            return False
+    else:
+        logging.info(" libvirtd service is not running.")
+        return False
 
 
 def base_image_path(image_path, pkg_config_path=PKG_CONFIG_PATH):
