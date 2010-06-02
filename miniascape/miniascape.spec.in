@@ -122,22 +122,14 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc README
-%dir %{_localstatedir}/lib/@PACKAGE@
-%config(noreplace) %{_sysconfdir}/@PACKAGE@/networks/*
-%config(noreplace) %{_sysconfdir}/@PACKAGE@/profiles/*
-%config(noreplace) %{_sysconfdir}/nginx/conf.d/*
-%config(noreplace) %{_sysconfdir}/sysconfig/fence_xvmd
-%config(noreplace) %{_sysconfdir}/cluster/*
+%doc README COPYING
+%config(noreplace) %{_sysconfdir}/@PACKAGE@/config
+%{_bindir}/*
 %{_sbindir}/*
-%{_sysconfdir}/rc.d/init.d/dnsmasq-*
-%{_sysconfdir}/rc.d/init.d/fence_xvmd
 %{_libexecdir}/@PACKAGE@/*
 %{_datadir}/@PACKAGE@/*/*.*
 %{_datadir}/@PACKAGE@/*/*/*.*
 %{_datadir}/@PACKAGE@/*/*/*/*.*
-%{_localstatedir}/lib/@PACKAGE@/networks/*.xml
-%{_localstatedir}/lib/@PACKAGE@/networks/dnsmasq/*
 %{python_sitelib}/*
 
 
@@ -148,6 +140,7 @@ fi
 %changelog
 * Wed May 25 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99.1-1
 - Added python modules
+- Added network templates
 
 * Fri May  7 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99-2
 - Added build profiles and virt-install wrapper script
