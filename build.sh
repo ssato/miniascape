@@ -2,7 +2,7 @@
 set -e
 set -x
 
-for d in data tools; do
+for d in miniascape; do
     autoreconf -vfi
     ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --sharedstatedir=/var/lib
     make
