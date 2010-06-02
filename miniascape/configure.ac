@@ -24,6 +24,8 @@ dnl path parameters
 AC_SUBST([_PACKAGE_DATADIR],[`printf ${datadir}/${PACKAGE_NAME}`])
 AC_SUBST([_PACKAGE_SYSCONFDIR],[`printf ${sysconfdir}/${PACKAGE_NAME}`])
 AC_SUBST([_DOMAIN_XMLDIR],[`printf ${sysconfdir}/${PACKAGE_NAME}/domain.d`])
+AC_SUBST([_LIBVIRT_DOMAIN_XMLDIR],[`printf ${sysconfdir}/libvirt/qemu`])
+AC_SUBST([_LIBVIRT_NETWORK_XMLDIR],[`printf ${sysconfdir}/libvirt/qemu/networks`])
 
 
 AC_OUTPUT([

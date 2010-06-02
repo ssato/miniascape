@@ -4,7 +4,7 @@ test_config.py \
 test_utils.py \
 $(NULL)
 
-EXTRA_DIST = $(python_test_scripts) __init__.py virtinst.tmpl.out
+EXTRA_DIST = $(python_test_scripts) __init__.py virtinst.tmpl.out net-1.yaml
 
 
 if ENABLE_TESTS

@@ -21,6 +21,7 @@
 import Cheetah.Template
 import commands
 import crypt
+import libxml2
 import logging
 import os
 import random
@@ -47,6 +48,32 @@ class FakeXattr:
         return ()
 
 
+def unique(xs, cmp_f=cmp):
+    """Returns (sorted) list of no duplicated items.
+
+    @xs     list of object (x)
+    @cmp_f  comparison function for x
+
+    >>> unique([0, 3, 1, 2, 1, 0, 4, 5])
+    [0, 1, 2, 3, 4, 5]
+    """
+    if xs == []:
+        return xs
+
+    ys = sorted(xs, cmp=cmp_f)
+    if ys == []:
+        return ys
+
+    rs = [ys[0]]
+
+    for y in ys[1:]:
+        if y == rs[-1]:
+            continue
+        rs.append(y)
+
+    return rs
+
+
 def memoize(fn):
     """memoization decorator.
     """
@@ -60,6 +87,22 @@ def memoize(fn):
         return cache[key]
 
     return wrapped
+
+
+@memoize
+def xpath_context(xmlfile):
+    return libxml2.parseFile(xmlfile).xpathNewContext()
+
+
+@memoize
+def xpath_eval(xpath, xmlfile):
+    """Parse given XML and evaluate given XPath expression, then returns
+    result[s].
+
+    @xpath    xpath expression to eval
+    @xmlfile  xml file path
+    """
+    return [r.content for r in xpath_context(xmlfile).xpathEval(xpath)]
 
 
 def kickstart_password(pswd):
@@ -82,7 +125,8 @@ def compile_template(tmpl, output, params={}):
     @output  output file
     @params  parameters to instantiate the template 
     """
-    s = Cheetah.Template.Template(file=file, searchList=params).respond()
+    t = Cheetah.Template.Template(file=tmpl, searchList=params)
+    s = t.respond()
 
     out = open(output, 'w')
     out.write(s)

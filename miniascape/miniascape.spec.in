@@ -14,28 +14,26 @@ Source0:        %{name}-%{version}.tar.@SOURCE_ZIP_EXT@
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch:      noarch
 BuildRequires:  python
-BuildRequires:  python-cheetah
 ## Needed for 'make check':
-#BuildRequires:  python-nose
-#BuildRequires:  python-augeas
-#BuildRequires:  pyxattr
+#BuildRequires:  /usr/bin/qemu-img
+#BuildRequires:  PyYAML
 #BuildRequires:  autoconf
 #BuildRequires:  automake
-BuildRequires:  PyYAML
-BuildRequires:  libvirt-python
+#BuildRequires:  python-augeas
+#BuildRequires:  python-cheetah
+#BuildRequires:  python-nose
+#BuildRequires:  pyxattr
 BuildRequires:  rpm-build
-BuildRequires:  /usr/bin/qemu-img
+Requires:       /usr/bin/qemu-img
+Requires:       PyYAML
 Requires:       autoconf
 Requires:       automake
 Requires:       libvirt
 Requires:       libvirt-python
-Requires:       PyYAML
+Requires:       libxml2-python
 Requires:       python-cheetah
-#Requires:       python-augeas
 Requires:       pyxattr
 Requires:       rpm-build
-Requires:       /usr/bin/qemu-img
-Requires:       fence-agents
 Requires(preun):/sbin/service, /sbin/chkconfig
 Requires(post): /sbin/service, /sbin/chkconfig
 

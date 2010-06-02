@@ -29,11 +29,6 @@ import re
 import miniascape as m
 from miniascape.globals import PKG_CONFIG_PATH
 
-try:
-    import xml.etree.ElementTree as ET  # python >= 2.5
-except ImportError:
-    import elementtree.ElementTree as ET  # python <= 2.4; needs ElementTree.
-
 
 
 def svc_libvirtd(pkg_config_path=PKG_CONFIG_PATH):
@@ -130,67 +125,46 @@ def base_image_path(image_path, pkg_config_path=PKG_CONFIG_PATH):
     return r
 
 
-class DomainXML(object):
-    """Libvirt Domain XML object.
+class Network(object):
+    """Libvirt networks
     """
 
-    def __init__(self, name=False, path=False, pkg_config_path=PKG_CONFIG_PATH):
+    def __init__(self, name, pkg_config_path=PKG_CONFIG_PATH):
+        self.name = name
+        self.xml = None
+
+
+
+class GuestDomain(object):
+    """Libvirt (guest) domain.
+    """
+
+    def __init__(self, path, name="", pkg_config_path=PKG_CONFIG_PATH):
         """
-        @name  Domain name
-        @path  Filepath of domain XML
+        @path  Domain XML path
+        @pkg_config_path  Common config file path
         """
-        if not (name or path):
-            raise RuntimeError("Neither domain name or file path was given.")
+        self.name = name
 
         self.config_path = pkg_config_path
-        self.config = m.config.init(pkg_config_path)
+        self.config = m.config.getInstance(pkg_config_path)
 
-        if name:
-            self.name = name
+        self.path = self.source = path
+        self.xml = open(path).read()
 
-            if is_libvirtd_running(svc_libvirtd(self.config_path)):
-                conn = connect()
-                try:
-                    dom = conn.lookupByName(name)
-                    self.xml = dom.XMLDesc(0)
-                    self.status = dom.info()[0]
+        self.__parse(path)
 
-                except libvirt.libvirtError:
-                    raise RuntimeError(" Domain not found: '%s'" % name)
-            else:
-                self.xml = open("/etc/libvirt/qemu/%s.xml" % name).read()
-                self.status = libvirt.VIR_DOMAIN_SHUTOFF
-
-        elif path:
-            self.xml = open(path).read()
-            self.status = None
-
-        self.parse(self.xml)
-
-        if self.status is None:
-            if is_libvirtd_running(svc_libvirtd(self.config_path)):
-                conn = connect()
-                try:
-                    dom = conn.lookupByName(self.name)
-                    self.status = dom.info()[0]
-
-                except libvirt.libvirtError:
-                    raise RuntimeError(" Domain not found: '%s'" % self.name)
-            else:
-                self.status = libvirt.VIR_DOMAIN_SHUTOFF
-
-    def parse(self, xmlstr):
+    def __parse(self, xmlfile):
         """Parse domain xml string and returns {arch, [image path], ...}
         """
-        tree = ET.fromstring(xmlstr)
-
         if not self.name:
-            self.name = tree.findtext('name')
+            self.name = xpath_eval('/domain/name', xmlfile)
 
-        self.arch = tree.find('os/type').attrib.get('arch')
-        self.images = [e.attrib.get('file') for e in tree.findall('devices/disk/source')]
+        self.arch = xpath_eval('/domain/os/type/@arch')
+        self.images = xpath_eval('/domain/devices/disk[@type="file"]/source/@file')
+        self.networks = m.utils.unique(xpath_eval('/domain/devices/interface[@type="network"]/source/@network'))
 
-        self.base_images = [bp for bp in [base_image_path(p) for p in images] if bp != '']
+        self.base_images = m.utils.unique((bp for bp in [base_image_path(p) for p in self.images] if bp))
 
 
     def is_running(self):

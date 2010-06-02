@@ -37,6 +37,7 @@ TEST_VIRTINST_PARAMS = {
     ],
 }
 
+NET_1_YAML = '@abs_top_srcdir@/tests/net-1.yaml'
 
 
 
