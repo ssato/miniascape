@@ -35,6 +35,8 @@ aux/Makefile
 aux/m4/Makefile
 data/Makefile
 data/templates/Makefile
+data/templates/network/Makefile
+data/templates/network/dnsmasq/Makefile
 data/templates/package/Makefile
 data/templates/repackage/Makefile
 data/templates/virtinst/Makefile

@@ -1,1 +1,1 @@
-SUBDIRS = repackage virtinst
+SUBDIRS = network repackage virtinst

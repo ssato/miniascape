@@ -125,17 +125,20 @@ def base_image_path(image_path, pkg_config_path=PKG_CONFIG_PATH):
     return r
 
 
-class Network(object):
+class LibvirtNetwork(object):
     """Libvirt networks
     """
 
     def __init__(self, name, pkg_config_path=PKG_CONFIG_PATH):
+        self.config_path = pkg_config_path
+        self.config = m.config.getInstance(pkg_config_path)
+
         self.name = name
-        self.xml = None
+        self.xml = os.path.join(self.config.vmm.vnetxmldir, '%s.xml' % name)
 
 
 
-class GuestDomain(object):
+class LibvirtDomain(object):
     """Libvirt (guest) domain.
     """
 
