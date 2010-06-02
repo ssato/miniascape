@@ -1,0 +1,20 @@
+<network>
+  <name>$network.name</name>
+#if $network.forward
+  <forward mode="$network.forward"/>
+#end if
+  <bridge name="$network.bridge" stp="on" delay="0"/>
+  <domain name="$network.domain"/>
+#if $network.libvirt_network_dhcp_enabled
+  <ip address="$network.gateway" netmask="$network.netmask">
+    <dhcp>
+      <range start="$network.dhcp_start" end="$network.dhcp_end"/>
+#  for $host in $network.hosts
+      <host mac="$host.$hwaddr" ip="$host.ip" name="$host.name"/>
+#  end for
+    </dhcp>
+  </ip>
+#else
+  <ip address="$network.gateway" netmask="$network.netmask"/>
+#end if
+</network>
