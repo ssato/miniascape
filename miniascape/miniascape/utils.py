@@ -89,7 +89,6 @@ def memoize(fn):
     return wrapped
 
 
-@memoize
 def xpath_context(xmlfile):
     return libxml2.parseFile(xmlfile).xpathNewContext()
 
