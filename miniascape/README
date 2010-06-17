@@ -27,10 +27,11 @@ Main objects are
 Files
 ====================
 
- * libvirt network definitions: /etc/miniascape/networks/*.yaml
+
+ * libvirt network definitions: /etc/miniascape/networks/\*.yaml
  * dnsmasq init scripts per libvirt network: /etc/rc.d/init.d/dnsmasq-$netname
  * fence_xvmd init scripts: /etc/rc.d/init.d/fence_xvmd
- * misc tools: /usr/libexec/miniascape/*
+ * misc tools: /usr/libexec/miniascape/\*
 
 
 Prerequisites
@@ -121,22 +122,84 @@ Pre/Post update
 
 
 
+Internal
+=====================
+
+
+repack
+--------------------
+
+0. Setup working dir by name: ex. vm-${DOMAIN_NAME}-repacked-0.1
+1. Get the guest domain XML by its name and copied into the working dir
+2. Parse that domain XML and get the list of disk images
+3. Copy disk images into the working dir one by one
+4. Setup build files (see below)
+5. Build archive [option]
+6. Build src rpm [option]
+7. Build binary rpm [option]
+
+
+build files:
+
+ * Makefile.am and other makefiles
+ * configure.ac
+ * m4 files
+ * RPM SPEC file
+ * README
+
+
+pack
+--------------------
+
+0. Setup working dir by config file: ex. vm-${DOMAIN_NAME}-packed-0.1
+1. Setup build files (see below)
+5. Build archive [option]
+6. Build src rpm [option]
+7. Build binary rpm [option]
+
+
+build files:
+
+ * Makefile.am and other makefiles
+ * configure.ac
+ * m4 files
+ * RPM SPEC file
+ * README
+
+Build process details:
+
+1. Create a disk image to install guest OS. It will be used as base image.
+2. Install guest OS by kickstart/preseed/etc.
+3. Convert and rename disk image to ${image_name}-base.qcow2 and create delta disk image
+4. Dump domain XML
+
 
 TODO
 =====================
 
-upstream works
--------------------
-
-* --config (or --profile?) file option for virt-install
-* enhancement for qemu-img to get base image path of delta image
-* more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic
-
-
 miniascape itself
 -----------------------
 
-* Wrote more test codes for scripts
+Must:
+
+* 0.2 release (miniascape and miniascape-data-default)
+
+  * Restructure and split tools and reference data
+
+  * sub command 'repack'
+
+
+* Setup console access to guest domain
+
+* Genaral tunings (timer, io scheduler, virtio, etc.) for both guest and host.
+
+* Wrote more test codes for scripts:
+  * miniascape.package
+  * miniascape.virt
+
+
+Optional:
+
 * Make http service daemon configurable
 * Merge ISC DHCP and bind backend as an option instead of dnsmasq
 * Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
@@ -187,26 +250,39 @@ miniascape itself
 
 
 
-
-Completed / Done
-----------------------
-
 upstream works
 -------------------
 
-* dnsmasq backend for libvirt
-  * Generate hostsfile (host-ip-mac mapping file) and pass --dhcp-hostsfile
-    with its path to dnsmasq started from libvirtd:
-    my patches were merged into upstream. it works since libvirt 0.8.1.
+Here are some upstream works required.
+ 
+* --config (or --profile?) file option for virt-install [Should]
+* enhancement for qemu-img to get base image path of delta image [Should]
+* more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic [Should]
+* dhcpv6 support for dnsmasq [Maybe]
 
+
+
+Completed / Done
+----------------------
 
 miniascape itself
 -------------------
 
  * Eliminate GNU extensions in Makefiles
- * Restructure and split tools and reference data
  * Merge build (installation and packaging) scripts from vdbs
  * Make network definitions more configurable
+
+
+upstream works
+-------------------
+
+* dnsmasq backend for libvirt
+
+  * Generate hostsfile (host-ip-mac mapping file) and pass --dhcp-hostsfile
+    with its path to dnsmasq started from libvirtd: my patches were merged into
+    upstream. it works since libvirt 0.8.1.
+
+  * Dump configuration to static files (and utilize --conf-file) [May]
 
 
 
@@ -219,7 +295,7 @@ aux/m4 subdir.
 See COPYING for details about GPLv3.
 
 
-Special exception aux/m4/*.m4
+Special exception aux/m4/\*.m4
 ----------------------------------
 
 As a special exception, I gives unlimited permission to copy, distribute and
