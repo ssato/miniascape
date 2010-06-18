@@ -45,7 +45,7 @@ class LibvirtObject(object):
         self.config_path = pkg_config_path
         self.config = m.config.getInstance(pkg_config_path)
 
-        self.connection = False
+        self.vmm = False
 
         if xml_path:
             self.xml_path = xml_path
@@ -67,7 +67,7 @@ class LibvirtObject(object):
     def name_by_xml_path(self, xml_path):
         """Inherited class may override this method.
         """
-        return self.xpath_eval('//name', xml_path)
+        return self.xpath_eval('//name', xml_path)[0]
 
     def xml_path_by_name(self, name):
         """Template method. Inherited class MUST implement this method.
@@ -75,10 +75,9 @@ class LibvirtObject(object):
         raise RuntimeError(" Not implemented!")
 
     def vmm_connect(self):
-        if not self.connection:
+        if not self.vmm:
             try:
-                conn = libvirt.open(self.config.vmm.connect)
-                self.connection = conn
+                self.vmm = libvirt.open(self.config.vmm.connect)
             except libvirt.libvirtError, m:
                 logging.info(" errmsg='%s'" % m)
                 raise RuntimeError(" Could not connect to vmm")
@@ -102,14 +101,14 @@ class LibvirtNetwork(LibvirtObject):
         @see /usr/share/libvirt/schemas/network.rng
         @see http://libvirt.org/formatnetwork.html
         """
-        return self.xpath_eval('/network/name', xml_path)
+        return self.xpath_eval('/network/name', xml_path)[0]
 
     def xml_path_by_name(self, name):
         return os.path.join(self.config.vmm.vnetxmldir, '%s.xml' % name)
 
 
 
-class LibvirtDomain(object):
+class LibvirtDomain(LibvirtObject):
     """Libvirt (guest) domain.
     """
 
@@ -118,7 +117,7 @@ class LibvirtDomain(object):
         @see /usr/share/libvirt/schemas/domain.rng
         @see http://libvirt.org/formatdomain.html
         """
-        return self.xpath_eval('/domain/name', xml_path)
+        return self.xpath_eval('/domain/name', xml_path)[0]
 
     def xml_path_by_name(self, name):
         return os.path.join(self.config.vmm.vmxmldir, '%s.xml' % name)
@@ -129,7 +128,7 @@ class LibvirtDomain(object):
         @see http://libvirt.org/formatdomain.html
         @see /usr/share/libvirt/schemas/domain.rng
         """
-        self.arch = self.xpath_eval('/domain/os/type/@arch')
+        self.arch = self.xpath_eval('/domain/os/type/@arch')[0]
         self.networks = m.utils.unique(self.xpath_eval('/domain/devices/interface[@type="network"]/source/@network'))
         self.images = self.xpath_eval('/domain/devices/disk[@type="file"]/source/@file')
         self.base_images = m.utils.unique((bp for bp in (self.base_image_path(p) for p in self.images) if bp))
@@ -137,7 +136,7 @@ class LibvirtDomain(object):
     def status(self):
         if self.is_libvirtd_running():
             self.vmm_connect()
-            dom = self.connection.lookupByName(self.name)
+            dom = self.vmm.lookupByName(self.name)
             if dom:
                 return dom.info()[0]
             else:
@@ -156,9 +155,14 @@ class LibvirtDomain(object):
         """
         if self.is_libvirtd_running():
             self.vmm_connect()
-            dom = self.connection.defineXML(self.xml_path)
+            dom = self.vmm.lookupByName(self.name)
+            if dom:
+                logging.error(" Domain %s already exists!" % self.name)
+            else:
+                self.vmm.defineXML(self.xml_path)
         else:
-            logging.warn(" libvirtd service is not running.")
+            logging.info(" libvirtd service is not running.")
+            m.utils.copyfile(self.xml_path, self.config.vmm.vmxmldir, force=True)
 
     def uninstall(self, force=False):
         """Uninstall this guest domain.
@@ -166,7 +170,7 @@ class LibvirtDomain(object):
         if self.is_libvirtd_running():
             if self.status() == libvirt.VIR_DOMAIN_SHUTOFF:
                 self.vmm_connect()
-                dom = self.connection.lookupByName(self.name)
+                dom = self.vmm.lookupByName(self.name)
                 if dom:
                     dom.undefine()
                 else:
@@ -174,13 +178,14 @@ class LibvirtDomain(object):
 
             elif self.status() == libvirt.VIR_DOMAIN_RUNNING and force:
                 self.vmm_connect()
-                dom = self.connection.lookupByName(self.name)
+                dom = self.vmm.lookupByName(self.name)
                 dom.destroy()
                 dom.undefine()
             else:
                 logging.error(" Domain %s is in unknown state!" % self.name)
         else:
-            logging.warn(" libvirtd service is not running.")
+            logging.info(" libvirtd service is not running.")
+            os.remove(self.config.vmm.vmxmldir)
 
     def base_image_path(self, image_path):
         """@return  the path of the base image of given image path or "" (given
@@ -201,9 +206,9 @@ class LibvirtDomain(object):
 
         (stat, _out) = m.utils.runcmd("%s info %s" % (self.config.commands.qemu_img, image_path))
         if stat == 0:
-            m = re.match(r'.*backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>[^ ]+)\)', _out, re.DOTALL)
-            if m:
-                r = m.groupdict()['base_full']
+            matched = re.match(r'.*backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>[^ ]+)\)', _out, re.DOTALL)
+            if matched:
+                r = matched.groupdict()['base_full']
 
         return r
 

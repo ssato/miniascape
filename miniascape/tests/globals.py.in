@@ -12,9 +12,17 @@ except NameError:
 
 
 TEST_CONFIG_FILE = '@abs_top_builddir@/etc/config'
+
+TEST_NETWORK_XML = '@abs_top_srcdir@/tests/net-1.xml' 
+TEST_DOMAIN_XML = '@abs_top_builddir@/tests/rhel-5-generic-0.xml' 
+
+TEST_DOMAIN_IMAGE_1 = '@abs_top_builddir@/tests/rhel-5-generic-0-disk-1.qcow2' 
+TEST_DOMAIN_IMAGE_BASE_1 = '@abs_top_builddir@/tests/rhel-5-generic-0-disk-1-base.qcow2' 
+TEST_DOMAIN_IMAGE_2 = '@abs_top_builddir@/tests/rhel-5-generic-0-disk-2.qcow2' 
+TEST_DOMAIN_IMAGE_BASE_2 = '@abs_top_builddir@/tests/rhel-5-generic-0-disk-2-base.qcow2' 
+
 TEST_VIRTINST_TEMPLATE ='@abs_top_srcdir@/data/templates/virtinst/virtinst.tmpl' 
 TEST_VIRTINST_OUT ='@abs_top_srcdir@/tests/virtinst.tmpl.out' 
-
 TEST_VIRTINST_PARAMS = {
     'virtinst': '/usr/bin/virt-install',
     'name': 'rhel-5-5-guest-1',

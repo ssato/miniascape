@@ -20,8 +20,12 @@
   <devices>
     <emulator>/usr/bin/qemu-kvm</emulator>
     <disk type='file' device='disk'>
-      <source file='/var/lib/libvirt/images/rhel-5-generic-0-disk-1.qcow2'/>
+      <source file='@abs_top_builddir@/tests/rhel-5-generic-0-disk-1.qcow2'/>
       <target dev='hda' bus='ide'/>
+    </disk>
+    <disk type='file' device='disk'>
+      <source file='@abs_top_builddir@/tests/rhel-5-generic-0-disk-2.qcow2'/>
+      <target dev='hdb' bus='ide'/>
     </disk>
     <interface type='network'>
       <mac address='54:52:00:01:00:90'/>

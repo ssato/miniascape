@@ -51,4 +51,5 @@ src/net-unregister
 src/xpathp
 tests/Makefile
 tests/globals.py
+tests/rhel-5-generic-0.xml
 ])
