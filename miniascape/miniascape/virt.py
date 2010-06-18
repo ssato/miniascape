@@ -32,27 +32,14 @@ from miniascape.globals import PKG_CONFIG_PATH
 
 
 
-class LibvirtNetwork(object):
-    """Libvirt networks
-    """
-
-    def __init__(self, name, pkg_config_path=PKG_CONFIG_PATH):
-        self.config_path = pkg_config_path
-        self.config = m.config.getInstance(pkg_config_path)
-
-        self.name = name
-        self.xml = os.path.join(self.config.vmm.vnetxmldir, '%s.xml' % name)
-
-
-
-class LibvirtDomain(object):
-    """Libvirt (guest) domain.
+class LibvirtObject(object):
+    """Libvirt object.
     """
 
     def __init__(self, name="", xml_path="", pkg_config_path=PKG_CONFIG_PATH):
         """
-        @name       Domain name. name or xml_path must be set (not empty).
-        @xml_path   Domain XML's path (absolute)
+        @name       Object's name. name or xml_path must be set (not empty).
+        @xml_path   Object's XML path (absolute)
         @pkg_config_path  Common config file path
         """
         self.config_path = pkg_config_path
@@ -62,18 +49,30 @@ class LibvirtDomain(object):
 
         if xml_path:
             self.xml_path = xml_path
-            name = m.utils.xpath_eval('/domain/name', xml_path)
+            self.name = self.name_by_xml_path(self.xml_path)
 
-            assert name 
+            assert self.name 
         else:
             assert name 
 
             self.name = name
+            self.xml_path = self.xml_path_by_name(self.name)
 
-            # TODO: Get domain XML content from libvirtd.
-            #if self.is_libvirtd_running():
-            #    ...
-            self.xml_path = os.path.join(self.config.vmm.vmxmldir, "%s.xml" % self.name)
+    def __str__(self):
+        return open(self.xml_path).read()
+
+    def xpath_eval(self, xpath_exp, xml_path=False):
+        return m.utils.xpath_eval(xpath_exp, xml_path or self.xml_path)
+
+    def name_by_xml_path(self, xml_path):
+        """Inherited class may override this method.
+        """
+        return self.xpath_eval('//name', xml_path)
+
+    def xml_path_by_name(self, name):
+        """Template method. Inherited class MUST implement this method.
+        """
+        raise RuntimeError(" Not implemented!")
 
     def vmm_connect(self):
         if not self.connection:
@@ -92,28 +91,57 @@ class LibvirtDomain(object):
         (stat, _out) = m.utils.runcmd("%s status 2>&1 > /dev/null" % self.config.commands.svc_libvirtd)
         return (stat == 0)
 
-    def xml(self):
-        if self.xml_path:
-            return open(self.xml_path).read()
+
+
+class LibvirtNetwork(LibvirtObject):
+    """Libvirt network
+    """
+
+    def name_by_xml_path(self, xml_path):
+        """
+        @see /usr/share/libvirt/schemas/network.rng
+        @see http://libvirt.org/formatnetwork.html
+        """
+        return self.xpath_eval('/network/name', xml_path)
+
+    def xml_path_by_name(self, name):
+        return os.path.join(self.config.vmm.vnetxmldir, '%s.xml' % name)
+
+
+
+class LibvirtDomain(object):
+    """Libvirt (guest) domain.
+    """
+
+    def name_by_xml_path(self, xml_path):
+        """
+        @see /usr/share/libvirt/schemas/domain.rng
+        @see http://libvirt.org/formatdomain.html
+        """
+        return self.xpath_eval('/domain/name', xml_path)
+
+    def xml_path_by_name(self, name):
+        return os.path.join(self.config.vmm.vmxmldir, '%s.xml' % name)
 
     def parse(self):
         """Parse domain xml and store various guest profile data.
-        """
-        self.arch = m.utils.xpath_eval('/domain/os/type/@arch', self.xml_path)
-        self.images = m.utils.xpath_eval('/domain/devices/disk[@type="file"]/source/@file', self.xml_path)
-        self.networks = m.utils.unique(
-            m.utils.xpath_eval('/domain/devices/interface[@type="network"]/source/@network', self.xml_path)
-        )
 
-        self.base_images = m.utils.unique(
-            (bp for bp in [self.base_image_path(p) for p in self.images] if bp)
-        )
+        @see http://libvirt.org/formatdomain.html
+        @see /usr/share/libvirt/schemas/domain.rng
+        """
+        self.arch = self.xpath_eval('/domain/os/type/@arch')
+        self.networks = m.utils.unique(self.xpath_eval('/domain/devices/interface[@type="network"]/source/@network'))
+        self.images = self.xpath_eval('/domain/devices/disk[@type="file"]/source/@file')
+        self.base_images = m.utils.unique((bp for bp in (self.base_image_path(p) for p in self.images) if bp))
 
     def status(self):
         if self.is_libvirtd_running():
             self.vmm_connect()
             dom = self.connection.lookupByName(self.name)
-            return dom.info()[0]
+            if dom:
+                return dom.info()[0]
+            else:
+                return libvirt.VIR_DOMAIN_NONE
         else:
             return libvirt.VIR_DOMAIN_SHUTOFF
 
@@ -130,19 +158,29 @@ class LibvirtDomain(object):
             self.vmm_connect()
             dom = self.connection.defineXML(self.xml_path)
         else:
-            logging.error(" libvirtd service is not running. Start libvirtd and retry installation.")
+            logging.warn(" libvirtd service is not running.")
 
-
-    def uninstall(self):
+    def uninstall(self, force=False):
         """Uninstall this guest domain.
         """
         if self.is_libvirtd_running():
             if self.status() == libvirt.VIR_DOMAIN_SHUTOFF:
                 self.vmm_connect()
                 dom = self.connection.lookupByName(self.name)
+                if dom:
+                    dom.undefine()
+                else:
+                    logging.warn(" Domain '%s' not found. Nothing to do." % self.name)
+
+            elif self.status() == libvirt.VIR_DOMAIN_RUNNING and force:
+                self.vmm_connect()
+                dom = self.connection.lookupByName(self.name)
+                dom.destroy()
                 dom.undefine()
             else:
-                logging.info(" Domain %s is not shutoff." % domain_name)
+                logging.error(" Domain %s is in unknown state!" % self.name)
+        else:
+            logging.warn(" libvirtd service is not running.")
 
     def base_image_path(self, image_path):
         """@return  the path of the base image of given image path or "" (given
