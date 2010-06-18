@@ -183,11 +183,8 @@ miniascape itself
 Must:
 
 * 0.2 release (miniascape and miniascape-data-default)
-
-  * Restructure and split tools and reference data
-
-  * sub command 'repack'
-
+  * Restructure src tree and split into tools and reference data
+  * sub command 'repack', 'pack'
 
 * Setup console access to guest domain
 
@@ -253,9 +250,8 @@ Optional:
 upstream works
 -------------------
 
-Here are some upstream works required.
- 
 * --config (or --profile?) file option for virt-install [Should]
+* pyvirsh - virsh alternative written in python [Should]
 * enhancement for qemu-img to get base image path of delta image [Should]
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic [Should]
 * dhcpv6 support for dnsmasq [Maybe]
