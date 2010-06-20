@@ -153,9 +153,10 @@ pack
 
 0. Setup working dir by config file: ex. vm-${DOMAIN_NAME}-packed-0.1
 1. Setup build files (see below)
-5. Build archive [option]
-6. Build src rpm [option]
-7. Build binary rpm [option]
+2. Build VM (install VM)
+3. Build archive [option]
+4. Build src rpm [option]
+5. Build binary rpm [option]
 
 
 build files:

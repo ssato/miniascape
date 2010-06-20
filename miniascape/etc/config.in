@@ -7,8 +7,9 @@ svc_libvirtd = @SERVICE_LIBVIRTD@
 
 
 [dirs]
-auxdir = @_PACKAGE_DATADIR@/aux
-m4dir = %(auxdir)s/m4
+auxdir          = @_PACKAGE_DATADIR@/aux
+templatesdir    = @_PACKAGE_DATADIR@/templates
+m4dir           = %(auxdir)s/m4
 
 
 [vmm]
@@ -17,11 +18,10 @@ vmxmldir = @_LIBVIRT_DOMAIN_XMLDIR@
 vnetxmldir = @_LIBVIRT_NETWORK_XMLDIR@
 
 
-[package]
-domain_variant = minimal 
-name_prefix = vm
-name_suffix = %(domain_variant)s
-srczip_ext = xz
+[pack]
+variant         = minimal
+version         = 0.1
+compress        = xz
 
 
 [virtinst]
