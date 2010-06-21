@@ -22,6 +22,7 @@ vnetxmldir = @_LIBVIRT_NETWORK_XMLDIR@
 variant         = minimal
 version         = 0.1
 compress        = xz
+target_dist     = fedora-12-i386
 
 
 [virtinst]

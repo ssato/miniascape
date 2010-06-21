@@ -23,14 +23,6 @@
 # @see http://www.qemu.org/qemu-doc.html#SEC19
 #
 
-import commands
-import libvirt
-import logging
-import os
-import re
-import shutil
-import sys
-
 import logging
 import os
 import re
@@ -40,7 +32,7 @@ from miniascape.globals import PKG_CONFIG_PATH
 
 
 
-class Workflow(object):
+class Process(object):
 
     def __init__(self, name, variant="", topdir="", pkg_config_path=PKG_CONFIG_PATH):
         """
@@ -65,6 +57,24 @@ class Workflow(object):
         else:
             self.workdir = "./%s-%s" % (self.package_name, self.package_version)
 
+    def setup(self, *args, **kwargs):
+        self.setup_workdir(*args, **kwargs)
+        self.setup_data(*args, **kwargs)
+        self.setup_buildfiles(*args, **kwargs)
+
+    def build(self, *args, **kwargs):
+        self.prebuild(*args, **kwargs)
+        self.build_main(*args, **kwargs)
+        self.postbuild(*args, **kwargs)
+
+    def pack(self, binary=False):
+        self.prebuild()
+        self.make_archive()
+        self.pack_src()
+
+        if binary:
+            self.pack_bin()
+
     def setup_workdir(self, *args, **kwargs):
         """
         @throw OSError, etc.
@@ -77,34 +87,36 @@ class Workflow(object):
     def setup_data(self, *args, **kwargs):
         pass
 
-    def setup(self, *args, **kwargs):
-        self.setup_workdir(*args, **kwargs)
-        self.setup_data(*args, **kwargs)
-        self.setup_buildfiles(*args, **kwargs)
+    def prebuild(self, *args, **kwargs):
+        self.runcmd("cd %s && autoreconf -vfi" % self.workdir)
 
     def build_main(self, *args, **kwargs):
+        self.runcmd("cd %s && make" % self.workdir)
+
+    def postbuild(self, *args, **kwargs):
         pass
 
-    def build_archive(self, *args, **kwargs):
-        pass
+    def make_archive(self):
+        self.runcmd("cd %s && make dist" % self.workdir)
 
-    def build_src_rpm(self, *args, **kwargs):
-        pass
+    def pack_src(self):
+        self.runcmd("cd %s && make srpm" % self.workdir)
 
-    def build_bin_rpm(self, *args, **kwargs):
-        pass
-
-    def build(self, *args, **kwargs):
-        self.build_main(*args, **kwargs)
-        self.build_archive(*args, **kwargs)
-        self.build_src_rpm(*args, **kwargs)
+    def pack_bin(self):
+        #self.runcmd("cd %s && mock -r %s *.src.rpm" % (self.workdir, self.config.pack.target_dist))
+        self.runcmd("cd %s && make rpm" % self.workdir)
 
     def template_output(self, tmpl):
         return os.path.join(self.workdir, tmpl.replace('.tmpl',''))
 
+    def runcmd(self, cmds):
+        (rc, out) = m.utils.runcmd(cmds)
+        if rc !=0:
+            raise RuntimeError(" rc=%d, err='%s'" % (rc, out))
 
 
-class RepackWorkflow(Workflow):
+
+class RepackProcess(Process):
 
     def setup_buildfiles(self, *args, **kwargs):
         tmpls = ['Makefile.am.tmpl', 'README.tmpl', 'configure.ac.tmpl',  'vm.spec.in.tmpl']
@@ -131,6 +143,26 @@ class RepackWorkflow(Workflow):
 
         for img in self.images + self.base_images:
             m.utils.copyfile(img, os.path.join(self.workdir, os.path.basename(img)))
+
+
+
+
+class PackProcess(Process):
+
+    def setup_buildfiles(self, *args, **kwargs):
+        tmpls = ['Makefile.am.tmpl', 'README.tmpl', 'configure.ac.tmpl',  'vm.spec.in.tmpl']
+        tmpls = [os.path.join(self.config.dirs.templatesdir, "pack", t) for t in tmpls]
+
+        for t in tmpls:
+            m.utils.compile_template(t, self.template_output(t), self.domain)
+
+        os.makedirs(os.path.join(self.workdir, 'aux'))
+        os.makedirs(os.path.join(self.workdir, 'aux', 'm4'))
+
+        m.utils.copyfile(os.path.join(self.config.dirs.auxdir, 'rpm.mk'), self.workdir, force=True)
+
+        for mf in ('libvirt.m4', 'package.m4', 'python.m4', 'qemu.m5', 'rpm.m4', 'virtinst.m4'):
+            m.utils.copyfile(os.path.join(self.config.dirs.m4dir, mf), self.workdir, force=True)
 
 
 

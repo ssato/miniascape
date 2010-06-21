@@ -48,7 +48,6 @@ etc/config
 miniascape/Makefile
 miniascape/globals.py
 src/Makefile
-src/install-vm
 src/net-register
 src/net-unregister
 src/xpathp
