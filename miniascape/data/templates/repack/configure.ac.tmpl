@@ -1,6 +1,6 @@
-AC_INIT([vm-$domain.name-$variant],[$version])
+AC_INIT([$package.name],[$package.version])
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([vm-$domain.name-${variant}.spec.in])
+AC_CONFIG_SRCDIR([${package.name}.spec.in])
 AC_CONFIG_MACRO_DIR([aux/m4])
 
 AC_PROG_QEMU_IMG
@@ -10,10 +10,12 @@ AC_PROG_RPMBUILD
 
 AC_CHECK_SOURCE_ZIP
 
+#raw
 timestamp=`LANG=C date +"%a %b %d %Y"`
 AC_SUBST([TIMESTAMP],[$timestamp])
+#end raw
 
 AC_OUTPUT([
 Makefile
-vm-$domain.name-${variant}.spec
+${package.name}.spec
 ])

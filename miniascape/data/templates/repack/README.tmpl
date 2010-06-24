@@ -1,11 +1,4 @@
-This is a re-packed KVM guest image.
+This is a re-packed KVM guest domain.
 
-* Name: $domain.name
-#if $getVar('variant', '')
-* Variant: $variant
-#end if
-* Images:
-#for $image in $domain.images
-  * $image
-#end for
+Hardware profile: see `virsh dumpxml $domain.name`
 
