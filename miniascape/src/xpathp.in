@@ -20,24 +20,11 @@
 #
 
 import errno
-import libxml2
 import optparse
 import sys
 
+from miniascape.utils xpath_eval
 
-
-def xpath_eval(xpath, xmlfile):
-    """Parse given XML and evaluate given XPath expression, then returns
-    result[s].
-
-    @xpath    xpath expression to eval
-    @xmlfile  xml file path
-    """
-    doc = libxml2.parseFile(xmlfile)
-    ctxt = doc.xpathNewContext()
-    rs = [r.content for r in ctxt.xpathEval(xpath)]
-
-    return rs
 
 
 def main():
