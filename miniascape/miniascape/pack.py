@@ -65,20 +65,26 @@ class DomainDTO(C.ODict):
         self.xml_path = xml_path
         self.xml_store_path = xml_store_path
 
-        self.base_images = self.add_base_images(base_images)
-        self.delta_images = self.add_delta_images(delta_images)
+        self.base_images = []
+        self.delta_images = []
+
+        if base_images:
+            self.add_base_images(base_images)
+
+        if delta_images:
+            self.add_delta_images(delta_images)
 
     def add_base_images(self, path_list=[]):
         for path in path_list:
             i = C.ODict()
-            i['path'] = os.path.dirname(path)
+            i['dir'] = os.path.dirname(path)
             i['name'] = os.path.basename(path)
             self.base_images.append(i)
 
     def add_delta_images(self, path_list=[]):
         for path in path_list:
             i = C.ODict()
-            i['path'] = os.path.dirname(path)
+            i['dir'] = os.path.dirname(path)
             i['name'] = os.path.basename(path)
             self.delta_images.append(i)
 
