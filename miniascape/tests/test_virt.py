@@ -11,14 +11,12 @@ from tests.globals import *
 
 
 def setup_images():
-    runcmd("qemu-img create -f qcow2 %s 1M" % TEST_DOMAIN_IMAGE_BASE_1)
-    runcmd("qemu-img create -f qcow2 -b %s %s" % (TEST_DOMAIN_IMAGE_BASE_1, TEST_DOMAIN_IMAGE_1))
-    runcmd("qemu-img create -f qcow2 %s 1M" % TEST_DOMAIN_IMAGE_BASE_2)
-    runcmd("qemu-img create -f qcow2 -b %s %s" % (TEST_DOMAIN_IMAGE_BASE_2, TEST_DOMAIN_IMAGE_2))
+    runcmd("qemu-img create -f qcow2 %s 1M" % TEST_DOMAIN_IMAGE_1)
+    runcmd("qemu-img create -f qcow2 %s 1M" % TEST_DOMAIN_IMAGE_2)
 
 
 def teardown_images():
-    for img in (TEST_DOMAIN_IMAGE_1, TEST_DOMAIN_IMAGE_2, TEST_DOMAIN_IMAGE_BASE_1, TEST_DOMAIN_IMAGE_BASE_2):
+    for img in (TEST_DOMAIN_IMAGE_1, TEST_DOMAIN_IMAGE_2):
         os.remove(img)
 
 
@@ -30,8 +28,6 @@ def test_LibvirtObject_by_name():
     assert isinstance(lo, LibvirtObject)
     assert lo.name == 'rhel-5-generic-0', "name: %s vs. rhel-5-generic-0" % lo.name
     assert lo.xml_path == TEST_DOMAIN_XML, "xml_path: %s vs. %s" % (lo.xml_path, TEST_DOMAIN_XML)
-
-    lo.is_libvirtd_running()
 
 
 def test_LibvirtNetwork():
@@ -60,10 +56,7 @@ def test_LibvirtDomain():
     assert x.networks == ns0, "networks: %s vs. %s" % (str(x.networks), str(ns0))
 
     is0 = [TEST_DOMAIN_IMAGE_1, TEST_DOMAIN_IMAGE_2]
-    ibs0 = [TEST_DOMAIN_IMAGE_BASE_1, TEST_DOMAIN_IMAGE_BASE_2]
-
     assert x.images == is0, "images: %s vs. %s" % (str(x.images), str(is0))
-    assert x.base_images == ibs0, "base images: %s vs. %s" % (str(x.base_images), str(ibs0))
 
 
 #@nose.tools.with_setup(teardown=teardown_mkdir)

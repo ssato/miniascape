@@ -4,16 +4,19 @@ ACLOCAL_AMFLAGS = -I aux/m4
 
 include $(abs_srcdir)/aux/rpm.mk
 
-
-domainxmldir = @_DOMAIN_XMLDIR@
+domainxmldir = ${domain.xml_path}
+domainxmlstoredir = ${domain.xml_store_path}
 dist_domainxml_DATA = ${domain.name}.xml
+dist_domainxmlstore_DATA = $(dist_domainxml_DATA)
 
-domainsysxmldir = @sysconfdir@/libvirt/qemu
-dist_domainsysxml_DATA = $(dist_domainxml_DATA)
 
-domainimagedir = @localstatedir@/lib/libvirt/images
-dist_domainimage_DATA =
-#for $image in $domain.delta_images + $domain.base_images
-dist_domainimage_DATA += $image
+#for $image in $domain.delta_images
+domainimg${image.name}dir = $image.path
+dist_domainimg${image.name}_DATA = $image.name
+#end for
+
+#for $image in $domain.base_images
+domainimg${image.name}dir = $image.path
+dist_domainimg${image.name}_DATA = $image.name
 #end for
 

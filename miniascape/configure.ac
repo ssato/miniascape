@@ -38,10 +38,7 @@ data/templates/Makefile
 data/templates/network/Makefile
 data/templates/network/dnsmasq/Makefile
 data/templates/pack/Makefile
-data/templates/pack/data/Makefile
 data/templates/repack/Makefile
-data/templates/repack/Makefile.am.tmpl
-data/templates/repack/vm.spec.in.tmpl
 data/templates/virtinst/Makefile
 etc/Makefile
 etc/config

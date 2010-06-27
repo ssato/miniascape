@@ -21,6 +21,11 @@ import os.path
 PKG_DATADIR = '@_PACKAGE_DATADIR@'
 PKG_SYSCONFDIR = '@_PACKAGE_SYSCONFDIR@'
 
+QEMU_IMG = '@QEMU_IMG@'
+VIRT_INSTALL = '@VIRTINST@'
+SERVICE_LIBVIRTD = '@SERVICE_LIBVIRTD@'
+
+
 PKG_CONFIG_PATH = os.path.join(PKG_SYSCONFDIR, 'config')
 
 # vim:sw=4:ts=4:et:ft=python:

@@ -27,7 +27,8 @@ import logging
 import os
 import re
 
-import miniascape as m
+import miniascape.config as C
+import miniascape.utils as U
 from miniascape.globals import PKG_CONFIG_PATH
 
 
@@ -43,7 +44,7 @@ class LibvirtObject(object):
         @pkg_config_path  Common config file path
         """
         self.config_path = pkg_config_path
-        self.config = m.config.getInstance(pkg_config_path)
+        self.config = C.getInstance(pkg_config_path)
 
         self.vmm = False
 
@@ -62,7 +63,7 @@ class LibvirtObject(object):
         return open(self.xml_path).read()
 
     def xpath_eval(self, xpath_exp, xml_path=False):
-        return m.utils.xpath_eval(xpath_exp, xml_path or self.xml_path)
+        return U.xpath_eval(xpath_exp, xml_path or self.xml_path)
 
     def name_by_xml_path(self, xml_path):
         """Inherited class may override this method.
@@ -82,14 +83,6 @@ class LibvirtObject(object):
                 logging.info(" errmsg='%s'" % m)
                 raise RuntimeError(" Could not connect to vmm")
             
-    def is_libvirtd_running(self):
-        """Is the service "libvirtd" running?
-
-        @return  Bool  True (running) or False (not)
-        """
-        (stat, _out) = m.utils.runcmd("%s status 2>&1 > /dev/null" % self.config.commands.svc_libvirtd)
-        return (stat == 0)
-
 
 
 class LibvirtNetwork(LibvirtObject):
@@ -129,9 +122,8 @@ class LibvirtDomain(LibvirtObject):
         @see /usr/share/libvirt/schemas/domain.rng
         """
         self.arch = self.xpath_eval('/domain/os/type/@arch')[0]
-        self.networks = m.utils.unique(self.xpath_eval('/domain/devices/interface[@type="network"]/source/@network'))
+        self.networks = U.unique(self.xpath_eval('/domain/devices/interface[@type="network"]/source/@network'))
         self.images = self.xpath_eval('/domain/devices/disk[@type="file"]/source/@file')
-        self.base_images = m.utils.unique((bp for bp in (self.base_image_path(p) for p in self.images) if bp))
 
     def status(self):
         if self.is_libvirtd_running():
@@ -162,7 +154,7 @@ class LibvirtDomain(LibvirtObject):
                 self.vmm.defineXML(self.xml_path)
         else:
             logging.info(" libvirtd service is not running.")
-            m.utils.copyfile(self.xml_path, self.config.vmm.vmxmldir, force=True)
+            U.copyfile(self.xml_path, self.config.vmm.vmxmldir, force=True)
 
     def uninstall(self, force=False):
         """Uninstall this guest domain.
@@ -186,31 +178,6 @@ class LibvirtDomain(LibvirtObject):
         else:
             logging.info(" libvirtd service is not running.")
             os.remove(self.config.vmm.vmxmldir)
-
-    def base_image_path(self, image_path):
-        """@return  the path of the base image of given image path or "" (given
-        image not a delta image).
-
-        example log:
-
-        [root@foo ~]# qemu-img info /var/lib/libvirt/images/rhel-5-cluster-4-disk-1.qcow2
-        image: /var/lib/libvirt/images/rhel-5-cluster-4-disk-1.qcow2
-        file format: qcow2
-        virtual size: 5.0G (5368709120 bytes)
-        disk size: 32K
-        cluster_size: 4096
-        backing file: rhel-5-cluster-4-disk-1-base.qcow2 (actual path: /var/lib/libvirt/images/rhel-5-cluster-4-disk-1-base.qcow2)
-        [root@foo ~]#
-        """
-        r = ""
-
-        (stat, _out) = m.utils.runcmd("%s info %s" % (self.config.commands.qemu_img, image_path))
-        if stat == 0:
-            matched = re.match(r'.*backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>[^ ]+)\)', _out, re.DOTALL)
-            if matched:
-                r = matched.groupdict()['base_full']
-
-        return r
 
 
 # vim:sw=4:ts=4:et:

@@ -200,7 +200,10 @@ Optional:
 
 * Make http service daemon configurable
 * Merge ISC DHCP and bind backend as an option instead of dnsmasq
-* Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
+* Storage Pool support
+
+* V2V: VMDK + VMX -> QCOW2 + libvirt domain XML (with virt-v2v's help?)
+
 * Handle rpmlint errors (see below)
 
 ::

@@ -22,7 +22,7 @@
 import os
 import re
 
-import miniascape as m
+import miniascape.utils as U
 from miniascape.globals import QEMU_IMG, VIRT_INSTALL, SERVICE_LIBVIRTD
 
 
@@ -32,8 +32,23 @@ def is_libvirtd_running():
 
     @return  Bool  True (running) or False (not)
     """
-    (rc, _out) = m.utils.runcmd("%s status 2>&1 > /dev/null 2>/dev/null" % SERVICE_LIBVIRTD)
+    (rc, _out) = U.runcmd("%s status 2>&1 > /dev/null 2>/dev/null" % SERVICE_LIBVIRTD)
     return (rc == 0)
+
+
+def create_delta_image(base_image_path, delta_image_name):
+    """
+    @base_image_path    Base image's path (absolute / relative)
+    @delta_image_name   Delta image's name (basename)
+    """
+    assert base_image_path_for_delta_image_path(base_image_path) == "", "Image %s is not a base image" % base_image_path
+
+    (bdir, bn) = (os.path.dirname(base_image_path), os.path.basename(base_image_path))
+    assert bn != delta_image_name, "base and delta images are same name!: %s" % bn
+
+    (rc, out) = U.runcmd("cd %s && %s create -f qcow2 -b %s %s" % (bdir, QEMU_IMG, bn, delta_image_name))
+    if rc != 0:
+        raise RuntimeError(" create_delta_image: error while creating the delta image %s for %s" % (delta_image_name, bn))
 
 
 def base_image_path_for_delta_image_path(image_path):
@@ -53,30 +68,15 @@ def base_image_path_for_delta_image_path(image_path):
     """
     r = ""
 
-    (rc, out) = m.utils.runcmd("%s info %s" % (QEMU_IMG, image_path))
+    (rc, out) = U.runcmd("%s info %s" % (QEMU_IMG, image_path))
     if rc != 0:
         raise RuntimeError(" base_image_path: error while getting the base image path of %s" % image_path)
 
-    matched = re.match(r'.*backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>[^ ]+)\)', _out, re.DOTALL)
+    matched = re.match(r'.*backing file: (?P<base>[^ ]+) \(actual path: (?P<base_full>[^ ]+)\)', out, re.DOTALL)
     if matched:
         r = matched.groupdict()['base_full']
 
     return r
-
-
-def create_delta_image(base_image_path, delta_image_name):
-    """
-    @base_image_path    Base image's path (absolute / relative)
-    @delta_image_name   Delta image's name (basename)
-    """
-    assert base_image_path_for_delta_image_path(base_path) == "", "Image %s is not a base image" % base_image_path
-
-    (bdir, bn) = (os.path.dirname(base_image_path), os.path.basename(base_image_path))
-    assert bn != delta_image_name, "base and delta images are same name!: %s" % bn
-
-    (rc, out) = m.utils.runcmd("cd %s && %s create -f qcow2 -b %s %s" % (bdir, QEMU_IMG, bn, delta_image_name))
-    if rc != 0:
-        raise RuntimeError(" create_delta_image: error while creating the delta image %s for %s" % (delta_image_name, bn))
 
 
 # vim:sw=4:ts=4:et:

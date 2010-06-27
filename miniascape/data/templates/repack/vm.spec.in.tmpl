@@ -1,29 +1,40 @@
-%define domain_name     $domain.name
-%define domain_xml      %{domain_name}.xml
-%define domain_xml_path @_DOMAIN_XMLDIR@/%{domain_xml}
-%define domain_arch     %(xpathp -x '/domain/os/type/@arch' ${domain_xml} || echo "i686")
-
-
 # disable debuginfo - it's pointless for kvm guest domains.
 %define debug_package   %{nil}
 
+%define image_u %(id qemu > /dev/null 2> /dev/null && echo qemu || echo root)
+%define image_g %(id qemu > /dev/null 2> /dev/null && echo qemu || echo root)
 
-Name:           ${
+
+Name:           @PACKAGE@
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        KVM/Qemu guest base image and config for %{name}
+Summary:        KVM guest instance of ${domain.name}
 Group:          Development/System
 License:        MIT
 URL:            http://localhost
 Source0:        %{name}-%{version}.tar.@SOURCE_ZIP_EXT@
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      ${domain.arch}
+Provides:       ${package.virtual_name}
+Requires:       %{name}-base = %{version}
 Requires:       miniascape
-Provides:       ${package.variant}
 
 
 %description
-Virtualization (KVM/Qemu) guest domain image and data.
+The images and metadata of the KVM guest domain ${domain.name}.
+
+This package provide ${domain.name} instance.
+
+
+%package        base
+Summary:        KVM guest instance pool, base images and metadata
+Group:          Development/System
+
+
+%description    base
+The image and metadata of the KVM guest domain ${domain.name}.
+
+This package provides base images of ${domain.name}.
 
 
 %prep
@@ -35,9 +46,11 @@ Virtualization (KVM/Qemu) guest domain image and data.
 make %{?_smp_mflags}
 
 
+#raw
 %install
 %{__rm} -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+#end raw
 
 
 %preun
@@ -62,10 +75,21 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc README
-%config(missingok) %verify(not md5 size mtime) %{_sysconfdir}/libvirt/qemu/%{domain_xml}
-%config %{domain_xml_path}
+%config %verify(not md5 size mtime) ${domain.xml_path}/${domain.name}.xml
 %defattr(-,%{image_u},%{image_g},-)
-%{_localstatedir}/lib/libvirt/images/*
+#for $image in $domain.delta_images
+$image.path
+#end for
+
+
+%files base
+%defattr(-,root,root,-)
+%doc README.base
+%config ${domain.xml_store_path}/${domain.name}.xml
+%defattr(-,%{image_u},%{image_g},-)
+#for $image in $domain.base_images
+$image.path
+#end for
 
 
 %changelog

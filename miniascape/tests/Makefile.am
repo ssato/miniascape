@@ -1,6 +1,8 @@
 python_test_scripts = \
 test_globals.py \
 test_config.py \
+test_pack.py \
+test_tools.py \
 test_utils.py \
 test_virt.py \
 $(NULL)

@@ -1,11 +1,5 @@
 # config
 
-[commands]
-qemu_img = @QEMU_IMG@
-virt_install = @VIRTINST@
-svc_libvirtd = @SERVICE_LIBVIRTD@
-
-
 [dirs]
 auxdir          = @_PACKAGE_DATADIR@/aux
 templatesdir    = @_PACKAGE_DATADIR@/templates
@@ -15,6 +9,7 @@ m4dir           = %(auxdir)s/m4
 [vmm]
 connect = 'qemu:///system'
 vmxmldir = @_LIBVIRT_DOMAIN_XMLDIR@
+vmxmlstoredir = @_DOMAIN_XMLDIR@
 vnetxmldir = @_LIBVIRT_NETWORK_XMLDIR@
 
 

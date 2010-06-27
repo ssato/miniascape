@@ -1,0 +1,24 @@
+This is a collection of base images and metadata of the KVM guest domain, ${domain.name}.
+
+#set $base_images ",".join($domain.base_images)
+Base images: $base_images
+
+Sample instance definition: ${domain.xml_store_path}/${domain.name}.xml
+
+
+How to create an instance
+=================================
+
+1. copy sample instance definition xml file and edit it as you like
+   * domain name
+   * images paths
+   * network mac addresses
+
+2. setup images for the guest domain
+   * qemu-img create -f qcow2 -b <BASE_IMAGE_PATH> <TARGET_IMAGE>
+
+3. register the guest domain: virsh define <TARGET_DOMAIN_XML>
+
+4. Boot and edit configurations in that system as needed
+   * ex. /etc/sysconfig/network-scripts/ifcfg-eth\*
+
