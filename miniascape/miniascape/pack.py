@@ -90,7 +90,7 @@ class DomainDTO(C.ODict):
 
 
 
-class BuildProcess(object):
+class BuildProcess(C.ODict):
 
     # inherited class must define the followings!
     templates_subdir = 'DUMMY'
@@ -116,17 +116,25 @@ class BuildProcess(object):
 
         self.workdir = os.path.join(topdir, "%s-%s" % (self.package.name, self.package.version))
 
-    def configure(self, *args, **kwargs):
-        self.setup_workdir(*args, **kwargs)
-        self.setup_data(*args, **kwargs)
-        self.setup_buildfiles(*args, **kwargs)
-        self.prebuild(*args, **kwargs)
+    def setup(self, prebuild=True):
+        logging.info(" setup starts...")
+        self.setup_workdir()
+        self.setup_data()
+        self.setup_buildfiles()
+
+        if prebuild:
+            self.prebuild()
+
+        logging.info(" ...setup ends")
 
     def build(self, *args, **kwargs):
+        logging.info(" build starts...")
         self.build_main(*args, **kwargs)
         self.postbuild(*args, **kwargs)
+        logging.info(" ...build ends")
 
     def pack(self, binary=False):
+        logging.info(" pack starts...")
         self.prebuild()
         self.make_archive()
         self.pack_src()
@@ -134,32 +142,30 @@ class BuildProcess(object):
         if binary:
             self.pack_bin()
 
-    def setup_workdir(self, *args, **kwargs):
+        logging.info(" ...pack ends")
+
+    def setup_workdir(self):
         """@throw OSError, etc.
         """
         os.makedirs(self.workdir, 0700)
 
-    def setup_buildfiles(self, *args, **kwargs):
+    def setup_buildfiles(self):
         tmpldir = os.path.join(self.config.dirs.templatesdir, self.templates_subdir)
 
         for t in (os.path.join(tmpldir, t) for t in self.templates):
             U.compile_template(t, self.template_output(t), self)
 
-        os.makedirs(os.path.join(self.workdir, 'aux'))
-        os.makedirs(os.path.join(self.workdir, 'aux', 'm4'))
-
         U.copyfile(os.path.join(self.config.dirs.auxdir, 'rpm.mk'), self.workdir, force=True)
 
+        m4dir = os.path.join(self.workdir, 'm4')
+        os.makedirs(m4dir)
         for mf in self.m4files:
-            U.copyfile(os.path.join(self.config.dirs.m4dir, mf), self.workdir, force=True)
+            U.copyfile(os.path.join(self.config.dirs.m4dir, mf), m4dir, force=True)
 
-    def setup_buildfiles(self, *args, **kwargs):
+    def setup_data(self):
         pass
 
-    def setup_data(self, *args, **kwargs):
-        pass
-
-    def prebuild(self, *args, **kwargs):
+    def prebuild(self):
         self.runcmd("cd %s && autoreconf -vfi" % self.workdir)
 
     def build_main(self, *args, **kwargs):

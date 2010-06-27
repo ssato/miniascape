@@ -8,6 +8,22 @@ from tests.globals import *
 
 
 
+WORKDIR = 'workdir'
+
+
+def setup():
+    global WORKDIR
+
+    WORKDIR = tempfile.mkdtemp(dir=TESTDIR)
+
+
+def teardown():
+    global WORKDIR
+
+    cleanupdir(WORKDIR)
+
+
+
 # tests:
 def test_PackageDTO():
     pd = PackageDTO('foo', 'minimal', '0.1')
@@ -57,6 +73,32 @@ def test_DomainDTO():
     assert dd.delta_images[1].dir == os.path.dirname(TEST_DOMAIN_IMAGE_2)
     assert dd.delta_images[0].name == os.path.basename(TEST_DOMAIN_IMAGE_1)
     assert dd.delta_images[1].name == os.path.basename(TEST_DOMAIN_IMAGE_2)
+
+
+#@nose.tools.with_setup(setup, teardown)
+@nose.tools.with_setup(setup)
+def test_BuildProcess():
+    global WORKDIR, TESTDIR
+
+    config_path = os.path.join(TESTDIR, 'config')
+
+    name = 'rhel-5-5-vm-1'
+    variant = 'minimal'
+    version = '0.1'
+
+    bp = BuildProcess(name, variant, version, topdir=WORKDIR, pkg_config_path=config_path)
+    workdir0 = os.path.join(WORKDIR, "%s-%s" % (bp.package.name, bp.package.version))
+
+    assert bp.workdir == workdir0, "bp.workdir=%s (expected=%s)" % (bp.workdir, workdir0)
+
+    bp.setup(prebuild=False)
+
+    rpmmk = os.path.join(bp.workdir, 'rpm.mk')
+    m4dir = os.path.join(bp.workdir, 'm4')
+
+    assert os.path.exists(bp.workdir) and os.path.isdir(bp.workdir)
+    assert os.path.exists(rpmmk) and os.path.isfile(rpmmk)
+    assert os.path.exists(m4dir) and os.path.isdir(m4dir)
 
 
 if __name__ == '__main__':

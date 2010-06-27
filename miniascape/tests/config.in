@@ -1,16 +1,16 @@
 # config
 
 [dirs]
-auxdir          = @_PACKAGE_DATADIR@/aux
-templatesdir    = @_PACKAGE_DATADIR@/templates
+auxdir          = @abs_top_srcdir@/aux
+templatesdir    = @abs_top_srcdir@/data/templates
 m4dir           = %(auxdir)s/m4
 
 
 [vmm]
 connect = qemu:///system
-vmxmldir = @_LIBVIRT_DOMAIN_XMLDIR@
-vmxmlstoredir = @_DOMAIN_XMLDIR@
-vnetxmldir = @_LIBVIRT_NETWORK_XMLDIR@
+vmxmldir = @abs_top_srcdir@/tests
+vmxmlstoredir = @abs_top_srcdir@/tests
+vnetxmldir = @abs_top_srcdir@/tests
 
 
 [pack]

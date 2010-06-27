@@ -10,6 +10,8 @@ except NameError:
         return [x for x in xs if not x] == []
 
 
+TESTDIR = '@abs_top_srcdir@/tests'
+
 
 TEST_CONFIG_FILE = '@abs_top_builddir@/etc/config'
 

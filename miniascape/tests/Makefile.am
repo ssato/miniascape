@@ -7,7 +7,7 @@ test_utils.py \
 test_virt.py \
 $(NULL)
 
-EXTRA_DIST = $(python_test_scripts) __init__.py virtinst.tmpl.out net-1.yaml net-1.xml
+EXTRA_DIST = $(python_test_scripts) __init__.py virtinst.tmpl.out net-1.yaml net-1.xml config.in
 
 if ENABLE_TESTS
 TESTS_ENVIRONMENT = NOSE_VERBOSE=3 NOSE_WITH_DOCTEST=1 \
