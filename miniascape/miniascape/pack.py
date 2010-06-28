@@ -121,11 +121,12 @@ class BuildProcess(C.ODict):
         self.setup_workdir()
         self.setup_data()
         self.setup_buildfiles()
-
-        if prebuild:
-            self.prebuild()
-
         logging.info(" ...setup ends")
+
+    def prebuild(self):
+        logging.info(" prebuild starts...")
+        self.runcmd("cd %s && autoreconf -vfi" % self.workdir)
+        logging.info(" ...prebuild ends")
 
     def build(self, *args, **kwargs):
         logging.info(" build starts...")
@@ -164,9 +165,6 @@ class BuildProcess(C.ODict):
 
     def setup_data(self):
         pass
-
-    def prebuild(self):
-        self.runcmd("cd %s && autoreconf -vfi" % self.workdir)
 
     def build_main(self, *args, **kwargs):
         self.runcmd("cd %s && make" % self.workdir)
@@ -215,13 +213,13 @@ class RepackProcess(BuildProcess):
     def __init__(self, *args, **kwargs):
         super(self.__class__, self).__init__(*args, **kwargs)
 
-        domain = V.LibvirtDomain(self.domain.name, self.config_path)
+        domain = V.LibvirtDomain(self.domain.name, pkg_config_path=self.config_path)
         domain.parse()
 
         self._libvirtDomain = domain
 
     def setup_data(self, *args, **kwargs):
-        xml = re.sub(r'<uuid>.+</uuid>\n', '', str(domain))
+        xml = re.sub(r'<uuid>.+</uuid>\n', '', str(self._libvirtDomain))
         open(os.path.join(self.workdir, "%s.xml" % self.domain.name), "w").write(xml)
 
         base_images = []

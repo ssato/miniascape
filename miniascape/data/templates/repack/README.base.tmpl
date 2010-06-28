@@ -1,7 +1,9 @@
 This is a collection of base images and metadata of the KVM guest domain, ${domain.name}.
 
-#set $base_images ",".join($domain.base_images)
-Base images: $base_images
+Base images: 
+#for $bi in $domain.base_images
+   $bi,
+#end for
 
 Sample instance definition: ${domain.xml_store_path}/${domain.name}.xml
 

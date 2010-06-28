@@ -2,13 +2,15 @@ import nose
 import os
 import sys
 
+import miniascape
+
 from miniascape.pack import *
-from miniascape.utils import runcmd
 from tests.globals import *
 
 
 
 WORKDIR = 'workdir'
+
 
 
 def setup():
@@ -21,6 +23,20 @@ def teardown():
     global WORKDIR
 
     cleanupdir(WORKDIR)
+
+
+def setup_images():
+    setup()
+
+    delta_images = miniascape.utils.xpath_eval("//devices/disk[@type='file']/source/@file", TEST_DOMAIN_XML)
+
+    base_images = [img.replace(".qcow2", "-base.qcow2") for img in delta_images]
+
+    for img in base_images:
+        miniascape.utils.runcmd("qemu-img create -f qcow2 %s 1M" % img)
+
+        delta = os.path.basename(img.replace("-base", ""))
+        miniascape.tools.create_delta_image(img, delta)
 
 
 
@@ -75,8 +91,7 @@ def test_DomainDTO():
     assert dd.delta_images[1].name == os.path.basename(TEST_DOMAIN_IMAGE_2)
 
 
-#@nose.tools.with_setup(setup, teardown)
-@nose.tools.with_setup(setup)
+@nose.tools.with_setup(setup, teardown)
 def test_BuildProcess():
     global WORKDIR, TESTDIR
 
@@ -99,6 +114,20 @@ def test_BuildProcess():
     assert os.path.exists(bp.workdir) and os.path.isdir(bp.workdir)
     assert os.path.exists(rpmmk) and os.path.isfile(rpmmk)
     assert os.path.exists(m4dir) and os.path.isdir(m4dir)
+
+
+#@nose.tools.with_setup(setup, teardown)
+@nose.tools.with_setup(setup_images)
+def test_RepackProcess():
+    global WORKDIR, TESTDIR, TEST_DOMAIN_XML
+
+    config_path = os.path.join(TESTDIR, 'config')
+
+    name = miniascape.utils.xpath_eval('/domain/name', TEST_DOMAIN_XML)[0]
+
+    rp = RepackProcess(name, topdir=WORKDIR, pkg_config_path=config_path)
+    rp.setup()
+
 
 
 if __name__ == '__main__':
