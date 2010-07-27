@@ -11,6 +11,11 @@ AC_PROG_PACKAGE_BUILD_TOOL dnl 'PACKAGE_BUILD_TOOL', e.g. /usr/bin/rpmbuild.
 AM_CONDITIONAL([USE_RPM],[test "x$USE_RPMBUILD" = xyes])
 AC_CHECK_SOURCE_ZIP
 
+AC_CHECK_PYTHON_MODULE_PATH
+
+AC_CHECK_PYTHON_MODULE([Cheetah])
+AC_CHECK_PYTHON_MODULE([xattr])
+AC_CHECK_PYTHON_MODULE([yaml])
 
 AC_ARG_ENABLE([tests],
     [AS_HELP_STRING([--disable-tests],[disable running unit and simplified integration tests])],
