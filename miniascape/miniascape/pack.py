@@ -219,9 +219,18 @@ class RepackProcess(BuildProcess):
         self._libvirtDomain = domain
 
     def setup_data(self, *args, **kwargs):
-        xml = re.sub(r'<uuid>.+</uuid>\n', '', str(self._libvirtDomain))
-        open(os.path.join(self.workdir, "%s.xml" % self.domain.name), "w").write(xml)
+        self.setup_domain_xml()
+        self.setup_domain_images()
 
+    def setup_domain_xml(self):
+        xml = re.sub(r'<uuid>.+</uuid>\n', '', str(self._libvirtDomain))
+        xmldir = self.workdir
+        xmlpath = os.path.join(self.workdir, "%s.xml" % self.domain.name)
+
+        logging.info(" xml: dir=%s, path=%s" % (xmldir, xmlpath))
+        open(xmlpath, "w").write(xml)
+
+    def setup_domain_images(self):
         base_images = []
         delta_images = []
 
@@ -244,6 +253,9 @@ class RepackProcess(BuildProcess):
 
                 U.copyfile(dp, bp1)
                 T.create_delta_image(bp1, os.path.basename(dp))
+
+        self.domain.add_base_images(base_images)
+        self.domain.add_delta_images(delta_images)
 
 
 

@@ -16,7 +16,10 @@ WORKDIR = 'workdir'
 def setup():
     global WORKDIR
 
-    WORKDIR = tempfile.mkdtemp(dir=TESTDIR)
+    #WORKDIR = tempfile.mkdtemp(dir=TESTDIR)
+    WORKDIR = os.path.join(TESTDIR, "pack_test")
+    if not os.path.exists(WORKDIR):
+        os.makedirs(WORKDIR, 0700)
 
 
 def teardown():
@@ -26,7 +29,11 @@ def teardown():
 
 
 def setup_images():
+    global WORKDIR, TEST_DOMAIN_XML
+
     setup()
+
+    assert os.path.exists(WORKDIR) and os.path.isdir(WORKDIR)
 
     delta_images = miniascape.utils.xpath_eval("//devices/disk[@type='file']/source/@file", TEST_DOMAIN_XML)
 
@@ -106,7 +113,7 @@ def test_BuildProcess():
 
     assert bp.workdir == workdir0, "bp.workdir=%s (expected=%s)" % (bp.workdir, workdir0)
 
-    bp.setup(prebuild=False)
+    bp.setup()
 
     rpmmk = os.path.join(bp.workdir, 'rpm.mk')
     m4dir = os.path.join(bp.workdir, 'm4')
@@ -116,7 +123,7 @@ def test_BuildProcess():
     assert os.path.exists(m4dir) and os.path.isdir(m4dir)
 
 
-#@nose.tools.with_setup(setup, teardown)
+#@nose.tools.with_setup(setup_images, teardown)
 @nose.tools.with_setup(setup_images)
 def test_RepackProcess():
     global WORKDIR, TESTDIR, TEST_DOMAIN_XML
@@ -126,8 +133,13 @@ def test_RepackProcess():
     name = miniascape.utils.xpath_eval('/domain/name', TEST_DOMAIN_XML)[0]
 
     rp = RepackProcess(name, topdir=WORKDIR, pkg_config_path=config_path)
-    rp.setup()
 
+    rp.setup_domain_xml()
+    xmlfile = os.path.join(rp.workdir, "%s.xml" % rp.domain.name)
+
+    assert os.path.exists(xmlfile) and os.path.isfile(xmlfile)
+
+    rp.setup_domain_images()
 
 
 if __name__ == '__main__':
