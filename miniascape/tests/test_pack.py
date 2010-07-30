@@ -16,8 +16,8 @@ WORKDIR = 'workdir'
 def setup():
     global WORKDIR
 
-    #WORKDIR = tempfile.mkdtemp(dir=TESTDIR)
-    WORKDIR = os.path.join(TESTDIR, "pack_test")
+    WORKDIR = tempfile.mkdtemp(dir=TESTDIR)
+    #WORKDIR = os.path.join(TESTDIR, "pack_test")
     if not os.path.exists(WORKDIR):
         os.makedirs(WORKDIR, 0700)
 
@@ -109,9 +109,17 @@ def test_BuildProcess():
     version = '0.1'
 
     bp = BuildProcess(name, variant, version, topdir=WORKDIR, pkg_config_path=config_path)
-    workdir0 = os.path.join(WORKDIR, "%s-%s" % (bp.package.name, bp.package.version))
+    workdir_ref = BuildProcess.make_workdir(WORKDIR, bp.package.name, bp.package.version)
 
-    assert bp.workdir == workdir0, "bp.workdir=%s (expected=%s)" % (bp.workdir, workdir0)
+    assert bp.workdir == workdir_ref, "bp.workdir=%s (expected=%s)" % (bp.workdir, workdir_ref)
+
+    assert bp.package.domain_name == name, "BuildProcess.package.domain_name=%s (expected=%s)" % (bp.package.domain_name, name)
+    assert bp.package.variant == variant, "BuildProcess.package.variant=%s (expected=%s)" % (bp.package.variant, variant)
+    assert bp.package.name == "vm-%s-%s" % (name, variant), "BuildProcess.package.name=%s (expected=vm-%s-%s)" % (bp.package.name, name, variant)
+    assert bp.package.version == version, "BuildProcess.package.version=%s (expected=%s)" % (bp.package.version, version)
+    assert bp.package.provides == "vm-%s" % name, "BuildProcess.package.provides=%s (expected=vm-%s)" % (bp.package.provides, name)
+
+    # self.domain = DomainDTO(name, self.config.vmm.vmxmldir, self.config.vmm.vmxmlstoredir)
 
     bp.setup()
 
@@ -133,6 +141,12 @@ def test_RepackProcess():
     name = miniascape.utils.xpath_eval('/domain/name', TEST_DOMAIN_XML)[0]
 
     rp = RepackProcess(name, topdir=WORKDIR, pkg_config_path=config_path)
+
+    workdir_ref = RepackProcess.make_workdir(WORKDIR, rp.package.name, rp.package.version)
+    assert rp.workdir == workdir_ref, "rp.workdir=%s (expected=%s)" % (rp.workdir, workdir_ref)
+
+    rp.setup_workdir()
+    assert os.path.exists(rp.workdir) and os.path.isdir(rp.workdir)
 
     rp.setup_domain_xml()
     xmlfile = os.path.join(rp.workdir, "%s.xml" % rp.domain.name)

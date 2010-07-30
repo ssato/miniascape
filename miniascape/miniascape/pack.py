@@ -114,7 +114,11 @@ class BuildProcess(C.ODict):
         self.domain = DomainDTO(name, self.config.vmm.vmxmldir, self.config.vmm.vmxmlstoredir)
         self.package = PackageDTO(name, variant, version)
 
-        self.workdir = os.path.join(topdir, "%s-%s" % (self.package.name, self.package.version))
+        self.workdir = self.make_workdir(topdir, self.package.name, self.package.version)
+
+    @classmethod
+    def make_workdir(self, topdir, package_name, package_version):
+        return os.path.join(topdir, "%s-%s" % (package_name, package_version))
 
     def setup(self, prebuild=True):
         logging.info(" setup starts...")
