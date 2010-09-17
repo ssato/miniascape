@@ -1,4 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = @PACKAGE@.spec.in
 ACLOCAL_AMFLAGS = -I aux/m4
 

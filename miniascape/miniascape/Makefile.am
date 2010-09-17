@@ -1,4 +1,4 @@
-pkgpylibdir = @PYTHON_MODULE_PATH@/@PACKAGE@
+pkgpylibdir = $(pkgpythondir)
 dist_pkgpylib_DATA = __init__.py config.py globals.py pack.py virt.py tools.py utils.py
 
 EXTRA_DIST = globals.py.in

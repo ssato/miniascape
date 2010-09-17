@@ -1,8 +1,7 @@
 AC_INIT([miniascape],[0.1.99.2])
+AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([miniascape/config.py])
 AC_CONFIG_MACRO_DIR([aux/m4])
-AM_INIT_AUTOMAKE
-
 
 AC_PROG_QEMU_IMG dnl 'QEMU_IMG', e.g. /usr/bin/qemu-img.
 AC_PROG_VIRSH dnl 'VIRSH', e.g. /usr/bin/virsh.
@@ -11,8 +10,7 @@ AC_PROG_PACKAGE_BUILD_TOOL dnl 'PACKAGE_BUILD_TOOL', e.g. /usr/bin/rpmbuild.
 AM_CONDITIONAL([USE_RPM],[test "x$USE_RPMBUILD" = xyes])
 AC_CHECK_SOURCE_ZIP
 
-AC_CHECK_PYTHON_MODULE_PATH
-
+AM_PATH_PYTHON
 AC_CHECK_PYTHON_MODULE([Cheetah])
 AC_CHECK_PYTHON_MODULE([xattr])
 AC_CHECK_PYTHON_MODULE([yaml])
@@ -33,7 +31,7 @@ AC_SUBST([_LIBVIRT_DOMAIN_XMLDIR],[`printf ${sysconfdir}/libvirt/qemu`])
 AC_SUBST([_LIBVIRT_NETWORK_XMLDIR],[`printf ${sysconfdir}/libvirt/qemu/networks`])
 
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 miniascape.spec
 aux/Makefile
@@ -58,3 +56,5 @@ tests/config
 tests/globals.py
 tests/rhel-5-generic-0.xml
 ])
+
+AC_OUTPUT
