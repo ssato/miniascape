@@ -1,0 +1,69 @@
+<network>
+  <name>net-1</name>
+  <forward mode='nat'/>
+  <domain name="net-1.local"/>
+  <bridge name='@NET_1_BRIDGE@' stp='on' delay='0'/>
+  <ip address='@NET_1_NETWORK@.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start="@NET_1_NETWORK@.200" end="@NET_1_NETWORK@.254" />
+      <host mac="@HWADDR_PREFIX@:01:00:10" name="service-0.net-1.local" ip="@NET_1_NETWORK@.10" />
+      <host mac="@HWADDR_PREFIX@:01:00:11" name="service-1.net-1.local" ip="@NET_1_NETWORK@.11" />
+      <host mac="@HWADDR_PREFIX@:01:00:12" name="service-2.net-1.local" ip="@NET_1_NETWORK@.12" />
+      <host mac="@HWADDR_PREFIX@:01:00:13" name="service-3.net-1.local" ip="@NET_1_NETWORK@.13" />
+      <host mac="@HWADDR_PREFIX@:01:00:14" name="service-4.net-1.local" ip="@NET_1_NETWORK@.14" />
+      <host mac="@HWADDR_PREFIX@:01:00:15" name="service-5.net-1.local" ip="@NET_1_NETWORK@.15" />
+      <host mac="@HWADDR_PREFIX@:01:00:16" name="service-6.net-1.local" ip="@NET_1_NETWORK@.16" />
+      <host mac="@HWADDR_PREFIX@:01:00:17" name="service-7.net-1.local" ip="@NET_1_NETWORK@.17" />
+      <host mac="@HWADDR_PREFIX@:01:00:18" name="service-8.net-1.local" ip="@NET_1_NETWORK@.18" />
+      <host mac="@HWADDR_PREFIX@:01:00:19" name="service-9.net-1.local" ip="@NET_1_NETWORK@.19" />
+      <host mac="@HWADDR_PREFIX@:01:00:23" name="spacewalk-0.net-1.local" ip="@NET_1_NETWORK@.23" />
+      <host mac="@HWADDR_PREFIX@:01:00:24" name="spacewalk-1.net-1.local" ip="@NET_1_NETWORK@.24" />
+      <host mac="@HWADDR_PREFIX@:01:00:25" name="rhnproxy-0.net-1.local" ip="@NET_1_NETWORK@.25" />
+      <host mac="@HWADDR_PREFIX@:01:00:26" name="rhnproxy-1.net-1.local" ip="@NET_1_NETWORK@.26" />
+      <host mac="@HWADDR_PREFIX@:01:00:27" name="rhnproxy-2.net-1.local" ip="@NET_1_NETWORK@.27" />
+      <host mac="@HWADDR_PREFIX@:01:00:40" name="rhel-4-cluster-0.net-1.local" ip="@NET_1_NETWORK@.40" />
+      <host mac="@HWADDR_PREFIX@:01:00:41" name="rhel-4-cluster-1.net-1.local" ip="@NET_1_NETWORK@.41" />
+      <host mac="@HWADDR_PREFIX@:01:00:42" name="rhel-4-cluster-2.net-1.local" ip="@NET_1_NETWORK@.42" />
+      <host mac="@HWADDR_PREFIX@:01:00:43" name="rhel-4-cluster-3.net-1.local" ip="@NET_1_NETWORK@.43" />
+      <host mac="@HWADDR_PREFIX@:01:00:44" name="rhel-4-cluster-4.net-1.local" ip="@NET_1_NETWORK@.44" />
+      <host mac="@HWADDR_PREFIX@:01:00:45" name="rhel-4-cluster-5.net-1.local" ip="@NET_1_NETWORK@.45" />
+      <host mac="@HWADDR_PREFIX@:01:00:60" name="rhel-6-luci-0.net-1.local" ip="@NET_1_NETWORK@.60" />
+      <host mac="@HWADDR_PREFIX@:01:00:61" name="rhel-6-cluster-1.net-1.local" ip="@NET_1_NETWORK@.61" />
+      <host mac="@HWADDR_PREFIX@:01:00:62" name="rhel-6-cluster-2.net-1.local" ip="@NET_1_NETWORK@.62" />
+      <host mac="@HWADDR_PREFIX@:01:00:63" name="rhel-6-cluster-3.net-1.local" ip="@NET_1_NETWORK@.63" />
+      <host mac="@HWADDR_PREFIX@:01:00:64" name="rhel-6-cluster-4.net-1.local" ip="@NET_1_NETWORK@.64" />
+      <host mac="@HWADDR_PREFIX@:01:00:65" name="rhel-6-cluster-5.net-1.local" ip="@NET_1_NETWORK@.65" />
+      <host mac="@HWADDR_PREFIX@:01:00:66" name="rhel-6-cluster-6.net-1.local" ip="@NET_1_NETWORK@.66" />
+      <host mac="@HWADDR_PREFIX@:01:00:67" name="rhel-6-cluster-7.net-1.local" ip="@NET_1_NETWORK@.67" />
+      <host mac="@HWADDR_PREFIX@:01:00:68" name="rhel-6-cluster-8.net-1.local" ip="@NET_1_NETWORK@.68" />
+      <host mac="@HWADDR_PREFIX@:01:00:69" name="rhel-6-cluster-9.net-1.local" ip="@NET_1_NETWORK@.69" />
+      <host mac="@HWADDR_PREFIX@:01:00:70" name="fedora-luci-0.net-1.local" ip="@NET_1_NETWORK@.70" />
+      <host mac="@HWADDR_PREFIX@:01:00:71" name="fedora-cluster-1.net-1.local" ip="@NET_1_NETWORK@.71" />
+      <host mac="@HWADDR_PREFIX@:01:00:72" name="fedora-cluster-2.net-1.local" ip="@NET_1_NETWORK@.72" />
+      <host mac="@HWADDR_PREFIX@:01:00:73" name="fedora-cluster-3.net-1.local" ip="@NET_1_NETWORK@.73" />
+      <host mac="@HWADDR_PREFIX@:01:00:74" name="fedora-cluster-4.net-1.local" ip="@NET_1_NETWORK@.74" />
+      <host mac="@HWADDR_PREFIX@:01:00:75" name="fedora-cluster-5.net-1.local" ip="@NET_1_NETWORK@.75" />
+      <host mac="@HWADDR_PREFIX@:01:00:76" name="fedora-cluster-6.net-1.local" ip="@NET_1_NETWORK@.76" />
+      <host mac="@HWADDR_PREFIX@:01:00:77" name="fedora-cluster-7.net-1.local" ip="@NET_1_NETWORK@.77" />
+      <host mac="@HWADDR_PREFIX@:01:00:78" name="fedora-cluster-8.net-1.local" ip="@NET_1_NETWORK@.78" />
+      <host mac="@HWADDR_PREFIX@:01:00:79" name="fedora-cluster-9.net-1.local" ip="@NET_1_NETWORK@.79" />
+      <host mac="@HWADDR_PREFIX@:01:01:00" name="fedora-0.net-1.local" ip="@NET_1_NETWORK@.100" />
+      <host mac="@HWADDR_PREFIX@:01:01:01" name="fedora-1.net-1.local" ip="@NET_1_NETWORK@.101" />
+      <host mac="@HWADDR_PREFIX@:01:01:02" name="fedora-2.net-1.local" ip="@NET_1_NETWORK@.102" />
+      <host mac="@HWADDR_PREFIX@:01:01:03" name="fedora-3.net-1.local" ip="@NET_1_NETWORK@.103" />
+      <host mac="@HWADDR_PREFIX@:01:01:04" name="fedora-4.net-1.local" ip="@NET_1_NETWORK@.104" />
+      <host mac="@HWADDR_PREFIX@:01:01:05" name="fedora-5.net-1.local" ip="@NET_1_NETWORK@.105" />
+      <host mac="@HWADDR_PREFIX@:01:01:06" name="fedora-6.net-1.local" ip="@NET_1_NETWORK@.106" />
+      <host mac="@HWADDR_PREFIX@:01:01:07" name="fedora-7.net-1.local" ip="@NET_1_NETWORK@.107" />
+      <host mac="@HWADDR_PREFIX@:01:01:08" name="fedora-8.net-1.local" ip="@NET_1_NETWORK@.108" />
+      <host mac="@HWADDR_PREFIX@:01:01:09" name="fedora-9.net-1.local" ip="@NET_1_NETWORK@.109" />
+      <host mac="@HWADDR_PREFIX@:01:01:10" name="debian-0.net-1.local" ip="@NET_1_NETWORK@.110" />
+      <host mac="@HWADDR_PREFIX@:01:01:11" name="debian-1.net-1.local" ip="@NET_1_NETWORK@.111" />
+      <host mac="@HWADDR_PREFIX@:01:01:12" name="debian-2.net-1.local" ip="@NET_1_NETWORK@.112" />
+      <host mac="@HWADDR_PREFIX@:01:01:13" name="debian-3.net-1.local" ip="@NET_1_NETWORK@.113" />
+      <host mac="@HWADDR_PREFIX@:01:01:14" name="debian-4.net-1.local" ip="@NET_1_NETWORK@.114" />
+      <host mac="@HWADDR_PREFIX@:01:01:15" name="debian-5.net-1.local" ip="@NET_1_NETWORK@.115" />
+      <host mac="@HWADDR_PREFIX@:01:01:16" name="opensuse-0.net-1.local" ip="@NET_1_NETWORK@.116" />
+      <host mac="@HWADDR_PREFIX@:01:01:17" name="opensuse-1.net-1.local" ip="@NET_1_NETWORK@.117" />
+      <host mac="@HWADDR_PREFIX@:01:01:18" name="opensuse-2.net-1.local" ip="@NET_1_NETWORK@.118" />
+      <host mac="@HWADDR_PREFIX@:01:01:19" name="opensuse-3.net-1.local" ip="@NET_1_NETWORK@.119" />

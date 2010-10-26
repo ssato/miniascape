@@ -1,0 +1,102 @@
+#! /bin/bash
+#
+# Virt-install thin wrapper
+#
+# SEE ALSO: virt-install(1)
+#
+set -e
+
+prefix=@prefix@
+pkgdatadir=@datadir@/@PACKAGE@
+toolsmk=${pkgdatadir}/devel/core.mk
+
+initial_disk_suffix=@INITIAL_DISK_SUFFIX@
+
+
+usage () {
+  cat << EOF
+Usage: $0 [Options...] (-c GUEST_CONFIG | -n GUEST_NAME) Command
+
+Commands: build (install), rpm or srpm
+
+Options:
+  -c,--cfg      Specify guest config in full path
+  -n,--name     Specify guest name instead of its config
+
+  -s,--sitecfg  Specify site config [/etc/@PACKAGE@/profiles/site.cfg]
+
+  -t,--dryrun   Dryrun mode
+  -v,--verbose  Verbose mode
+  -h,--help     Show this help
+EOF
+}
+
+
+# globals:
+verbose=1     # not implemented
+dryrun=       # Make dryrun mode: "-n" (dryrun)
+
+confdir=@sysconfdir@/@PACKAGE@/profiles
+siteconf=$confdir/site.cfg
+conf=
+name=
+
+
+# main:
+while getopts "c:n:s:tvh" opt; do
+  case $opt in
+    c|-cfg) conf="$OPTARG" ;;
+    n|-name) name="$OPTARG" ;;
+    s|-sitecfg) siteconf="$OPTARG" ;;
+    t|-dryrun) dryrun="-n" ;;
+    v|-verbose) verbose=1 ;;
+    h|-help) usage; exit 0 ;;
+    \?) usage; exit 1 ;;
+  esac
+done
+shift $(($OPTIND - 1))
+if test $# -lt 1; then usage; exit 1; fi
+
+# check if the site configuration file exists
+if test ! -f $siteconf; then
+  echo "[Error] Site config is not found: '$siteconf'"
+  exit 1
+fi
+
+# find guest's config path from given name
+if test -n "$name"; then conf=$confdir/$name.cfg; fi
+
+# assert $conf == ""
+if test -z "$conf"; then
+  echo "[Error] Neigther guest's config path nor name was given."
+  echo "[Error] See $0 --help for its usage"
+  exit 1
+fi
+
+if test ! -f $conf; then
+  echo "[Error] Guest config is not found: '$conf'"
+  exit 1
+fi
+
+command=$1
+if test $command = "install"; then
+  test $verbose -eq 1 && echo "[Info] command = '$command'"
+elif test $command = "build"; then  ## alias
+  commnad="install"
+  test $verbose -eq 1 && echo "[Info] command = '$command'"
+elif test $command = "rpm"; then
+  test $verbose -eq 1 && echo "[Info] command = '$command'"
+elif test $command = "srpm"; then
+  test $verbose -eq 1 && echo "[Info] command = '$command'"
+else
+  echo "[Error] Unknown command '$command'"
+  exit 1
+fi
+
+
+make ${dryrun} -f ${toolsmk} \
+  SITE_CONFIG="${siteconf}" CONFIG="${conf}" \
+  ${command}
+
+
+# vim:set sw=2 ts=2 et ai si sm:

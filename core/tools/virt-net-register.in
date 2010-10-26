@@ -1,0 +1,54 @@
+#! /bin/bash
+#
+# Register libvirt network.
+#
+
+netxml=$1
+
+# TODO: Generate network uuid and add it in netxml.
+#netuuid=$(@UUIDGEN@)
+# <uuid>07387532-1d40-31cd-09a6-4a11e443e8ca</uuid>
+
+if test -z "$netxml"; then
+  echo "Usage: $0 NET_XML"
+  exit 1
+fi
+
+
+/sbin/service libvirtd status 2>/dev/null >/dev/null
+is_libvirtd_running=$?
+
+if test $is_libvirtd_running -ne 0; then
+  echo -ne "libvirtd is not running. Just installing files..."
+
+  # Just install the network xml and make it autostarted.
+  install -m 600 $netxml /etc/libvirt/qemu/networks/
+
+  netxml_basename=${netxml##*/}
+  (cd /etc/libvirt/qemu/networks/autostart/ && ln -s ../$netxml_basename ./)
+
+  echo "Done."
+  #echo "Register it by yourself later as needed: @VIRSH@ define /etc/libvirt/qemu/networks/$netxml_basename"
+
+  exit 0
+fi
+
+
+netname=$(sed -nre 's,.*<name>([^<]+)</name>.*,\1,p' $netxml)
+
+net_exists=$(@VIRSH@ net-list  --all | sed -nre "s/^($netname).*/\1/p")
+
+if test -z "$net_exists"; then  # fresh installation.
+  @VIRSH@ net-define $netxml && @VIRSH@ net-autostart $netname && @VIRSH@ net-start $netname
+
+else  # update
+  echo "Network $netname already exists. Redefine it by yourself later:"
+  echo "   ex. /usr/libexec/@PACKAGE@/virt-net-unregister $netname && \ "
+  echo "       /usr/libexec/@PACKAGE@/virt-net-register $netxml"
+  echo " "
+
+  # Just install the network xml and make it autostarted.
+  install -m 600 $netxml /etc/libvirt/qemu/networks/
+fi
+
+# vim:set ft=sh sw=2 ts=2 et ai si sm:

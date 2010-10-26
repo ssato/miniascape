@@ -1,0 +1,150 @@
+#
+# RPM related stuff
+#
+
+# These must be defined...
+prefix	= @prefix@
+pkgdatadir	= @datadir@/@PACKAGE@
+develdir	= $(pkgdatadir)/devel
+
+libvirt_imagedir = @localstatedir@/lib/libvirt/images/$(NAME)
+
+
+# FIXME: Not hardcode it. It should be detected automatically. 
+GUEST_DOMAIN := net-1.local
+
+# placeholder to add other rpm dependencies
+GUEST_OTHER_DEPS	?=
+
+# initial disk is an image backed up from the initial delta image
+INITIAL_DISK_SUFFIX = @INITIAL_DISK_SUFFIX@
+
+RPMFLAVOR	?= minimal
+
+rpmbasename = pkgvm-$(NAME)-$(RPMFLAVOR)
+rpmver	= 0.1.99
+rpmname = $(rpmbasename)-$(rpmver)
+rpmworkdir = $(shell pwd)/rpmbuild-$(NAME)
+rpmdirs	= $(addprefix $(rpmworkdir)/,RPMS/$(arch) RPMS/noarch SRPMS SPECS BUILD BUILDROOT SOURCES)
+rpmspec = $(rpmworkdir)/SPECS/$(rpmbasename).spec
+rpmsrc	= $(rpmworkdir)/SOURCES/$(rpmname).tar.xz
+
+rpmsrcdir = $(rpmworkdir)/SOURCES/$(rpmname)
+
+rpmsrc_extras	= $(rpmsrcdir)/README $(rpmsrcdir)/ssh.config
+
+guest_xml = @sysconfdir@/libvirt/qemu/$(NAME).xml
+guest_xml_do_subst = @SED@ -e '/uuid/d'
+
+# extract ip addr:
+guest_ip_addr	= $(shell @SED@ -nre 's/^([^ ]+) $(NAME).$(GUEST_DOMAIN).*/\1/p' /usr/share/libvirt/networks/hosts.add)
+
+
+# variables for rpm spec:
+rpmbuilddate    = $(shell LANG=C date +"%a %b %d %Y")
+rpmspec_do_subst = @SED@ -e 's!__PKGNAME__!$(rpmbasename)!g' \
+	-e 's!__NAME__!$(NAME)!g' -e 's!__VER__!$(rpmver)!g' \
+	-e 's!__ARCH__!$(ARCH)!g' -e 's!__DATE__!$(rpmbuilddate)!g' \
+	-e 's!__DISK_FMT__!$(DISK_FMT)!g' \
+	-e 's!__INITIAL_DISK_SUFFIX__!$(INITIAL_DISK_SUFFIX)!g' \
+	-e 's!__OTHER_DEPS__!$(GUEST_OTHER_DEPS)!g'
+
+
+$(rpmdirs)::
+	mkdir -p $@
+
+$(rpmsrcdir): $(rpmdirs)
+	mkdir -p $@
+
+$(rpmsrcdir)/$(NAME).xml: $(guest_xml) $(rpmsrcdir)
+	$(guest_xml_do_subst) < $< > $@
+
+$(rpmspec): $(develdir)/vm.spec.in $(rpmsrcdir)
+	$(rpmspec_do_subst) < $< > $@
+
+$(rpmsrcdir)/README: $(rpmsrcdir)
+	echo "This is a packaged KVM/Qemu vm image of $(NAME)" > $@
+
+$(rpmsrcdir)/ssh.config: $(rpmsrcdir)
+	echo "Host $(NAME)" > $@
+	echo "  Hostname $(guest_ip_addr)" >> $@
+	echo "  User root" >> $@
+	echo " " >> $@
+
+
+# guest images:
+#   1. original image -> $(rpmworkdir)/SOURCES/$(rpmname)/<base image>
+#   2.                -> $(rpmworkdir)/SOURCES/$(rpmname)/<delta image>
+#
+guest_base_image_1_basename = $(DISK_1_NAME:.$(DISK_FMT)=-base.$(DISK_FMT))
+
+# The following variables may be empty if corresponding DISK_?_NAME is not set
+guest_base_image_2_basename = $(DISK_2_NAME:.$(DISK_FMT)=-base.$(DISK_FMT))
+guest_base_image_3_basename = $(DISK_3_NAME:.$(DISK_FMT)=-base.$(DISK_FMT))
+
+null =  #
+
+guest_disk_images = $(rpmsrcdir)/$(DISK_1_NAME) $(rpmsrcdir)/$(DISK_2_NAME) $(rpmsrcdir)/$(DISK_3_NAME)
+guest_disk_base_images = $(rpmsrcdir)/$(guest_base_image_1_basename) \
+	$(rpmsrcdir)/$(guest_base_image_2_basename) \
+	$(rpmsrcdir)/$(guest_base_image_3_basename) \
+$(null) 
+
+guest_images = $(guest_disk_images) $(guest_disk_base_images)
+
+
+$(rpmsrcdir)/$(guest_base_image_1_basename): $(DISK_DIR)/$(DISK_1_NAME)
+	cp $< $@
+
+$(rpmsrcdir)/$(DISK_1_NAME): $(rpmsrcdir)/$(guest_base_image_1_basename)
+	cd $(rpmsrcdir) && $(QEMU_IMG) create -f qcow2 -b $(notdir $<) $(notdir $@)
+
+
+ifneq ($(DISK_2_NAME),)
+$(rpmsrcdir)/$(guest_base_image_2_basename): $(DISK_DIR)/$(DISK_2_NAME)
+	cp $< $@
+
+$(rpmsrcdir)/$(DISK_2_NAME): $(rpmsrcdir)/$(guest_base_image_2_basename)
+	cd $(rpmsrcdir) && $(QEMU_IMG) create -f qcow2 -b $(notdir $<) $(notdir $@)
+endif
+ifneq ($(DISK_3_NAME),)
+$(rpmsrcdir)/$(guest_base_image_3_basename): $(DISK_DIR)/$(DISK_3_NAME)
+	cp $< $@
+
+$(rpmsrcdir)/$(DISK_3_NAME): $(rpmsrcdir)/$(guest_base_image_3_basename)
+	cd $(rpmsrcdir) && $(QEMU_IMG) create -f qcow2 -b $(notdir $<) $(notdir $@)
+endif
+
+
+$(rpmsrc): $(rpmsrcdir)/$(NAME).xml $(guest_images) $(rpmsrc_extras)
+	cd $(rpmworkdir)/SOURCES/ && tar --xz -cvf $(rpmname).tar.xz $(rpmname)
+
+
+# TODO
+rpm: build-rpm
+srpm: build-srpm
+
+build-rpm: $(rpmspec) $(rpmsrc)
+	rpmbuild --define "_topdir $(rpmworkdir)" \
+		--define "_buildroot $(rpmworkdir)/BUILDROOT" \
+		--target $(ARCH) -bb $(rpmspec)
+
+build-srpm: $(rpmspec) $(rpmsrc)
+	rpmbuild --define "_topdir $(rpmworkdir)" \
+		--define "_buildroot $(rpmworkdir)/BUILDROOT" \
+		-bs $(rpmspec)
+
+
+## FIXME: dirty code
+# initialize guest and revert local changes
+# (replace delta image with initail delta image)
+initial_disk_images = $(addsuffix .$(INITIAL_DISK_SUFFIX),$(addprefix $(libvirt_imagedir)/,$(DISK_1_NAME) $(DISK_2_NAME) $(DISK_3_NAME)))
+
+init: $(initial_disk_images)
+	for f in $^; do \
+		nf=`echo $$f | @SED@ -e "s/.$(INITIAL_DISK_SUFFIX)//"`; \
+		cp -f $$f $$nf; done
+
+
+.PHONY: rpm srpm build-rpm build-srpm
+# vim:set ft=make ai si sm:

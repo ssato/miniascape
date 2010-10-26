@@ -1,0 +1,184 @@
+#
+# Makefile for vg-manage
+#
+
+# These must be defined...
+prefix	= @prefix@
+pkgdatadir = @datadir@/@PACKAGE@
+develdir = $(pkgdatadir)/devel
+
+PACKAGE	= @PACKAGE@
+
+RPM_MK	= $(develdir)/rpm.mk
+QEMU_IMG = @QEMU_IMG@
+
+
+## Guest specific configurations:
+# The followings are must items:
+#NAME	=
+#LOCATION	=
+#EXTRA_ARGS	=
+#OS_VARIANT	=
+#DISK_1_NAME	=
+#NETWORK_1	=
+#MAC_1	=
+#
+# The followings are optional
+#DISK_2_NAME	=
+#DISK_3_NAME	=
+#NETWORK_2	=
+#NETWORK_3	=
+#NETWORK_4	=
+#MAC_2	=
+#MAC_3	=
+#MAC_4	=
+include $(CONFIG)
+
+DISK_DIR	= $(DISK_TOPDIR)/$(NAME)
+
+ifeq ($(NAME),)
+$(error You must specify NAME)
+endif
+ifeq ($(LOCATION),)
+$(error You must specify LOCATION)
+endif
+ifeq ($(EXTRA_ARGS),)
+$(error You must specify EXTRA_ARGS)
+endif
+ifeq ($(OS_VARIANT),)
+$(error You must specify OS_VARIANT)
+endif
+ifeq ($(DISK_1_NAME),)
+$(error You must specify DISK_1_NAME)
+endif
+ifeq ($(NETWORK_1),)
+$(error You must specify NETWORK_1)
+endif
+ifeq ($(MAC_1),)
+$(error You must specify MAC_1)
+endif
+
+
+# Others
+
+# how much time to wait for installation completion [min]
+VIRTINST_WAIT_TIME	?= 20
+OTHER_OPTIONS	?=
+
+other_opts	?= --check-cpu --hvm --accelerate --vnc --noreboot --noautoconsole --wait=$(VIRTINST_WAIT_TIME)
+
+DISK_1_SIZE     ?= $(DISK_SIZE_DEFAULT)
+DISK_1_BUS      ?= $(DISK_BUS_DEFAULT)
+DISK_1_PERMS	?= $(DISK_PERMS)
+DISK_1_CACHE_MODE ?= $(DISK_CACHE_MODE)
+DISK_2_SIZE	?= $(DISK_SIZE_DEFAULT)
+DISK_2_BUS	?= $(DISK_BUS_DEFAULT)
+DISK_2_PERMS	?= $(DISK_PERMS)
+DISK_2_CACHE_MODE ?= $(DISK_CACHE_MODE)
+DISK_3_SIZE	?= $(DISK_SIZE_DEFAULT)
+DISK_3_BUS	?= $(DISK_BUS_DEFAULT)
+DISK_3_PERMS	?= $(DISK_PERMS)
+DISK_3_CACHE_MODE ?= $(DISK_CACHE_MODE)
+DISK_4_SIZE	?= $(DISK_SIZE_DEFAULT)
+DISK_4_BUS	?= $(DISK_BUS_DEFAULT)
+DISK_4_PERMS	?= $(DISK_PERMS)
+DISK_4_CACHE_MODE ?= $(DISK_CACHE_MODE)
+DISK_5_SIZE	?= $(DISK_SIZE_DEFAULT)
+DISK_5_BUS	?= $(DISK_BUS_DEFAULT)
+DISK_5_PERMS	?= $(DISK_PERMS)
+DISK_5_CACHE_MODE ?= $(DISK_CACHE_MODE)
+
+NET_1_MODEL	?= $(NET_MODEL_DEFAULT)
+
+disk_opts	= --disk path=$(DISK_DIR)/$(DISK_1_NAME),bus=$(DISK_1_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_1_CACHE_MODE)
+network_opts	= --network=$(NETWORK_1),model=$(NET_1_MODEL),mac=$(MAC_1)
+
+
+## disk images:
+disk_images	= $(DISK_DIR)/$(DISK_1_NAME)
+
+$(DISK_DIR):
+	mkdir -p $@
+
+# There must be one disk image at least.
+$(DISK_DIR)/$(DISK_1_NAME): $(DISK_DIR)
+	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_1_SIZE)G
+
+
+# Optional disk images
+ifneq ($(DISK_2_NAME),)
+disk_images	+= $(DISK_DIR)/$(DISK_2_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_2_NAME),bus=$(DISK_2_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_2_CACHE_MODE)
+
+$(DISK_DIR)/$(DISK_2_NAME):
+	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_2_SIZE)G
+endif
+ifneq ($(DISK_3_NAME),)
+disk_images	+= $(DISK_DIR)/$(DISK_3_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_3_NAME),bus=$(DISK_3_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_3_CACHE_MODE)
+
+$(DISK_DIR)/$(DISK_3_NAME):
+	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_3_SIZE)G
+endif
+ifneq ($(DISK_4_NAME),)
+disk_images	+= $(DISK_DIR)/$(DISK_4_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_4_NAME),bus=$(DISK_4_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_4_CACHE_MODE)
+
+$(DISK_DIR)/$(DISK_4_NAME):
+	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_4_SIZE)G
+endif
+ifneq ($(DISK_5_NAME),)
+disk_images	+= $(DISK_DIR)/$(DISK_5_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_5_NAME),bus=$(DISK_5_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_5_CACHE_MODE)
+
+$(DISK_DIR)/$(DISK_5_NAME):
+	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_5_SIZE)G
+endif
+
+
+## Networks:
+ifneq ($(NETWORK_2),)
+NET_2_MODEL	?= $(NET_MODEL_DEFAULT)
+network_opts += --network=$(NETWORK_2),model=$(NET_2_MODEL),mac=$(MAC_2)
+endif
+ifneq ($(NETWORK_3),)
+NET_3_MODEL	?= $(NET_MODEL_DEFAULT)
+network_opts += --network=$(NETWORK_3),model=$(NET_3_MODEL),mac=$(MAC_3)
+endif
+ifneq ($(NETWORK_4),)
+NET_4_MODEL	?= $(NET_MODEL_DEFAULT)
+network_opts += --network=$(NETWORK_4),model=$(NET_4_MODEL),mac=$(MAC_4)
+endif
+
+
+# targets:
+
+check: check-network-vars
+
+check-network-vars:
+	test -z "$(NETWORK_2)" || test -n "$(NETWORK_2)" -a -n "$(MAC_2)"
+	test -z "$(NETWORK_3)" || test -n "$(NETWORK_3)" -a -n "$(MAC_3)"
+	test -z "$(NETWORK_4)" || test -n "$(NETWORK_4)" -a -n "$(MAC_4)"
+
+
+# guest installation:
+build: install
+install: install-guest
+
+install-guest: check $(disk_images)
+	virt-install --connect=$(CONNECT) --name=$(NAME) --ram=$(MEMORY) --arch=$(ARCH) \
+		--vcpu=$(VCPU) --keymap=$(KEYMAP) --os-type=$(OS_TYPE) \
+		--location=$(LOCATION) --os-variant=$(OS_VARIANT) \
+		$(disk_opts) \
+		$(network_opts) \
+		--extra-args=$(EXTRA_ARGS) \
+		$(INJECT_INITRD) \
+		$(other_opts) \
+		$(OTHER_OPTIONS)
+
+
+include $(RPM_MK)
+
+.PHONY: check check-vars check-network-vars \
+install install-guest post-install clone build
+# vim:set ft=make ai si sm:

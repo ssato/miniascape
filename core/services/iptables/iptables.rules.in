@@ -1,0 +1,6 @@
+# HTTP
+-A INPUT -i @NET_1_BRIDGE@ -m state --state NEW -p tcp --dport 80 -j ACCEPT
+# NFSv4
+-A INPUT -i @NET_1_BRIDGE@ -m state --state NEW -p tcp --dport 2049 -j ACCEPT
+# iSCSI
+-A INPUT -i @NET_1_BRIDGE@ -m state --state NEW -p tcp --dport 3260 -j ACCEPT

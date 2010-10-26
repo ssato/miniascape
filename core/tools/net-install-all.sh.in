@@ -1,0 +1,15 @@
+#! /bin/bash
+set -e
+
+prefix=@prefix@
+sysconfdir=@sysconfdir@
+config=${sysconfdir}/@PACKAGE@/config
+
+test -f ${config} && source ${config}
+
+
+for net in ${NETWORKS}; do
+    netxml=${NETXMLDIR}/$net.xml
+    ${NET_REGISTER} ${netxml}
+done
+

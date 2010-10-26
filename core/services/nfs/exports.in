@@ -1,0 +1,5 @@
+#
+# Please add the followings lines into /etc/exports and run 'exportfs -av'
+# after that to apply changes.
+#
+/srv/@PACKAGE@/exports @NET_1_NETWORK@.0/24(rw,no_root_squash,fsid=0,sync)

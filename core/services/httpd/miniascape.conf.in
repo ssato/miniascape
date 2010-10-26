@@ -1,0 +1,14 @@
+## Installation trees: http://self/contents/.../
+
+## Configurations for auto-installation
+Alias /autoinst /usr/share/@PACKAGE@/autoinst
+
+<Directory /usr/share/@PACKAGE@/autoinst>
+    Order deny,allow
+    Deny from all
+    Allow from @NET_1_NETWORK@
+    Allow from 127.0.0.1
+    AllowOverride None
+    Options +Indexes +FollowSymLinks
+    IndexOptions +NameWidth=*
+</Directory>

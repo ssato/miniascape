@@ -1,0 +1,107 @@
+====================
+miniascape
+====================
+
+This package contains a collection of libvirt network and other core service
+configurations, and build tools for packaged vms.
+
+
+Prerequisites
+============================
+
+ * virsh in libvirt
+ * qemu-img
+ * virt-install in python-virtinst
+ * nfs-utils [option]
+ * scsi-target-utils (tgtd) [option]
+ * etc.
+
+
+Build
+============================
+
+ [autoreconf -vfi]
+ ./configure
+
+
+Installation
+============================
+
+ make 
+ make install
+
+
+Create [S]RPM
+============================
+
+ make srpm && mock *.rpm
+
+
+What should be done after installation and updates
+=========================================================
+
+* post installation: run /usr/libexec/miniascape/net-install-all.sh
+* post update: run /usr/libexec/miniascape/net-update-all.sh
+
+And optionally, add host entries in /usr/share/libvirt/networks/hosts.add
+into /etc/hosts if you want. (I recommend that.)
+
+
+What should be done before uninstallation
+=========================================================
+
+* pre uninstallation: run uninstall.sh
+
+or if you forgot to run /usr/libexec/miniascape/net-uninstall-all.sh before
+uninstallation, do the followings after that.
+
+::
+
+    for net in net-1 net-2 net-3; do
+        virsh net-destroy $net && virsh net-undefine $net
+    done
+
+
+
+TODO
+=========================
+
+* per guest configurations: vm.d/<VM Name>/{profile,autoinst,net,...}
+
+* profile: hw profile came from profile data, e.g. profiles/rhel-5-5-guest-1.cfg
+  * autoinst: kickstart/preseed config, e.g. autoinstall/rhel-5-cluster.ks.cfg
+  * net: ip, mac and hostname [, cname, ...]
+
+* network configuration update based on per guest configurations:
+
+::
+
+    hosts = []
+
+    for f in glob.glob("vm.d/*/net"):
+        hosts += (ip,mac,hostname) = open(f).read().split()
+
+    ... (dump network xml with all host entries added) ...
+
+
+* python-virtinst (upstream) fixes
+  * image format error (someone's fix was merged in upstream but not yet released.) 
+  * perms=rw storage option is not handled correctly: posted a patch
+
+
+TODO (Done)
+----------------------------------
+
+* apache -> nginx transition
+
+
+License
+=========================
+
+This is distributed under GPLv3+ license tentatively.
+
+
+Author
+=========================
+
+Satoru SATOH <satoru.satoh@gmail.com>
