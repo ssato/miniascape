@@ -1,0 +1,29 @@
+# guest specific configurations
+#
+include /etc/$(PACKAGE)/profiles/site.cfg
+
+NAME    := rhel-5-mrg-4
+LOCATION        = $(AUTOINST_TREE_URL_BASE)/RHEL/5/5/Server/i386/
+
+EXTRA_ARGS      = "ks=$(AUTOINST_CFG_URL_BASE)/rhel-5-mrg.ks.cfg ksdevice=eth0"
+#EXTRA_ARGS      = "ks=file:/rhel-5-mrg.ks.cfg ksdevice=eth0"
+#INJECT_INITRD   = --initrd-inject=$(AUTOINST_CFG_DIR)/rhel-5-mrg.ks.cfg
+
+OS_VARIANT      = rhel5
+DISK_1_NAME     = disk-1.$(DISK_FMT)
+
+DISK_BUS_DEFAULT        := virtio
+NET_MODEL_DEFAULT       := virtio
+
+NETWORK_1       = network:net-1
+NETWORK_2       = network:net-1
+NETWORK_3       = network:net-2
+NETWORK_4       = network:net-2
+MAC_1   = @HWADDR_PREFIX@:01:00:84
+MAC_2   = @HWADDR_PREFIX@:11:00:84
+MAC_3   = @HWADDR_PREFIX@:02:00:84
+MAC_4   = @HWADDR_PREFIX@:12:00:84
+IP_1    = @NET_1_PREFIX@.84
+IP_3    = @NET_2_PREFIX@.84
+
+# vim: set ft=make:

@@ -1,0 +1,123 @@
+# RHEL 5
+url --url=@AUTOINST_TREE_URL_BASE@/RHEL/5/5/Server/i386/
+install
+text
+lang en_US.UTF-8
+keyboard us
+skipx
+auth --useshadow --enablemd5
+firewall --enabled --port=22:tcp
+firstboot --disable
+network --device=eth0 --bootproto=dhcp
+network --device=eth1 --bootproto=dhcp --onboot=no --nodns
+network --device=eth2 --bootproto=dhcp --nodns
+network --device=eth3 --bootproto=dhcp --onboot=no --nodns
+rootpw --iscrypted $1$u3qutDHb$7APw4U/78XZW44uPsoNa41
+selinux --disabled
+timezone  Asia/Tokyo
+zerombr
+bootloader --location=mbr
+clearpart --all --initlabel
+autopart
+key --skip
+services --disable atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd,rhnsd
+reboot
+
+
+%packages
+# Automatic package selection.
+@ Base
+curl
+elinks
+#kernel-devel
+lv
+ntp
+rpm-build
+screen
+strace
+#systemtap
+vim-enhanced
+#kexec-tools
+#system-config-kdump
+-Deployment_Guide-en-US
+-NetworkManager
+-OpenIPMI
+-OpenIPMI-libs
+-acpid
+-amtu
+-apmd
+-aspell
+-aspell-en
+-bluez-gnome
+-bluez-libs
+-bluez-utils
+-ccid
+-conman
+-coolkey
+-cpuspeed
+-dos2unix
+-eject
+-fbset
+-finger
+-ftp
+-hdparm
+-ifd-egate
+-irda-utils
+-irqbalance
+-krb5-workstation
+-microcode_ctl
+-mozldap
+-nano
+-pam_pkcs11
+-pam_ccreds
+-pam_smb
+-pcmciautils
+-pcsc-lite
+-ppp
+-psacct
+-rdate
+-rdist
+-redhat-release-notes-5Server
+-rp-pppoe
+-rsh
+-specspo
+-stunnel
+-talk
+-telnet
+-udftools
+-unix2dos
+-wpa_supplicant
+-yum-updatesd
+
+
+%post --nochroot
+cp /tmp/ks.cfg /mnt/sysimage/root/
+
+
+%post
+cat << EOF >> /etc/sysconfig/network
+GATEWAYDEV=eth0
+EOF
+
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+cat << EOF > /etc/yum.repos.d/rhel-kstree.repo
+[rhel-kstree]
+name=Red Hat Enterprise Linux $releasever - $basearch - Server (kickstart tree)
+baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/5/Server/i386/Server/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[rhel-mrg]
+name=Red Hat Enterprise MRG 1.3
+baseurl=@AUTOINST_TREE_URL_BASE@/RHEL-5-MRG/1.3/i386/os/MRG/
+enabled=1
+gpgcheck=0
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+EOF
+
+
+yum install -y groupinstall mrg-realtime mrg-messaging mrg-management
+
+

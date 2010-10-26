@@ -1,0 +1,34 @@
+# site global configurations 
+#
+# NOTE: This is a makefile
+#
+CONNECT	:=      qemu:///system
+SITECONF :=     /etc/@BASE_PACKAGE@/profiles/site.cfg
+MEMORY  :=      256
+ARCH    :=      i686
+VCPU    :=      2
+KEYMAP  :=      en-us
+
+DISK_TOPDIR	:= /var/lib/libvirt/images
+DISK_FMT	:= qcow2
+DISK_CACHE_MODE	:= none
+DISK_PERMS	:= rw
+
+# @see https://www.redhat.com/archives/libvir-list/2010-October/msg00946.html
+#QEMU_IMG_OPTS	:= -o cluster_size=2M,preallocation=metadata
+QEMU_IMG_OPTS	:= -o cluster_size=2M
+
+DISK_SIZE_DEFAULT	:= 5
+DISK_BUS_DEFAULT	:= ide
+
+NET_MODEL_DEFAULT	:= e1000
+
+AUTOINST_CFG_DIR	:= /usr/share/@BASE_PACKAGE@/autoinst
+AUTOINST_TREE_URL_BASE	:= @AUTOINST_TREE_URL_BASE@
+AUTOINST_CFG_URL_BASE	:= @AUTOINST_CFG_URL_BASE@
+
+OS_TYPE	:= linux
+
+INJECT_INITRD	:=
+
+# vim: set ft=make:

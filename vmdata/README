@@ -1,0 +1,40 @@
+About
+==========
+
+This is a collection of configuration files and tools to create virt. guests.
+
+
+
+TODO
+========
+
+ * packaging tool for delta image ("vg-manage rpm" only supports single image
+   packaging currently)
+ * 'alternatives' support for various delta images
+ * build time image path and relocatable image package:
+   /var/lib/libvirt/images/ (current) ==> $builddir/.../
+ * split guests' data and build tools
+ * meta-packaging; generate rpm spec and files needed for autotools
+ * convert primitive shell/makefile configuration files to YAML, JSON or
+   whatever
+
+
+Done/Resolved
+--------------------
+
+ * migrate kickstart data into virt-networks
+ * invert the dependency of image packages:
+   base depends on delta (current) ==> delta depends on base
+ * eliminated EPEL dependency
+
+
+License
+=======================
+
+GPLv3+
+
+
+Author
+========================
+
+Satoru SATOH <ssato@redhat.com>

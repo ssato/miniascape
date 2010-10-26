@@ -1,0 +1,113 @@
+# Fedora X
+#url --url=http://http://download.fedora.redhat.com/pub/fedora/linux/releases/13/Fedora/i386/os/
+repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=fedora-13&arch=i386
+repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-f13&arch=i386
+install
+text
+lang en_US.UTF-8
+keyboard us
+skipx
+auth --useshadow --enablemd5
+firewall --enabled --ssh
+firstboot --disable
+network --device=eth0 --bootproto=dhcp
+network --device=eth1 --bootproto=dhcp --onboot=no
+network --device=eth2 --bootproto=dhcp
+network --device=eth3 --bootproto=dhcp --onboot=no
+rootpw --iscrypted $1$u3qutDHb$7APw4U/78XZW44uPsoNa41
+selinux --disabled
+timezone  Asia/Tokyo
+zerombr
+bootloader --location=mbr
+clearpart --all --initlabel
+autopart
+services --disabled atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd,rhnsd --enabled network
+reboot
+user --name=tester --password=redhat
+
+
+%pre
+# Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
+cat << EOF > /sbin/lspci
+#! /bin/sh
+exit 0
+EOF
+chmod +x /sbin/lspci
+
+
+%packages
+# Automatic package selection.
+@ Base
+curl
+elinks
+ntp
+rpm-build
+screen
+strace
+vim-enhanced
+kexec-tools
+#kernel-devel
+#systemtap
+#system-config-kdump
+-Deployment_Guide-en-US
+-ImageMagick
+-NetworkManager
+-OpenIPMI
+-OpenIPMI-libs
+-acpid
+-amtu
+-apmd
+-aspell
+-aspell-en
+-bluez-gnome
+-bluez-libs
+-bluez-utils
+-ccid
+-conman
+-coolkey
+-cpuspeed
+-dos2unix
+-eject
+-fbset
+-finger
+-ftp
+-hdparm
+-ifd-egate
+-irda-utils
+-irqbalance
+-krb5-workstation
+-microcode_ctl
+-mozldap
+-nano
+-pam_pkcs11
+-pam_ccreds
+-pam_smb
+-pcmciautils
+-pcsc-lite
+-ppp
+-psacct
+-rdate
+-rdist
+-redhat-release-notes-5Server
+-rp-pppoe
+-rsh
+-specspo
+-stunnel
+-talk
+-telnet
+-udftools
+-unix2dos
+-wpa_supplicant
+-yum-updatesd
+
+
+%post --nochroot
+cp /tmp/ks.cfg /mnt/sysimage/root/
+
+
+%post
+cat << EOF >> /etc/sysconfig/network
+GATEWAYDEV=eth0
+EOF
+
+

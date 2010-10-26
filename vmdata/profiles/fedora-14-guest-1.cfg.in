@@ -1,0 +1,27 @@
+# guest specific configurations
+# 
+include /etc/$(PACKAGE)/profiles/site.cfg
+
+
+NAME    := fedora-14-guest-1
+LOCATION        = $(AUTOINST_TREE_URL_BASE)/Fedora/14/i386/
+EXTRA_ARGS      = "ks=$(AUTOINST_CFG_URL_BASE)/fedora-14-i386-min.ks.cfg ksdevice=eth0"
+OS_VARIANT      = fedora13
+DISK_1_NAME     = disk-1.$(DISK_FMT)
+
+# Anaconda requires much memory than older releases.
+MEMORY  := 512
+DISK_BUS_DEFAULT        := virtio
+
+NETWORK_1       = network:net-1
+NETWORK_2       = network:net-1
+NETWORK_3       = network:net-3
+NETWORK_4       = network:net-3
+MAC_1   = @HWADDR_PREFIX@:01:01:84
+MAC_2   = @HWADDR_PREFIX@:11:01:84
+MAC_3   = @HWADDR_PREFIX@:03:01:84
+MAC_4   = @HWADDR_PREFIX@:13:01:84
+IP_1    = @NET_1_PREFIX@.184
+IP_3    = @NET_3_PREFIX@.184
+
+# vim: set ft=make:

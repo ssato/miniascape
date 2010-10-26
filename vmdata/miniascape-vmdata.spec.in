@@ -1,0 +1,52 @@
+%define debug_package   %{nil}
+
+Name:           @PACKAGE@
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        HW and SW profile data for pacakged vms
+Group:          Development/System
+License:        GPLv3+
+URL:            http://github.com/ssato/miniascape
+Source0:        %{name}-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+
+
+%description
+Virtualization (KVM/Qemu) guests profile data.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure
+make %{?_smp_mflags}
+
+
+%install
+%{__rm} -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%clean
+%{__rm} -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+%doc README
+%config(noreplace) %{_sysconfdir}/@BASE_PACKAGE@/profiles/*
+%{_datadir}/@BASE_PACKAGE@/autoinst/*.cfg
+
+
+%changelog
+* Tue Oct 19 2010 Satoru SATOH <ssato@redhat.com> - 0.1.99-1
+- Migrated site.cfg
+- Made this source publicly accessible
+- ... and many enhancements and bug fixes
+
+* Mon Oct 18 2010 Satoru SATOH <ssato@redhat.com> - 0.1-1
+- New package contains vm profiles originally came from miniascape-build
+- Migrated kicstarts

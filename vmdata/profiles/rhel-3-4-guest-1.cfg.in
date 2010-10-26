@@ -1,0 +1,23 @@
+# guest specific configurations
+#
+include /etc/$(PACKAGE)/profiles/site.cfg
+
+NAME    := rhel-3-4-guest-1
+LOCATION        = $(AUTOINST_TREE_URL_BASE)/RHEL/3/4/AS/i386/
+EXTRA_ARGS      = "ks=$(AUTOINST_CFG_URL_BASE)/rhel-3-4-i386-min.ks.cfg ksdevice=eth0"
+OS_VARIANT      = rhel3
+DISK_1_NAME     = disk-1.$(DISK_FMT)
+VCPU    = 1
+
+NETWORK_1       = network:net-1
+NETWORK_2       = network:net-1
+NETWORK_3       = network:net-3
+NETWORK_4       = network:net-3
+MAC_1   = @HWADDR_PREFIX@:01:01:34
+MAC_2   = @HWADDR_PREFIX@:11:01:34
+MAC_3   = @HWADDR_PREFIX@:03:01:34
+MAC_4   = @HWADDR_PREFIX@:13:01:34
+IP_1    = @NET_1_PREFIX@.134
+IP_3    = @NET_3_PREFIX@.134
+
+# vim: set ft=make:
