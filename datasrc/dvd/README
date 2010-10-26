@@ -1,0 +1,31 @@
+About
+=====================
+
+This is a collection of configuration files to serve installation tree for vms
+with mounting DVD iso images.
+
+
+Setup
+=====================
+
+autofs
+---------------------
+
+1. Add auto.iso entry in /etc/auto.master
+2. Edit /etc/auto.iso in accordance with your environment
+
+
+httpd
+---------------------
+
+Modify /etc/httpd/conf.d/miniascape-datasrc-dvd.conf as needed.
+Please note that configuration must be consistent with autofs.
+
+
+nginx
+---------------------
+
+Modify /etc/nginx/conf.d/miniascape-datasrc-dvd.conf as needed.
+Please note that configuration must be consistent with autofs.
+
+

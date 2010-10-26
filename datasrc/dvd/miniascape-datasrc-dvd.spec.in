@@ -1,0 +1,62 @@
+%if 0%{?fedora}
+%define httpd_name      nginx
+%define nginx_enabled   yes
+%else
+%define httpd_name      httpd
+%define nginx_enabled   no
+%endif
+
+
+Name:           @PACKAGE@
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        Site and host local configuration files for miniascape
+Group:          Applications/System
+License:        MIT
+URL:            http://github.com/ssato/miniascape
+Source0:        %{name}-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+Requires:       %{httpd_name}
+Requires:       autofs
+Requires(post): /sbin/service
+Provides:       miniascape-datasrc
+
+
+%description
+Installation data source configuration for miniascape.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure --enable-nginx=%{nginx_enabled}
+make %{?_smp_mflags}
+
+
+%install
+%{__rm} -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%clean
+%{__rm} -rf $RPM_BUILD_ROOT
+
+
+%post
+/sbin/service %{httpd_name} status > /dev/null 2>&1 && /sbin/service %{httpd_name} reload > /dev/null 2>&1 || :
+exit 0
+
+
+%files
+%defattr(-,root,root,-)
+%doc README
+%config(noreplace) %{_sysconfdir}/auto.iso
+%config(noreplace) %{_sysconfdir}/%{httpd_name}/conf.d/*
+
+
+%changelog
+* Thu Oct 21 2010 Satoru SATOH <ssato@redhat.com> - 0.1-1
+- Initial packaging.
