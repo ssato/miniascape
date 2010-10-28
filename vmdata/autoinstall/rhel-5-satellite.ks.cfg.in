@@ -224,8 +224,8 @@ EOF
 ## satellite specific
 cd /root
 
-curl -O @AUTOINST_TREE_URL_BASE@/RHEL-5-Satellite/5.3.0/i386/Satellite-5.3.0-RHEL5-re20090820.1-i386-embedded-oracle.iso
-ln -s Satellite-5.3.0-RHEL5-re20090820.1-i386-embedded-oracle.iso satellite.iso
+curl -O @AUTOINST_TREE_URL_BASE@/RHEL-5-Satellite/5.4.0/i386/Satellite-5.4.0-RHEL5-re20101025.0-i386-embedded-oracle.iso
+ln -s Satellite-5.4.0-RHEL5-re20101025.0-i386-embedded-oracle.iso satellite.iso
 
 cat <<EOA > answers.txt
 admin-email = foo@example.com
