@@ -84,15 +84,34 @@ TODO
     ... (dump network xml with all host entries added) ...
 
 
+* Setup console access to guest domain
+
+* Genaral tunings (timer, io scheduler, virtio, etc.) for both guest and host.
+
 * python-virtinst (upstream) fixes
   * image format error (someone's fix was merged in upstream but not yet released.) 
-  * perms=rw storage option is not handled correctly: posted a patch
+
+
+* --config (or --profile?) file option for virt-install [Should]
+
+* enhancement for qemu-img to get base image path of delta image [Should]
+
+* more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic [Should]
+
+* dhcpv6 support for dnsmasq [Maybe]
 
 
 TODO (Done)
 ----------------------------------
 
+* dnsmasq backend for libvirt [libvirt upstream]
+
 * apache -> nginx transition
+
+* python-virtinst (upstream) fixes
+  * perms=rw storage option is not handled correctly: my patch was migrated.
+    [python-virtinst upstream]
+
 
 
 License
