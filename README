@@ -9,28 +9,21 @@ RISK, PLEASE.
 
 
 miniascape is a collection of configurations and data to setup libvirt based
-virtualization guests environment quickly.
+virtualization guests build environment quickly.
 
 Main objects are
 
  * Make network configuration for virtualization guests much easier.
-   (pre-defined libvirt networks and DHCP configs)
+   (pre-defined libvirt networks and DHCP configurations to allow access from
+   host by hostnames)
 
- * Lightweight; Does not require expensive high-performance servers. 
-   I try to make it works on my non-high power vaio note pc
-   (vaio type-P: Atom Z540, 64GB SSD, 2 G RAM)
+ * Lightweight; Does not require expensive high-performance servers. I try to
+   make it works on my non-high power vaio note pc having Intel Atom CPU and
+   only 2G RAM.
 
  * Do not intend to become a replacement for other feature rich software such
    like RHEV, RHN Satellite and cobbler, etc.
 
-
-Files
-====================
-
- * libvirt network definitions: /etc/miniascape/networks/*.yaml
- * dnsmasq init scripts per libvirt network: /etc/rc.d/init.d/dnsmasq-$netname
- * fence_xvmd init scripts: /etc/rc.d/init.d/fence_xvmd
- * misc tools: /usr/libexec/miniascape/*
 
 
 Prerequisites
@@ -38,25 +31,24 @@ Prerequisites
 
  * make
  * virsh in libvirt
- * dnsmasq - should be installed along with libvirt
+ * qemu-kvm
+ * nginx or (apache) httpd
+ * etc.
 
-
-
-RHEL 5
------------------------
-
-The followings are not included in RHEL. You have to get them from EPEL repository.
-
- * pyattr
- * python-cheetah
- * python-elementtree
- * python-nose
- * PyYAML
 
 
 
 Build
 ====================
+
+You have to build the followings at least.
+
+* core
+* vmdata
+* datasrc/dvd
+
+
+Each modules utilize autotools and can be built like:
 
  [autoreconf -vfi]
  ./configure
@@ -64,6 +56,9 @@ Build
 
 Installation
 ====================
+
+I recommend to use RPMs but you can install them like:
+
 
  make 
  make install
@@ -78,48 +73,7 @@ Create [S]RPM
 Actions needed after post/pre installation, update and uninstallation
 ------------------------------------------------------------------------
 
-If you installed from rpm, you need nothing to do.
-
-
-Post installation / updates
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Go through the following steps for each libvirt networks (net-1,2,3):
-
-  1. chkconfig --add dnsmasq-$net
-  2. /usr/sbin/miniascape net register $net
-
-
-Pre uninstallation
-^^^^^^^^^^^^^^^^^^^^^
-
-Go through the following steps for each libvirt networks (net-1,2,3):
-
-  1. chkconfig --del dnsmasq-$net
-  2. /usr/sbin/miniascape net unregister $net
-
-
-Post uninstallation
-^^^^^^^^^^^^^^^^^^^^^^^
-
-The networks for virtualization environments (net-1, net-2 and net-3) are not
-uninstalled automatically.  So, you need to uninstall by yourself if you want
-to eliminate them entirely.
-
- 1. Shutdown all of virtualization guests using these networks
- 2. Shutdown and uninstall networks like the followings:
-
-  * "for i in 1 2 3; do virsh destroy net-$i; done"
-  * "for i in 1 2 3; do virsh undefine net-$i; done"
-
-
-Pre/Post update
-^^^^^^^^^^^^^^^^^^^^^
-
- * Pre: perform operations for post-uninstallation
- * Post: perform operations for post-installation
-
-
+See the README files in each package.
 
 
 TODO
@@ -128,7 +82,7 @@ TODO
 upstream works
 -------------------
 
-* -config ffile option for virt-install
+* -C | --config ffile option for virt-install
 * enhancement for qemu-img to get base image path of delta image
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic
 
@@ -136,78 +90,7 @@ upstream works
 miniascape itself
 -----------------------
 
-* Wrote more test codes for scripts
-* Make http service daemon configurable
-* Merge ISC DHCP and bind backend as an option instead of dnsmasq
-* Converter: VMDK + VMX -> QCOW2 + libvirt domain XML
-* Handle rpmlint errors (see below)
-
-::
-
-        ssato@localhost% rpmlint miniascape-0.1.99-1.fc11.noarch.rpm
-        miniascape.noarch: E: explicit-lib-dependency libvirt
-        miniascape.noarch: E: explicit-lib-dependency libvirt-python
-        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-1
-        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-3
-        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/dnsmasq-net-2
-        miniascape.noarch: W: service-default-enabled /etc/rc.d/init.d/fence_xvmd
-        1 packages and 0 specfiles checked; 2 errors, 4 warnings.
-        ssato@localhost%
-
-
-* Handle errors in pre/post scripts:
-
-::
-
-        ssato@localhost% sudo rpm -Uvh miniascape-refdata-0.1.99-1.fc11.noarch.rpm
-        Preparing...                ########################################### [100%]
-           1:miniascape-refdata     ########################################### [100%]
-        Network net-1 already exists. Redefine it by yourself later:
-           ex. /usr/libexec/miniascape/virt-net-unregister net-1 && \
-               /usr/libexec/miniascape/virt-net-register /var/lib/miniascape/networks/net-1.xml
-
-        Starting dnsmasq for net-1:
-        dnsmasq: failed to bind listening socket for 192.168.151.1: Address already in use
-        [FAILED]
-        Network net-2 already exists. Redefine it by yourself later:
-           ex. /usr/libexec/miniascape/virt-net-unregister net-2 && \
-               /usr/libexec/miniascape/virt-net-register /var/lib/miniascape/networks/net-2.xml
-
-        Starting dnsmasq for net-2:
-        dnsmasq: failed to bind listening socket for 192.168.152.1: Address already in use
-        [FAILED]
-        Network net-3 already exists. Redefine it by yourself later:
-           ex. /usr/libexec/miniascape/virt-net-unregister net-3 && \
-               /usr/libexec/miniascape/virt-net-register /var/lib/miniascape/networks/net-3.xml
-
-        Starting dnsmasq for net-3:
-        dnsmasq: failed to bind listening socket for 192.168.153.1: Address already in use
-        [FAILED]
-        ssato@localhost%
-
-
-
-
-Completed / Done
-----------------------
-
-upstream works
--------------------
-
-* dnsmasq backend for libvirt
-  * Generate hostsfile (host-ip-mac mapping file) and pass --dhcp-hostsfile
-    with its path to dnsmasq started from libvirtd:
-    completed. it works since libvirt 0.8.1.
-
-
-miniascape itself
--------------------
-
- * Eliminate GNU extensions in Makefiles
- * Restructure and split tools and reference data
- * Merge build (installation and packaging) scripts from vdbs
- * Make network definitions more configurable
-
+See TODO section in core/README.
 
 
 License
