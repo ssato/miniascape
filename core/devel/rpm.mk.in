@@ -21,7 +21,7 @@ INITIAL_DISK_SUFFIX = @INITIAL_DISK_SUFFIX@
 
 RPMFLAVOR	?= minimal
 
-rpmbasename = pkgvm-$(NAME)-$(RPMFLAVOR)
+rpmbasename = pkgdvm-$(NAME)-$(RPMFLAVOR)
 rpmver	= 0.1.99
 rpmname = $(rpmbasename)-$(rpmver)
 rpmworkdir = $(shell pwd)/rpmbuild-$(NAME)
