@@ -2,9 +2,11 @@
 %if 0%{?fedora}
 %define httpd_name      nginx
 %define nginx_enabled   yes
+%define qemu_kvm        %{_bindir}/qemu-kvm
 %else
 %define httpd_name      httpd
 %define nginx_enabled   no
+%define qemu_kvm        %{_libexecdir}/qemu-kvm
 %endif
 
 
@@ -28,6 +30,7 @@ Requires:       scsi-target-utils
 Requires(post): /sbin/service
 Requires:       /usr/bin/virsh
 Requires:       /usr/bin/qemu-img
+Requires:       %{qemu_kvm}
 Requires:       python-virtinst
 Requires:       rpm-build
 Requires:       @PACKAGE@-datasrc
