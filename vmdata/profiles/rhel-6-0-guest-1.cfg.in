@@ -10,6 +10,7 @@ EXTRA_ARGS      = "ks=$(AUTOINST_CFG_URL_BASE)/rhel-6-0-i386-min.ks.cfg ksdevice
 
 OS_VARIANT      = fedora11
 DISK_1_NAME     = disk-1.$(DISK_FMT)
+OTHER_OPTS      = $(OTHER_OPTS) --watchdog
 
 # Anaconda requires much memory than older releases.
 MEMORY  := 512

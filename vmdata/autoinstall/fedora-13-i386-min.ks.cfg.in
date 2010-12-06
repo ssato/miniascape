@@ -49,6 +49,7 @@ kexec-tools
 #kernel-devel
 #systemtap
 #system-config-kdump
+watchdog
 -Deployment_Guide-en-US
 -ImageMagick
 -NetworkManager

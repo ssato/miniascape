@@ -51,6 +51,7 @@ strace
 vim-enhanced
 #kexec-tools
 #system-config-kdump
+watchdog
 -Deployment_Guide-en-US
 -ImageMagick
 -NetworkManager
