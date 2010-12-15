@@ -95,7 +95,7 @@ fi
 
 
 make ${dryrun} -f ${toolsmk} \
-  SITE_CONFIG="${siteconf}" CONFIG="${conf}" \
+  packagedvm_SITE_CONFIG="${siteconf}" packagedvm_CONFIG="${conf}" \
   ${command}
 
 

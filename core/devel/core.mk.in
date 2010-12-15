@@ -7,147 +7,158 @@ prefix	= @prefix@
 pkgdatadir = @datadir@/@PACKAGE@
 develdir = $(pkgdatadir)/devel
 
-PACKAGE	= @PACKAGE@
+packagedvm_PACKAGE = @PACKAGE@
 
-RPM_MK	= $(develdir)/rpm.mk
-QEMU_IMG = @QEMU_IMG@
+packagedvm_RPM_MK	= $(develdir)/rpm.mk
+packagedvm_QEMU_IMG = @QEMU_IMG@
 
 
 ## Guest specific configurations:
 # The followings are must items:
-#NAME	=
-#LOCATION	=
-#EXTRA_ARGS	=
-#OS_VARIANT	=
-#DISK_1_NAME	=
-#NETWORK_1	=
-#MAC_1	=
+#packagedvm_NAME	=
+#packagedvm_LOCATION	=
+#packagedvm_EXTRA_ARGS	=
+#packagedvm_OS_VARIANT	=
+#packagedvm_DISK_1_NAME	=
+#packagedvm_NETWORK_1	=
+#packagedvm_MAC_1	=
 #
 # The followings are optional
-#DISK_2_NAME	=
-#DISK_3_NAME	=
-#NETWORK_2	=
-#NETWORK_3	=
-#NETWORK_4	=
-#MAC_2	=
-#MAC_3	=
-#MAC_4	=
-include $(CONFIG)
+#packagedvm_DISK_2_NAME	=
+#packagedvm_DISK_3_NAME	=
+#packagedvm_NETWORK_2	=
+#packagedvm_NETWORK_3	=
+#packagedvm_NETWORK_4	=
+#packagedvm_MAC_2	=
+#packagedvm_MAC_3	=
+#packagedvm_MAC_4	=
+include $(packagedvm_CONFIG)
 
-DISK_DIR	= $(DISK_TOPDIR)/$(NAME)
+DISK_DIR	= $(packagedvm_DISK_TOPDIR)/$(packagedvm_NAME)
 
-ifeq ($(NAME),)
-$(error You must specify NAME)
+ifeq ($(packagedvm_NAME),)
+$(error You must specify packagedvm_NAME)
 endif
-ifeq ($(LOCATION),)
-$(error You must specify LOCATION)
+ifeq ($(packagedvm_LOCATION),)
+$(error You must specify packagedvm_LOCATION)
 endif
-ifeq ($(EXTRA_ARGS),)
-$(error You must specify EXTRA_ARGS)
+ifeq ($(packagedvm_EXTRA_ARGS),)
+$(error You must specify packagedvm_EXTRA_ARGS)
 endif
-ifeq ($(OS_VARIANT),)
-$(error You must specify OS_VARIANT)
+ifeq ($(packagedvm_OS_VARIANT),)
+$(error You must specify packagedvm_OS_VARIANT)
 endif
-ifeq ($(DISK_1_NAME),)
-$(error You must specify DISK_1_NAME)
+ifeq ($(packagedvm_DISK_1_NAME),)
+$(error You must specify packagedvm_DISK_1_NAME)
 endif
-ifeq ($(NETWORK_1),)
-$(error You must specify NETWORK_1)
+ifeq ($(packagedvm_NETWORK_1),)
+$(error You must specify packagedvm_NETWORK_1)
 endif
-ifeq ($(MAC_1),)
-$(error You must specify MAC_1)
+ifeq ($(packagedvm_MAC_1),)
+$(error You must specify packagedvm_MAC_1)
 endif
 
 
 # Others
 
 # how much time to wait for installation completion [min]
-VIRTINST_WAIT_TIME	?= 20
-OTHER_OPTIONS	?=
+packagedvm_VIRTINST_WAIT_TIME	?= 20
+packagedvm_OTHER_OPTIONS	?=
 
-other_opts	?= --check-cpu --hvm --accelerate --vnc --noreboot --noautoconsole --wait=$(VIRTINST_WAIT_TIME)
+other_opts	?= --check-cpu --hvm --accelerate --vnc --noreboot --noautoconsole \
+--wait=$(packagedvm_VIRTINST_WAIT_TIME)
 
-DISK_1_SIZE     ?= $(DISK_SIZE_DEFAULT)
-DISK_1_BUS      ?= $(DISK_BUS_DEFAULT)
-DISK_1_PERMS	?= $(DISK_PERMS)
-DISK_1_CACHE_MODE ?= $(DISK_CACHE_MODE)
-DISK_2_SIZE	?= $(DISK_SIZE_DEFAULT)
-DISK_2_BUS	?= $(DISK_BUS_DEFAULT)
-DISK_2_PERMS	?= $(DISK_PERMS)
-DISK_2_CACHE_MODE ?= $(DISK_CACHE_MODE)
-DISK_3_SIZE	?= $(DISK_SIZE_DEFAULT)
-DISK_3_BUS	?= $(DISK_BUS_DEFAULT)
-DISK_3_PERMS	?= $(DISK_PERMS)
-DISK_3_CACHE_MODE ?= $(DISK_CACHE_MODE)
-DISK_4_SIZE	?= $(DISK_SIZE_DEFAULT)
-DISK_4_BUS	?= $(DISK_BUS_DEFAULT)
-DISK_4_PERMS	?= $(DISK_PERMS)
-DISK_4_CACHE_MODE ?= $(DISK_CACHE_MODE)
-DISK_5_SIZE	?= $(DISK_SIZE_DEFAULT)
-DISK_5_BUS	?= $(DISK_BUS_DEFAULT)
-DISK_5_PERMS	?= $(DISK_PERMS)
-DISK_5_CACHE_MODE ?= $(DISK_CACHE_MODE)
+packagedvm_DISK_1_SIZE     ?= $(packagedvm_DISK_SIZE_DEFAULT)
+packagedvm_DISK_1_BUS      ?= $(packagedvm_DISK_BUS_DEFAULT)
+packagedvm_DISK_1_PERMS	?= $(packagedvm_DISK_PERMS)
+packagedvm_DISK_1_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
+packagedvm_DISK_1_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
+packagedvm_DISK_1_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
+packagedvm_DISK_2_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
+packagedvm_DISK_2_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
+packagedvm_DISK_2_PERMS	?= $(packagedvm_DISK_PERMS)
+packagedvm_DISK_2_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
+packagedvm_DISK_2_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
+packagedvm_DISK_2_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
+packagedvm_DISK_3_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
+packagedvm_DISK_3_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
+packagedvm_DISK_3_PERMS	?= $(packagedvm_DISK_PERMS)
+packagedvm_DISK_3_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
+packagedvm_DISK_3_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
+packagedvm_DISK_3_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
+packagedvm_DISK_4_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
+packagedvm_DISK_4_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
+packagedvm_DISK_4_PERMS	?= $(packagedvm_DISK_PERMS)
+packagedvm_DISK_4_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
+packagedvm_DISK_4_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
+packagedvm_DISK_4_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
+packagedvm_DISK_5_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
+packagedvm_DISK_5_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
+packagedvm_DISK_5_PERMS	?= $(packagedvm_DISK_PERMS)
+packagedvm_DISK_5_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
+packagedvm_DISK_5_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
+packagedvm_DISK_5_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
 
-NET_1_MODEL	?= $(NET_MODEL_DEFAULT)
+packagedvm_NET_1_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
 
-disk_opts	= --disk path=$(DISK_DIR)/$(DISK_1_NAME),bus=$(DISK_1_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_1_CACHE_MODE)
-network_opts	= --network=$(NETWORK_1),model=$(NET_1_MODEL),mac=$(MAC_1)
+disk_opts	= --disk path=$(DISK_DIR)/$(packagedvm_DISK_1_NAME),bus=$(packagedvm_DISK_1_BUS),format=$(packagedvm_DISK_1_FMT),perms=$(packagedvm_DISK_1_PERMS),cache=$(packagedvm_DISK_1_CACHE_MODE)
+network_opts	= --network=$(packagedvm_NETWORK_1),model=$(packagedvm_NET_1_MODEL),mac=$(packagedvm_MAC_1)
 
 
 ## disk images:
-disk_images	= $(DISK_DIR)/$(DISK_1_NAME)
+disk_images	= $(DISK_DIR)/$(packagedvm_DISK_1_NAME)
 
 $(DISK_DIR):
 	mkdir -p $@
 
 # There must be one disk image at least.
-$(DISK_DIR)/$(DISK_1_NAME): $(DISK_DIR)
-	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_1_SIZE)G
+$(DISK_DIR)/$(packagedvm_DISK_1_NAME): $(DISK_DIR)
+	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_1_FMT) $(packagedvm_DISK_1_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_1_SIZE)G
 
 
 # Optional disk images
-ifneq ($(DISK_2_NAME),)
-disk_images	+= $(DISK_DIR)/$(DISK_2_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_2_NAME),bus=$(DISK_2_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_2_CACHE_MODE)
+ifneq ($(packagedvm_DISK_2_NAME),)
+disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_2_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_2_NAME),bus=$(packagedvm_DISK_2_BUS),format=$(packagedvm_DISK_2_FMT),perms=$(packagedvm_DISK_2_PERMS),cache=$(packagedvm_DISK_2_CACHE_MODE)
 
-$(DISK_DIR)/$(DISK_2_NAME):
-	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_2_SIZE)G
+$(DISK_DIR)/$(packagedvm_DISK_2_NAME):
+	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_2_FMT) $(packagedvm_DISK_2_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_2_SIZE)G
 endif
-ifneq ($(DISK_3_NAME),)
-disk_images	+= $(DISK_DIR)/$(DISK_3_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_3_NAME),bus=$(DISK_3_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_3_CACHE_MODE)
+ifneq ($(packagedvm_DISK_3_NAME),)
+disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_3_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_3_NAME),bus=$(packagedvm_DISK_3_BUS),format=$(packagedvm_DISK_3_FMT),perms=$(packagedvm_DISK_3_PERMS),cache=$(packagedvm_DISK_3_CACHE_MODE)
 
-$(DISK_DIR)/$(DISK_3_NAME):
-	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_3_SIZE)G
+$(DISK_DIR)/$(packagedvm_DISK_3_NAME):
+	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_3_FMT) $(packagedvm_DISK_3_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_3_SIZE)G
 endif
 ifneq ($(DISK_4_NAME),)
-disk_images	+= $(DISK_DIR)/$(DISK_4_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_4_NAME),bus=$(DISK_4_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_4_CACHE_MODE)
+disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_4_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_4_NAME),bus=$(packagedvm_DISK_4_BUS),format=$(packagedvm_DISK_4_FMT),perms=$(packagedvm_DISK_4_PERMS),cache=$(packagedvm_DISK_4_CACHE_MODE)
 
-$(DISK_DIR)/$(DISK_4_NAME):
-	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_4_SIZE)G
+$(DISK_DIR)/$(packagedvm_DISK_4_NAME):
+	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_4_FMT) $(packagedvm_DISK_4_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_4_SIZE)G
 endif
-ifneq ($(DISK_5_NAME),)
-disk_images	+= $(DISK_DIR)/$(DISK_5_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(DISK_5_NAME),bus=$(DISK_5_BUS),format=$(DISK_FMT),perms=$(DISK_1_PERMS),cache=$(DISK_5_CACHE_MODE)
+ifneq ($(packagedvm_DISK_5_NAME),)
+disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_5_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_5_NAME),bus=$(packagedvm_DISK_5_BUS),format=$(packagedvm_DISK_5_FMT),perms=$(packagedvm_DISK_5_PERMS),cache=$(packagedvm_DISK_5_CACHE_MODE)
 
-$(DISK_DIR)/$(DISK_5_NAME):
-	$(QEMU_IMG) create -f qcow2 $(QEMU_IMG_OPTS) $@ $(DISK_5_SIZE)G
+$(DISK_DIR)/$(packagedvm_DISK_5_NAME):
+	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_5_FMT) $(packagedvm_DISK_5_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_5_SIZE)G
 endif
 
 
 ## Networks:
-ifneq ($(NETWORK_2),)
-NET_2_MODEL	?= $(NET_MODEL_DEFAULT)
-network_opts += --network=$(NETWORK_2),model=$(NET_2_MODEL),mac=$(MAC_2)
+ifneq ($(packagedvm_NETWORK_2),)
+packagedvm_NET_2_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
+network_opts += --network=$(packagedvm_NETWORK_2),model=$(packagedvm_NET_2_MODEL),mac=$(packagedvm_MAC_2)
 endif
-ifneq ($(NETWORK_3),)
-NET_3_MODEL	?= $(NET_MODEL_DEFAULT)
-network_opts += --network=$(NETWORK_3),model=$(NET_3_MODEL),mac=$(MAC_3)
+ifneq ($(packagedvm_NETWORK_3),)
+packagedvm_NET_3_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
+network_opts += --network=$(packagedvm_NETWORK_3),model=$(packagedvm_NET_3_MODEL),mac=$(packagedvm_MAC_3)
 endif
-ifneq ($(NETWORK_4),)
-NET_4_MODEL	?= $(NET_MODEL_DEFAULT)
-network_opts += --network=$(NETWORK_4),model=$(NET_4_MODEL),mac=$(MAC_4)
+ifneq ($(packagedvm_NETWORK_4),)
+packagedvm_NET_4_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
+network_opts += --network=$(packagedvm_NETWORK_4),model=$(packagedvm_NET_4_MODEL),mac=$(packagedvm_MAC_4)
 endif
 
 
@@ -156,9 +167,9 @@ endif
 check: check-network-vars
 
 check-network-vars:
-	test -z "$(NETWORK_2)" || test -n "$(NETWORK_2)" -a -n "$(MAC_2)"
-	test -z "$(NETWORK_3)" || test -n "$(NETWORK_3)" -a -n "$(MAC_3)"
-	test -z "$(NETWORK_4)" || test -n "$(NETWORK_4)" -a -n "$(MAC_4)"
+	test -z "$(packagedvm_NETWORK_2)" || test -n "$(packagedvm_NETWORK_2)" -a -n "$(packagedvm_MAC_2)"
+	test -z "$(packagedvm_NETWORK_3)" || test -n "$(packagedvm_NETWORK_3)" -a -n "$(packagedvm_MAC_3)"
+	test -z "$(packagedvm_NETWORK_4)" || test -n "$(packagedvm_NETWORK_4)" -a -n "$(packagedvm_MAC_4)"
 
 
 # guest installation:
@@ -166,18 +177,21 @@ build: install
 install: install-guest
 
 install-guest: check $(disk_images)
-	virt-install --connect=$(CONNECT) --name=$(NAME) --ram=$(MEMORY) --arch=$(ARCH) \
-		--vcpu=$(VCPU) --keymap=$(KEYMAP) --os-type=$(OS_TYPE) \
-		--location=$(LOCATION) --os-variant=$(OS_VARIANT) \
+	virt-install --connect=$(packagedvm_CONNECT) --name=$(packagedvm_NAME) \
+		--ram=$(packagedvm_MEMORY) --arch=$(packagedvm_ARCH) \
+		--vcpu=$(packagedvm_VCPU) --keymap=$(packagedvm_KEYMAP) \
+		--os-type=$(packagedvm_OS_TYPE) \
+		--location=$(packagedvm_LOCATION) --os-variant=$(packagedvm_OS_VARIANT) \
 		$(disk_opts) \
 		$(network_opts) \
-		--extra-args=$(EXTRA_ARGS) \
-		$(INJECT_INITRD) \
+		--extra-args=$(packagedvm_EXTRA_ARGS) \
+		$(packagedvm_INJECT_INITRD) \
 		$(other_opts) \
-		$(OTHER_OPTIONS)
+		$(packagedvm_OTHER_OPTIONS) \
+		$(NULL)
 
 
-include $(RPM_MK)
+include $(packagedvm_RPM_MK)
 
 .PHONY: check check-vars check-network-vars \
 install install-guest post-install clone build
