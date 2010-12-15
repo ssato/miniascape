@@ -2,33 +2,34 @@
 #
 # NOTE: This is a makefile
 #
-CONNECT	:=      qemu:///system
-SITECONF :=     /etc/@BASE_PACKAGE@/profiles/site.cfg
-MEMORY  :=      256
-ARCH    :=      i686
-VCPU    :=      2
-KEYMAP  :=      en-us
+packagedvm_CONNECT	?=	qemu:///system
+packagedvm_SITECONF	?=	/etc/@BASE_PACKAGE@/profiles/site.cfg
+packagedvm_MEMORY  ?=      256
+packagedvm_ARCH    ?=      i686
+packagedvm_VCPU    ?=      2
+packagedvm_KEYMAP  ?=      en-us
 
-DISK_TOPDIR	:= /var/lib/libvirt/images
-DISK_FMT	:= qcow2
-DISK_CACHE_MODE	:= none
-DISK_PERMS	:= rw
+packagedvm_DISK_TOPDIR	?= /var/lib/libvirt/images
+
+packagedvm_DISK_FMT_DEFAULT	?= qcow2
+packagedvm_DISK_CACHE_MODE	?= none
+packagedvm_DISK_PERMS	?= rw
 
 # @see https://www.redhat.com/archives/libvir-list/2010-October/msg00946.html
-#QEMU_IMG_OPTS	:= -o cluster_size=2M,preallocation=metadata
-QEMU_IMG_OPTS	:= -o cluster_size=2M
+#packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M,preallocation=metadata
+packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M
 
-DISK_SIZE_DEFAULT	:= 5
-DISK_BUS_DEFAULT	:= ide
+packagedvm_DISK_SIZE_DEFAULT	?= 5
+packagedvm_DISK_BUS_DEFAULT	?= ide
 
-NET_MODEL_DEFAULT	:= e1000
+packagedvm_NET_MODEL_DEFAULT	?= e1000
 
-AUTOINST_CFG_DIR	:= /usr/share/@BASE_PACKAGE@/autoinst
-AUTOINST_TREE_URL_BASE	:= @AUTOINST_TREE_URL_BASE@
-AUTOINST_CFG_URL_BASE	:= @AUTOINST_CFG_URL_BASE@
+packagedvm_AUTOINST_CFG_DIR	?= /usr/share/@BASE_PACKAGE@/autoinst
+packagedvm_AUTOINST_TREE_URL_BASE	?= @AUTOINST_TREE_URL_BASE@
+packagedvm_AUTOINST_CFG_URL_BASE	?= @AUTOINST_CFG_URL_BASE@
 
-OS_TYPE	:= linux
+packagedvm_OS_TYPE	?= linux
 
-INJECT_INITRD	:=
+packagedvm_INJECT_INITRD	?=
 
 # vim: set ft=make:
