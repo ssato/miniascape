@@ -1,4 +1,4 @@
-AC_INIT([miniascape],[0.1.99])
+AC_INIT([miniascape],[0.1.20101215])
 AM_INIT_AUTOMAKE([foreign])
 
 AC_PROG_LN_S

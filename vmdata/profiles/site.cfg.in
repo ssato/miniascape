@@ -2,34 +2,44 @@
 #
 # NOTE: This is a makefile
 #
-packagedvm_CONNECT	?=	qemu:///system
-packagedvm_SITECONF	?=	/etc/@BASE_PACKAGE@/profiles/site.cfg
-packagedvm_MEMORY  ?=      256
-packagedvm_ARCH    ?=      i686
-packagedvm_VCPU    ?=      2
-packagedvm_KEYMAP  ?=      en-us
+miniascape_CONNECT	?=	qemu:///system
+miniascape_SITECONF	?=	/etc/@BASE_PACKAGE@/profiles/site.cfg
+miniascape_MEMORY  ?=      256
+miniascape_ARCH    ?=      i686
+miniascape_VCPU    ?=      2
+miniascape_KEYMAP  ?=      en-us
 
-packagedvm_DISK_TOPDIR	?= /var/lib/libvirt/images
+miniascape_DISK_TOPDIR	?= /var/lib/libvirt/images
 
-packagedvm_DISK_FMT_DEFAULT	?= qcow2
-packagedvm_DISK_CACHE_MODE	?= none
-packagedvm_DISK_PERMS	?= rw
+miniascape_DISK_FMT_DEFAULT	?= qcow2
+miniascape_DISK_CACHE_MODE	?= none
+miniascape_DISK_PERMS	?= rw
 
 # @see https://www.redhat.com/archives/libvir-list/2010-October/msg00946.html
-#packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M,preallocation=metadata
-packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M
+#miniascape_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M,preallocation=metadata
+miniascape_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M
 
-packagedvm_DISK_SIZE_DEFAULT	?= 5
-packagedvm_DISK_BUS_DEFAULT	?= ide
+miniascape_DISK_SIZE_DEFAULT	?= 5
+miniascape_DISK_BUS_DEFAULT	?= ide
 
-packagedvm_NET_MODEL_DEFAULT	?= e1000
+miniascape_NET_MODEL_DEFAULT	?= e1000
 
-packagedvm_AUTOINST_CFG_DIR	?= /usr/share/@BASE_PACKAGE@/autoinst
-packagedvm_AUTOINST_TREE_URL_BASE	?= @AUTOINST_TREE_URL_BASE@
-packagedvm_AUTOINST_CFG_URL_BASE	?= @AUTOINST_CFG_URL_BASE@
+miniascape_HWADDR_PREFIX	?= @HWADDR_PREFIX@
 
-packagedvm_OS_TYPE	?= linux
+miniascape_NET_1_PREFIX		?= @NET_1_PREFIX@
+miniascape_NET_2_PREFIX		?= @NET_2_PREFIX@
+miniascape_NET_3_PREFIX		?= @NET_3_PREFIX@
 
-packagedvm_INJECT_INITRD	?=
+miniascape_NET_1_DOMAIN		?= @NET_1_DOMAIN@
+miniascape_NET_2_DOMAIN		?= @NET_2_DOMAIN@
+miniascape_NET_3_DOMAIN		?= @NET_3_DOMAIN@
+
+miniascape_AUTOINST_CFG_DIR	?= /usr/share/@BASE_PACKAGE@/autoinst
+miniascape_AUTOINST_TREE_URL_BASE	?= @AUTOINST_TREE_URL_BASE@
+miniascape_AUTOINST_CFG_URL_BASE	?= @AUTOINST_CFG_URL_BASE@
+
+miniascape_OS_TYPE	?= linux
+
+miniascape_INJECT_INITRD	?=
 
 # vim: set ft=make:

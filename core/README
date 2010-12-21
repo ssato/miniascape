@@ -68,7 +68,7 @@ TODO
 
 * per guest configurations: vm.d/<VM Name>/{profile,autoinst,net,...}
 
-* profile: hw profile came from profile data, e.g. profiles/rhel-5-5-guest-1.cfg
+* profile: hw profile came from profile data, e.g. profiles/rhel-5-5-vm-1.cfg
   * autoinst: kickstart/preseed config, e.g. autoinstall/rhel-5-cluster.ks.cfg
   * net: ip, mac and hostname [, cname, ...]
 

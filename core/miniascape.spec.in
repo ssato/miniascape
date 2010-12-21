@@ -81,6 +81,9 @@ exit 0
 
 
 %changelog
+* Wed Dec 15 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.20101215-1
+- Added prefix to all custom variables in Makefiles
+
 * Tue Oct 19 2010 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.99-1
 - Strip -core from package name
 - Re-versioned because its name was changed

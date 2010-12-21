@@ -95,7 +95,7 @@ fi
 
 
 make ${dryrun} -f ${toolsmk} \
-  packagedvm_SITE_CONFIG="${siteconf}" packagedvm_CONFIG="${conf}" \
+  miniascape_SITE_CONFIG="${siteconf}" miniascape_CONFIG="${conf}" \
   ${command}
 
 

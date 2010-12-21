@@ -7,158 +7,158 @@ prefix	= @prefix@
 pkgdatadir = @datadir@/@PACKAGE@
 develdir = $(pkgdatadir)/devel
 
-packagedvm_PACKAGE = @PACKAGE@
+miniascape_PACKAGE = @PACKAGE@
 
-packagedvm_RPM_MK	= $(develdir)/rpm.mk
-packagedvm_QEMU_IMG = @QEMU_IMG@
+miniascape_RPM_MK	= $(develdir)/rpm.mk
+miniascape_QEMU_IMG = @QEMU_IMG@
 
 
 ## Guest specific configurations:
 # The followings are must items:
-#packagedvm_NAME	=
-#packagedvm_LOCATION	=
-#packagedvm_EXTRA_ARGS	=
-#packagedvm_OS_VARIANT	=
-#packagedvm_DISK_1_NAME	=
-#packagedvm_NETWORK_1	=
-#packagedvm_MAC_1	=
+#miniascape_NAME	=
+#miniascape_LOCATION	=
+#miniascape_EXTRA_ARGS	=
+#miniascape_OS_VARIANT	=
+#miniascape_DISK_1_NAME	=
+#miniascape_NETWORK_1	=
+#miniascape_MAC_1	=
 #
 # The followings are optional
-#packagedvm_DISK_2_NAME	=
-#packagedvm_DISK_3_NAME	=
-#packagedvm_NETWORK_2	=
-#packagedvm_NETWORK_3	=
-#packagedvm_NETWORK_4	=
-#packagedvm_MAC_2	=
-#packagedvm_MAC_3	=
-#packagedvm_MAC_4	=
-include $(packagedvm_CONFIG)
+#miniascape_DISK_2_NAME	=
+#miniascape_DISK_3_NAME	=
+#miniascape_NETWORK_2	=
+#miniascape_NETWORK_3	=
+#miniascape_NETWORK_4	=
+#miniascape_MAC_2	=
+#miniascape_MAC_3	=
+#miniascape_MAC_4	=
+include $(miniascape_CONFIG)
 
-DISK_DIR	= $(packagedvm_DISK_TOPDIR)/$(packagedvm_NAME)
+DISK_DIR	= $(miniascape_DISK_TOPDIR)/$(miniascape_NAME)
 
-ifeq ($(packagedvm_NAME),)
-$(error You must specify packagedvm_NAME)
+ifeq ($(miniascape_NAME),)
+$(error You must specify miniascape_NAME)
 endif
-ifeq ($(packagedvm_LOCATION),)
-$(error You must specify packagedvm_LOCATION)
+ifeq ($(miniascape_LOCATION),)
+$(error You must specify miniascape_LOCATION)
 endif
-ifeq ($(packagedvm_EXTRA_ARGS),)
-$(error You must specify packagedvm_EXTRA_ARGS)
+ifeq ($(miniascape_EXTRA_ARGS),)
+$(error You must specify miniascape_EXTRA_ARGS)
 endif
-ifeq ($(packagedvm_OS_VARIANT),)
-$(error You must specify packagedvm_OS_VARIANT)
+ifeq ($(miniascape_OS_VARIANT),)
+$(error You must specify miniascape_OS_VARIANT)
 endif
-ifeq ($(packagedvm_DISK_1_NAME),)
-$(error You must specify packagedvm_DISK_1_NAME)
+ifeq ($(miniascape_DISK_1_NAME),)
+$(error You must specify miniascape_DISK_1_NAME)
 endif
-ifeq ($(packagedvm_NETWORK_1),)
-$(error You must specify packagedvm_NETWORK_1)
+ifeq ($(miniascape_NETWORK_1),)
+$(error You must specify miniascape_NETWORK_1)
 endif
-ifeq ($(packagedvm_MAC_1),)
-$(error You must specify packagedvm_MAC_1)
+ifeq ($(miniascape_MAC_1),)
+$(error You must specify miniascape_MAC_1)
 endif
 
 
 # Others
 
 # how much time to wait for installation completion [min]
-packagedvm_VIRTINST_WAIT_TIME	?= 20
-packagedvm_OTHER_OPTIONS	?=
+miniascape_VIRTINST_WAIT_TIME	?= 20
+miniascape_OTHER_OPTIONS	?=
 
 other_opts	?= --check-cpu --hvm --accelerate --vnc --noreboot --noautoconsole \
---wait=$(packagedvm_VIRTINST_WAIT_TIME)
+--wait=$(miniascape_VIRTINST_WAIT_TIME)
 
-packagedvm_DISK_1_SIZE     ?= $(packagedvm_DISK_SIZE_DEFAULT)
-packagedvm_DISK_1_BUS      ?= $(packagedvm_DISK_BUS_DEFAULT)
-packagedvm_DISK_1_PERMS	?= $(packagedvm_DISK_PERMS)
-packagedvm_DISK_1_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
-packagedvm_DISK_1_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
-packagedvm_DISK_1_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
-packagedvm_DISK_2_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
-packagedvm_DISK_2_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
-packagedvm_DISK_2_PERMS	?= $(packagedvm_DISK_PERMS)
-packagedvm_DISK_2_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
-packagedvm_DISK_2_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
-packagedvm_DISK_2_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
-packagedvm_DISK_3_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
-packagedvm_DISK_3_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
-packagedvm_DISK_3_PERMS	?= $(packagedvm_DISK_PERMS)
-packagedvm_DISK_3_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
-packagedvm_DISK_3_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
-packagedvm_DISK_3_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
-packagedvm_DISK_4_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
-packagedvm_DISK_4_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
-packagedvm_DISK_4_PERMS	?= $(packagedvm_DISK_PERMS)
-packagedvm_DISK_4_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
-packagedvm_DISK_4_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
-packagedvm_DISK_4_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
-packagedvm_DISK_5_SIZE	?= $(packagedvm_DISK_SIZE_DEFAULT)
-packagedvm_DISK_5_BUS	?= $(packagedvm_DISK_BUS_DEFAULT)
-packagedvm_DISK_5_PERMS	?= $(packagedvm_DISK_PERMS)
-packagedvm_DISK_5_CACHE_MODE ?= $(packagedvm_DISK_CACHE_MODE)
-packagedvm_DISK_5_FMT	?= $(packagedvm_DISK_FMT_DEFAULT)
-packagedvm_DISK_5_QEMU_IMG_OPTS	?= $(packagedvm_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_1_SIZE     ?= $(miniascape_DISK_SIZE_DEFAULT)
+miniascape_DISK_1_BUS      ?= $(miniascape_DISK_BUS_DEFAULT)
+miniascape_DISK_1_PERMS	?= $(miniascape_DISK_PERMS)
+miniascape_DISK_1_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
+miniascape_DISK_1_FMT	?= $(miniascape_DISK_FMT_DEFAULT)
+miniascape_DISK_1_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_2_SIZE	?= $(miniascape_DISK_SIZE_DEFAULT)
+miniascape_DISK_2_BUS	?= $(miniascape_DISK_BUS_DEFAULT)
+miniascape_DISK_2_PERMS	?= $(miniascape_DISK_PERMS)
+miniascape_DISK_2_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
+miniascape_DISK_2_FMT	?= $(miniascape_DISK_FMT_DEFAULT)
+miniascape_DISK_2_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_3_SIZE	?= $(miniascape_DISK_SIZE_DEFAULT)
+miniascape_DISK_3_BUS	?= $(miniascape_DISK_BUS_DEFAULT)
+miniascape_DISK_3_PERMS	?= $(miniascape_DISK_PERMS)
+miniascape_DISK_3_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
+miniascape_DISK_3_FMT	?= $(miniascape_DISK_FMT_DEFAULT)
+miniascape_DISK_3_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_4_SIZE	?= $(miniascape_DISK_SIZE_DEFAULT)
+miniascape_DISK_4_BUS	?= $(miniascape_DISK_BUS_DEFAULT)
+miniascape_DISK_4_PERMS	?= $(miniascape_DISK_PERMS)
+miniascape_DISK_4_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
+miniascape_DISK_4_FMT	?= $(miniascape_DISK_FMT_DEFAULT)
+miniascape_DISK_4_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_5_SIZE	?= $(miniascape_DISK_SIZE_DEFAULT)
+miniascape_DISK_5_BUS	?= $(miniascape_DISK_BUS_DEFAULT)
+miniascape_DISK_5_PERMS	?= $(miniascape_DISK_PERMS)
+miniascape_DISK_5_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
+miniascape_DISK_5_FMT	?= $(miniascape_DISK_FMT_DEFAULT)
+miniascape_DISK_5_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
 
-packagedvm_NET_1_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
+miniascape_NET_1_MODEL	?= $(miniascape_NET_MODEL_DEFAULT)
 
-disk_opts	= --disk path=$(DISK_DIR)/$(packagedvm_DISK_1_NAME),bus=$(packagedvm_DISK_1_BUS),format=$(packagedvm_DISK_1_FMT),perms=$(packagedvm_DISK_1_PERMS),cache=$(packagedvm_DISK_1_CACHE_MODE)
-network_opts	= --network=$(packagedvm_NETWORK_1),model=$(packagedvm_NET_1_MODEL),mac=$(packagedvm_MAC_1)
+disk_opts	= --disk path=$(DISK_DIR)/$(miniascape_DISK_1_NAME),bus=$(miniascape_DISK_1_BUS),format=$(miniascape_DISK_1_FMT),perms=$(miniascape_DISK_1_PERMS),cache=$(miniascape_DISK_1_CACHE_MODE)
+network_opts	= --network=$(miniascape_NETWORK_1),model=$(miniascape_NET_1_MODEL),mac=$(miniascape_MAC_1)
 
 
 ## disk images:
-disk_images	= $(DISK_DIR)/$(packagedvm_DISK_1_NAME)
+disk_images	= $(DISK_DIR)/$(miniascape_DISK_1_NAME)
 
 $(DISK_DIR):
 	mkdir -p $@
 
 # There must be one disk image at least.
-$(DISK_DIR)/$(packagedvm_DISK_1_NAME): $(DISK_DIR)
-	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_1_FMT) $(packagedvm_DISK_1_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_1_SIZE)G
+$(DISK_DIR)/$(miniascape_DISK_1_NAME): $(DISK_DIR)
+	$(miniascape_QEMU_IMG) create -f $(miniascape_DISK_1_FMT) $(miniascape_DISK_1_QEMU_IMG_OPTS) $@ $(miniascape_DISK_1_SIZE)G
 
 
 # Optional disk images
-ifneq ($(packagedvm_DISK_2_NAME),)
-disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_2_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_2_NAME),bus=$(packagedvm_DISK_2_BUS),format=$(packagedvm_DISK_2_FMT),perms=$(packagedvm_DISK_2_PERMS),cache=$(packagedvm_DISK_2_CACHE_MODE)
+ifneq ($(miniascape_DISK_2_NAME),)
+disk_images	+= $(DISK_DIR)/$(miniascape_DISK_2_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(miniascape_DISK_2_NAME),bus=$(miniascape_DISK_2_BUS),format=$(miniascape_DISK_2_FMT),perms=$(miniascape_DISK_2_PERMS),cache=$(miniascape_DISK_2_CACHE_MODE)
 
-$(DISK_DIR)/$(packagedvm_DISK_2_NAME):
-	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_2_FMT) $(packagedvm_DISK_2_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_2_SIZE)G
+$(DISK_DIR)/$(miniascape_DISK_2_NAME):
+	$(miniascape_QEMU_IMG) create -f $(miniascape_DISK_2_FMT) $(miniascape_DISK_2_QEMU_IMG_OPTS) $@ $(miniascape_DISK_2_SIZE)G
 endif
-ifneq ($(packagedvm_DISK_3_NAME),)
-disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_3_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_3_NAME),bus=$(packagedvm_DISK_3_BUS),format=$(packagedvm_DISK_3_FMT),perms=$(packagedvm_DISK_3_PERMS),cache=$(packagedvm_DISK_3_CACHE_MODE)
+ifneq ($(miniascape_DISK_3_NAME),)
+disk_images	+= $(DISK_DIR)/$(miniascape_DISK_3_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(miniascape_DISK_3_NAME),bus=$(miniascape_DISK_3_BUS),format=$(miniascape_DISK_3_FMT),perms=$(miniascape_DISK_3_PERMS),cache=$(miniascape_DISK_3_CACHE_MODE)
 
-$(DISK_DIR)/$(packagedvm_DISK_3_NAME):
-	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_3_FMT) $(packagedvm_DISK_3_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_3_SIZE)G
+$(DISK_DIR)/$(miniascape_DISK_3_NAME):
+	$(miniascape_QEMU_IMG) create -f $(miniascape_DISK_3_FMT) $(miniascape_DISK_3_QEMU_IMG_OPTS) $@ $(miniascape_DISK_3_SIZE)G
 endif
 ifneq ($(DISK_4_NAME),)
-disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_4_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_4_NAME),bus=$(packagedvm_DISK_4_BUS),format=$(packagedvm_DISK_4_FMT),perms=$(packagedvm_DISK_4_PERMS),cache=$(packagedvm_DISK_4_CACHE_MODE)
+disk_images	+= $(DISK_DIR)/$(miniascape_DISK_4_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(miniascape_DISK_4_NAME),bus=$(miniascape_DISK_4_BUS),format=$(miniascape_DISK_4_FMT),perms=$(miniascape_DISK_4_PERMS),cache=$(miniascape_DISK_4_CACHE_MODE)
 
-$(DISK_DIR)/$(packagedvm_DISK_4_NAME):
-	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_4_FMT) $(packagedvm_DISK_4_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_4_SIZE)G
+$(DISK_DIR)/$(miniascape_DISK_4_NAME):
+	$(miniascape_QEMU_IMG) create -f $(miniascape_DISK_4_FMT) $(miniascape_DISK_4_QEMU_IMG_OPTS) $@ $(miniascape_DISK_4_SIZE)G
 endif
-ifneq ($(packagedvm_DISK_5_NAME),)
-disk_images	+= $(DISK_DIR)/$(packagedvm_DISK_5_NAME)
-disk_opts	+= --disk path=$(DISK_DIR)/$(packagedvm_DISK_5_NAME),bus=$(packagedvm_DISK_5_BUS),format=$(packagedvm_DISK_5_FMT),perms=$(packagedvm_DISK_5_PERMS),cache=$(packagedvm_DISK_5_CACHE_MODE)
+ifneq ($(miniascape_DISK_5_NAME),)
+disk_images	+= $(DISK_DIR)/$(miniascape_DISK_5_NAME)
+disk_opts	+= --disk path=$(DISK_DIR)/$(miniascape_DISK_5_NAME),bus=$(miniascape_DISK_5_BUS),format=$(miniascape_DISK_5_FMT),perms=$(miniascape_DISK_5_PERMS),cache=$(miniascape_DISK_5_CACHE_MODE)
 
-$(DISK_DIR)/$(packagedvm_DISK_5_NAME):
-	$(packagedvm_QEMU_IMG) create -f $(packagedvm_DISK_5_FMT) $(packagedvm_DISK_5_QEMU_IMG_OPTS) $@ $(packagedvm_DISK_5_SIZE)G
+$(DISK_DIR)/$(miniascape_DISK_5_NAME):
+	$(miniascape_QEMU_IMG) create -f $(miniascape_DISK_5_FMT) $(miniascape_DISK_5_QEMU_IMG_OPTS) $@ $(miniascape_DISK_5_SIZE)G
 endif
 
 
 ## Networks:
-ifneq ($(packagedvm_NETWORK_2),)
-packagedvm_NET_2_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
-network_opts += --network=$(packagedvm_NETWORK_2),model=$(packagedvm_NET_2_MODEL),mac=$(packagedvm_MAC_2)
+ifneq ($(miniascape_NETWORK_2),)
+miniascape_NET_2_MODEL	?= $(miniascape_NET_MODEL_DEFAULT)
+network_opts += --network=$(miniascape_NETWORK_2),model=$(miniascape_NET_2_MODEL),mac=$(miniascape_MAC_2)
 endif
-ifneq ($(packagedvm_NETWORK_3),)
-packagedvm_NET_3_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
-network_opts += --network=$(packagedvm_NETWORK_3),model=$(packagedvm_NET_3_MODEL),mac=$(packagedvm_MAC_3)
+ifneq ($(miniascape_NETWORK_3),)
+miniascape_NET_3_MODEL	?= $(miniascape_NET_MODEL_DEFAULT)
+network_opts += --network=$(miniascape_NETWORK_3),model=$(miniascape_NET_3_MODEL),mac=$(miniascape_MAC_3)
 endif
-ifneq ($(packagedvm_NETWORK_4),)
-packagedvm_NET_4_MODEL	?= $(packagedvm_NET_MODEL_DEFAULT)
-network_opts += --network=$(packagedvm_NETWORK_4),model=$(packagedvm_NET_4_MODEL),mac=$(packagedvm_MAC_4)
+ifneq ($(miniascape_NETWORK_4),)
+miniascape_NET_4_MODEL	?= $(miniascape_NET_MODEL_DEFAULT)
+network_opts += --network=$(miniascape_NETWORK_4),model=$(miniascape_NET_4_MODEL),mac=$(miniascape_MAC_4)
 endif
 
 
@@ -167,9 +167,9 @@ endif
 check: check-network-vars
 
 check-network-vars:
-	test -z "$(packagedvm_NETWORK_2)" || test -n "$(packagedvm_NETWORK_2)" -a -n "$(packagedvm_MAC_2)"
-	test -z "$(packagedvm_NETWORK_3)" || test -n "$(packagedvm_NETWORK_3)" -a -n "$(packagedvm_MAC_3)"
-	test -z "$(packagedvm_NETWORK_4)" || test -n "$(packagedvm_NETWORK_4)" -a -n "$(packagedvm_MAC_4)"
+	test -z "$(miniascape_NETWORK_2)" || test -n "$(miniascape_NETWORK_2)" -a -n "$(miniascape_MAC_2)"
+	test -z "$(miniascape_NETWORK_3)" || test -n "$(miniascape_NETWORK_3)" -a -n "$(miniascape_MAC_3)"
+	test -z "$(miniascape_NETWORK_4)" || test -n "$(miniascape_NETWORK_4)" -a -n "$(miniascape_MAC_4)"
 
 
 # guest installation:
@@ -177,21 +177,21 @@ build: install
 install: install-guest
 
 install-guest: check $(disk_images)
-	virt-install --connect=$(packagedvm_CONNECT) --name=$(packagedvm_NAME) \
-		--ram=$(packagedvm_MEMORY) --arch=$(packagedvm_ARCH) \
-		--vcpu=$(packagedvm_VCPU) --keymap=$(packagedvm_KEYMAP) \
-		--os-type=$(packagedvm_OS_TYPE) \
-		--location=$(packagedvm_LOCATION) --os-variant=$(packagedvm_OS_VARIANT) \
+	virt-install --connect=$(miniascape_CONNECT) --name=$(miniascape_NAME) \
+		--ram=$(miniascape_MEMORY) --arch=$(miniascape_ARCH) \
+		--vcpu=$(miniascape_VCPU) --keymap=$(miniascape_KEYMAP) \
+		--os-type=$(miniascape_OS_TYPE) \
+		--location=$(miniascape_LOCATION) --os-variant=$(miniascape_OS_VARIANT) \
 		$(disk_opts) \
 		$(network_opts) \
-		--extra-args=$(packagedvm_EXTRA_ARGS) \
-		$(packagedvm_INJECT_INITRD) \
+		--extra-args=$(miniascape_EXTRA_ARGS) \
+		$(miniascape_INJECT_INITRD) \
 		$(other_opts) \
-		$(packagedvm_OTHER_OPTIONS) \
+		$(miniascape_OTHER_OPTIONS) \
 		$(NULL)
 
 
-include $(packagedvm_RPM_MK)
+include $(miniascape_RPM_MK)
 
 .PHONY: check check-vars check-network-vars \
 install install-guest post-install clone build

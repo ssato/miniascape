@@ -57,17 +57,6 @@ autoinstall/rhel-3-2-i386-min.ks.cfg
 autoinstall/rhel-3-2-i386-default.ks.cfg
 profiles/Makefile
 profiles/site.cfg
-profiles/debian-stable-guest-1.cfg
-profiles/fedora-13-guest-1.cfg
-profiles/fedora-14-guest-1.cfg
-profiles/jboss-0.cfg
-profiles/jboss-1.cfg
-profiles/jboss-2.cfg
-profiles/jboss-3.cfg
-profiles/jboss-4.cfg
-profiles/jboss-5.cfg
-profiles/jon-0.cfg
-profiles/jon-1.cfg
 profiles/rhel-3-0-guest-1.cfg
 profiles/rhel-3-1-guest-1.cfg
 profiles/rhel-3-2-guest-1.cfg
@@ -99,16 +88,7 @@ profiles/rhel-5-cluster-3.cfg
 profiles/rhel-5-cluster-4.cfg
 profiles/rhel-5-cluster-5.cfg
 profiles/rhel-5-luci-0.cfg
-profiles/rhel-5-mrg-0.cfg
-profiles/rhel-5-mrg-1.cfg
-profiles/rhel-5-mrg-2.cfg
-profiles/rhel-5-mrg-3.cfg
-profiles/rhel-5-mrg-4.cfg
-profiles/rhel-5-mrg-5.cfg
-profiles/rhel-5-satellite-0.cfg
-profiles/rhel-5-satellite-1.cfg
 profiles/rhel-6-0-guest-1.cfg
-profiles/ubuntu-10-guest-1.cfg
 ])
 
 AC_OUTPUT
