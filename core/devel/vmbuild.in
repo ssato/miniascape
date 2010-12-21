@@ -8,7 +8,7 @@ set -e
 
 prefix=@prefix@
 pkgdatadir=@datadir@/@PACKAGE@
-toolsmk=${pkgdatadir}/devel/core.mk
+drivermk=${pkgdatadir}/devel/core.mk
 
 initial_disk_suffix=@INITIAL_DISK_SUFFIX@
 
@@ -94,7 +94,7 @@ else
 fi
 
 
-make ${dryrun} -f ${toolsmk} \
+make ${dryrun} -f ${drivermk} \
   miniascape_SITE_CONFIG="${siteconf}" miniascape_CONFIG="${conf}" \
   ${command}
 
