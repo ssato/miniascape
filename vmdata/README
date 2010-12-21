@@ -1,7 +1,7 @@
 About
 ==========
 
-This is a collection of configuration files and tools to create virt. guests.
+This is a collection of configuration and data files to create virt. guests.
 
 
 
@@ -13,10 +13,8 @@ TODO
  * 'alternatives' support for various delta images
  * build time image path and relocatable image package:
    /var/lib/libvirt/images/ (current) ==> $builddir/.../
- * split guests' data and build tools
- * meta-packaging; generate rpm spec and files needed for autotools
  * convert primitive shell/makefile configuration files to YAML, JSON or
-   whatever
+   whatever more suitable format
 
 
 Done/Resolved
@@ -26,6 +24,8 @@ Done/Resolved
  * invert the dependency of image packages:
    base depends on delta (current) ==> delta depends on base
  * eliminated EPEL dependency
+ * split guests' data and build tools
+ * meta-packaging; generate rpm spec and files needed for autotools
 
 
 License
