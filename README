@@ -29,12 +29,21 @@ Main objects are
 Prerequisites
 ====================
 
+Hardware and base OS
+----------------------
+
+* Intel x86 (i386 or x86_64) machine with VT extension (Intel VT or AMD-V) enabled
+* RHEL 6 or Fedora 13+ or any linux distributions corresponding to these versions
+
+
+tools
+-------------------
+
  * make
  * virsh in libvirt
  * qemu-kvm
  * nginx or (apache) httpd
  * etc.
-
 
 
 
