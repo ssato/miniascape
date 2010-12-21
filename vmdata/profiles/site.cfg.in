@@ -19,10 +19,11 @@ miniascape_DISK_PERMS	?= rw
 #miniascape_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M,preallocation=metadata
 miniascape_DISK_QEMU_IMG_OPTS_DEFAULT	?= -o cluster_size=2M
 
-miniascape_DISK_SIZE_DEFAULT	?= 5
+miniascape_DISK_SIZE_DEFAULT	?= 5G
 miniascape_DISK_BUS_DEFAULT	?= ide
 
 miniascape_NET_MODEL_DEFAULT	?= e1000
+miniascape_NET_MAC_DEFAULT	?= RANDOM
 
 miniascape_HWADDR_PREFIX	?= @HWADDR_PREFIX@
 
