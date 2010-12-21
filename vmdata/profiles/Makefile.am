@@ -65,16 +65,16 @@ rhel-5-mrg-5.cfg: rhel-5-mrg-0.cfg
 rhel-5-satellite-1.cfg: rhel-5-satellite-0.cfg
 	$(SED) -e 's/rhel-5-satellite-0/rhel-5-satellite-1/g' -e 's/PREFIX).20/PREFIX).21/g' -e 's/:00:20/00:21/g' $(srcdir)/$< > $@.t && mv $@.t $@
 
-rhel-5-cluster-2.cfg.in: rhel-5-cluster-1.cfg.in
-	$(SED) -e 's/cluster-1/cluster-2/g' -e 's/PREFIX).51/PREFIX).52/g' -e 's/:00:51/:00:52/g' $< > $@
+rhel-5-cluster-2.cfg: rhel-5-cluster-1.cfg
+	$(SED) -e 's/cluster-1/cluster-2/g' -e 's/PREFIX).51/PREFIX).52/g' -e 's/:00:51/:00:52/g' $(srcdir)/$< > $@.t && mv $@.t $@
 
-rhel-5-cluster-3.cfg.in: rhel-5-cluster-1.cfg.in
-	$(SED) -e 's/cluster-1/cluster-3/g' -e 's/PREFIX).51/PREFIX).53/g' -e 's/:00:51/:00:53/g' $< > $@
+rhel-5-cluster-3.cfg: rhel-5-cluster-1.cfg
+	$(SED) -e 's/cluster-1/cluster-3/g' -e 's/PREFIX).51/PREFIX).53/g' -e 's/:00:51/:00:53/g' $(srcdir)/$< > $@.t && mv $@.t $@
 
-rhel-5-cluster-4.cfg.in: rhel-5-cluster-1.cfg.in
-	$(SED) -e 's/cluster-1/cluster-4/g' -e 's/PREFIX).51/PREFIX).54/g' -e 's/:00:51/:00:54/g' $< > $@
+rhel-5-cluster-4.cfg: rhel-5-cluster-1.cfg
+	$(SED) -e 's/cluster-1/cluster-4/g' -e 's/PREFIX).51/PREFIX).54/g' -e 's/:00:51/:00:54/g' $(srcdir)/$< > $@.t && mv $@.t $@
 
-rhel-5-cluster-5.cfg.in: rhel-5-cluster-1.cfg.in
-	$(SED) -e 's/cluster-1/cluster-5/g' -e 's/PREFIX).51/PREFIX).55/g' -e 's/:00:51/:00:55/g' $< > $@
+rhel-5-cluster-5.cfg: rhel-5-cluster-1.cfg
+	$(SED) -e 's/cluster-1/cluster-5/g' -e 's/PREFIX).51/PREFIX).55/g' -e 's/:00:51/:00:55/g' $(srcdir)/$< > $@.t && mv $@.t $@
 
 
