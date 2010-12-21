@@ -6,11 +6,17 @@
 #
 set -e
 
-prefix=@prefix@
-pkgdatadir=@datadir@/@PACKAGE@
-drivermk=${pkgdatadir}/devel/core.mk
 
-initial_disk_suffix=@INITIAL_DISK_SUFFIX@
+# globals:
+drivermk=@pkgdatadir@/devel/core.mk
+confdir=@pkgsysconfdir@/profiles
+
+verbose=1     # not implemented
+dryrun=       # Make dryrun mode: "-n" (dryrun)
+
+siteconf=$confdir/site.cfg
+conf=
+name=
 
 
 usage () {
@@ -20,10 +26,10 @@ Usage: $0 [Options...] (-c GUEST_CONFIG | -n GUEST_NAME) Command
 Commands: build (install), rpm or srpm
 
 Options:
-  -c,--cfg      Specify guest config in full path
-  -n,--name     Specify guest name instead of its config
+  -c,--cfg      Specify vm config in full path
+  -n,--name     Specify vm name instead of its config
 
-  -s,--sitecfg  Specify site config [/etc/@PACKAGE@/profiles/site.cfg]
+  -s,--sitecfg  Specify site config [${siteconf}]
 
   -t,--dryrun   Dryrun mode
   -v,--verbose  Verbose mode
@@ -31,15 +37,6 @@ Options:
 EOF
 }
 
-
-# globals:
-verbose=1     # not implemented
-dryrun=       # Make dryrun mode: "-n" (dryrun)
-
-confdir=@sysconfdir@/@PACKAGE@/profiles
-siteconf=$confdir/site.cfg
-conf=
-name=
 
 
 # main:
@@ -63,12 +60,12 @@ if test ! -f $siteconf; then
   exit 1
 fi
 
-# find guest's config path from given name
+# find vm's config path from given name
 if test -n "$name"; then conf=$confdir/$name.cfg; fi
 
 # assert $conf == ""
 if test -z "$conf"; then
-  echo "[Error] Neigther guest's config path nor name was given."
+  echo "[Error] Neigther vm's config path nor name was given."
   echo "[Error] See $0 --help for its usage"
   exit 1
 fi
