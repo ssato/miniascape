@@ -1,5 +1,9 @@
 AC_INIT([miniascape],[0.1.20101215])
-AM_INIT_AUTOMAKE([foreign])
+dnl AM_INIT_AUTOMAKE([1.11 silent-rules foreign])
+AM_INIT_AUTOMAKE([silent-rules foreign])
+
+dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AC_PROG_LN_S
 AC_PROG_MKDIR_P

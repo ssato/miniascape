@@ -1,5 +1,9 @@
-AC_INIT([miniascape-datasrc-dvd],[0.1])
-AM_INIT_AUTOMAKE([foreign])
+AC_INIT([miniascape-datasrc-dvd],[0.1.20101221])
+dnl AM_INIT_AUTOMAKE([1.11 silent-rules foreign])
+AM_INIT_AUTOMAKE([silent-rules foreign])
+
+dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 dnl
 dnl It is originally defined in ../../core/configure.ac and must be changed
