@@ -99,7 +99,6 @@ devel/Makefile
 devel/core.mk
 devel/rpm.mk
 devel/vm.spec.in
-devel/vmbuild
 services/Makefile
 services/config
 services/httpd/Makefile

@@ -1,11 +1,11 @@
 #
-# RPM related stuff
+# RPM related stuff, included from core.mk
 #
 
 # These must be defined...
 prefix	= @prefix@
 pkgdatadir	= @datadir@/@PACKAGE@
-develdir	= $(pkgdatadir)/devel
+pkglibdatadir	= $(pkgdatadir)/devel
 
 libvirt_imagedir = @localstatedir@/lib/libvirt/images/$(NAME)
 
@@ -59,7 +59,7 @@ $(rpmsrcdir): $(rpmdirs)
 $(rpmsrcdir)/$(NAME).xml: $(guest_xml) $(rpmsrcdir)
 	$(guest_xml_do_subst) < $< > $@
 
-$(rpmspec): $(develdir)/vm.spec.in $(rpmsrcdir)
+$(rpmspec): $(pkglibdatadir)/vm.spec.in $(rpmsrcdir)
 	$(rpmspec_do_subst) < $< > $@
 
 $(rpmsrcdir)/README: $(rpmsrcdir)
