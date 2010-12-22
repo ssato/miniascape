@@ -16,11 +16,13 @@ rootpw --iscrypted $1$u3qutDHb$7APw4U/78XZW44uPsoNa41
 selinux --disabled
 timezone  Asia/Tokyo
 zerombr
+# if serial console only:
+#bootloader --location=mbr --append="console=ttyS0,19200"
 bootloader --location=mbr
 clearpart --all --initlabel
 autopart
 key --skip
-services --disable atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd,rhnsd
+services --disable atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,lvm2-monitor,mcstrans,mdmonitor,netfs,nfslock,ntpd,portmap,rawdevices,restorecond,sendmail,smartd,rhnsd
 reboot
 
 # repos
@@ -74,6 +76,8 @@ kexec-tools
 -eject
 -fbset
 -finger
+-firstboot
+-firstboot-tui
 -ftp
 -hdparm
 -ifd-egate
@@ -81,6 +85,7 @@ kexec-tools
 -irqbalance
 -krb5-workstation
 -microcode_ctl
+-mlocate
 -mozldap
 -nano
 -pam_pkcs11
@@ -125,4 +130,11 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 EOF
 
+cat << EOF >> /etc/inittab
 
+# serial console:
+co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
+EOF
+
+# @see http://osdir.com/ml/kickstart-list/2009-10/msg00005.html
+#sed -i -e 's/^timeout=5/serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1 terminal --timeout=5 serial console timeout=5/' -e 's/^splashimage/#&/' /boot/grub/grub.conf
