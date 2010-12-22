@@ -41,6 +41,4 @@ miniascape_AUTOINST_CFG_URL_BASE	?= @AUTOINST_CFG_URL_BASE@
 
 miniascape_OS_TYPE	?= linux
 
-miniascape_INJECT_INITRD	?=
-
 # vim: set ft=make:
