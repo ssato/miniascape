@@ -60,7 +60,6 @@ autoinstall/rhel-3-0-i386-default.ks.cfg
 autoinstall/rhel-3-2-i386-min.ks.cfg
 autoinstall/rhel-3-2-i386-default.ks.cfg
 profiles/Makefile
-profiles/site.cfg
 ])
 
 AC_OUTPUT
