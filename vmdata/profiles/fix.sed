@@ -14,8 +14,8 @@ s,^NETWORK_,miniascape_NETWORK_,g
 s,^MAC_,miniascape_MAC_,g
 s,^IP_,miniascape_IP_,g
 s,@HWADDR_PREFIX@,$(miniascape_HWADDR_PREFIX),g
-s,@NET_1_PREFIX@,$(miniascape_NET_1_PREFIX@),g
-s,@NET_2_PREFIX@,$(miniascape_NET_2_PREFIX@),g
-s,@NET_3_PREFIX@,$(miniascape_NET_3_PREFIX@),g
+s,@NET_1_PREFIX@,$(miniascape_NET_1_PREFIX),g
+s,@NET_2_PREFIX@,$(miniascape_NET_2_PREFIX),g
+s,@NET_3_PREFIX@,$(miniascape_NET_3_PREFIX),g
 s,^DISK_BUS_DEFAULT,miniascape_DISK_BUS_DEFAULT,
 s,^NET_MODEL_DEFAULT,miniascape_NET_MODEL_DEFAULT,
