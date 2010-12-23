@@ -2,27 +2,9 @@
 # RPM related stuff, included from core.mk
 #
 
-# These must be defined...
-prefix	= @prefix@
-pkgdatadir	= @datadir@/@PACKAGE@
-pkglibdatadir	= $(pkgdatadir)/devel
+rpmbasename = $(miniascape_RPM_BASENAME)
+rpmver	= $(miniascape_RPM_VERSION)
 
-libvirt_imagedir = @localstatedir@/lib/libvirt/images/$(NAME)
-
-
-# FIXME: Not hardcode it. It should be detected automatically. 
-GUEST_DOMAIN := net-1.local
-
-# placeholder to add other rpm dependencies
-GUEST_OTHER_DEPS	?=
-
-# initial disk is an image backed up from the initial delta image
-INITIAL_DISK_SUFFIX = @INITIAL_DISK_SUFFIX@
-
-RPMFLAVOR	?= minimal
-
-rpmbasename = pkgdvm-$(NAME)-$(RPMFLAVOR)
-rpmver	= 0.1.99
 rpmname = $(rpmbasename)-$(rpmver)
 rpmworkdir = $(shell pwd)/$(NAME)-rpmbuild
 rpmdirs	= $(addprefix $(rpmworkdir)/,RPMS/$(arch) RPMS/noarch SRPMS SPECS BUILD BUILDROOT SOURCES)
@@ -33,21 +15,27 @@ rpmsrcdir = $(rpmworkdir)/SOURCES/$(rpmname)
 
 rpmsrc_extras	= $(rpmsrcdir)/README $(rpmsrcdir)/ssh.config
 
-guest_xml = @sysconfdir@/libvirt/qemu/$(NAME).xml
-guest_xml_do_subst = @SED@ -e '/uuid/d'
+guest_xml = $(miniascape_VM_XML_DIR)/$(miniascape_NAME).xml
+guest_xml_do_subst = $(SED) -e '/uuid/d'
+
+
+
+libvirt_imagedir = $(miniascape_DISK_TOPDIR)/$(miniascape_NAME)
+img_0_sfx	= $(miniascape_INITIAL_DISK_SUFFIX)
+
 
 # extract ip addr:
-guest_ip_addr	= $(shell @SED@ -nre 's/^([^ ]+) $(NAME).$(GUEST_DOMAIN).*/\1/p' /usr/share/libvirt/networks/hosts.add)
+guest_ip_addr	= $(shell $(SED) -nre 's/^([^ ]+) $(NAME).$(miniascape_NET_1_DOMAIN).*/\1/p' /usr/share/libvirt/networks/hosts.add)
 
 
 # variables for rpm spec:
 rpmbuilddate    = $(shell LANG=C date +"%a %b %d %Y")
-rpmspec_do_subst = @SED@ -e 's!__PKGNAME__!$(rpmbasename)!g' \
+rpmspec_do_subst = $(SED) -e 's!__PKGNAME__!$(rpmbasename)!g' \
 	-e 's!__NAME__!$(NAME)!g' -e 's!__VER__!$(rpmver)!g' \
 	-e 's!__ARCH__!$(ARCH)!g' -e 's!__DATE__!$(rpmbuilddate)!g' \
 	-e 's!__DISK_FMT__!$(DISK_FMT)!g' \
-	-e 's!__INITIAL_DISK_SUFFIX__!$(INITIAL_DISK_SUFFIX)!g' \
-	-e 's!__OTHER_DEPS__!$(GUEST_OTHER_DEPS)!g'
+	-e 's!__img_0_sfx__!$(img_0_sfx)!g' \
+	-e 's!__OTHER_DEPS__!$(miniascape_RPM_DEPS)!g'
 
 
 $(rpmdirs)::
@@ -138,11 +126,11 @@ build-srpm: $(rpmspec) $(rpmsrc)
 ## FIXME: dirty code
 # initialize guest and revert local changes
 # (replace delta image with initail delta image)
-initial_disk_images = $(addsuffix .$(INITIAL_DISK_SUFFIX),$(addprefix $(libvirt_imagedir)/,$(DISK_1_NAME) $(DISK_2_NAME) $(DISK_3_NAME)))
+initial_disk_images = $(addsuffix .$(img_0_sfx),$(addprefix $(libvirt_imagedir)/,$(DISK_1_NAME) $(DISK_2_NAME) $(DISK_3_NAME)))
 
 init: $(initial_disk_images)
 	for f in $^; do \
-		nf=`echo $$f | @SED@ -e "s/.$(INITIAL_DISK_SUFFIX)//"`; \
+		nf=`echo $$f | $(SED) -e "s/.$(img_0_sfx)//"`; \
 		cp -f $$f $$nf; done
 
 

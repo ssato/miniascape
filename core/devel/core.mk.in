@@ -2,63 +2,22 @@
 # Driver makefile for vmbuild.
 #
 
-# These must be defined...
-prefix	= @prefix@
-pkgdatadir = @datadir@/@PACKAGE@
-pkglibdir = $(pkgdatadir)/devel
-
-miniascape_PACKAGE = @PACKAGE@
-miniascape_QEMU_IMG = @QEMU_IMG@
-miniascape_VIRTINST = virt-install
+pkglibdir = @pkgdatadir@/devel
 
 
-## Guest specific configurations:
-# The followings are must items:
-#miniascape_NAME	=
-#miniascape_LOCATION	=
-#miniascape_EXTRA_ARGS	=
-#miniascape_OS_VARIANT	=
-#miniascape_DISK_1_NAME	=
-#miniascape_NETWORK_1	=
-#miniascape_MAC_1	=
-#
-# The followings are optional
-#miniascape_DISK_2_NAME	=
-#miniascape_DISK_3_NAME	=
-#miniascape_NETWORK_2	=
-#miniascape_NETWORK_3	=
-#miniascape_NETWORK_4	=
-#miniascape_MAC_2	=
-#miniascape_MAC_3	=
-#miniascape_MAC_4	=
+# Load global defaults
+include $(pkglibdir)/vars.mk
+
+
+# Load VM specific data
+ifeq ($(miniascape_CONFIG),)
+$(error You must specify miniascape_CONFIG)
+endif
+
 include $(miniascape_CONFIG)
 
 
-ifeq ($(miniascape_NAME),)
-$(error You must specify miniascape_NAME)
-endif
-ifeq ($(miniascape_LOCATION),)
-$(error You must specify miniascape_LOCATION)
-endif
-ifeq ($(miniascape_EXTRA_ARGS),)
-$(error You must specify miniascape_EXTRA_ARGS)
-endif
-ifeq ($(miniascape_OS_VARIANT),)
-$(error You must specify miniascape_OS_VARIANT)
-endif
-ifeq ($(miniascape_DISK_1_NAME),)
-$(error You must specify miniascape_DISK_1_NAME)
-endif
-ifeq ($(miniascape_NETWORK_1),)
-$(error You must specify miniascape_NETWORK_1)
-endif
-ifeq ($(miniascape_MAC_1),)
-$(error You must specify miniascape_MAC_1)
-endif
-
-
-# Load makefiles:
-
+# Load library makefiles:
 include $(pkglibdir)/disk.mk
 include $(pkglibdir)/network.mk
 include $(pkglibdir)/virtinst.mk

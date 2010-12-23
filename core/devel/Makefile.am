@@ -1,10 +1,13 @@
 devdatadir	= $(pkgdatadir)/devel
 
 dist_sbin_SCRIPTS = vmbuild
-dist_devdata_DATA = core.mk disk.mk network.mk virtinst.mk rpm.mk vm.spec.in
+dist_devdata_DATA = core.mk vars.mk disk.mk network.mk virtinst.mk rpm.mk vm.spec.in
 
 CLEANFILES = $(dist_sbin_SCRIPTS)
-EXTRA_DIST = vmbuild.in
+EXTRA_DIST = core.mk.in vmbuild.in
+
+core.mk: core.mk.in
+	$(SED) -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' $(srcdir)/$< > $@.t && mv $@.t $@
 
 vmbuild: vmbuild.in
 	$(SED) -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \

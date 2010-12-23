@@ -1,6 +1,23 @@
+#
+# lib. makefiles - virt-install related 
+#
+
+ifeq ($(miniascape_NAME),)
+$(error You must specify miniascape_NAME)
+endif
+ifeq ($(miniascape_LOCATION),)
+$(error You must specify miniascape_LOCATION)
+endif
+ifeq ($(miniascape_EXTRA_ARGS),)
+$(error You must specify miniascape_EXTRA_ARGS)
+endif
+
+
 prebuild.stamp: $(disk_images)
+	touch $@
 
 build.stamp: build-vm
+	touch $@
 
 build-vm: prebuild.stamp
 	$(miniascape_VIRTINST) --connect=$(miniascape_CONNECT) --name=$(miniascape_NAME) \
@@ -11,8 +28,6 @@ build-vm: prebuild.stamp
 		$(disk_opts) \
 		$(network_opts) \
 		--extra-args=$(miniascape_EXTRA_ARGS) \
-		$(miniascape_INJECT_INITRD) \
-		$(other_opts) \
 		$(miniascape_OTHER_OPTIONS) \
 		$(NULL)
 

@@ -96,7 +96,7 @@ AC_CONFIG_FILES([
 Makefile
 miniascape.spec
 devel/Makefile
-devel/core.mk
+devel/vars.mk
 devel/rpm.mk
 devel/vm.spec.in
 services/Makefile
