@@ -1,9 +1,9 @@
 ## Installation trees: http://self/contents/.../
 
 ## Configurations for auto-installation
-Alias /autoinst /usr/share/@PACKAGE@/autoinst
+Alias /autoinst @pkgdatadir@/autoinst
 
-<Directory /usr/share/@PACKAGE@/autoinst>
+<Directory @pkgdatadir@/autoinst>
     Order deny,allow
     Deny from all
     Allow from @NET_1_NETWORK@

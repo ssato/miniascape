@@ -6,7 +6,7 @@ server {
     server_name @NET_1_NETWORK@.1;
 
     location /autoinst  {
-        root    /usr/share/@PACKAGE@;
+        root    @pkgdatadir@;
         allow   @NET_1_NETWORK@.0/24;
         allow   127.0.0.1;
         deny    all;

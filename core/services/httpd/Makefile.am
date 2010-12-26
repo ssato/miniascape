@@ -1,4 +1,13 @@
 if !USE_NGINX
-httpdsysconfdir = @sysconfdir@/httpd/conf.d
-dist_httpdsysconf_DATA = @PACKAGE@.conf
+wwwconf	= $(PACKAGE).conf
+wwwconfdir	= $(sysconfdir)/httpd/conf.d
+dist_wwwconf_DATA	= $(wwwconf)
+
+CLEANFILES	= $(wwwconf)
+EXTRA_DIST	= $(wwwconf).in
+
+$(wwwconf): $(wwwconf).in
+	$(AM_V_GEN)$(SED) -e 's,[@]pkgdatadir[@],$(datadir)/$(PACKAGE),g' \
+		-e 's,[@]NET_1_NETWORK[@],$(NET_1_NETWORK),g' $(srcdir)/$< > $@.t && mv $@.t $@
+
 endif
