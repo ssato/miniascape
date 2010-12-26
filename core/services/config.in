@@ -6,5 +6,8 @@ NETWORKS="net-1 net-2 net-3"
 NET_REGISTER=/usr/libexec/@PACKAGE@/virt-net-register
 NET_UNREGISTER=/usr/libexec/@PACKAGE@/virt-net-unregister
 
+NET_1_NETWORK=@NET_1_NETWORK@
+
+ISCSI_TARGET_IQN=@ISCSI_TARGET_IQN@
 
 # vim: set ft=shell:

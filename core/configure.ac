@@ -1,4 +1,4 @@
-AC_INIT([miniascape],[0.1.20101215])
+AC_INIT([miniascape],[0.1.20101227])
 dnl AM_INIT_AUTOMAKE([1.11 silent-rules foreign])
 AM_INIT_AUTOMAKE([silent-rules foreign])
 
@@ -116,12 +116,6 @@ services/nginx/miniascape.conf
 services/nfs/Makefile
 services/nfs/exports
 tools/Makefile
-tools/virt-net-register
-tools/virt-net-unregister
-tools/create-iscsi-disk-image
-tools/net-install-all.sh
-tools/net-update-all.sh
-tools/net-uninstall-all.sh
 ])
 
 AC_OUTPUT

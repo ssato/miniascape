@@ -6,7 +6,7 @@
 netxml=$1
 
 # TODO: Generate network uuid and add it in netxml.
-#netuuid=$(@UUIDGEN@)
+#netuuid=`uuidgen`
 # <uuid>07387532-1d40-31cd-09a6-4a11e443e8ca</uuid>
 
 if test -z "$netxml"; then
@@ -43,8 +43,8 @@ if test -z "$net_exists"; then  # fresh installation.
 
 else  # update
   echo "Network $netname already exists. Redefine it by yourself later:"
-  echo "   ex. /usr/libexec/@PACKAGE@/virt-net-unregister $netname && \ "
-  echo "       /usr/libexec/@PACKAGE@/virt-net-register $netxml"
+  echo "   ex. @pkglibexecdir@/virt-net-unregister $netname && \ "
+  echo "       @pkglibexecdir@/virt-net-register $netxml"
   echo " "
 
   # Just install the network xml and make it autostarted.

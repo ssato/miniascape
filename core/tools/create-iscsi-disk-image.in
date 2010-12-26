@@ -4,6 +4,16 @@ set -e
 parted=/sbin/parted
 
 
+config=@pkgsysconfdir@/config
+
+if test -f ${config}; then
+    source ${config}
+else
+    echo "[ERROR] $config is not found. Check you installation."
+    exit 1
+fi
+
+
 if test $# -lt 1; then
   echo "Usage: $0 <storage_image_path> [<storage_size> <iscsi_target_name>]"
   exit 1
@@ -38,9 +48,9 @@ if test -f $tgtconf; then
     exit 1
 fi
 cat << EOF > $tgtconf
-<target @ISCSI_TARGET_IQN@:$iscsi_target_name>
+<target ${ISCSI_TARGET_IQN:?}:$iscsi_target_name>
     backing-store $DISK_IMAGE_PATH      # LUN1
-    initiator-address @NET_1_NETWORK@.0/24
+    initiator-address ${NET_1_NETWORK:?}.0/24
 </target>
 EOF
 #service tgtd reload
@@ -55,7 +65,6 @@ EOF
 # if test $ret -eq 1; then   # new
 #     cat << EOF >> /etc/iscsi/targets
 #
-# # @CLUSTER_2NODES_SHARED_1@
 # extent1 $DISK_IMAGE_PATH 0 ${DISK_IMAGE_SIZE}MB
 # target1 rw      extent1 192.168.51.0/24
 #

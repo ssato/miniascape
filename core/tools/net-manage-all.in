@@ -1,0 +1,50 @@
+#! /bin/bash
+#
+# install/uninstall/update all of libvirt networks needed.
+#
+set -e
+
+config=@pkgsysconfdir@/config
+
+if test -f ${config}; then
+    source ${config}
+else
+    echo "[ERROR] $config is not found. Check you installation."
+    exit 1
+fi
+
+
+install_all () {
+    for net in ${NETWORKS:?}; do
+        netxml=${NETXMLDIR:?}/$net.xml
+        ${NET_REGISTER:?} ${netxml}
+    done
+}
+
+
+uninstall_all () {
+    for net in ${NETWORKS:?}; do ${NET_UNREGISTER:?} ${net}; done
+}
+
+
+update_all () {
+    uninstall_all
+    install_all
+}
+
+
+if test "x$1" = "xinstall"; then
+    install_all
+elif test "x$1" = "xuninstall"; then
+    uninstall_all
+elif test "x$1" = "xupdate"; then
+    update_all
+else
+    cat << EOF
+Usage: $0 CMD"
+  where CMD = install | uninstall | update
+
+EOF
+    exit 1
+fi
+

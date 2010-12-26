@@ -40,8 +40,8 @@ Create [S]RPM
 What should be done after installation and updates
 =========================================================
 
-* post installation: run /usr/libexec/miniascape/net-install-all.sh
-* post update: run /usr/libexec/miniascape/net-update-all.sh
+* post installation: run '/usr/libexec/miniascape/net-manage-all install'
+* post update: run '/usr/libexec/miniascape/net-manage-all update'
 
 And optionally, add host entries in /usr/share/libvirt/networks/hosts.add
 into /etc/hosts if you want. (I recommend this.)
@@ -52,8 +52,8 @@ What should be done before uninstallation
 
 * pre uninstallation: run uninstall.sh
 
-or if you forgot to run /usr/libexec/miniascape/net-uninstall-all.sh before
-uninstallation, do the followings after that.
+or if you forgot to run '/usr/libexec/miniascape/net-manage-all uninstall'
+before uninstallation, do the followings after that.
 
 ::
 
