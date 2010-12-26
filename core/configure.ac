@@ -101,7 +101,6 @@ devel/rpm.mk
 devel/vm.spec.in
 services/Makefile
 services/config
-services/httpd/Makefile
 services/iptables/Makefile
 services/iptables/iptables.rules
 services/iscsi/Makefile
@@ -110,7 +109,7 @@ services/networks/Makefile
 services/networks/net-1.xml
 services/networks/net-2.xml
 services/networks/net-3.xml
-services/nginx/Makefile
+services/www/Makefile
 services/nfs/Makefile
 services/nfs/exports
 tools/Makefile
