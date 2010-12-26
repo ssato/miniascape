@@ -1,7 +1,7 @@
 <network>
   <name>net-1</name>
   <forward mode='nat'/>
-  <domain name="net-1.local"/>
+  <domain name="@NET_1_DOMAIN@"/>
   <bridge name='@NET_1_BRIDGE@' stp='on' delay='0'/>
   <ip address='@NET_1_NETWORK@.1' netmask='255.255.255.0'>
     <dhcp>

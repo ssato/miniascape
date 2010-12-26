@@ -3,7 +3,7 @@
   <!-- private network:
   <forward mode='nat'/>
   -->
-  <domain name='net-2.local'/>
+  <domain name='@NET_2_DOMAIN@'/>
   <bridge name='@NET_2_BRIDGE@'/>
   <ip address='@NET_2_NETWORK@.1' netmask='255.255.255.0'>
     <dhcp>

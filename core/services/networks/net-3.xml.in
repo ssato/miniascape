@@ -1,6 +1,6 @@
 <network>
   <name>net-3</name>
-  <domain name='net-3.local'/>
+  <domain name='@NET_3_DOMAIN@'/>
   <bridge name='@NET_3_BRIDGE@'/>
   <ip address='@NET_3_NETWORK@.1' netmask='255.255.255.0'>
     <dhcp>
