@@ -15,7 +15,7 @@ endif
 dist_wwwconf_DATA	= $(wwwconf)
 
 CLEANFILES	= $(wwwconf)
-EXTRA_DIST	= $(wwwconf).in
+EXTRA_DIST	= apache_miniascape.conf.in nginx_miniascape.conf.in
 
 $(wwwconf): $(wwwconf).in
 	$(AM_V_GEN)$(SED) -e 's,[@]pkgdatadir[@],$(datadir)/$(PACKAGE),g' \

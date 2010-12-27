@@ -82,14 +82,15 @@ AC_SUBST([INITIAL_DISK_SUFFIX],[$initial_disk_suffix])
 
 
 dnl which to use for web service?
+AS_IF([test -f /etc/fedora-release],[nginx=true],[nginx=false])
 AC_ARG_ENABLE([nginx],
      [  --enable-nginx  Use nginx instead of apache httpd],
      [case "${enableval}" in
        yes) nginx=true ;;
        no)  nginx=false ;;
        *) AC_MSG_ERROR([bad value ${enableval} for --enable-nginx]) ;;
-     esac],[nginx=false])
-AM_CONDITIONAL([USE_NGINX], [test x$nginx = xtrue])
+     esac],[nginx=$nginx])
+AM_CONDITIONAL([USE_NGINX],[test x$nginx = xtrue])
 
 
 AC_CONFIG_FILES([
