@@ -74,12 +74,6 @@
       <host mac="@HWADDR_PREFIX@:02:00:87" name="rhel-5-mrg-7.net-2.local" ip="@NET_2_NETWORK@.87" />
       <host mac="@HWADDR_PREFIX@:02:00:88" name="rhel-5-mrg-8.net-2.local" ip="@NET_2_NETWORK@.88" />
       <host mac="@HWADDR_PREFIX@:02:00:89" name="rhel-5-mrg-9.net-2.local" ip="@NET_2_NETWORK@.89" />
-      <host mac="@HWADDR_PREFIX@:02:00:90" name="rhel-5-generic-0.net-2.local" ip="@NET_2_NETWORK@.90" />
-      <host mac="@HWADDR_PREFIX@:02:00:91" name="rhel-5-generic-1.net-2.local" ip="@NET_2_NETWORK@.91" />
-      <host mac="@HWADDR_PREFIX@:02:00:92" name="rhel-5-generic-2.net-2.local" ip="@NET_2_NETWORK@.92" />
-      <host mac="@HWADDR_PREFIX@:02:00:93" name="rhel-5-generic-3.net-2.local" ip="@NET_2_NETWORK@.93" />
-      <host mac="@HWADDR_PREFIX@:02:00:94" name="rhel-5-generic-4.net-2.local" ip="@NET_2_NETWORK@.94" />
-      <host mac="@HWADDR_PREFIX@:02:00:95" name="rhel-5-generic-5.net-2.local" ip="@NET_2_NETWORK@.95" />
     </dhcp>
   </ip>
 </network>

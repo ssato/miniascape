@@ -1,7 +1,7 @@
 # Global configurations for @PACKAGE@
 
 NETXMLDIR=/usr/share/libvirt/networks
-NETWORKS="net-1 net-2 net-3"
+NETWORKS="net-1 net-2"
 
 NET_REGISTER=/usr/libexec/@PACKAGE@/virt-net-register
 NET_UNREGISTER=/usr/libexec/@PACKAGE@/virt-net-unregister
