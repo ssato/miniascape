@@ -20,7 +20,7 @@ bootloader --location=mbr
 clearpart --all --initlabel
 autopart
 key --skip
-services --disable atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd,rhnsd
+services --disable atd,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd,rhnsd
 reboot
 
 

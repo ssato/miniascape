@@ -20,7 +20,7 @@ bootloader --location=mbr
 clearpart --all --initlabel
 autopart
 key --skip
-services --disabled atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd,rhnsd --enabled network
+services --disabled atd,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd,rhnsd --enabled network,avahi-daemon
 reboot
 user --name=tester --password=redhat
 
@@ -29,12 +29,6 @@ user --name=tester --password=redhat
 
 
 %pre
-# Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
-cat << EOF > /sbin/lspci
-#! /bin/sh
-exit 0
-EOF
-chmod +x /sbin/lspci
 
 
 %packages

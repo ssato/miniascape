@@ -22,18 +22,11 @@ install
 zerombr
 autopart
 key --skip
-services --disable atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd
+services --disable atd,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd
 reboot
 
 
 %pre
-# Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
-cat << EOF > /sbin/lspci
-#! /bin/sh
-exit 0
-EOF
-chmod +x /sbin/lspci
-
 
 
 %packages

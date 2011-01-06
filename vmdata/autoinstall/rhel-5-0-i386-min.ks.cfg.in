@@ -22,7 +22,7 @@ bootloader --location=mbr
 clearpart --all --initlabel
 autopart
 key --skip
-services --disable atd,avahi-daemon,cups,gpm,ip6tables,lm_sensors,lvm2-monitor,mcstrans,mdmonitor,netfs,nfslock,ntpd,portmap,rawdevices,restorecond,sendmail,smartd,rhnsd
+services --disable atd,cups,gpm,ip6tables,lm_sensors,lvm2-monitor,mcstrans,mdmonitor,netfs,nfslock,ntpd,portmap,rawdevices,restorecond,sendmail,smartd,rhnsd
 reboot
 
 # repos
