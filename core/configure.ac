@@ -1,4 +1,4 @@
-AC_INIT([miniascape],[0.1.20101227])
+AC_INIT([miniascape],[0.1.20110107])
 dnl AM_INIT_AUTOMAKE([1.11 silent-rules foreign])
 AM_INIT_AUTOMAKE([silent-rules foreign])
 
@@ -23,13 +23,10 @@ AC_SUBST([HWADDR_PREFIX],[$hwaddr_prefix])
 dnl defaults:
 net_1_bridge=virbr1
 net_2_bridge=virbr2
-net_3_bridge=virbr3
 net_1_network=192.168.151
 net_2_network=192.168.152
-net_3_network=192.168.153
 net_1_domain=net-1.local
 net_2_domain=net-2.local
-net_3_domain=net-3.local
 
 AC_ARG_WITH([bridge1],
   [AS_HELP_STRING([--with-bridge1],[Bridge name for network 1. default=$net_1_bridge])],
@@ -57,18 +54,6 @@ AC_SUBST([NET_2_BRIDGE],[$net_2_bridge])
 AC_SUBST([NET_2_NETWORK],[$net_2_network])
 AC_SUBST([NET_2_DOMAIN],[$net_2_domain])
 
-AC_ARG_WITH([bridge3],
-  [AS_HELP_STRING([--with-bridge3],[Bridge name for network 3. default=$net_3_bridge])],
-    [net_3_bridge=$withval])
-AC_ARG_WITH([net3],
-  [AS_HELP_STRING([--with-net3],[Network address prefix for network 3. default=$net_3_network])],
-    [net_3_network=$withval])
-AC_ARG_WITH([domain3],
-  [AS_HELP_STRING([--with-domain],[Domain name for network 3. default=$net_3_domain])],
-    [net_3_domain=$withval])
-AC_SUBST([NET_3_BRIDGE],[$net_3_bridge])
-AC_SUBST([NET_3_NETWORK],[$net_3_network])
-AC_SUBST([NET_3_DOMAIN],[$net_3_domain])
 
 dnl iscsi
 iscsi_target_iqn="iqn.2009-08.local.net-1.master"
@@ -109,7 +94,6 @@ services/iscsi/tid-xx-sample.conf
 services/networks/Makefile
 services/networks/net-1.xml
 services/networks/net-2.xml
-services/networks/net-3.xml
 services/www/Makefile
 services/nfs/Makefile
 services/nfs/exports
