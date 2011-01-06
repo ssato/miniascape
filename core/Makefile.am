@@ -1,4 +1,4 @@
-EXTRA_DIST = @PACKAGE@.spec rpm.mk
+EXTRA_DIST = $(PACKAGE).spec rpm.mk
 
 SUBDIRS  = devel services tools
 

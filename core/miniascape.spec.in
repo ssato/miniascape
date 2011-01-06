@@ -17,7 +17,7 @@ Summary:        Packaging toolkit for virtualization guests and environment base
 Group:          Applications/System
 License:        GPLv3+
 URL:            http://github.com/ssato/miniascape
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.xz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  libvirt
