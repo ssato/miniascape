@@ -10,6 +10,7 @@ set -e
 # globals:
 drivermk=@pkgdatadir@/devel/core.mk
 confdir=@pkgsysconfdir@/profiles
+vmconfdir=${confdir:?}/vm.d
 
 verbose=1     # not implemented
 dryrun=       # Make dryrun mode: "-n" (dryrun)
@@ -61,7 +62,7 @@ if test ! -f $siteconf; then
 fi
 
 # find vm's config path from given name
-if test -n "$name"; then conf=$confdir/$name.cfg; fi
+if test -n "$name"; then conf=$vmconfdir/$name.cfg; fi
 
 # assert $conf == ""
 if test -z "$conf"; then
