@@ -1,6 +1,5 @@
-AC_INIT([miniascape-vmdata],[0.1.20101221])
-dnl AM_INIT_AUTOMAKE([1.11 silent-rules foreign])
-AM_INIT_AUTOMAKE([silent-rules foreign])
+AC_INIT([miniascape-vmdata],[0.1.20110107])
+AM_INIT_AUTOMAKE([dist-xz foreign silent-rules])
 
 dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
@@ -60,6 +59,7 @@ autoinstall/rhel-3-0-i386-default.ks.cfg
 autoinstall/rhel-3-2-i386-min.ks.cfg
 autoinstall/rhel-3-2-i386-default.ks.cfg
 profiles/Makefile
+profiles/vm.d/Makefile
 ])
 
 AC_OUTPUT

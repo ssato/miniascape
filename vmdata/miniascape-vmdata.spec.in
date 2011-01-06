@@ -7,7 +7,7 @@ Summary:        HW and SW profile data for pacakged vms
 Group:          Development/System
 License:        GPLv3+
 URL:            http://github.com/ssato/miniascape
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.xz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
@@ -42,6 +42,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  7 2011 Satoru SATOH <ssato@redhat.com> - 0.1.20110107-1
+- Restructured vm's profiles
+- Compress source archive with using tar+xz
+
 * Tue Oct 19 2010 Satoru SATOH <ssato@redhat.com> - 0.1.99-1
 - Migrated site.cfg
 - Made this source publicly accessible
