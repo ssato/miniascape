@@ -3,7 +3,7 @@ autoinstdatadir	= @datadir@/@BASE_PACKAGE@/autoinst
 dist_autoinstdata_DATA = \
 fedora-13-i386-min.ks.cfg \
 fedora-14-i386-min.ks.cfg \
-debian-stable-preseed.cfg \
+debian-lenny-preseed.cfg \
 ubuntu-10.04-preseed.cfg \
 rhel-6-0-i386-min.ks.cfg \
 rhel-5-cluster.ks.cfg \

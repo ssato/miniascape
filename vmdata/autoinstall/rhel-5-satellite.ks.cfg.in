@@ -14,7 +14,7 @@ network --device=eth0 --bootproto=dhcp
 network --device=eth1 --bootproto=dhcp --onboot=no --nodns
 network --device=eth2 --bootproto=dhcp --nodns
 network --device=eth3 --bootproto=dhcp --onboot=no --nodns
-rootpw --iscrypted $1$u3qutDHb$7APw4U/78XZW44uPsoNa41
+rootpw redhat
 selinux --permissive
 skipx
 timezone  Asia/Tokyo
@@ -235,4 +235,9 @@ ssl-set-email = foo@example.com
 satellite-cert-file = /root/satellite.cert
 EOA
 
+cat << EOF >> /etc/inittab
+
+# serial console:
+co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
+EOF
 

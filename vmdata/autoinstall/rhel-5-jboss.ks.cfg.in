@@ -33,6 +33,7 @@ reboot
 %packages
 # Automatic package selection.
 @ Base
+avahi
 curl
 elinks
 #kernel-devel

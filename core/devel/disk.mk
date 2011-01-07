@@ -2,20 +2,21 @@
 # lib. makefiles - disk (storage) stuff
 #
 
-miniascape_DISK_TOPDIR	?= /var/lib/libvirt/images
-DISK_DIR	= $(miniascape_DISK_TOPDIR)/$(miniascape_NAME)
-
 ifeq ($(miniascape_DISK_1_NAME),)
 $(error You must specify miniascape_DISK_1_NAME, that is, single disk is needed for a VM at least.)
 endif
 
-miniascape_DISK_1_SIZE     ?= $(miniascape_DISK_SIZE)
-miniascape_DISK_1_BUS      ?= $(miniascape_DISK_BUS)
+miniascape_DISK_SUBDIR	?= $(miniascape_NAME)
+
+miniascape_DISK_1_SIZE	?= $(miniascape_DISK_SIZE)
+miniascape_DISK_1_BUS	?= $(miniascape_DISK_BUS)
 miniascape_DISK_1_PERMS	?= $(miniascape_DISK_PERMS)
-miniascape_DISK_1_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
 miniascape_DISK_1_FMT	?= $(miniascape_DISK_IMG_FMT)
+miniascape_DISK_1_NAME	?= disk-1.$(miniascape_DISK_IMG_FMT)
+miniascape_DISK_1_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
 miniascape_DISK_1_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
 
+DISK_DIR	= $(miniascape_DISK_TOPDIR)/$(miniascape_DISK_SUBDIR)
 disk_images	= $(DISK_DIR)/$(miniascape_DISK_1_NAME)
 
 #
@@ -45,6 +46,7 @@ miniascape_DISK_2_PERMS	?= $(miniascape_DISK_PERMS)
 miniascape_DISK_2_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
 miniascape_DISK_2_FMT	?= $(miniascape_DISK_IMG_FMT)
 miniascape_DISK_2_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_2_NAME     ?= disk-2.$(miniascape_DISK_IMG_FMT)
 
 disk_2_perms_opt	= $(shell test "x$(miniascape_DISK_2_PERMS)" = "xrw" && echo "" || echo ,perms=$(miniascape_DISK_2_PERMS))
 
@@ -63,6 +65,7 @@ miniascape_DISK_3_PERMS	?= $(miniascape_DISK_PERMS)
 miniascape_DISK_3_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
 miniascape_DISK_3_FMT	?= $(miniascape_DISK_IMG_FMT)
 miniascape_DISK_3_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_3_NAME     ?= disk-3.$(miniascape_DISK_IMG_FMT)
 
 disk_3_perms_opt	= $(shell test "x$(miniascape_DISK_3_PERMS)" = "xrw" && echo "" || echo ,perms=$(miniascape_DISK_3_PERMS))
 
@@ -81,6 +84,7 @@ miniascape_DISK_4_PERMS	?= $(miniascape_DISK_PERMS)
 miniascape_DISK_4_CACHE_MODE ?= $(miniascape_DISK_CACHE_MODE)
 miniascape_DISK_4_FMT	?= $(miniascape_DISK_IMG_FMT)
 miniascape_DISK_4_QEMU_IMG_OPTS	?= $(miniascape_DISK_QEMU_IMG_OPTS_DEFAULT)
+miniascape_DISK_4_NAME     ?= disk-4.$(miniascape_DISK_IMG_FMT)
 
 disk_4_perms_opt	= $(shell test "x$(miniascape_DISK_4_PERMS)" = "xrw" && echo "" || echo ,perms=$(miniascape_DISK_4_PERMS))
 

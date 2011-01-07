@@ -4,6 +4,7 @@ profiledir = $(sysconfdir)/$(BASE_PACKAGE)/profiles
 
 dist_profile_DATA = \
 debian-lenny-i386.cfg \
+fedora-13-i386.cfg \
 fedora-14-i386.cfg \
 rhel-3-0-i386.cfg \
 rhel-3-1-i386.cfg \

@@ -2,9 +2,11 @@ profiledir = $(sysconfdir)/$(BASE_PACKAGE)/profiles/vm.d
 
 dist_profile_DATA = \
 debian-lenny-vm-0.cfg \
+fedora-13-vm-0.cfg \
 fedora-14-vm-0.cfg \
 jboss-0.cfg \
 jon-0.cfg \
+jon-1.cfg \
 rhel-3-0-vm-0.cfg \
 rhel-3-1-vm-0.cfg \
 rhel-3-2-vm-0.cfg \
@@ -27,6 +29,8 @@ rhel-4-8-vm-0.cfg \
 rhel-5-4-vm-0.cfg \
 rhel-5-5-vm-0.cfg \
 rhel-5-cluster-1.cfg \
+rhel-5-cluster-2.cfg \
+rhel-5-cluster-3.cfg \
 rhel-5-luci-0.cfg \
 rhel-5-mrg-0.cfg \
 rhel-5-satellite-0.cfg \

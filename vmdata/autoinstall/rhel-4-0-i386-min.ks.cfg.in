@@ -11,7 +11,7 @@ network --device=eth0 --bootproto=dhcp
 network --device=eth1 --bootproto=dhcp --nodns
 network --device=eth2 --bootproto=dhcp --nodns
 network --device=eth3 --bootproto=dhcp --nodns
-rootpw --iscrypted $1$u3qutDHb$7APw4U/78XZW44uPsoNa41
+rootpw redhat
 firewall --enabled --port=22:tcp
 selinux --enforcing
 authconfig --enableshadow --enablemd5
@@ -118,4 +118,10 @@ rpm --import /usr/share/rhn/RPM-GPG-KEY
 sed --in-place -re 's/^(up2date default)/# \1/g' -e '$a\
 dir rhel-kstree @AUTOINST_TREE_URL_BASE@/RHEL/4/0/AS/i386/' \
 /etc/sysconfig/rhn/sources
+
+cat << EOF >> /etc/inittab
+
+# serial console:
+co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
+EOF
 

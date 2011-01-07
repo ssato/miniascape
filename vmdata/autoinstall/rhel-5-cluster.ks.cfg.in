@@ -43,6 +43,7 @@ reboot
 %packages
 # Automatic package selection.
 @ Base
+avahi
 curl
 elinks
 lv
@@ -144,3 +145,10 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 EOF
+
+cat << EOF >> /etc/inittab
+
+# serial console:
+co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
+EOF
+
