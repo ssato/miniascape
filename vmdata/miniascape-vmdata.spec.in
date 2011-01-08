@@ -3,7 +3,7 @@
 Name:           @PACKAGE@
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        HW and SW profile data for pacakged vms
+Summary:        HW and SW profile data for packaged VMs
 Group:          Development/System
 License:        GPLv3+
 URL:            http://github.com/ssato/miniascape
@@ -42,6 +42,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  8 2011 Satoru SATOH <ssato@redhat.com> - 0.1.20110108-1
+- Fixed typos in this spec file
+- Removed net-3
+
 * Fri Jan  7 2011 Satoru SATOH <ssato@redhat.com> - 0.1.20110107-1
 - Restructured vm's profiles
 - Compress source archive with using tar+xz

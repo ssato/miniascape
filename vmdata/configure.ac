@@ -1,4 +1,4 @@
-AC_INIT([miniascape-vmdata],[0.1.20110107])
+AC_INIT([miniascape-vmdata],[0.1.20110108])
 AM_INIT_AUTOMAKE([dist-xz foreign silent-rules])
 
 dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
@@ -15,20 +15,16 @@ dnl if these are customized in the core 'miniascape' package.
 dnl
 net_1_prefix=192.168.151
 net_2_prefix=192.168.152
-net_3_prefix=192.168.153
 net_1_domain=net-1.local
 net_2_domain=net-2.local
-net_3_domain=net-3.local
 net_gateway=$net_1_prefix.1
 install_server="$net_gateway"
 hwaddr_prefix=54:52:00
 
 AC_SUBST([NET_1_PREFIX],[$net_1_prefix])
 AC_SUBST([NET_2_PREFIX],[$net_2_prefix])
-AC_SUBST([NET_3_PREFIX],[$net_3_prefix])
 AC_SUBST([NET_1_DOMAIN],[$net_1_domain])
 AC_SUBST([NET_2_DOMAIN],[$net_2_domain])
-AC_SUBST([NET_3_DOMAIN],[$net_3_domain])
 
 AC_SUBST([BASE_PACKAGE],[miniascape])
 
