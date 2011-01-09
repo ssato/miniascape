@@ -21,7 +21,7 @@ guest_xml_do_subst = $(SED) -e '/uuid/d'
 
 
 libvirt_imagedir = $(miniascape_DISK_TOPDIR)/$(miniascape_NAME)
-img_0_sfx	= $(miniascape_INITIAL_DISK_SUFFIX)
+img_0_sfx	= initial
 
 
 # extract ip addr:

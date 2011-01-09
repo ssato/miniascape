@@ -62,9 +62,6 @@ AC_ARG_WITH([iscsi-iqn],
     [iscsi_target_iqn=$withval])
 AC_SUBST([ISCSI_TARGET_IQN],[$iscsi_target_iqn])
 
-initial_disk_suffix="initial"
-AC_SUBST([INITIAL_DISK_SUFFIX],[$initial_disk_suffix])
-
 
 dnl which to use for web service?
 AS_IF([test -f /etc/fedora-release],[nginx=true],[nginx=false])

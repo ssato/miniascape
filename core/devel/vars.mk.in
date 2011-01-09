@@ -73,9 +73,6 @@ miniascape_RPM_VERSION	= 0.1.99
 # placeholder to add other rpm dependencies
 miniascape_RPM_DEPS	=
 
-# initial disk is an image backed up from the initial delta image
-miniascape_INITIAL_DISK_SUFFIX	= @INITIAL_DISK_SUFFIX@
-
 miniascape_VM_XML_DIR	= @sysconfdir@/libvirt/qemu
 
 # vim: set ft=make:
