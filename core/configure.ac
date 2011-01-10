@@ -54,6 +54,9 @@ AC_SUBST([NET_2_BRIDGE],[$net_2_bridge])
 AC_SUBST([NET_2_NETWORK],[$net_2_network])
 AC_SUBST([NET_2_DOMAIN],[$net_2_domain])
 
+dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
+AC_SUBST([HWADDR_PREFIX],[54:52:00])
+
 
 dnl iscsi
 iscsi_target_iqn="iqn.2009-08.local.net-1.master"
@@ -95,6 +98,25 @@ services/www/Makefile
 services/nfs/Makefile
 services/nfs/exports
 tools/Makefile
+vm/Makefile
+vm/autoinstall/Makefile
+vm/autoinstall/fedora-13-i386-min.ks.cfg
+vm/autoinstall/fedora-14-i386-min.ks.cfg
+vm/autoinstall/rhel-6-0-i386-min.ks.cfg
+vm/autoinstall/rhel-5-cluster.ks.cfg
+vm/autoinstall/rhel-5-satellite.ks.cfg
+vm/autoinstall/rhel-5-mrg.ks.cfg
+vm/autoinstall/rhel-5-jboss.ks.cfg
+vm/autoinstall/rhel-5-luci.ks.cfg
+vm/autoinstall/rhel-5-0-i386-min.ks.cfg
+vm/autoinstall/rhel-4-0-i386-min.ks.cfg
+vm/autoinstall/rhel-4-0-i386-default.ks.cfg
+vm/autoinstall/rhel-3-0-i386-min.ks.cfg
+vm/autoinstall/rhel-3-0-i386-default.ks.cfg
+vm/autoinstall/rhel-3-2-i386-min.ks.cfg
+vm/autoinstall/rhel-3-2-i386-default.ks.cfg
+vm/profiles/Makefile
+vm/profiles/vm.d/Makefile
 ])
 
 AC_OUTPUT

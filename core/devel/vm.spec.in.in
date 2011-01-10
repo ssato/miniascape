@@ -141,7 +141,7 @@ fi
 
 %files  base -f base.files
 %defattr(-,root,root,-)
-%doc README ssh.config
+%doc README
 %config %{guest_xmlsavedir}/%{name_}.xml
 
 

@@ -74,10 +74,12 @@ exit 0
 %config(noreplace) %{_sysconfdir}/%{name}/*
 %config(noreplace) %{_sysconfdir}/%{httpd_name}/conf.d/*
 %config(noreplace) %{_sysconfdir}/tgt/conf.d/*
+%config(noreplace) %{_sysconfdir}/%{name}/profiles/*
 %{_sbindir}/*
 %{_libexecdir}/%{name}/*
 %{_datadir}/libvirt/networks/*
 %{_datadir}/%{name}/devel/*
+%{_datadir}/%{name}/autoinst/*.cfg
 
 
 %changelog

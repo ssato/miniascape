@@ -4,12 +4,12 @@
 # see also: virt-install(1)
 
 # Basic
-miniascape_PACKAGE = @PACKAGE@
+miniascape_SED	= @SED@
 miniascape_QEMU_IMG = @QEMU_IMG@
 miniascape_VIRTINST = virt-install
 
 miniascape_CONNECT	=	qemu:///system
-miniascape_SITECONF	=	/etc/@BASE_PACKAGE@/profiles/site.cfg
+miniascape_SITECONF	=	/etc/@PACKAGE@/profiles/site.cfg
 miniascape_MEMORY  =      256
 miniascape_ARCH    =      i686
 miniascape_VCPU    =      2
@@ -54,7 +54,7 @@ miniascape_NET_NETWORK_4       = network:net-2
 
 
 # autoinstall
-miniascape_AUTOINST_CFG_DIR	= /usr/share/@BASE_PACKAGE@/autoinst
+miniascape_AUTOINST_CFG_DIR	= /usr/share/@PACKAGE@/autoinst
 miniascape_AUTOINST_TREE_URL_BASE	= @AUTOINST_TREE_URL_BASE@
 miniascape_AUTOINST_CFG_URL_BASE	= @AUTOINST_CFG_URL_BASE@
 

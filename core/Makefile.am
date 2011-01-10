@@ -1,5 +1,5 @@
 EXTRA_DIST = $(PACKAGE).spec rpm.mk
 
-SUBDIRS  = devel services tools
+SUBDIRS  = devel services tools vm
 
 include $(abs_srcdir)/rpm.mk

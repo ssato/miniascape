@@ -2,37 +2,50 @@
 # RPM related stuff, included from core.mk
 #
 
+
+# Tools
+SED	= $(miniascape_SED)
+VIRSH	= $(miniascape_VIRSH)
+QEMU_IMG = $(miniascape_QEMU_IMG)
+
+
 rpmbasename = $(miniascape_RPM_BASENAME)
 rpmver	= $(miniascape_RPM_VERSION)
+name	= $(miniascape_NAME)
+
 
 rpmname = $(rpmbasename)-$(rpmver)
-rpmworkdir = $(shell pwd)/$(NAME)-rpmbuild
+rpmworkdir = $(shell pwd)/$(name)-rpmbuild
 rpmdirs	= $(addprefix $(rpmworkdir)/,RPMS/$(arch) RPMS/noarch SRPMS SPECS BUILD BUILDROOT SOURCES)
 rpmspec = $(rpmworkdir)/SPECS/$(rpmbasename).spec
 rpmsrc	= $(rpmworkdir)/SOURCES/$(rpmname).tar.xz
 
 rpmsrcdir = $(rpmworkdir)/SOURCES/$(rpmname)
 
-rpmsrc_extras	= $(rpmsrcdir)/README $(rpmsrcdir)/ssh.config
+rpmsrc_extras	= $(rpmsrcdir)/README
 
-guest_xml = $(miniascape_VM_XML_DIR)/$(miniascape_NAME).xml
+guest_xml = $(miniascape_VM_XML_DIR)/$(name).xml
 guest_xml_do_subst = $(SED) -e '/uuid/d'
 
 
 
-libvirt_imagedir = $(miniascape_DISK_TOPDIR)/$(miniascape_NAME)
+libvirt_imagedir = $(miniascape_DISK_TOPDIR)/$(name)
 img_0_sfx	= initial
 
 
 # extract ip addr:
-guest_ip_addr	= $(shell $(SED) -nre 's/^([^ ]+) $(NAME).$(miniascape_NET_1_DOMAIN).*/\1/p' /usr/share/libvirt/networks/hosts.add)
+guest_ip_addr	= $(shell $(SED) -nre 's/^([^ ]+) $(name).$(miniascape_NET_1_DOMAIN).*/\1/p' /usr/share/libvirt/networks/hosts.add)
+
+
+# create delta image
+create_img	= $(QEMU_IMG) create -f qcow2 -b $(notdir $<) $(notdir $@)
 
 
 # variables for rpm spec:
 rpmbuilddate    = $(shell LANG=C date +"%a %b %d %Y")
 rpmspec_do_subst = $(SED) -e 's!__PKGNAME__!$(rpmbasename)!g' \
-	-e 's!__NAME__!$(NAME)!g' -e 's!__VER__!$(rpmver)!g' \
-	-e 's!__ARCH__!$(ARCH)!g' -e 's!__DATE__!$(rpmbuilddate)!g' \
+	-e 's!__NAME__!$(miniascape_NAME)!g' -e 's!__VER__!$(rpmver)!g' \
+	-e 's!__ARCH__!$(miniascape_ARCH)!g' -e 's!__DATE__!$(rpmbuilddate)!g' \
 	-e 's!__DISK_FMT__!$(DISK_FMT)!g' \
 	-e 's!__img_0_sfx__!$(img_0_sfx)!g' \
 	-e 's!__OTHER_DEPS__!$(miniascape_RPM_DEPS)!g'
@@ -44,20 +57,14 @@ $(rpmdirs)::
 $(rpmsrcdir): $(rpmdirs)
 	mkdir -p $@
 
-$(rpmsrcdir)/$(NAME).xml: $(guest_xml) $(rpmsrcdir)
+$(rpmsrcdir)/$(name).xml: $(guest_xml) $(rpmsrcdir)
 	$(guest_xml_do_subst) < $< > $@
 
 $(rpmspec): $(pkglibdatadir)/vm.spec.in $(rpmsrcdir)
 	$(rpmspec_do_subst) < $< > $@
 
 $(rpmsrcdir)/README: $(rpmsrcdir)
-	echo "This is a packaged KVM/Qemu vm image of $(NAME)" > $@
-
-$(rpmsrcdir)/ssh.config: $(rpmsrcdir)
-	echo "Host $(NAME)" > $@
-	echo "  Hostname $(guest_ip_addr)" >> $@
-	echo "  User root" >> $@
-	echo " " >> $@
+	echo "This is a packaged KVM/Qemu vm image of $(name)" > $@
 
 
 # guest images:
@@ -85,7 +92,7 @@ $(rpmsrcdir)/$(guest_base_image_1_basename): $(DISK_DIR)/$(DISK_1_NAME)
 	cp $< $@
 
 $(rpmsrcdir)/$(DISK_1_NAME): $(rpmsrcdir)/$(guest_base_image_1_basename)
-	cd $(rpmsrcdir) && $(QEMU_IMG) create -f qcow2 -b $(notdir $<) $(notdir $@)
+	cd $(rpmsrcdir) && $(create_img)
 
 
 ifneq ($(DISK_2_NAME),)
@@ -93,18 +100,18 @@ $(rpmsrcdir)/$(guest_base_image_2_basename): $(DISK_DIR)/$(DISK_2_NAME)
 	cp $< $@
 
 $(rpmsrcdir)/$(DISK_2_NAME): $(rpmsrcdir)/$(guest_base_image_2_basename)
-	cd $(rpmsrcdir) && $(QEMU_IMG) create -f qcow2 -b $(notdir $<) $(notdir $@)
+	cd $(rpmsrcdir) && $(create_img)
 endif
 ifneq ($(DISK_3_NAME),)
 $(rpmsrcdir)/$(guest_base_image_3_basename): $(DISK_DIR)/$(DISK_3_NAME)
 	cp $< $@
 
 $(rpmsrcdir)/$(DISK_3_NAME): $(rpmsrcdir)/$(guest_base_image_3_basename)
-	cd $(rpmsrcdir) && $(QEMU_IMG) create -f qcow2 -b $(notdir $<) $(notdir $@)
+	cd $(rpmsrcdir) && $(create_img)
 endif
 
 
-$(rpmsrc): $(rpmsrcdir)/$(NAME).xml $(guest_images) $(rpmsrc_extras)
+$(rpmsrc): $(rpmsrcdir)/$(name).xml $(guest_images) $(rpmsrc_extras)
 	cd $(rpmworkdir)/SOURCES/ && tar --xz -cvf $(rpmname).tar.xz $(rpmname)
 
 
