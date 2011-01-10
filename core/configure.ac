@@ -59,7 +59,7 @@ AC_SUBST([HWADDR_PREFIX],[54:52:00])
 
 
 dnl iscsi
-iscsi_target_iqn="iqn.2009-08.local.net-1.master"
+iscsi_target_iqn="iqn.2009-08.local.master"
 AC_ARG_WITH([iscsi-iqn],
   [AS_HELP_STRING([--with-iscsi-iqn],[iSCSI target IQN ID. default=$iscsi_target_iqn])],
     [iscsi_target_iqn=$withval])
