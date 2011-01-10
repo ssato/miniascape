@@ -28,13 +28,23 @@ rhel-4-7-vm-0.cfg \
 rhel-4-8-vm-0.cfg \
 rhel-5-4-vm-0.cfg \
 rhel-5-5-vm-0.cfg \
+rhel-5-5-vm-1.cfg \
 rhel-5-cluster-1.cfg \
 rhel-5-cluster-2.cfg \
 rhel-5-cluster-3.cfg \
+rhel-5-cluster-4.cfg \
+rhel-5-cluster-5.cfg \
 rhel-5-luci-0.cfg \
 rhel-5-mrg-0.cfg \
+rhel-5-mrg-1.cfg \
+rhel-5-mrg-2.cfg \
+rhel-5-mrg-3.cfg \
+rhel-5-mrg-4.cfg \
+rhel-5-mrg-5.cfg \
 rhel-5-satellite-0.cfg \
+rhel-5-satellite-1.cfg \
 rhel-6-0-vm-0.cfg \
+rhel-6-0-vm-1.cfg \
 ubuntu-lucid-vm-0.cfg \
 $(NULL)
 
