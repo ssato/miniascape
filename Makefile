@@ -3,6 +3,8 @@ BRANCH	= -b sid
 
 WORKDIR	= ./m
 
+makerpm	= cd $< && autoreconf -vfi && ./configure && make && make rpm
+
 
 all:
 
@@ -10,18 +12,15 @@ all:
 $(WORKDIR):
 	git clone $(BRANCH) $(REPO) $(WORKDIR)
 
-build: $(WORKDIR) build-core build-datasrc-dvd build-vmdata
+build: $(WORKDIR) build-core build-datasrc-dvd
 
 build-core: $(WORKDIR)/core
-	cd $(WORKDIR)/core && autoreconf -vfi && ./configure --enable-nginx && make && make rpm
+	$(makerpm)
 
 build-datasrc-dvd: $(WORKDIR)/datasrc/dvd
-	cd $(WORKDIR)/datasrc/dvd && autoreconf -vfi && ./configure && make && make rpm
-
-build-vmdata:
-	cd $(WORKDIR)/vmdata && autoreconf -vfi && ./configure && make && make rpm
+	$(makerpm)
 
 gitclean: $(WORKDIR)
 	cd $(WORKDIR) && git clean -f -d
 
-.PHONY: build build-core build-datasrc-dvd build-vmdata gitclean
+.PHONY: build build-core build-datasrc-dvd gitclean
