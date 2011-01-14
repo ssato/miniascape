@@ -1,5 +1,5 @@
 # RHEL 5 cluster
-url --url=@AUTOINST_TREE_URL_BASE@/RHEL/5/5/Server/i386/
+url --url=@AUTOINST_TREE_URL_BASE@/RHEL/5/6/Server/i386/
 auth --useshadow --enablemd5
 bootloader --location=mbr
 clearpart --all --initlabel

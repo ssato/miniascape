@@ -1,4 +1,4 @@
-AC_INIT([miniascape],[0.1.20110107])
+AC_INIT([miniascape],[0.1.20110114])
 dnl AM_INIT_AUTOMAKE([1.11 silent-rules foreign])
 AM_INIT_AUTOMAKE([dist-xz silent-rules foreign])
 
