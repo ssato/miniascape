@@ -1,8 +1,8 @@
-AC_INIT([miniascape],[0.1.20110114])
-dnl AM_INIT_AUTOMAKE([1.11 silent-rules foreign])
-AM_INIT_AUTOMAKE([dist-xz silent-rules foreign])
+AC_INIT([miniascape],[0.1.20110117])
+AM_INIT_AUTOMAKE([dist-xz foreign])
 
 dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
+dnl It should better than using automake's silent-rules option to keep backward compatibility.
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AC_PROG_LN_S
