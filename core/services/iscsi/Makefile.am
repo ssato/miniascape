@@ -1,6 +1,5 @@
-tgtdconfdir = @sysconfdir@/tgt/conf.d
+tgtdconfdir = $(sysconfdir)/tgt/conf.d
 
-dist_tgtdconf_DATA = tid-xx-sample.conf
+nodist_tgtdconf_DATA = tid-xx-sample.conf
 
-DISTCLEANFILES = tid-xx-sample.conf
-EXTRA_DIST = README.tgtd
+EXTRA_DIST = README.tgtd tid-xx-sample.conf.in

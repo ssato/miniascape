@@ -1,7 +1,9 @@
 devdatadir	= $(pkgdatadir)/devel
+devdata2dir	= $(devdatadir)
 
-dist_sbin_SCRIPTS = vmbuild
-dist_devdata_DATA = core.mk vars.mk disk.mk network.mk virtinst.mk rpm.mk vm.spec.in
+dist_devdata_DATA = vars.mk disk.mk network.mk virtinst.mk rpm.mk vm.spec.in
+nodist_sbin_SCRIPTS = vmbuild
+nodist_devdata2_DATA = core.mk
 
 CLEANFILES = vmbuild core.mk
 EXTRA_DIST = core.mk.in vmbuild.in

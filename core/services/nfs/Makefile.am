@@ -1,6 +1,6 @@
-nfsconfdir = @sysconfdir@/@PACKAGE@/nfs
+nfsconfdir = $(sysconfdir)/$(PACKAGE)/nfs
 dist_nfsconf_DATA = exports
 
 install-data-local:
-	@MKDIR_P@ $(DESTDIR)/srv/@PACKAGE@/exports
+	$(MKDIR_P) $(DESTDIR)/srv/$(PACKAGE)/exports
 

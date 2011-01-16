@@ -12,12 +12,11 @@ wwwconfdir	= $(sysconfdir)/httpd/conf.d
 endif
 
 
-dist_wwwconf_DATA	= $(wwwconf)
+nodist_wwwconf_DATA	= $(wwwconf)
 
-CLEANFILES	= $(wwwconf)
+DISTCLEANFILES	= $(wwwconf)
 EXTRA_DIST	= apache_miniascape.conf.in nginx_miniascape.conf.in
 
-#$(wwwconf): $(wwwconf).in
 %.conf: %.conf.in
 	$(AM_V_GEN)$(SED) -e 's,[@]pkgdatadir[@],$(datadir)/$(PACKAGE),g' \
 		-e 's,[@]NET_1_NETWORK[@],$(NET_1_NETWORK),g' \

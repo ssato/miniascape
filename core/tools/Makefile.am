@@ -1,13 +1,13 @@
 pkglibexecdir = @libexecdir@/@PACKAGE@
 
-dist_pkglibexec_SCRIPTS = \
+nodist_pkglibexec_SCRIPTS = \
 create-iscsi-disk-image \
 net-manage-all \
 virt-net-register virt-net-unregister \
 $(NULL)
 
-CLEANFILES = $(dist_pkglibexec_SCRIPTS)
-EXTRA_DIST = $(addsuffix .in,$(dist_pkglibexec_SCRIPTS))
+CLEANFILES = $(nodist_pkglibexec_SCRIPTS)
+EXTRA_DIST = $(addsuffix .in,$(nodist_pkglibexec_SCRIPTS))
 
 subst	= $(AM_V_GEN)$(SED) -e 's,[@]pkgsysconfdir[@],$(sysconfdir)/$(PACKAGE),g' -e 's,[@]pkglibexecdir[@],$(pkglibexecdir),g' -e 's,[@]VIRSH[@],$(VIRSH),g' $(srcdir)/$< > $@.t && mv $@.t $@
 
