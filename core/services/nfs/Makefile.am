@@ -1,5 +1,5 @@
 nfsconfdir = $(sysconfdir)/$(PACKAGE)/nfs
-nfsexportdir = $(localstatedir)/$(PACKAGE)/exports
+nfsexportdir = /var/lib/$(PACKAGE)/exports
 
 nodist_nfsconf_DATA = exports
 
