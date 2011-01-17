@@ -116,6 +116,7 @@ vm/autoinstall/rhel-3-0-i386-default.ks.cfg
 vm/autoinstall/rhel-3-2-i386-min.ks.cfg
 vm/autoinstall/rhel-3-2-i386-default.ks.cfg
 vm/profiles/Makefile
+vm/profiles/site.cfg
 vm/profiles/vm.d/Makefile
 ])
 

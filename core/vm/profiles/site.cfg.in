@@ -10,7 +10,7 @@
 # NOTE: This is a makefile.
 #
 
-
+PACKAGE = @PACKAGE@
 
 
 # vim: set ft=make:
