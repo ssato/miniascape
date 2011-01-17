@@ -96,7 +96,6 @@ services/networks/net-1.xml
 services/networks/net-2.xml
 services/www/Makefile
 services/nfs/Makefile
-services/nfs/exports
 tools/Makefile
 vm/Makefile
 vm/autoinstall/Makefile

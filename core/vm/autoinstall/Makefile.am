@@ -20,7 +20,6 @@ rhel-3-2-i386-default.ks.cfg \
 $(NULL)
 
 nodist_autoinstdata2_DATA = \
-rhel-5-0-i386-min.ks.cfg \
 rhel-5-1-i386-min.ks.cfg \
 rhel-5-2-i386-min.ks.cfg \
 rhel-5-3-i386-min.ks.cfg \
@@ -77,6 +76,8 @@ rhel-5-luci.ks.cfg.in \
 rhel-5-satellite.ks.cfg.in \
 rhel-6-0-i386-min.ks.cfg.in \
 $(NULL)
+
+DISTCLEANFILES	= $(nodist_autoinstdata2_DATA)
 
 
 # rhel 5 server i386, minimal packages

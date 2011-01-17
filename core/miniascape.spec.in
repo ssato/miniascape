@@ -70,7 +70,7 @@ exit 0
 %files
 %defattr(-,root,root,-)
 %doc README
-%dir /srv/@PACKAGE@/exports
+%dir /var/lib/@PACKAGE@/exports
 %config(noreplace) %{_sysconfdir}/%{name}/*
 %config(noreplace) %{_sysconfdir}/%{httpd_name}/conf.d/*
 %config(noreplace) %{_sysconfdir}/tgt/conf.d/*
