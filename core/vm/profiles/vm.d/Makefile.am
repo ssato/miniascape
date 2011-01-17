@@ -26,6 +26,10 @@ rhel-4-5-vm-0.cfg \
 rhel-4-6-vm-0.cfg \
 rhel-4-7-vm-0.cfg \
 rhel-4-8-vm-0.cfg \
+rhel-5-0-vm-0.cfg \
+rhel-5-1-vm-0.cfg \
+rhel-5-2-vm-0.cfg \
+rhel-5-3-vm-0.cfg \
 rhel-5-4-vm-0.cfg \
 rhel-5-5-vm-0.cfg \
 rhel-5-6-vm-0.cfg \

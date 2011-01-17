@@ -31,10 +31,13 @@ rhel-5-2-i386.cfg \
 rhel-5-3-i386.cfg \
 rhel-5-4-i386.cfg \
 rhel-5-5-i386.cfg \
+rhel-5-6-i386.cfg \
 rhel-5-jboss.cfg \
 rhel-5-satellite.cfg \
 rhel-6-0-i386.cfg \
 ubuntu-lucid-i386.cfg \
+rhel-5-cluster.cfg \
+rhel-5-latest-i386.cfg \
 site.cfg \
 $(NULL)
 
