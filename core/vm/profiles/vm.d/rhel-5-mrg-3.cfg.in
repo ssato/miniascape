@@ -1,0 +1,13 @@
+include /etc/@PACKAGE@/profiles/dists/rhel-5-5-i386.cfg
+
+miniascape_NAME    = rhel-5-mrg-3
+miniascape_EXTRA_ARGS   = "ks=$(miniascape_AUTOINST_CFG_URL_BASE)/rhel-5-mrg.ks.cfg ksdevice=eth0"
+
+miniascape_MAC_1   = $(miniascape_NET_MAC_PREFIX):01:00:83
+miniascape_MAC_2   = $(miniascape_NET_MAC_PREFIX):11:00:83
+miniascape_MAC_3   = $(miniascape_NET_MAC_PREFIX):02:00:83
+miniascape_MAC_4   = $(miniascape_NET_MAC_PREFIX):12:00:83
+miniascape_IP_1    = $(miniascape_NET_1_PREFIX).83
+miniascape_IP_3    = $(miniascape_NET_2_PREFIX).83
+
+# vim: set ft=make:
