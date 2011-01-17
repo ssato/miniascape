@@ -35,5 +35,6 @@ rhel-5-jboss.cfg \
 rhel-5-satellite.cfg \
 rhel-6-0-i386.cfg \
 ubuntu-lucid-i386.cfg \
+site.cfg \
 $(NULL)
 
