@@ -8,6 +8,7 @@ set -e
 
 
 # globals:
+package=@PACKAGE@
 drivermk=@pkgdatadir@/devel/core.mk
 confdir=@pkgsysconfdir@/profiles
 vmconfdir=${confdir:?}/vm.d
@@ -15,7 +16,6 @@ vmconfdir=${confdir:?}/vm.d
 verbose=1     # not implemented
 dryrun=       # Make dryrun mode: "-n" (dryrun)
 
-siteconf=$confdir/site.cfg
 conf=
 name=
 
@@ -30,8 +30,6 @@ Options:
   -c,--cfg      Specify vm config in full path
   -n,--name     Specify vm name instead of its config
 
-  -s,--sitecfg  Specify site config [${siteconf}]
-
   -t,--dryrun   Dryrun mode
   -v,--verbose  Verbose mode
   -h,--help     Show this help
@@ -45,7 +43,6 @@ while getopts "c:n:s:tvh" opt; do
   case $opt in
     c|-cfg) conf="$OPTARG" ;;
     n|-name) name="$OPTARG" ;;
-    s|-sitecfg) siteconf="$OPTARG" ;;
     t|-dryrun) dryrun="-n" ;;
     v|-verbose) verbose=1 ;;
     h|-help) usage; exit 0 ;;
@@ -54,12 +51,6 @@ while getopts "c:n:s:tvh" opt; do
 done
 shift $(($OPTIND - 1))
 if test $# -lt 1; then usage; exit 1; fi
-
-# check if the site configuration file exists
-if test ! -f $siteconf; then
-  echo "[Error] Site config is not found: '$siteconf'"
-  exit 1
-fi
 
 # find vm's config path from given name
 if test -n "$name"; then conf=$vmconfdir/$name.cfg; fi
@@ -92,9 +83,7 @@ else
 fi
 
 
-make ${dryrun} -f ${drivermk} \
-  miniascape_SITE_CONFIG="${siteconf}" miniascape_CONFIG="${conf}" \
-  ${command}
+make ${dryrun} -f ${drivermk} PACKAGE=${package} miniascape_CONFIG="${conf}" ${command}
 
 
 # vim:set sw=2 ts=2 et ai si sm:

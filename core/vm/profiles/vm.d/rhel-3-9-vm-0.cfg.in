@@ -1,5 +1,0 @@
-include /etc/@PACKAGE@/profiles/rhel-3-9-i386.cfg
-
-miniascape_NAME    = rhel-3-9-vm-0
-
-# vim: set ft=make:

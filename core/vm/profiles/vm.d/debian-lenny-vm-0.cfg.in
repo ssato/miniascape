@@ -1,6 +1,0 @@
-include /etc/@PACKAGE@/profiles/debian-lenny-i386.cfg
-
-miniascape_NAME	= debian-0
-miniascape_EXTRA_ARGS	= "auto=true interface=eth0 hostname=debian-0 domain=$(miniascape_NET_1_DOMAIN) url=$(miniascape_AUTOINST_CFG_URL_BASE)/debian-lenny-preseed.cfg"
-
-# vim: set ft=make:
