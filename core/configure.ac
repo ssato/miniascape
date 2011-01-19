@@ -54,6 +54,9 @@ AC_SUBST([NET_2_BRIDGE],[$net_2_bridge])
 AC_SUBST([NET_2_NETWORK],[$net_2_network])
 AC_SUBST([NET_2_DOMAIN],[$net_2_domain])
 
+AC_SUBST([AUTOINST_CFG_URL_BASE],["http://$net_1_network.1/autoinst"])
+AC_SUBST([AUTOINST_TREE_URL_BASE],["http://$net_1_network.1/contents"])
+
 dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
 AC_SUBST([HWADDR_PREFIX],[54:52:00])
 
