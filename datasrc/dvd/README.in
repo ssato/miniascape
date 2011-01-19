@@ -35,3 +35,78 @@ Modify /etc/nginx/conf.d/m/miniascape-datasrc-dvd.conf as needed.
 Please note that configuration must be consistent with autofs.
 
 
+How to make a DVD rpm
+==========================
+
+I recommend you to make DVD iso rpms instead just copying DVD isos into
+@ISODATADIR@.
+
+To make a DVD rpm, go through like the followings:
+
+1. create a workdir
+2. create a dir to save DVD
+3. put DVD iso image in that dir
+4. make a rpm with using filelist2rpm.py
+
+
+filelist2rpm.py is available from:
+https://github.com/ssato/rpmkit/blob/master/filelist2rpm.py
+
+
+Here is an example session to make a dvd rpm:
+::
+
+  ssato@localhost% mkdir /tmp/dvdrpms
+  ssato@localhost% cd /tmp/dvdrpms
+  ssato@localhost% mkdir -p srv/isos
+  ssato@localhost% cp /var/tmp/rhel-server-5.6-i386-dvd.iso srv/isos
+  ssato@localhost% curl -s -O https://github.com/ssato/rpmkit/raw/master/filelist2rpm.py
+  ssato@localhost% echo `pwd`/srv/isos/rhel-server-5.6-i386-dvd.iso | ./filelist2rpm.py \
+  pipe> --build-rpm -w 0 --no-mock -
+  15:15:52 [INFO]  Creating a directory: /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1
+  15:15:52 [INFO]  Creating a directory: /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/src
+  15:15:52 [INFO]  Copying: /tmp/dvdrpms/srv/isos/rhel-server-5.6-i386-dvd.iso -> /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/src/srv/isos/rhel-server-5.6-i386-dvd.iso
+  15:15:54 [INFO]  Copying: /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/rhel-server-5-6-i386-dvd-iso.spec -> /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/..
+  15:15:54 [INFO]  Run: autoreconf -vfi
+  15:16:18 [INFO]  Run: ./configure
+  15:16:22 [INFO]  Run: make srpm
+  15:17:19 [INFO]  Copying: /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.src.rpm -> /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/../
+  15:17:19 [INFO]  Run: make rpm
+  15:18:38 [INFO]  Copying: /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch.rpm -> /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/../
+  15:18:38 [INFO]  Copying: /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.src.rpm -> /tmp/dvdrpms/0/rhel-server-5-6-i386-dvd-iso-0.1/../
+  ssato@localhost% 
+  ssato@localhost% ls 0/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch.rpm
+  0/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch.rpm
+  ssato@localhost% rpm -qlp 0/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch.rpm
+  /srv/isos/rhel-server-5.6-i386-dvd.iso
+  /usr/share/doc/rhel-server-5-6-i386-dvd-iso-0.1
+  /usr/share/doc/rhel-server-5-6-i386-dvd-iso-0.1/README
+  ssato@localhost% sudo yum localinstall -y --nogpgcheck 0/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch.rpm
+  [sudo] password for ssato:
+  Loaded plugins: langpacks, presto, refresh-packagekit
+  Setting up Local Package Process
+  Examining 0/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch.rpm: rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch
+  Marking 0/rhel-server-5-6-i386-dvd-iso-0.1-1.fc14.noarch.rpm to be installed
+  adobe-linux-i386                                                                                                                        |  951 B     00:00
+  fedora-chromium                                                                                                                         | 3.0 kB     00:00
+  rpmfusion-free-updates                                                                                                                  | 3.3 kB     00:00
+  rpmfusion-nonfree-updates                                                                                                               | 3.3 kB     00:00
+  updates/metalink                                                                                                                        | 5.9 kB     00:00
+  updates                                                                                                                                 | 4.7 kB     00:00
+  updates/primary_db                                                                                                                      | 3.2 MB     00:01
+  Resolving Dependencies
+  --> Running transaction check
+  ---> Package rhel-server-5-6-i386-dvd-iso.noarch 0:0.1-1.fc14 set to be installed
+  --> Finished Dependency Resolution
+
+  Dependencies Resolved
+  ...
+  Installed:
+    rhel-server-5-6-i386-dvd-iso.noarch 0:0.1-1.fc14
+
+  Complete!
+  ssato@localhost% 
+
+
+
+

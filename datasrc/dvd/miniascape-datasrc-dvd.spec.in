@@ -60,5 +60,8 @@ exit 0
 
 
 %changelog
+* Wed Jan 19 2011 Satoru SATOH <ssato@redhat.com> - 0.1.20110119-1
+- Many bug fixes and enhancements
+
 * Thu Oct 21 2010 Satoru SATOH <ssato@redhat.com> - 0.1-1
 - Initial packaging.

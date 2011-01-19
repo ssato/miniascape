@@ -1,4 +1,4 @@
-AC_INIT([miniascape-datasrc-dvd],[0.1.20101221])
+AC_INIT([miniascape-datasrc-dvd],[0.1.20110119])
 AM_INIT_AUTOMAKE([dist-xz foreign])
 
 dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
