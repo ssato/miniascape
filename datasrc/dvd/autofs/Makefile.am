@@ -1,4 +1,5 @@
-dist_sysconf_DATA = auto.iso
+nodist_sysconf_DATA = auto.iso
+EXTRA_DIST	= auto.iso.in
 
-install-data-local:
-	@MKDIR_P@ $(DESTDIR)/var/lib/miniascape/isos
+install-data-hook:
+	$(MKDIR_P) $(DESTDIR)$(ISODATADIR)

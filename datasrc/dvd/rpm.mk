@@ -1,18 +1,23 @@
 rpmdir = $(abs_builddir)/rpm
+rpmdirs	= $(addprefix $(rpmdir)/,RPMS BUILD BUILDROOT)
 
-rpmdirs: 
-	mkdir -p $(rpmdir)/{RPMS,SRPMS,BUILD,BUILDROOT,SOURCES}
+rpmbuild = rpmbuild \
+--define "_topdir $(rpmdir)" \
+--define "_srcrpmdir $(abs_builddir)" \
+--define "_sourcedir $(abs_builddir)" \
+--define "_buildroot $(rpmdir)/BUILDROOT" \
+$(NULL)
 
-rpm: $(PACKAGE).spec dist rpmdirs
-	cp -f $(abs_builddir)/$(PACKAGE)-$(VERSION).tar.gz $(rpmdir)/SOURCES/
-	rpmbuild --define "_topdir $(rpmdir)" \
-		--define "_buildroot $(rpmdir)/BUILDROOT" \
-		-bb $(PACKAGE).spec
-	mv $(rpmdir)/RPMS/noarch/* $(abs_builddir)
 
-srpm: $(PACKAGE).spec dist rpmdirs
-	cp -f $(abs_builddir)/$(PACKAGE)-$(VERSION).tar.gz $(rpmdir)/SOURCES/
-	rpmbuild --define "_topdir $(rpmdir)" \
-		--define "_buildroot $(rpmdir)/BUILDROOT" \
-		-bs $(PACKAGE).spec
-	mv $(rpmdir)/SRPMS/* $(abs_builddir)
+$(rpmdirs): 
+	$(MKDIR_P) $@
+
+rpm srpm: $(PACKAGE).spec dist-xz $(rpmdirs)
+
+rpm:
+	$(rpmbuild) -bb $< && mv $(rpmdir)/RPMS/*/* $(abs_builddir)
+
+srpm:
+	$(rpmbuild) -bs $<
+
+.PHONY: rpm srpm

@@ -11,7 +11,13 @@ Setup
 autofs
 ---------------------
 
-1. Add auto.iso entry in /etc/auto.master
+1. Add auto.iso entry in /etc/auto.master:
+
+::
+
+@WWWDATADIR@    /etc/auto.iso
+
+
 2. Edit /etc/auto.iso in accordance with your environment
 
 
@@ -25,7 +31,7 @@ Please note that configuration must be consistent with autofs.
 nginx
 ---------------------
 
-Modify /etc/nginx/conf.d/miniascape-datasrc-dvd.conf as needed.
+Modify /etc/nginx/conf.d/m/miniascape-datasrc-dvd.conf as needed.
 Please note that configuration must be consistent with autofs.
 
 

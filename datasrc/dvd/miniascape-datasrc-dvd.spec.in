@@ -1,9 +1,11 @@
 %if 0%{?fedora}
 %define httpd_name      nginx
 %define nginx_enabled   yes
+%define httpd_confdir   %{_sysconfdir}/%{httpd_name}/conf.d/m
 %else
 %define httpd_name      httpd
 %define nginx_enabled   no
+%define httpd_confdir   %{_sysconfdir}/%{httpd_name}/conf.d
 %endif
 
 
@@ -14,7 +16,7 @@ Summary:        Site and host local configuration files for miniascape
 Group:          Applications/System
 License:        MIT
 URL:            http://github.com/ssato/miniascape
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.xz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:       %{httpd_name}
@@ -54,7 +56,7 @@ exit 0
 %defattr(-,root,root,-)
 %doc README
 %config(noreplace) %{_sysconfdir}/auto.iso
-%config(noreplace) %{_sysconfdir}/%{httpd_name}/conf.d/*
+%config(noreplace) %{httpd_confdir}/*
 
 
 %changelog
