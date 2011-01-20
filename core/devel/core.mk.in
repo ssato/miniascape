@@ -47,8 +47,8 @@ $(WORKDIR)/prebuild.stamp: $(disk_images)
 $(WORKDIR)/build.stamp: build-vm
 	touch $@
 
-$(WORKDIR)/rpm.stamp: $(WORKDIR)/build.stamp
-$(WORKDIR)/srpm.stamp: $(WORKDIR)/build.stamp
+#$(WORKDIR)/rpm.stamp: $(WORKDIR)/build.stamp
+#$(WORKDIR)/srpm.stamp: $(WORKDIR)/build.stamp
 
 
 all-clean:
