@@ -83,13 +83,13 @@ AM_CONDITIONAL([USE_NGINX],[test x$nginx = xtrue])
 
 AC_CONFIG_FILES([
 Makefile
+config
 miniascape.spec
 devel/Makefile
 devel/vars.mk
 devel/rpm.mk
 devel/vm.spec.in
 services/Makefile
-services/config
 services/iptables/Makefile
 services/iptables/iptables.rules
 services/iscsi/Makefile

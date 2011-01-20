@@ -11,6 +11,7 @@ set -e
 package=@PACKAGE@
 drivermk=@pkgdatadir@/devel/core.mk
 confdir=@pkgsysconfdir@/profiles
+varsmk=@pkgdatadir@/devel/vars.mk
 vmconfdir=${confdir:?}/vm.d
 
 verbose=1     # not implemented
@@ -68,15 +69,19 @@ if test ! -f $conf; then
 fi
 
 command=$1
+test $verbose -eq 1 && echo "[Info] command = '$command'"
+
 if test $command = "install"; then
-  test $verbose -eq 1 && echo "[Info] command = '$command'"
+  echo
 elif test $command = "build"; then  ## alias
   commnad="install"
-  test $verbose -eq 1 && echo "[Info] command = '$command'"
 elif test $command = "rpm"; then
-  test $verbose -eq 1 && echo "[Info] command = '$command'"
+  echo
 elif test $command = "srpm"; then
-  test $verbose -eq 1 && echo "[Info] command = '$command'"
+  echo
+elif test $command = "vars"; then
+  grep -e '^miniascape_' $varsmk
+  exit $?
 else
   echo "[Error] Unknown command '$command'"
   exit 1
