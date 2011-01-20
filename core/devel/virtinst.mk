@@ -26,18 +26,20 @@ virtinst_FLAGS = \
 $(disk_opts) \
 $(network_opts) \
 --extra-args=$(miniascape_EXTRA_ARGS) \
+--wait=$(miniascape_VIRTINST_WAIT_TIME) \
 $(miniascape_OTHER_OPTIONS) \
 $(NULL)
 
 
 prebuild.stamp: $(disk_images)
-	touch $@
-
-build.stamp: build-vm
+	for f in $^; do test -f $$f; done
 	touch $@
 
 build-vm: prebuild.stamp
 	$(miniascape_VIRTINST) $(virtinst_FLAGS)
+
+build.stamp: build-vm
+	touch $@
 
 
 .PHONY: build-vm

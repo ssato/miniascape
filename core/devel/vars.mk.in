@@ -58,6 +58,10 @@ miniascape_AUTOINST_CFG_DIR	= /usr/share/@PACKAGE@/autoinst
 miniascape_AUTOINST_TREE_URL_BASE	= @AUTOINST_TREE_URL_BASE@
 miniascape_AUTOINST_CFG_URL_BASE	= @AUTOINST_CFG_URL_BASE@
 
+# other options passed to virt-install:
+miniascape_VIRTINST_WAIT_TIME	= 20
+miniascape_OTHER_OPTIONS	= --check-cpu --hvm --accelerate --vnc --noreboot --noautoconsole \
+--wait=$(miniascape_VIRTINST_WAIT_TIME)
 
 # package:
 prefix  = @prefix@
