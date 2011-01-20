@@ -38,14 +38,14 @@ build-vm: $(WORKDIR)/prebuild.stamp
 
 install: build
 
-rpm: $(WORKDIR)/rpm.stamp
-srpm: $(WORKDIR)/srpm.stamp
-
 $(WORKDIR)/prebuild.stamp: $(disk_images)
 	touch $@
 
 $(WORKDIR)/build.stamp: build-vm
 	touch $@
+
+#rpm: $(WORKDIR)/rpm.stamp
+#srpm: $(WORKDIR)/srpm.stamp
 
 #$(WORKDIR)/rpm.stamp: $(WORKDIR)/build.stamp
 #$(WORKDIR)/srpm.stamp: $(WORKDIR)/build.stamp
