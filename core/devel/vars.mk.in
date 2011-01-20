@@ -39,13 +39,11 @@ miniascape_NET_MAC_PREFIX	= @HWADDR_PREFIX@
 miniascape_NET_MODEL	= e1000
 miniascape_NET_MAC	= RANDOM
 
-miniascape_NET_1_PREFIX		= @NET_1_PREFIX@
-miniascape_NET_2_PREFIX		= @NET_2_PREFIX@
-miniascape_NET_3_PREFIX		= @NET_3_PREFIX@
+miniascape_NET_1_PREFIX		= @NET_1_NETWORK@
+miniascape_NET_2_PREFIX		= @NET_2_NETWORK@
 
 miniascape_NET_1_DOMAIN		= @NET_1_DOMAIN@
 miniascape_NET_2_DOMAIN		= @NET_2_DOMAIN@
-miniascape_NET_3_DOMAIN		= @NET_3_DOMAIN@
 
 miniascape_NET_NETWORK_1       = network:net-1
 miniascape_NET_NETWORK_2       = network:net-1
