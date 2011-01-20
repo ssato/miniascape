@@ -36,6 +36,13 @@ rpmspec_do_subst = $(SED) \
 	-e 's!__INITIAL_DISK_SUFFIX__!$(img_0_sfx)!g' \
 	-e 's!__OTHER_DEPS__!$(miniascape_RPM_DEPS)!g'
 
+rpmbuild = rpmbuild \
+--define "_topdir $(WORKDIR)" \
+--define "_srcrpmdir $(WORKDIR)" \
+--define "_sourcedir $(WORKDIR)" \
+--define "_buildroot $(WORKDIR)/BUILDROOT" \
+$(NULL)
+
 
 $(rpmdirs)::
 	mkdir -p $@
@@ -115,14 +122,10 @@ rpm: build-rpm
 srpm: build-srpm
 
 build-rpm: $(rpmspec) $(rpmsrc)
-	rpmbuild --define "_topdir $(WORKDIR)" \
-		--define "_buildroot $(WORKDIR)/BUILDROOT" \
-		--target $(miniascape_ARCH) -bb $(rpmspec)
+	$(rpmbuild) --target $(miniascape_ARCH) -bb $(rpmspec)
 
 build-srpm: $(rpmspec) $(rpmsrc)
-	rpmbuild --define "_topdir $(WORKDIR)" \
-		--define "_buildroot $(WORKDIR)/BUILDROOT" \
-		-bs $(rpmspec)
+	$(rpmbuild) -bs $(rpmspec)
 
 .PHONY: rpm srpm build-rpm build-srpm
 # vim:set ft=make ai si sm:
