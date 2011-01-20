@@ -79,4 +79,5 @@ miniascape_RPM_DEPS	=
 
 miniascape_VM_XML_DIR	= @sysconfdir@/libvirt/qemu
 
+
 # vim: set ft=make:

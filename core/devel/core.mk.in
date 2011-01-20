@@ -21,27 +21,38 @@ include $(miniascape_CONFIG)
 include $(pkglibdir)/disk.mk
 include $(pkglibdir)/network.mk
 include $(pkglibdir)/virtinst.mk
+
+
+WORKDIR	= $(shell pwd)/$(miniascape_NAME)-build
+
 include $(pkglibdir)/rpm.mk
 
 
 # targets:
+prebuild: $(WORKDIR)/prebuild.stamp
 
-prebuild: prebuild.stamp
+build: $(WORKDIR)/build.stamp
 
-build: build.stamp
-build.stamp: prebuild.stamp
+build-vm: $(WORKDIR)/prebuild.stamp
+	$(miniascape_VIRTINST) $(virtinst_FLAGS)
 
 install: build
 
-rpm: rpm.stamp
-rpm.stamp: build.stamp
+rpm: $(WORKDIR)/rpm.stamp
+srpm: $(WORKDIR)/srpm.stamp
 
-srpm: srpm.stamp
-srpm.stamp: build.stamp
+$(WORKDIR)/prebuild.stamp: $(disk_images)
+	touch $@
+
+$(WORKDIR)/build.stamp: build-vm
+	touch $@
+
+$(WORKDIR)/rpm.stamp: $(WORKDIR)/build.stamp
+$(WORKDIR)/srpm.stamp: $(WORKDIR)/build.stamp
 
 
 all-clean:
-	rm -f *.stamp
+	rm -f $(WORKDIR)/*.stamp
 
 .PHONY: prebuild build install all-clean rpm srpm
 # vim:set ft=make ai si sm:

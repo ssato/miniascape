@@ -30,17 +30,4 @@ $(network_opts) \
 $(miniascape_OTHER_OPTIONS) \
 $(NULL)
 
-
-prebuild.stamp: $(disk_images)
-	for f in $^; do test -f $$f; done
-	touch $@
-
-build-vm: prebuild.stamp
-	$(miniascape_VIRTINST) $(virtinst_FLAGS)
-
-build.stamp: build-vm
-	touch $@
-
-
-.PHONY: build-vm
 # vim:set ft=make ai si sm:

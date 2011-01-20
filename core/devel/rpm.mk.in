@@ -14,8 +14,9 @@ rpmver	= $(miniascape_RPM_VERSION)
 name	= $(miniascape_NAME)
 
 
+rpmworkdir = $(WORKDIR)
+
 rpmname = $(rpmbasename)-$(rpmver)
-rpmworkdir = $(shell pwd)/$(name)-rpmbuild
 rpmdirs	= $(addprefix $(rpmworkdir)/,RPMS/$(arch) RPMS/noarch SRPMS SPECS BUILD BUILDROOT SOURCES)
 rpmspec = $(rpmworkdir)/SPECS/$(rpmbasename).spec
 rpmsrc	= $(rpmworkdir)/SOURCES/$(rpmname).tar.xz
