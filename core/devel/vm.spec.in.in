@@ -3,7 +3,7 @@
 %define ver_            __VER__
 
 %define guest_xmldir    %{_sysconfdir}/libvirt/qemu
-%define guest_xmlsavedir    %{_localstatedir}/lib/virt-guest
+%define guest_xmlsavedir    %{_localstatedir}/lib/@PACKAGE@/vm.d
 %define guest_imgdir    %{_localstatedir}/lib/libvirt/images/%{name_}
 %define guest_imgsuffix __DISK_FMT__
 %define guest_initial_img_suffix        __INITIAL_DISK_SUFFIX__
