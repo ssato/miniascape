@@ -29,7 +29,7 @@ include $(pkglibdir)/rpm.mk
 
 
 # targets:
-prebuild: $(WORKDIR)/prebuild.stamp:
+prebuild: $(WORKDIR)/prebuild.stamp
 
 build: $(WORKDIR)/build.stamp
 
