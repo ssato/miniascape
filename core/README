@@ -96,8 +96,6 @@ TODO
 
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic [Should]
 
-* dhcpv6 support for dnsmasq [Maybe]
-
 
 TODO (Done)
 ----------------------------------
