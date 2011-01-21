@@ -1,24 +1,24 @@
 if USE_NGINX
-wwwconf	= nginx_miniascape.conf
 wwwconfdir	= $(sysconfdir)/nginx/conf.d
-wwwsubconfdir	= $(wwwconfdir)/m
+wwwconf_SOURCE	= nginx.conf
 
 install-data-hook:
-	$(MKDIR_P) $(DESTDIR)$(wwwsubconfdir)
-
+	$(MKDIR_P) $(DESTDIR)$(wwwconfdir)/m
 else
-wwwconf	= apache_miniascape.conf
 wwwconfdir	= $(sysconfdir)/httpd/conf.d
+wwwconf_SOURCE	= apache.conf
 endif
 
-
+wwwconf	= miniascape.conf
 nodist_wwwconf_DATA	= $(wwwconf)
 
-DISTCLEANFILES	= $(wwwconf)
-EXTRA_DIST	= apache_miniascape.conf.in nginx_miniascape.conf.in
+CLEANFILES	= $(wwwconf)
+EXTRA_DIST	= apache.conf nginx.conf
 
-%.conf: %.conf.in
-	$(AM_V_GEN)$(SED) -e 's,[@]pkgdatadir[@],$(datadir)/$(PACKAGE),g' \
-		-e 's,[@]NET_1_NETWORK[@],$(NET_1_NETWORK),g' \
+$(wwwconf): $(wwwconf_SOURCE)
+	$(AM_V_GEN)$(SED) -e 's,[@]WWWDATADIR[@],$(datadir)/$(PACKAGE),g' \
+		-e 's,[@]AUTOINST_NETWORK[@],$(NET_1_NETWORK),g' \
 		$(srcdir)/$< > $@.t && mv $@.t $@
 
+#install-data-hook:
+#	$(MKDIR_P) $(DESTDIR)/$(WWWDATADIR)
