@@ -12,6 +12,7 @@ rhel-5-satellite.ks.cfg \
 rhel-5-mrg.ks.cfg \
 rhel-5-jboss.ks.cfg \
 rhel-5-luci.ks.cfg \
+rhel-5-0-i386-min.ks.cfg \
 rhel-4-0-i386-min.ks.cfg \
 rhel-3-0-i386-min.ks.cfg \
 rhel-3-2-i386-min.ks.cfg \
