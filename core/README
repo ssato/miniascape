@@ -63,6 +63,15 @@ before uninstallation, do the followings after that.
 
 
 
+FAQ
+========================
+
+Q1. Installation looks completed but an error messsage "ERROR 'VirtualDisk' object has no attribute 'DRIVER_TYPE_RAW' ..." was printed. What's goin' on?
+A1. That's a virt-install's bug. Go https://bugzilla.redhat.com/show_bug.cgi?id=628721 and apply the patch.
+
+
+
+
 TODO
 =========================
 
@@ -82,8 +91,6 @@ TODO
     ... (dump network xml with all host entries added) ...
 
 
-* Setup console access to guest domain
-
 * Genaral tunings (timer, io scheduler, virtio, etc.) for both guest and host.
 
 * python-virtinst (upstream) fixes
@@ -95,6 +102,12 @@ TODO
 * enhancement for qemu-img to get base image path of delta image [Should]
 
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic [Should]
+
+
+TODO (In progress)
+----------------------------------
+
+* Setup console access to guest domain
 
 
 TODO (Done)
