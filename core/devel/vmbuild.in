@@ -25,7 +25,14 @@ usage () {
   cat << EOF
 Usage: $0 [Options...] (-c GUEST_CONFIG | -n GUEST_NAME) Command
 
-Commands: build (install), rpm or srpm
+Commands: build (install), vars rpm or srpm
+
+  build         build vm image
+  install       same as above
+  rpm           build rpm of vm. you must build the vm with 'build' command in advance
+  srpm          likewise, but create src.rpm
+
+  vars          show customizable variables
 
 Options:
   -c,--cfg      Specify vm config in full path

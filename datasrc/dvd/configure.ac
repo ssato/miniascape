@@ -1,4 +1,4 @@
-AC_INIT([miniascape-datasrc-dvd],[0.1.20110119])
+AC_INIT([miniascape-datasrc-dvd],[0.1.20110124])
 AM_INIT_AUTOMAKE([dist-xz foreign])
 
 dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
@@ -36,7 +36,6 @@ AC_ARG_WITH([isodatadir],
   [AS_HELP_STRING([--with-isodatadir],[Dir to save ISO images. default=$isodatadir])],
       [isodatadir=$withval])
 AC_SUBST([ISODATADIR],[$isodatadir])
-
 
 
 AC_CONFIG_FILES([

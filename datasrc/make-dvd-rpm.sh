@@ -11,7 +11,7 @@ realpath () {
 }
 
 
-test $# -gt 2 && filelist2rpm=$2 || :
+test $# -gt 1 && filelist2rpm=$2 || :
 if test $# -lt 1; then
     echo "Usage: $0 ISO_PATH [FILELIST2RPM_PATH]"
     exit 1

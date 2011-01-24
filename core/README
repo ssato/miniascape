@@ -75,6 +75,12 @@ A1. That's a virt-install's bug. Go https://bugzilla.redhat.com/show_bug.cgi?id=
 TODO
 =========================
 
+* RHEL 3/4: installtion fails because installer cannot get netstg2.img even if
+  it exists and able to be downloaded with curl, etc. The problem looks
+  identical to the issue reported here:
+  http://www.redhat.com/archives/kickstart-list/2005-December/msg00026.html
+
+
 * profile: hw profile came from profile data, e.g. profiles/rhel-5-5-vm-1.cfg
   * autoinst: kickstart/preseed config, e.g. autoinstall/rhel-5-cluster.ks.cfg
   * net: ip, mac and hostname [, cname, ...]
