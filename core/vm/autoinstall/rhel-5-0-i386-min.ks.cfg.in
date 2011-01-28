@@ -107,7 +107,6 @@ cat /proc/cmdline | sed 's/ /\
 /g' | sed -nre '/^[^=]+=[^=]+$/p' > /tmp/boot-params
 
 source /tmp/boot-params   # hostname, etc.
-test -n "${hostname}" || hostname=localhost.localdomain
 
 # Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
 cat << EOF > /sbin/lspci
@@ -116,8 +115,9 @@ exit 0
 EOF
 chmod +x /sbin/lspci
 
+test -n "${hostname}" && hn_opt="--hostname=${hostname}" || hn_opt=""
 cat << EOF > /tmp/network-ks.cfg
-network --device=eth0 --bootproto=dhcp --hostname=$hostname
+network --device=eth0 --bootproto=dhcp $hn_opt
 network --device=eth1 --bootproto=dhcp --onboot=no --nodns
 network --device=eth2 --bootproto=dhcp --nodns
 network --device=eth3 --bootproto=dhcp --onboot=no --nodns
