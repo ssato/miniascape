@@ -6,12 +6,9 @@ lang en_US.UTF-8
 keyboard us
 skipx
 auth --useshadow --enablemd5
-firewall --enabled --port=22:tcp
+firewall --enabled --port=22:tcp --port=5353:udp
 firstboot --disable
-network --device=eth0 --bootproto=dhcp
-network --device=eth1 --bootproto=dhcp --onboot=no --nodns
-network --device=eth2 --bootproto=dhcp --nodns
-network --device=eth3 --bootproto=dhcp --onboot=no --nodns
+%include /tmp/network-ks.cfg
 rootpw redhat
 selinux --disabled
 timezone  Asia/Tokyo
@@ -22,7 +19,7 @@ bootloader --location=mbr
 clearpart --all --initlabel
 autopart
 key --skip
-services --disable atd,cups,gpm,ip6tables,lm_sensors,lvm2-monitor,mcstrans,mdmonitor,netfs,nfslock,ntpd,portmap,rawdevices,restorecond,sendmail,smartd,rhnsd
+services --enabled avahi-daemon --disabled atd,cups,gpm,lm_sensors,lvm2-monitor,mcstrans,mdmonitor,netfs,nfslock,ntpd,portmap,rawdevices,restorecond,sendmail,smartd,rhnsd
 reboot
 
 # repos
@@ -30,15 +27,6 @@ reboot
 #repo --name=rhel-cluster-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/0/Server/i386/Cluster/
 #repo --name=rhel-cluster-storage-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/0/Server/i386/ClusterStorage/
 #repo --name=rhel-vt-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/0/Server/i386/VT/
-
-
-%pre
-# Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
-cat << EOF > /sbin/lspci
-#! /bin/sh
-exit 0
-EOF
-chmod +x /sbin/lspci
 
 
 %packages
@@ -110,11 +98,55 @@ kexec-tools
 -yum-updatesd
 
 
+%pre
+(
+set -x
+set -v
+
+cat /proc/cmdline | sed 's/ /\
+/g' | sed -nre '/^[^=]+=[^=]+$/p' > /tmp/boot-params
+
+source /tmp/boot-params   # hostname, etc.
+test -n "${hostname}" || hostname=localhost.localdomain
+
+# Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
+cat << EOF > /sbin/lspci
+#! /bin/sh
+exit 0
+EOF
+chmod +x /sbin/lspci
+
+cat << EOF > /tmp/network-ks.cfg
+network --device=eth0 --bootproto=dhcp --hostname=$hostname
+network --device=eth1 --bootproto=dhcp --onboot=no --nodns
+network --device=eth2 --bootproto=dhcp --nodns
+network --device=eth3 --bootproto=dhcp --onboot=no --nodns
+EOF
+) 2>&1 | tee /tmp/ks.pre.log
+%end
+
+
 %post --nochroot
-cp /tmp/ks.cfg /mnt/sysimage/root/
+(
+set -x
+set -v
+
+test -d /mnt/sysimage/root/setup || mkdir /mnt/sysimage/root/setup
+for f in /tmp/boot-params /tmp/*ks.cfg /tmp/ks.pre.log; do
+    mv -f $f /mnt/sysimage/root/setup
+done
+
+) 2>&1 | tee /mnt/sysimage/tmp/ks.post.nochroot.log
+%end
 
 
 %post
+(
+set -x
+set -v
+
+source /root/setup/boot-params   # hostname, etc.
+
 cat << EOF >> /etc/sysconfig/network
 GATEWAYDEV=eth0
 EOF
@@ -138,3 +170,5 @@ EOF
 
 # @see http://osdir.com/ml/kickstart-list/2009-10/msg00005.html
 #sed -i -e 's/^timeout=5/serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1 terminal --timeout=5 serial console timeout=5/' -e 's/^splashimage/#&/' /boot/grub/grub.conf
+) 2>&1 | tee /root/setup/ks.post.log
+%end

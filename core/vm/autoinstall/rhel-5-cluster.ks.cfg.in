@@ -31,7 +31,7 @@ install
 zerombr
 autopart
 key --skip
-services --disable atd,cups,gpm,ip6tables,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd
+services --disabled atd,cups,gpm,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,sendmail,smartd
 reboot
 
 # repos
