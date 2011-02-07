@@ -26,7 +26,6 @@ virtinst_FLAGS = \
 $(disk_opts) \
 $(network_opts) \
 --extra-args=$(miniascape_EXTRA_ARGS) \
---wait=$(miniascape_VIRTINST_WAIT_TIME) \
 $(miniascape_OTHER_OPTIONS) \
 $(NULL)
 
