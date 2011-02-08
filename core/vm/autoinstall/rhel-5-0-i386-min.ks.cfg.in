@@ -32,6 +32,7 @@ reboot
 %packages
 # Automatic package selection.
 @ Base
+avahi
 curl
 elinks
 #kernel-devel
@@ -41,8 +42,9 @@ rpm-build
 screen
 strace
 #systemtap
+yum-utils
 vim-enhanced
-kexec-tools
+#kexec-tools
 #system-config-kdump
 -Deployment_Guide-en-US
 -NetworkManager
@@ -115,7 +117,7 @@ exit 0
 EOF
 chmod +x /sbin/lspci
 
-test -n "${hostname}" && hn_opt="--hostname=${hostname}" || hn_opt=""
+test -n "${hostname}" && hn_opt="--hostname=${hostname}.local" || hn_opt=""
 cat << EOF > /tmp/network-ks.cfg
 network --device=eth0 --bootproto=dhcp $hn_opt
 network --device=eth1 --bootproto=dhcp --onboot=no --nodns
