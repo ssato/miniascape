@@ -170,6 +170,11 @@ cat << EOF >> /etc/inittab
 co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
 EOF
 
+cat << EOF >> /etc/securetty
+ttyS0
+EOF
+
+
 # @see http://osdir.com/ml/kickstart-list/2009-10/msg00005.html
 #sed -i -e 's/^timeout=5/serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1 terminal --timeout=5 serial console timeout=5/' -e 's/^splashimage/#&/' /boot/grub/grub.conf
 ) 2>&1 | tee /root/setup/ks.post.log
