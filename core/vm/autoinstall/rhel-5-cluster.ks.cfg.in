@@ -114,6 +114,7 @@ iscsi-initiator-utils
 
 %post --nochroot
 cp /tmp/ks.cfg /mnt/sysimage/root/
+%end
 
 
 %post
@@ -152,3 +153,8 @@ cat << EOF >> /etc/inittab
 co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
 EOF
 
+cat << EOF >> /etc/securetty
+ttyS0
+EOF
+
+%end

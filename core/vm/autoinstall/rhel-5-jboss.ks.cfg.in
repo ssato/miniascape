@@ -139,4 +139,14 @@ curl -O @AUTOINST_TREE_URL_BASE@/JBossON/2.4.0/jon-server-2.4.0.GA.zip
 curl -O @AUTOINST_TREE_URL_BASE@/JBossEPP/5.0.1/jboss-epp-5.0.1.GA.zip
 curl -O @AUTOINST_TREE_URL_BASE@/JBossBRMS/5.0.0/jboss-brms-5.0.0.zip
 
+cat << EOF >> /etc/inittab
 
+# serial console:
+co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
+EOF
+
+cat << EOF >> /etc/securetty
+ttyS0
+EOF
+
+%end
