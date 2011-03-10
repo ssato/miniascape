@@ -12,7 +12,7 @@ network --device=eth0 --bootproto=dhcp
 network --device=eth1 --bootproto=dhcp --onboot=no --nodns
 network --device=eth2 --bootproto=dhcp --nodns
 network --device=eth3 --bootproto=dhcp --onboot=no --nodns
-rootpw redat
+rootpw redhat
 selinux --disabled
 timezone  Asia/Tokyo
 zerombr
@@ -37,13 +37,6 @@ cat /proc/cmdline | sed 's/ /\
 /g' | sed -nre '/^[^=]+=[^=]+$/p' > /tmp/boot-params
 
 source /tmp/boot-params   # hostname, etc.
-
-# Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
-cat << EOF > /sbin/lspci
-#! /bin/sh
-exit 0
-EOF
-chmod +x /sbin/lspci
 
 test -n "${hostname}" && hn_opt="--hostname=${hostname}.local" || hn_opt=""
 cat << EOF > /tmp/network-ks.cfg
@@ -166,5 +159,10 @@ cat << EOF >> /etc/inittab
 # serial console:
 co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
 EOF
+
+cat << EOF >> /etc/securetty
+ttyS0
+EOF
+
 ) 2>&1 | tee /root/setup/ks.post.log
 %end
