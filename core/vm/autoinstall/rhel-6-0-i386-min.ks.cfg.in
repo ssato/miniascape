@@ -151,7 +151,6 @@ enabled=1
 gpgcheck=1
 EOF
 
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 cat << EOF >> /etc/inittab
