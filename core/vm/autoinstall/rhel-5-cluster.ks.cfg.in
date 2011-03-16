@@ -35,9 +35,9 @@ services --disabled atd,cups,gpm,lm_sensors,mcstrans,mdmonitor,ntpd,restorecond,
 reboot
 
 # repos
-repo --name=rhel-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/5/Server/i386/Server/
-repo --name=rhel-cluster-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/5/Server/i386/Cluster/
-repo --name=rhel-cluster-storage-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/5/Server/i386/ClusterStorage/
+repo --name=rhel-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/6/Server/i386/Server/
+repo --name=rhel-cluster-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/6/Server/i386/Cluster/
+repo --name=rhel-cluster-storage-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/6/Server/i386/ClusterStorage/
 
 
 %packages
