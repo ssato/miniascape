@@ -153,6 +153,11 @@ cat << EOF >> /etc/sysconfig/network
 GATEWAYDEV=eth0
 EOF
 
+# network --nodns does not look work well:
+for f in /etc/sysconfig/network-scripts/ifcfg-eth{1,2,3}; do
+    echo "PEERDNS=no" >> $f
+done
+
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 cat << EOF > /etc/yum.repos.d/rhel-kstree.repo
