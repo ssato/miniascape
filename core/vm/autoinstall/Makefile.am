@@ -4,7 +4,7 @@ autoinstdata2dir	= $(autoinstdatadir)
 dist_autoinstdata_DATA = \
 fedora-13-i386-min.ks.cfg \
 fedora-14-i386-min.ks.cfg \
-debian-lenny-preseed.cfg \
+debian-squeeze-preseed.cfg \
 ubuntu-10.04-preseed.cfg \
 rhel-6-0-i386-min.ks.cfg \
 rhel-5-cluster.ks.cfg \
