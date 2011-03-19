@@ -40,11 +40,19 @@ Create [S]RPM
 What should be done after installation and updates
 =========================================================
 
-* post installation: run '/usr/libexec/miniascape/net-manage-all install'
-* post update: run '/usr/libexec/miniascape/net-manage-all update'
+* post installation:
+
+  * run '/usr/libexec/miniascape/net-manage-all install'
+  * add the following line in the middle of /etc/auto.master:
+
+    /srv/iso-contents /etc/auto.iso
+
+* post update:
+
+  * run '/usr/libexec/miniascape/net-manage-all update'
 
 And optionally, add host entries in /usr/share/libvirt/networks/hosts.add
-into /etc/hosts if you want. (I recommend this.)
+into /etc/hosts or add host entries in your .ssh/config if you want.
 
 
 What should be done before uninstallation
@@ -66,8 +74,12 @@ before uninstallation, do the followings after that.
 FAQ
 ========================
 
-Q1. Installation looks completed but an error messsage "ERROR 'VirtualDisk' object has no attribute 'DRIVER_TYPE_RAW' ..." was printed. What's goin' on?
-A1. That's a virt-install's bug. Go https://bugzilla.redhat.com/show_bug.cgi?id=628721 and apply the patch.
+Q1. Installation looks completed but an error messsage "ERROR 'VirtualDisk'
+    object has no attribute 'DRIVER_TYPE_RAW' ..." was printed.
+    What's goin' on?
+
+A1. That's a virt-install's bug. Go
+    https://bugzilla.redhat.com/show_bug.cgi?id=628721 and apply the patch.
 
 
 

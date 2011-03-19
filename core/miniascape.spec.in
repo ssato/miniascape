@@ -79,7 +79,7 @@ fi
 
 
 %post
-/sbin/service autofs status > /dev/null 2>&1 && /sbin/service autofs reload > /dev/null 2>&1 || :
+#/sbin/service autofs status > /dev/null 2>&1 && /sbin/service autofs reload > /dev/null 2>&1 || :
 /sbin/service %{httpd_name} status > /dev/null 2>&1 && /sbin/service %{httpd_name} reload > /dev/null 2>&1 || :
 if test "x`getenforce 2>/dev/null`" = "xEnforcing"; then
     /sbin/fixfiles -R @PACKAGE@ restore
