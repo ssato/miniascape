@@ -42,6 +42,7 @@ $(WORKDIR):
 	mkdir -p $@
 
 $(WORKDIR)/prebuild.stamp: $(WORKDIR) $(disk_images)
+	curl -s $(miniascape_LOCATION) > /dev/null
 	touch $@
 
 $(WORKDIR)/build.stamp: build-vm
