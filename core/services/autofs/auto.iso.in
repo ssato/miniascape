@@ -6,61 +6,66 @@
 #
 # Autofs configuration file to mount iso images on demand.
 # 
-# <mount point> -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :/var/lib/miniascape/isos/<ISO_NAME>
+# <mount point> -fstype=iso9660,ro,loop :/var/lib/miniascape/isos/<ISO_NAME>
 #
 #
 # These are just example configurations. Please modify or add configurations in accordance with your environment
 #
 # rhel-4-x
-rhel-4-0-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-0-as-i386-dvd.iso
-rhel-4-1-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-1-as-i386-dvd.iso
-rhel-4-2-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-2-as-i386-dvd.iso
-rhel-4-3-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-3-as-i386-dvd.iso
-rhel-4-4-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-4-as-i386-dvd.iso
-rhel-4-5-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-5-as-i386-dvd.iso
-rhel-4-6-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-6-as-i386-dvd.iso
-rhel-4-7-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-7-as-i386-dvd.iso
-rhel-4-8-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-8-as-i386-dvd.iso
-rhel-4-9-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-9-as-i386-dvd.iso
-rhel-4-1-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-1-as-x86_64-dvd.iso
-rhel-4-2-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-2-as-x86_64-dvd.iso
-rhel-4-3-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-3-as-x86_64-dvd.iso
-rhel-4-4-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-4-as-x86_64-dvd.iso
-rhel-4-5-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-5-as-x86_64-dvd.iso
-rhel-4-6-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-6-as-x86_64-dvd.iso
-rhel-4-7-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-7-as-x86_64-dvd.iso
-rhel-4-8-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-8-as-x86_64-dvd.iso
-rhel-4-9-as-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-9-as-x86_64-dvd.iso
+#rhel-4-0-as-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-4-0-as-i386-dvd.iso
+rhel-4-0-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-0-as-i386-dvd.iso
+rhel-4-1-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-1-as-i386-dvd.iso
+rhel-4-2-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-2-as-i386-dvd.iso
+rhel-4-3-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-3-as-i386-dvd.iso
+rhel-4-4-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-4-as-i386-dvd.iso
+rhel-4-5-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-5-as-i386-dvd.iso
+rhel-4-6-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-6-as-i386-dvd.iso
+rhel-4-7-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-7-as-i386-dvd.iso
+rhel-4-8-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-8-as-i386-dvd.iso
+rhel-4-9-as-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-9-as-i386-dvd.iso
+rhel-4-0-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-0-as-x86_64-dvd.iso
+rhel-4-1-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-1-as-x86_64-dvd.iso
+rhel-4-2-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-2-as-x86_64-dvd.iso
+rhel-4-3-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-3-as-x86_64-dvd.iso
+rhel-4-4-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-4-as-x86_64-dvd.iso
+rhel-4-5-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-5-as-x86_64-dvd.iso
+rhel-4-6-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-6-as-x86_64-dvd.iso
+rhel-4-7-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-7-as-x86_64-dvd.iso
+rhel-4-8-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-8-as-x86_64-dvd.iso
+rhel-4-9-as-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-4-9-as-x86_64-dvd.iso
 # rhel-5-x
-rhel-5-0-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-0-server-i386-dvd.iso
-rhel-5-1-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-1-server-i386-dvd.iso
-rhel-5-2-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-2-server-i386-dvd.iso
-rhel-5-3-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-3-server-i386-dvd.iso
-rhel-5-4-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-4-server-i386-dvd.iso
-rhel-5-5-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-5-server-i386-dvd.iso
-rhel-5-6-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-6-server-i386-dvd.iso
-rhel-5-7-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-7-server-i386-dvd.iso
-rhel-5-8-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-8-server-i386-dvd.iso
-rhel-5-9-server-i386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-9-server-i386-dvd.iso
-rhel-5-1-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-1-server-x86_64-dvd.iso
-rhel-5-2-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-2-server-x86_64-dvd.iso
-rhel-5-3-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-3-server-x86_64-dvd.iso
-rhel-5-4-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-4-server-x86_64-dvd.iso
-rhel-5-5-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-5-server-x86_64-dvd.iso
-rhel-5-6-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-6-server-x86_64-dvd.iso
-rhel-5-7-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-7-server-x86_64-dvd.iso
-rhel-5-8-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-8-server-x86_64-dvd.iso
-rhel-5-9-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-5-9-server-x86_64-dvd.iso
+rhel-5-0-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-0-server-i386-dvd.iso
+rhel-5-1-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-1-server-i386-dvd.iso
+rhel-5-2-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-2-server-i386-dvd.iso
+rhel-5-3-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-3-server-i386-dvd.iso
+rhel-5-4-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-4-server-i386-dvd.iso
+rhel-5-5-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-5-server-i386-dvd.iso
+rhel-5-6-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-6-server-i386-dvd.iso
+rhel-5-7-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-7-server-i386-dvd.iso
+rhel-5-8-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-8-server-i386-dvd.iso
+rhel-5-9-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-9-server-i386-dvd.iso
+rhel-5-0-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-0-server-x86_64-dvd.iso
+rhel-5-1-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-1-server-x86_64-dvd.iso
+rhel-5-2-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-2-server-x86_64-dvd.iso
+rhel-5-3-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-3-server-x86_64-dvd.iso
+rhel-5-4-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-4-server-x86_64-dvd.iso
+rhel-5-5-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-5-server-x86_64-dvd.iso
+rhel-5-6-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-6-server-x86_64-dvd.iso
+rhel-5-7-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-7-server-x86_64-dvd.iso
+rhel-5-8-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-8-server-x86_64-dvd.iso
+rhel-5-9-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-9-server-x86_64-dvd.iso
 # rhel-6-x
-rhel-6-0-server-386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/RHEL6.0-20100922.1-Workstation-i386-DVD1.iso
-rhel-6-1-server-386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-1-server-i386-dvd.iso
-rhel-6-2-server-386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-2-server-i386-dvd.iso
-rhel-6-3-server-386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-3-server-i386-dvd.iso
-rhel-6-4-server-386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-4-server-i386-dvd.iso
-rhel-6-5-server-386-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-5-server-i386-dvd.iso
-rhel-6-0-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/RHEL6.0-20100922.1-Workstation-x86_64-DVD1.iso
-rhel-6-1-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-1-server-x86_64-dvd.iso
-rhel-6-2-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-2-server-x86_64-dvd.iso
-rhel-6-3-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-3-server-x86_64-dvd.iso
-rhel-6-4-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-4-server-x86_64-dvd.iso
-rhel-6-5-server-x86_64-dvd   -fstype=iso9660,ro,loop,context=system_u:object_r:httpd_sys_content_t :@ISODATADIR@/rhel-6-5-server-x86_64-dvd.iso
+#rhel-6-0-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/RHEL6.0-20100922.1-Workstation-i386-DVD1.iso
+rhel-6-0-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-0-server-i386-dvd.iso
+rhel-6-1-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-1-server-i386-dvd.iso
+rhel-6-2-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-2-server-i386-dvd.iso
+rhel-6-3-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-3-server-i386-dvd.iso
+rhel-6-4-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-4-server-i386-dvd.iso
+rhel-6-5-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-5-server-i386-dvd.iso
+#rhel-6-0-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/RHEL6.0-20100922.1-Workstation-x86_64-DVD1.iso
+rhel-6-0-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-0-server-x86_64-dvd.iso
+rhel-6-1-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-1-server-x86_64-dvd.iso
+rhel-6-2-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-2-server-x86_64-dvd.iso
+rhel-6-3-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-3-server-x86_64-dvd.iso
+rhel-6-4-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-4-server-x86_64-dvd.iso
+rhel-6-5-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-5-server-x86_64-dvd.iso
