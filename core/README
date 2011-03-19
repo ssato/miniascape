@@ -37,8 +37,12 @@ Create [S]RPM
  make srpm && mock *.rpm
 
 
-What should be done after installation and updates
+Setup
 =========================================================
+
+
+What should be done after installation and updates
+----------------------------------------------------------
 
 * post installation:
 
@@ -56,7 +60,7 @@ into /etc/hosts or add host entries in your .ssh/config if you want.
 
 
 What should be done before uninstallation
-=========================================================
+----------------------------------------------------------
 
 * pre uninstallation: run uninstall.sh
 
@@ -83,9 +87,30 @@ A1. That's a virt-install's bug. Go
 
 
 
+Internal
+============================
+
+
+Installation Data sources for VMs
+---------------------------------------------------------
+
+Miniascape does not provide installation data sources (iso images) for VMs by
+itself.
+
+If you put RHEL DVD iso images in /srv/isos as appropriate names, autofs will
+mount it under /srv/iso-contents and apache httpd or nginx will provide
+installation tree to VMs.
+
+SEE ALSO:
+
+* /etc/auto.master provided by autofs
+* /etc/auto.iso provided by miniascape
+* /etc/httpd/conf.d/miniascape.conf or 
+  /etc/nginx/conf.d/miniascape.conf provided by miniascape
+
 
 TODO
-=========================
+===========================
 
 * RHEL 3/4: installtion fails because installer cannot get netstg2.img even if
   it exists and able to be downloaded with curl, etc. The problem looks
