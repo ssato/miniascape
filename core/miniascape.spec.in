@@ -33,6 +33,7 @@ Requires:       /usr/bin/qemu-img
 Requires:       %{qemu_kvm}
 Requires:       python-virtinst
 Requires:       rpm-build
+Requires:       curl
 BuildRequires:  selinux-policy
 # getenforce is in libselinux-utils:
 Requires(pre):  /usr/sbin/getenforce
