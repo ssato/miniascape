@@ -1,5 +1,4 @@
-# RHEL 5 satellite
-url --url=@AUTOINST_TREE_URL_BASE@/RHEL/5/6/Server/i386/
+url --url=@AUTOINST_TREE_URL_BASE@/rhel/5/6/server/i386/
 auth --useshadow --enablemd5
 bootloader --location=mbr
 clearpart --all --initlabel
@@ -206,8 +205,8 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 cat << EOF > /etc/yum.repos.d/rhel-kstree.repo
 [rhel-kstree]
-name=Red Hat Enterprise Linux $releasever - $basearch - Server (kickstart tree)
-baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/5/5/Server/i386/Server/
+name=Red Hat Enterprise Linux \$releasever - \$basearch - Server (kickstart tree)
+baseurl=@AUTOINST_TREE_URL_BASE@/rhel/5/6/server/i386/Server/
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release

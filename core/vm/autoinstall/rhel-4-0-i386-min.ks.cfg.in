@@ -1,5 +1,5 @@
 # RHEL 4 AS i386 - minimal package selection
-url --url=@AUTOINST_TREE_URL_BASE@/RHEL/4/0/AS/i386/
+url --url=@AUTOINST_TREE_URL_BASE@/rhel/4/0/as/i386/
 install
 text
 lang en_US.UTF-8
@@ -107,6 +107,7 @@ EOF
 # "--onboot=<yes|no>" option for network command.
 for f in /etc/sysconfig/network-scripts/ifcfg-eth{1,3}; do
     sed --in-place -e "s/^ONBOOT=yes/ONBOOT=no/" $f
+    echo "PEERDNS=no" >> $f
 done
 
 # meaningless for virtulization guests
@@ -116,7 +117,7 @@ rpm --import /usr/share/rhn/RPM-GPG-KEY
 
 # Add local repo
 sed --in-place -re 's/^(up2date default)/# \1/g' -e '$a\
-dir rhel-kstree @AUTOINST_TREE_URL_BASE@/RHEL/4/0/AS/i386/' \
+dir rhel-kstree @AUTOINST_TREE_URL_BASE@/rhel/4/0/as/i386/' \
 /etc/sysconfig/rhn/sources
 
 cat << EOF >> /etc/inittab
@@ -125,3 +126,6 @@ cat << EOF >> /etc/inittab
 co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav
 EOF
 
+cat << EOF >> /etc/securetty
+ttyS0
+EOF

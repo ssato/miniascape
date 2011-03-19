@@ -12,6 +12,7 @@ miniascape_CONNECT	=	qemu:///system
 miniascape_SITECONF	=	/etc/@PACKAGE@/profiles/site.cfg
 miniascape_MEMORY  =      256
 miniascape_ARCH    =      i686
+miniascape_BASEARCH	= i386
 miniascape_VCPU    =      2
 miniascape_KEYMAP  =      en-us
 miniascape_OS_TYPE	= linux

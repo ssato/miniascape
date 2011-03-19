@@ -1,4 +1,4 @@
-AC_INIT([miniascape],[0.1.20110309])
+AC_INIT([miniascape],[0.1.20110319])
 AM_INIT_AUTOMAKE([dist-xz foreign])
 
 dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
@@ -16,8 +16,8 @@ AC_PATH_PROG([QEMU_IMG],[qemu-img])
 AS_IF([test -z "$QEMU_IMG"],[AC_MSG_ERROR([qemu-img is not found in your paths])])
 
 dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
-hwaddr_prefix=54:52:00
-AC_SUBST([HWADDR_PREFIX],[$hwaddr_prefix])
+AC_SUBST([HWADDR_PREFIX],[54:52:00])
+
 
 
 dnl defaults:
@@ -57,8 +57,19 @@ AC_SUBST([NET_2_DOMAIN],[$net_2_domain])
 AC_SUBST([AUTOINST_CFG_URL_BASE],["http://$net_1_network.1/autoinst"])
 AC_SUBST([AUTOINST_TREE_URL_BASE],["http://$net_1_network.1/contents"])
 
-dnl hwaddr prefix default for QEMU/KVM guests. see virt-install(1) also.
-AC_SUBST([HWADDR_PREFIX],[54:52:00])
+
+dnl autofs, dvd isos:
+isomntdir="/srv/iso-contents"
+AC_ARG_WITH([isomntdir],
+  [AS_HELP_STRING([--with-isomntdir],[Top dir to mount iso images. default=$isomntdir])],
+        [isomntdir=$withval])
+AC_SUBST([ISOMNTDIR],[$isomntdir])
+
+isodatadir="/srv/isos"
+AC_ARG_WITH([isodatadir],
+  [AS_HELP_STRING([--with-isodatadir],[Dir to save ISO images. default=$isodatadir])],
+        [isodatadir=$withval])
+AC_SUBST([ISODATADIR],[$isodatadir])
 
 
 dnl iscsi
@@ -90,6 +101,8 @@ devel/vars.mk
 devel/rpm.mk
 devel/vm.spec.in
 services/Makefile
+services/autofs/Makefile
+services/autofs/auto.iso
 services/iptables/Makefile
 services/iptables/iptables.rules
 services/iscsi/Makefile

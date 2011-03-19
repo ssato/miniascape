@@ -1,5 +1,4 @@
-# RHEL 6
-url --url=@AUTOINST_TREE_URL_BASE@/RHEL/6/0/Server/i386/
+url --url=@AUTOINST_TREE_URL_BASE@/rhel/6/0/server/i386/
 install
 text
 lang en_US.UTF-8
@@ -25,7 +24,7 @@ reboot
 user --name=tester --password=redhat
 
 ## TODO: it doesn't work because of unknown reasen.
-#repo --name=rhel-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/6/0/i386/default/
+repo --name=rhel-kstree --baseurl=@AUTOINST_TREE_URL_BASE@/rhel/6/0/server/i386/
 
 
 %pre
@@ -145,8 +144,8 @@ EOF
 
 cat << EOF > /etc/yum.repos.d/rhel-kstree.repo
 [rhel-kstree]
-name=Red Hat Enterprise Linux 6 i386 (kstree)
-baseurl=@AUTOINST_TREE_URL_BASE@/RHEL/6/0/Server/i386/Server/
+name=Red Hat Enterprise Linux 6 \$basearch (kstree)
+baseurl=@AUTOINST_TREE_URL_BASE@/rhel/6/0/server/i386/Server/
 enabled=1
 gpgcheck=1
 EOF
