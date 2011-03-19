@@ -3,7 +3,9 @@ pkglibexecdir = @libexecdir@/@PACKAGE@
 nodist_pkglibexec_SCRIPTS = \
 create-iscsi-disk-image \
 net-manage-all \
-virt-net-register virt-net-unregister \
+virt-net-register \
+virt-net-unregister \
+resolve-vm-addr.sh \
 $(NULL)
 
 CLEANFILES = $(nodist_pkglibexec_SCRIPTS)
