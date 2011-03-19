@@ -5,7 +5,7 @@ create-iscsi-disk-image \
 net-manage-all \
 virt-net-register \
 virt-net-unregister \
-resolve-vm-addr.sh \
+resolve-vm-addr \
 $(NULL)
 
 CLEANFILES = $(nodist_pkglibexec_SCRIPTS)
@@ -25,3 +25,5 @@ virt-net-register: virt-net-register.in
 virt-net-unregister: virt-net-unregister.in
 	$(subst)
 
+resolve-vm-addr: resolve-vm-addr.in
+	$(subst)
