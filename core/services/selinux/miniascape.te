@@ -1,0 +1,19 @@
+module miniascape 1.0;
+
+require {
+        type automount_t;
+        type mount_t;
+        type var_t;
+
+        class lnk_file read;
+}
+
+#============= automount_t ==============
+allow automount_t var_t:lnk_file read;
+
+## Alternatives (/var/www/html/iso*):
+# allow automount_t httpd_sys_content_t:dir mounton;
+# allow automount_t httpd_sys_content_t:lnk_file read;
+
+#============= mount_t ==============
+allow mount_t var_t:lnk_file read;

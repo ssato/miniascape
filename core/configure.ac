@@ -92,6 +92,16 @@ AC_ARG_ENABLE([nginx],
 AM_CONDITIONAL([USE_NGINX],[test x$nginx = xtrue])
 
 
+dnl checks for selinux modules
+selinux_makefile=/usr/share/selinux/devel/Makefile
+AC_ARG_WITH([selinux-makefile],
+  [AS_HELP_STRING([--with-selinux-makefile],[Makefile to generate SELinux policy module])],
+      [selinux_makefile=$withval])
+AC_CHECK_FILE([$selinux_makefile],[],
+  [AC_MSG_ERROR([Could not find $selinux_makefile. Are you sure that selinux-policy is installed?])])
+AC_SUBST([SELINUX_MAKEFILE],[$selinux_makefile])
+
+
 AC_CONFIG_FILES([
 Makefile
 config
@@ -110,8 +120,9 @@ services/iscsi/tid-xx-sample.conf
 services/networks/Makefile
 services/networks/net-1.xml
 services/networks/net-2.xml
-services/www/Makefile
 services/nfs/Makefile
+services/selinux/Makefile
+services/www/Makefile
 tools/Makefile
 vm/Makefile
 vm/autoinstall/Makefile

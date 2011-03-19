@@ -33,6 +33,15 @@ Requires:       /usr/bin/qemu-img
 Requires:       %{qemu_kvm}
 Requires:       python-virtinst
 Requires:       rpm-build
+BuildRequires:  selinux-policy
+# getenforce is in libselinux-utils:
+Requires(pre):  /usr/sbin/getenforce
+Requires(post): /usr/sbin/getenforce
+Requires(postun): /usr/sbin/getenforce
+# /usr/sbin/semodule and /usr/sbin/setsebool:
+Requires(pre):  policycoreutils
+Requires(post): policycoreutils
+Requires(postun): policycoreutils
 
 
 %description
@@ -61,9 +70,33 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{__rm} -rf $RPM_BUILD_ROOT
 
 
+%pre
+if test "x`getenforce 2>/dev/null`" = "xEnforcing"; then
+    if test "$1" = 2; then  # update
+        /usr/sbin/semodule -r %{name}
+    fi
+fi
+
+
 %post
+/sbin/service autofs status > /dev/null 2>&1 && /sbin/service autofs reload > /dev/null 2>&1 || :
 /sbin/service %{httpd_name} status > /dev/null 2>&1 && /sbin/service %{httpd_name} reload > /dev/null 2>&1 || :
-exit 0
+if test "x`getenforce 2>/dev/null`" = "xEnforcing"; then
+    /sbin/fixfiles -R @PACKAGE@ restore
+    if test "$1" = 1; then    # install
+        /usr/sbin/semodule -i %{_datadir}/selinux/packages/%{name}/%{name}.pp
+    elif test "$1" = 2; then  # update
+        /usr/sbin/semodule -i %{_datadir}/selinux/packages/%{name}/%{name}.pp
+    fi
+fi
+
+
+%postun
+if test "x`getenforce 2>/dev/null`" = "xEnforcing"; then
+    if test "$1" = 0; then    # erase
+        /usr/sbin/semodule -r %{name}
+    fi
+fi
 
 
 %files
@@ -79,12 +112,14 @@ exit 0
 %{_datadir}/libvirt/networks/*
 %{_datadir}/%{name}/devel/*
 %{_datadir}/%{name}/autoinst/*.cfg
+%{_datadir}/selinux/packages/%{name}/%{name}.pp
 %dir /var/lib/@PACKAGE@/exports
 
 
 %changelog
 * Sat Mar 19 2011 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.20110319-1
 - Merged miniascape-datasrc-dvd
+- Added selinux module
 
 * Fri Jan 21 2011 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.20110121-1
 - Many bug fixes around vm build process

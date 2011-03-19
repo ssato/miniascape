@@ -1,1 +1,1 @@
-SUBDIRS = autofs iptables iscsi networks nfs www
+SUBDIRS = autofs iptables iscsi networks nfs selinux www
