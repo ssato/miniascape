@@ -27,12 +27,21 @@ reboot
 
 
 %pre
+(
+set -x
+set -v
+
+cat /proc/cmdline | sed 's/ /\
+/g' | sed -nre '/^[^=]+=[^=]+$/p' > /tmp/boot-params
+
 # Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
 cat << EOF > /sbin/lspci
 #! /bin/sh
 exit 0
 EOF
 chmod +x /sbin/lspci
+
+) 2>&1 | tee /tmp/ks.pre.log
 
 
 %packages
@@ -94,18 +103,34 @@ vim-enhanced
 
 
 %post --nochroot
-cp /tmp/ks.cfg /mnt/sysimage/root/
+(
+set -x
+set -v
+
+test -d /mnt/sysimage/root/setup || mkdir /mnt/sysimage/root/setup
+for f in /tmp/boot-params /tmp/*ks.cfg /tmp/ks.pre.log; do
+    mv -f $f /mnt/sysimage/root/setup
+done
+) 2>&1 | tee /mnt/sysimage/tmp/ks.post.nochroot.log
 
 
 %post
+(
+set -x
+set -v
+
+source /root/setup/boot-params   # hostname, etc.
+
 # set gateway device expressly
+test -n "${hostname}" && hn="HOSTNAME=${hostname}" || hn=""
 cat << EOF >> /etc/sysconfig/network
 GATEWAYDEV=eth0
+$hn
 EOF
 
 # Hack to off eth1 and eth3; anaconda in rhel3/4 does not support
 # "--onboot=<yes|no>" option for network command.
-for f in /etc/sysconfig/network-scripts/ifcfg-eth{1,3}; do
+for f in /etc/sysconfig/network-scripts/ifcfg-eth{1,2,3}; do
     sed --in-place -e "s/^ONBOOT=yes/ONBOOT=no/" $f
     echo "PEERDNS=no" >> $f
 done
@@ -129,3 +154,5 @@ EOF
 cat << EOF >> /etc/securetty
 ttyS0
 EOF
+
+) 2>&1 | tee /root/setup/ks.post.log
