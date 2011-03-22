@@ -1,4 +1,4 @@
-AC_INIT([miniascape],[0.1.20110320])
+AC_INIT([miniascape],[0.1.20110321])
 AM_INIT_AUTOMAKE([dist-xz foreign])
 
 dnl http://www.flameeyes.eu/autotools-mythbuster/automake/silent.html
