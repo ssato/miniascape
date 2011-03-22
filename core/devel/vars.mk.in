@@ -59,7 +59,8 @@ miniascape_AUTOINST_CFG_URL_BASE	= @AUTOINST_CFG_URL_BASE@
 
 # other options passed to virt-install:
 miniascape_VIRTINST_WAIT_TIME	= 20
-miniascape_OTHER_OPTIONS	= --check-cpu --hvm --accelerate --vnc --noreboot --noautoconsole \
+miniascape_OTHER_OPTIONS	= --check-cpu --hvm --noreboot --noautoconsole \
+--vnc --keymap=$(miniascape_KEYMAP) \
 --wait=$(miniascape_VIRTINST_WAIT_TIME)
 
 # package:

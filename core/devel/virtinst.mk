@@ -19,7 +19,6 @@ virtinst_FLAGS = \
 --ram=$(miniascape_MEMORY) \
 --arch=$(miniascape_ARCH) \
 --vcpus=$(miniascape_VCPU) \
---keymap=$(miniascape_KEYMAP) \
 --os-type=$(miniascape_OS_TYPE) \
 --location=$(miniascape_LOCATION) \
 --os-variant=$(miniascape_OS_VARIANT) \
