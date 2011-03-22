@@ -66,7 +66,7 @@ rhel-5-7-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-7-serv
 rhel-5-8-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-8-server-x86_64-dvd.iso
 rhel-5-9-server-x86_64-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-5-9-server-x86_64-dvd.iso
 # rhel-6-x
-#rhel-6-0-server-386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/RHEL6.0-20100922.1-Workstation-i386-DVD1.iso
+#rhel-6-0-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/RHEL6.0-20100922.1-Workstation-i386-DVD1.iso
 rhel-6-0-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-0-server-i386-dvd.iso
 rhel-6-1-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-1-server-i386-dvd.iso
 rhel-6-2-server-i386-dvd   -fstype=iso9660,ro,loop :@ISODATADIR@/rhel-6-2-server-i386-dvd.iso
