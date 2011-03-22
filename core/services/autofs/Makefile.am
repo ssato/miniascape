@@ -1,5 +1,6 @@
 dist_sysconf_DATA = auto.iso
 
-install-data-hook:
-	$(MKDIR_P) $(DESTDIR)$(ISOMNTDIR)
-	$(MKDIR_P) $(DESTDIR)$(ISODATADIR)
+isodatadir	= $(ISODATADIR)
+isomntdir	= $(ISOMNTDIR)
+dist_isodata_DATA = README
+dist_isomnt_DATA = README

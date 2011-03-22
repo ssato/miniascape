@@ -2,6 +2,7 @@ nfsconfdir = $(sysconfdir)/$(PACKAGE)/nfs
 nfsexportdir = /var/lib/$(PACKAGE)/exports
 
 nodist_nfsconf_DATA = exports
+dist_nfsexport_DATA = README
 
 EXTRA_DIST	= exports.in
 CLEANFILES = exports
@@ -10,7 +11,4 @@ subst	= $(AM_V_GEN)$(SED) -e 's,[@]@nfsexportdir[@],$(nfsexportdir),g' -e 's,[@]
 
 exports: exports.in
 	$(subst)
-
-install-data-hook:
-	$(MKDIR_P) $(DESTDIR)$(nfsexportdir)
 

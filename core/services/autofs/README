@@ -1,0 +1,37 @@
+About
+=================================
+
+The directory /srv/iso is arranged to keep ISO images for OS installation.
+
+ISO images will be mounted under /srv/iso-contents by autofs and the contents
+of ISO images are provided as installation trees by web server program.
+
+
+Please note that this package itself does not contain any ISO images and you
+need to setup these by yourselves.
+
+
+How to arrange ISO images
+=====================================
+
+1. put ISO images in this directory
+2. ln -s that_iso_image_name the_name_follows_the_custom_below
+3. restorecon that_iso_image_name (if you enable SElinux)
+
+
+Naming convention of symlinks of ISO images
+--------------------------------------------
+
+The name of ISO images or symlinks of them must be in the form like:
+
+  DISTRO_NAME-MAJOR_VER-MINOR_VER-CLASS-ARCH-dvd.iso
+
+and the part of the name except for '.iso' must be in /etc/auto.iso.
+
+example:
+
+  RHEL-4-u8-i386-AS.iso -> rhel-4-8-as-i386-dvd
+
+
+SEE ALSO: /etc/auto.iso
+

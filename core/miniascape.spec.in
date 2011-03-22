@@ -114,7 +114,9 @@ fi
 %{_datadir}/%{name}/devel/*
 %{_datadir}/%{name}/autoinst/*.cfg
 %{_datadir}/selinux/packages/%{name}/%{name}.pp
-%dir /var/lib/@PACKAGE@/exports
+@ISODATADIR@
+@ISOMNTDIR@
+/var/lib/@PACKAGE@/exports/*
 
 
 %changelog
