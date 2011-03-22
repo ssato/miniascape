@@ -112,6 +112,7 @@ devel/rpm.mk
 devel/vm.spec.in
 services/Makefile
 services/autofs/Makefile
+services/autofs/README
 services/autofs/auto.iso
 services/iptables/Makefile
 services/iptables/iptables.rules
