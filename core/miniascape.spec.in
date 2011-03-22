@@ -115,7 +115,7 @@ fi
 %{_datadir}/%{name}/autoinst/*.cfg
 %{_datadir}/selinux/packages/%{name}/%{name}.pp
 @ISODATADIR@
-@ISOMNTDIR@
+%dir @ISOMNTDIR@
 /var/lib/@PACKAGE@/exports/*
 
 
