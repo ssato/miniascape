@@ -114,6 +114,7 @@ services/Makefile
 services/autofs/Makefile
 services/autofs/README
 services/autofs/auto.iso
+services/fence/Makefile
 services/iptables/Makefile
 services/iptables/iptables.rules
 services/iscsi/Makefile
