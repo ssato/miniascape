@@ -34,6 +34,9 @@ Requires:       %{qemu_kvm}
 Requires:       python-virtinst
 Requires:       rpm-build
 Requires:       curl
+#Requires:       fence-virtd
+Requires:       fence-virtd-libvirt
+Requires:       fence-virtd-multicast
 BuildRequires:  selinux-policy
 # getenforce is in libselinux-utils:
 Requires(pre):  /usr/sbin/getenforce
