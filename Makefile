@@ -3,7 +3,7 @@ BRANCH	= -b sid
 
 WORKDIR	= ./m
 
-makerpm	= cd $< && autoreconf -vfi && ./configure && make && make rpm
+makerpm	= cd $< && autoreconf -vfi && ./configure && make && make srpm && make rpm
 
 
 all:
@@ -11,6 +11,8 @@ all:
 
 $(WORKDIR):
 	git clone $(BRANCH) $(REPO) $(WORKDIR)
+
+$(WORKDIR)/core: $(WORKDIR)
 
 build: $(WORKDIR) build-core build-datasrc-dvd
 
