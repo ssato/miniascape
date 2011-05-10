@@ -131,6 +131,7 @@ vm/autoinstall/Makefile
 vm/autoinstall/fedora-13-i386-min.ks.cfg
 vm/autoinstall/fedora-14-i386-min.ks.cfg
 vm/autoinstall/rhel-6-0-i386-min.ks.cfg
+vm/autoinstall/rhel-6-cluster.ks.cfg
 vm/autoinstall/rhel-5-cluster.ks.cfg
 vm/autoinstall/rhel-5-satellite.ks.cfg
 vm/autoinstall/rhel-5-mrg.ks.cfg
