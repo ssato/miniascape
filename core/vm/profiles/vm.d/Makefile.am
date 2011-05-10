@@ -49,6 +49,11 @@ rhel-5-satellite-0.cfg \
 rhel-5-satellite-1.cfg \
 rhel-6-0-vm-0.cfg \
 rhel-6-0-vm-1.cfg \
+rhel-6-cluster-1.cfg \
+rhel-6-cluster-2.cfg \
+rhel-6-cluster-3.cfg \
+rhel-6-cluster-4.cfg \
+rhel-6-cluster-5.cfg \
 ubuntu-lucid-vm-0.cfg \
 $(NULL)
 
