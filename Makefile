@@ -1,5 +1,5 @@
 REPO	= git@github.com:ssato/miniascape.git
-BRANCH	= -b sid
+#BRANCH	= -b sid
 
 WORKDIR	= ./m
 
