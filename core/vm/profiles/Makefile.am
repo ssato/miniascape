@@ -36,6 +36,7 @@ rhel-5-6.cfg \
 rhel-5-jboss.cfg \
 rhel-5-satellite.cfg \
 rhel-6-0.cfg \
+rhel-6-1.cfg \
 rhel-6-cluster.cfg \
 rhel-6-latest.cfg \
 ubuntu-lucid.cfg \
