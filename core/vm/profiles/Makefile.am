@@ -4,8 +4,8 @@ profiledir = $(sysconfdir)/$(PACKAGE)/profiles
 
 dist_profile_DATA = \
 debian-squeeze.cfg \
-fedora-13.cfg \
 fedora-14.cfg \
+fedora-15.cfg \
 rhel-3-0.cfg \
 rhel-3-1.cfg \
 rhel-3-2.cfg \

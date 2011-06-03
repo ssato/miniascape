@@ -2,8 +2,8 @@ profiledir = $(sysconfdir)/$(PACKAGE)/profiles/vm.d
 
 dist_profile_DATA = \
 debian-squeeze-vm-0.cfg \
-fedora-13-vm-0.cfg \
 fedora-14-vm-0.cfg \
+fedora-15-vm-0.cfg \
 jboss-0.cfg \
 jon-0.cfg \
 jon-1.cfg \
