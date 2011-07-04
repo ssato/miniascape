@@ -95,7 +95,7 @@ else
 fi
 
 
-make ${dryrun} -f ${drivermk} PACKAGE=${package} miniascape_CONFIG="${conf}" ${command}
+make ${dryrun} -e -f ${drivermk} PACKAGE=${package} miniascape_CONFIG="${conf}" ${command}
 
 
 # vim:set sw=2 ts=2 et ai si sm:
