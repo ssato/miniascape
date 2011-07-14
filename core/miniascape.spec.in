@@ -123,6 +123,9 @@ fi
 
 
 %changelog
+* Thu Jul 14 2011 Satoru SATOH <ssato@redhat.com> - 0.2.0.20110714.1
+- Added rhel-6-1-x86_64 and rhel-6-satellite-0
+
 * Sat Mar 19 2011 Satoru SATOH <satoru.satoh@gmail.com> - 0.1.20110319-1
 - Merged miniascape-datasrc-dvd
 - Added selinux module
