@@ -7,7 +7,7 @@ fedora-14-i386-min.ks.cfg \
 debian-squeeze-preseed.cfg \
 ubuntu-10.04-preseed.cfg \
 rhel-6-0-i386-min.ks.cfg \
-rhel-6-1-i386-min.ks.cfg \
+rhel-6-1-x86_64-min.ks.cfg \
 rhel-6-cluster.ks.cfg \
 rhel-5-cluster.ks.cfg \
 rhel-6-satellite.ks.cfg \
@@ -81,7 +81,7 @@ rhel-5-satellite.ks.cfg.in \
 rhel-6-cluster.ks.cfg.in \
 rhel-6-satellite.ks.cfg.in \
 rhel-6-0-i386-min.ks.cfg.in \
-rhel-6-1-i386-min.ks.cfg.in \
+rhel-6-1-x86_64-min.ks.cfg.in \
 $(NULL)
 
 DISTCLEANFILES	= $(nodist_autoinstdata2_DATA)
