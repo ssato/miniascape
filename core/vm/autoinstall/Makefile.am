@@ -10,6 +10,7 @@ rhel-6-0-i386-min.ks.cfg \
 rhel-6-1-i386-min.ks.cfg \
 rhel-6-cluster.ks.cfg \
 rhel-5-cluster.ks.cfg \
+rhel-6-satellite.ks.cfg \
 rhel-5-satellite.ks.cfg \
 rhel-5-mrg.ks.cfg \
 rhel-5-jboss.ks.cfg \
@@ -78,6 +79,7 @@ rhel-5-mrg.ks.cfg.in \
 rhel-5-luci.ks.cfg.in \
 rhel-5-satellite.ks.cfg.in \
 rhel-6-cluster.ks.cfg.in \
+rhel-6-satellite.ks.cfg.in \
 rhel-6-0-i386-min.ks.cfg.in \
 rhel-6-1-i386-min.ks.cfg.in \
 $(NULL)
