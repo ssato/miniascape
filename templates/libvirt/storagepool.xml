@@ -1,0 +1,7 @@
+<pool type='{{ type }}'>
+  <name>{{ name }}</name>
+  <source/>
+  <target>
+    <path>{{ target.path }}</path>
+  </target>
+</pool>

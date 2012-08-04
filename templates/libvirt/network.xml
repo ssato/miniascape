@@ -1,0 +1,17 @@
+<network>
+  <name>{{ name }}</name>
+  <forward mode='{{ mode|default("nat") }}'/>
+  <bridge name='{{ bridge|default("virbr11") }}' stp='on' delay='0' />
+  <domain name='{{ domain }}'/>
+  <dns>
+{% for h in hosts %}{% if h.fqdn is defined %}    <host ip='{{ h.ip }}'><hostname>{{ h.fqdn }}</hostname></host>{% endif %}
+{% endfor %}
+  </dns>
+  <ip address='{{ gateway }}' netmask='{{ netmask }}'>
+{% if dhcp is defined %}    <dhcp>
+      <range start='{{ dhcp.start }}' end='{{ dhcp.end }}'/>
+{% for h in hosts %}      <host mac='{{ h.mac }}' {% if h.fqdn is defined %}name='{{ h.fqdn }}'{% endif %} ip='{{ h.ip }}'/>
+{% endfor %}
+    </dhcp>{% endif %}
+  </ip>
+</network>
