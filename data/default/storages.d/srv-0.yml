@@ -1,0 +1,5 @@
+type: dir
+name: srv-0
+target:
+  path: /srv/storagepool.d/0
+

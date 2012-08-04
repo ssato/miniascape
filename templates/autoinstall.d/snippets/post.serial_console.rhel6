@@ -1,0 +1,13 @@
+sed -i.save -r 's,(ACTIVE_CONSOLES=/dev/tty)\[1-6\],#\1[1-6]\n\1[1-1],' /etc/sysconfig/init
+sed -i.save -e '$ a\ttyS0' /etc/securetty
+
+touch /etc/init/serial-ttyS0.conf.save
+
+# @see http://docs.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Migration_Planning_Guide/ch04s02.html
+cat << EOF > /etc/init/serial-ttyS0.conf
+start on stopped rc RUNLEVEL=[2345]
+stop on starting runlevel [016]
+
+respawn
+exec /sbin/agetty /dev/ttyS0 115200 vt100-nav
+EOF

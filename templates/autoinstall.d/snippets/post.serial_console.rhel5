@@ -1,0 +1,5 @@
+sed -i.save -e '$ a\ttyS0' /etc/securetty
+sed -i.save \
+  -e 's,^\(2:2345:respawn:/sbin/mingetty tty2\),co:2345:respawn:/sbin/agetty ttyS0 115200 vt100-nav,' \
+  -e 's,^\([3-6]:2345:respawn.*\),#\1,g' \
+/etc/inittab
