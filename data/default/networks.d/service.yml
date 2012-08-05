@@ -1,7 +1,7 @@
 name: service
 mode: nat
 bridge: virbr5
-domain: local
+domain: m2.local
 gateway: 192.168.155.254
 netmask: 255.255.255.0
 hosts:

@@ -2,8 +2,8 @@ ksdevice: eth0
 swap: 512
 filesystem: ext4
 
-domain: .local
-gateway: 192.168.151.254
+domain: m2.local
+gateway: 192.168.155.254
 
 storagepool:
   - name: miniascape-0
