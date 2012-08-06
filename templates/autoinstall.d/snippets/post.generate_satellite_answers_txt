@@ -1,0 +1,16 @@
+mkdir -p /root/setup
+
+cat <<EOA > /root/setup/answers.txt
+admin-email = {{ satellite.admin.email|default('satellite-admin@example.com') }}
+{% if satellite.rhn.username is defined %}rhn-username = {{ satellite.rhn.username }}{% endif %}
+{% if satellite.rhn.password is defined %}rhn-password = {{ satellite.rhn.password }}{% endif %}
+ssl-set-org = {{ satellite.ssl.org|default('Example, Inc.') }}
+ssl-set-org-unit = {{ satellite.ssl.unit|default('IT Dept.') }}
+ssl-set-city = {{ satellite.ssl.city|default('Shibuya-ku') }}
+ssl-set-state = {{ satellite.ssl.state|default('Tokyo') }}
+ssl-set-country = {{ satellite.ssl.country|default('JP') }}
+ssl-password = {{ satellite.ssl.password|default('redhat') }}
+ssl-set-email = {{ satellite.admin.email|default('satellite-admin@example.com') }}
+## NOTE: You need to get a satellite certificate and put it on this path.
+satellite-cert-file = /root/setup/satellite.cert
+EOA
