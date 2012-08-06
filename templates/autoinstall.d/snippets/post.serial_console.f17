@@ -1,0 +1,4 @@
+sed -i.save -r 's,(ACTIVE_CONSOLES=/dev/tty)\[1-6\],#\1[1-6]\n\1[1-1],' /etc/sysconfig/init
+sed -i.save -e '$ a\ttyS0' /etc/securetty
+
+ln -s /usr/lib/systemd/system/getty@.service   /etc/systemd/system/getty.target.wants/getty@ttyS0.service
