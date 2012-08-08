@@ -1,0 +1,15 @@
+hostname: satellite
+description: RHN Satellite
+fqdn: satellite.m2.local
+ip: 192.168.155.10
+interfaces:
+  - device: eth0
+    onboot: "yes"
+    bootproto: dhcp
+    ip: 192.168.155.10
+    mac: "52:54:00:05:00:10"
+    host: satellite
+    fqdn: satellite.m2.local
+    network: service
+
+kscfg: satellite-ks.cfg

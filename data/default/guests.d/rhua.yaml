@@ -1,13 +1,13 @@
 hostname: rhua
 description: RHUA サーバー
 fqdn: rhua.m2.local
-ip: 192.168.155.10
+ip: 192.168.155.20
 interfaces:
   - device: eth0
     onboot: "yes"
     bootproto: dhcp
-    ip: 192.168.155.10
-    mac: "52:54:00:05:00:10"
+    ip: 192.168.155.20
+    mac: "52:54:00:05:00:20"
     host: rhua
     fqdn: rhua.m2.local
     network: service
