@@ -1,16 +1,25 @@
 mkdir -p /root/setup
 
 cat <<EOA > /root/setup/answers.txt
-admin-email = {{ satellite.admin.email|default('satellite-admin@example.com') }}
-{% if satellite.rhn.username is defined %}rhn-username = {{ satellite.rhn.username }}{% endif %}
-{% if satellite.rhn.password is defined %}rhn-password = {{ satellite.rhn.password }}{% endif %}
-ssl-set-org = {{ satellite.ssl.org|default('Example, Inc.') }}
-ssl-set-org-unit = {{ satellite.ssl.unit|default('IT Dept.') }}
-ssl-set-city = {{ satellite.ssl.city|default('Shibuya-ku') }}
-ssl-set-state = {{ satellite.ssl.state|default('Tokyo') }}
-ssl-set-country = {{ satellite.ssl.country|default('JP') }}
+# Originally taken from RHN Satellite DVD (install/answers.txt)
+admin-email = {{ satellite.admin.email }}
+{% if rhn.username is defined %}
+rhn-username = {{ rhn.username }}
+rhn-password = {{ rhn.password }}
+{% endif %}
+{% if proxy.fqdn is defined %}
+rhn-http-proxy = {{ proxy.fqdn }}
+rhn-http-proxy-username = {{ proxy.username }}
+rhn-http-proxy-password = {{ proxy.password }}
+{% endif %}
+ssl-set-org = {{ satellite.ssl.org }}
+ssl-set-org-unit = {{ satellite.ssl.unit }}
+ssl-set-city = {{ satellite.ssl.city }}
+ssl-set-state = {{ satellite.ssl.state }}
+ssl-set-country = {{ satellite.ssl.country }}
 ssl-password = {{ satellite.ssl.password|default('redhat') }}
-ssl-set-email = {{ satellite.admin.email|default('satellite-admin@example.com') }}
-## NOTE: You need to get a satellite certificate and put it on this path.
-satellite-cert-file = /root/setup/satellite.cert
+satellite-cert-file = {{ satellite.cert|default('/root/setup/satellite.cert') }}
+# added to avoid some unknown errors:
+ssl-set-email = {{ satellite.admin.email }}
+ssl-config-sslvhost = y
 EOA
