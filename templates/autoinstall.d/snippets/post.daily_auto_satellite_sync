@@ -1,0 +1,6 @@
+# Automatic satellite-sync: http://red.ht/PU06EA
+f=/var/spool/cron/root
+test -f $f && cp $f $f.save || touch $f.save
+cat << EOF >> $f
+#0 1 * * * perl -le 'sleep rand 9000' && satellite-sync --email >/dev/null 2>/dev/null
+EOF
