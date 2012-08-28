@@ -10,7 +10,6 @@ compat-db43
 compat-libstdc++-33
 createrepo
 crypto-utils
-gc
 genisoimage
 jakarta-commons-codec
 jakarta-commons-lang
