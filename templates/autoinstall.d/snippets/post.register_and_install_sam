@@ -1,0 +1,6 @@
+# @see http://red.ht/NC31hh
+service network restart
+subscription-manager register --username="{{ rhn.username }}" --name={{ hostname }} --autosubscribe --force
+yum repolist
+yum-config-manager --enable rhel-6-server-sam-rpms
+yum install -y katello-headpin-all
