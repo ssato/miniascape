@@ -16,6 +16,7 @@ VERSION = "0.3.0"
 
 data_files = [
     # sysconf files:
+    ("/etc/%s/default/common" % PACKAGE, glob.glob("config/default/common/*")),
     ("/etc/%s/default/networks.d" % PACKAGE,
         glob.glob("config/default/networks.d/*")),
     ("/etc/%s/default/guests.d" % PACKAGE,
