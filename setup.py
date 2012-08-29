@@ -33,7 +33,7 @@ data_files = [
     ("share/%s/templates/autoinstall.d/snippets" % PACKAGE,
         glob.glob("templates/autoinstall.d/snippets/*")),
     ("share/%s/templates/data/rhui/root/setup" % PACKAGE,
-        glob.glob("templates/data/rhui/root/setup/*")),
+        ["templates/data/rhui/root/setup/answers.txt"]),
     ("share/%s/templates/data/rhui/root/setup/certs" % PACKAGE,
         glob.glob("templates/data/rhui/root/setup/certs/*")),
 ]

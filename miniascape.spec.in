@@ -47,6 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 %{_bindir}/*
 %{_sysconfdir}/%{name}
+%{_datadir}/%{name}/templates
 %{python_sitelib}/*
 
 
