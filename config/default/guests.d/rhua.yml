@@ -1,5 +1,5 @@
 hostname: rhua
-description: RHUA サーバー
+description: RHUA Server
 fqdn: rhua.m2.local
 ip: 192.168.155.20
 interfaces:
