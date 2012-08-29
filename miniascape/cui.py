@@ -17,6 +17,7 @@
 import jinja2_cui.cui as JC
 import logging
 import os.path
+import subprocess
 import sys
 
 
@@ -30,6 +31,13 @@ M_TMPL_DIR = "/usr/share/miniascape/templates"
 #
 # Type: network --------------------------------
 #
+
+def option_parser(defaults=None):
+    if defaults is None:
+        p = JC.option_parser()
+        p.set_defaults(workdir=
+
+        p.add_option("-o", "--output", help="Output filename [stdout]")
 
 
 def main(argv):
