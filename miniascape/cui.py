@@ -21,7 +21,15 @@ import sys
 
 
 M_CONF_DIR = "/etc/miniascape/default"
-M_TMPL_DIR = "/usr/share/miniascape/templates/autoinstall.d"
+M_TMPL_DIR = "/usr/share/miniascape/templates"
+
+
+# Type: guest -----------------------------------
+# jinja2-cui -T M_TMPL_DIR/autoinstall.d -C "M_CONF_DIR/common/*" -C M_CONF_DIR/guets.d/<VM_NAME>.yml -o workdir/<VM_NAME>/ks.cfg M_TMPL_DIR/autoinstall.d/<VM_NAME>-ks.cfg
+# jinja2-cui -T M_TMPL_DIR/libvirt -C "M_CONF_DIR/common/*" -C M_CONF_DIR/guets.d/<VM_NAME>.yml -o workdir/<VM_NAME>/vmbuild.sh M_TMPL_DIR/libvirt/<VM_NAME>-ks.cfg
+#
+# Type: network --------------------------------
+#
 
 
 def main(argv):
