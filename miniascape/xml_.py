@@ -15,9 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import xml.etree.ElementTree as ET
-
 import logging
+
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 
 def create_etree(xmlfile):
@@ -38,7 +41,7 @@ def add_host_into_network_xml(xmlfile, host):
 
     dhcp_elem = find_xml_elem_by_xpath(tree, ".//ip/dhcp")
     if not dhcp_elem:
-        logging.error("dhcp element does not found in the xml: " xmlfile)
+        logging.error("dhcp element does not found in the xml: " + xmlfile)
         return
 
     if find_xml_elem_by_xpath(dhcp_elem, "host/[@name='%s']" % hname):
@@ -49,7 +52,7 @@ def add_host_into_network_xml(xmlfile, host):
 
     dns_elem = find_xml_elem_by_xpath(tree, ".//dns")
     if not dns_elem:
-        logging.error("dns element does not found in the xml: " xmlfile)
+        logging.error("dns element does not found in the xml: " + xmlfile)
         return
 
     if not find_xml_elem_by_xpath(dns_elem, "host/[@ip='%s']" % host["ip"]):
