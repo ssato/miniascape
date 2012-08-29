@@ -1,0 +1,13 @@
+include MANIFEST.in
+include README
+include python-miniascape.spec.in
+include setup.py
+include tools/*
+include templates/libvirt/*
+include templates/autoinstall.d/*-ks.cfg
+include templates/autoinstall.d/data/*
+include templates/autoinstall.d/snippets/*
+include templates/data/rhui/root/setup/*
+include templates/data/rhui/root/setup/certs/Makefile
+recursive-include config *.yml
+recursive-include miniascape *.py
