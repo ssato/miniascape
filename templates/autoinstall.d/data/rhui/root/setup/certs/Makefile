@@ -1,0 +1,65 @@
+# Makefile to generate private key and certificates needed for RHUI setup
+# Requirements: openssl
+# Author: Satoru SATOH <ssato@redhat.com>
+# License: MIT
+#
+GEN_KEY	= openssl genrsa -out \$@ {{ cert.key_length }}
+DAYS	?= {{ cert.expiration_dates }}
+SUBJ_BASE	?= {{ cert.subject }}
+
+RHUA_FQDN ?= {{ fqdn }}{% for cds in cdsservers %}
+CDS_{{ loop.index }}_FQDN ?= {{ cds.fqdn }}{% endfor %}
+
+objs = rhui-ca.crt \$(RHUA_FQDN).crt entitlement-ca.crt
+{% for cds in cdsservers %}objs += \$(CDS_{{ loop.index }}_FQDN).crt
+{% endfor %}
+
+all: \$(objs)
+
+rhui-ca.srl:
+	echo 10 > \$@
+
+# Generate the RHUI CA private key, certificate signing request (csr) and
+# certificate at once:
+rhui-ca.crt: rhui-ca.srl
+	openssl req -new -x509 -extensions v3_ca -days \$(DAYS) -nodes -keyout rhui-ca.key -subj "\$(SUBJ_BASE)\$(RHUA_FQDN) CA" -out \$@
+
+# Generate the private key for RHUA:
+\$(RHUA_FQDN).key:
+	\$(GEN_KEY)
+
+# Generate the certificate signing request (csr) for RHUA:
+\$(RHUA_FQDN).csr: \$(RHUA_FQDN).key
+	openssl req -new -key \$< -subj "\$(SUBJ_BASE)\$(RHUA_FQDN)" -out \$@
+
+# Generate the certificate for RHUA:
+\$(RHUA_FQDN).crt: rhui-ca.crt \$(RHUA_FQDN).key \$(RHUA_FQDN).csr
+	openssl x509 -req -days \$(DAYS) -CA rhui-ca.crt -CAkey rhui-ca.key -in \$(RHUA_FQDN).csr -out \$@
+
+# Generate the private key for CDS-es:
+{% for cds in cdsservers %}
+\$(CDS_{{ loop.index }}_FQDN).key:
+	\$(GEN_KEY)
+
+# Generate the certificate signing request (csr) for CDS:
+\$(CDS_{{ loop.index }}_FQDN).csr: \$(CDS_{{ loop.index }}_FQDN).key
+	openssl req -new -key \$< -subj "\$(SUBJ_BASE)\$(CDS_{{ loop.index }}_FQDN)" -out \$@
+
+# Generate the certificate for CDS:
+\$(CDS_{{ loop.index }}_FQDN).crt: \$(CDS_{{ loop.index }}_FQDN).key \$(CDS_{{ loop.index }}_FQDN).csr
+	test -f rhui-ca.key && test -f rhui-ca.crt
+	openssl x509 -req -days \$(DAYS) -CA rhui-ca.crt -CAkey rhui-ca.key -in \$(CDS_{{ loop.index }}_FQDN).csr -out \$@{% endfor %}
+
+# Generate the entitlement-signing CA private key and certificate:
+#
+# NOTE: Remove the option '-nodes' if you want to set pass-phrase:
+entitlement-ca.crt:
+	openssl req -new -x509 -extensions v3_ca -days \$(DAYS) -nodes -keyout entitlement-ca-key.pem -subj "\$(SUBJ_BASE)\$(RHUA_FQDN) Entitlement CA" -out \$@
+
+#clean:
+#	-rm -f \$(wildcard *.crt)
+
+#distclean:
+#	-rm -f \$(wildcard *.key) \$(wildcard *.csr) \$(wildcard *.srl)
+
+#.PHONY: clean distclean

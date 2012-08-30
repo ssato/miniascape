@@ -1,4 +1,3 @@
-# package groups and packages
 augeas-libs
 jna
 libselinux-ruby

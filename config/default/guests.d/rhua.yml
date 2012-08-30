@@ -13,3 +13,20 @@ interfaces:
     network: service
 
 kscfg: rhua-ks.cfg
+
+cdsservers:
+  - name: cds-1
+    fqdn: cds-1.m2.local
+  - name: cds-2
+    fqdn: cds-2.m2.local
+
+cert:
+  key_length: 2048
+  expiration_dates: 1095
+  subject: "/C=JP/O=M2 Example, Inc./CN="
+
+disks:
+  - src: default
+    format: qcow2
+    cache: none
+    size: 50

@@ -14,13 +14,18 @@ interfaces:
 
 kscfg: satellite-ks.cfg
 
+disks:
+  - src: default
+    format: qcow2
+    cache: none
+    size: 50
 
 satellite:
   admin:
     email: root@localhost
 
   ssl:
-    org: "Example, Inc."
+    org: "M2 Example, Inc."
     unit: "IT Dept."
     city: Shibuya-ku
     state: Tokyo
