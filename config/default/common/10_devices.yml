@@ -1,0 +1,12 @@
+storagepool:
+  - name: miniascape-0
+    type: dir
+    target:
+      path: /srv/miniascape/storage.d/0
+
+disks:
+  - src: default
+    format: qcow2
+    cache: none
+    size: 5
+

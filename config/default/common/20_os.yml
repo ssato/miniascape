@@ -1,0 +1,11 @@
+swap: 512
+filesystem: ext4
+
+selinux:
+  mode: enforcing
+
+timezone:
+  utc: true
+  timezone: Asia/Tokyo
+
+
