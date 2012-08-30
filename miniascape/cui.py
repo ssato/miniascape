@@ -23,7 +23,7 @@ import sys
 
 M_CONF_DIR = "/etc/miniascape/default"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
-
+M_WORK_TOPDIR = "workdir"
 
 # Type: guest -----------------------------------
 # jinja2-cui -T M_TMPL_DIR/autoinstall.d -C "M_CONF_DIR/common/*" -C M_CONF_DIR/guets.d/<VM_NAME>.yml -o workdir/<VM_NAME>/ks.cfg M_TMPL_DIR/autoinstall.d/<VM_NAME>-ks.cfg
@@ -32,12 +32,30 @@ M_TMPL_DIR = "/usr/share/miniascape/templates"
 # Type: network --------------------------------
 #
 
-def option_parser(defaults=None):
-    if defaults is None:
-        p = JC.option_parser()
-        p.set_defaults(workdir=
 
-        p.add_option("-o", "--output", help="Output filename [stdout]")
+def _mk_workdir(name, topdir=M_WORK_TOPDIR):
+    return os.path.join(topdir, name)
+
+
+def _mk_tmpl_cmd(tpaths, configs, output, tmpl):
+    """Construct template command from given parameters.
+
+    :param tpaths: Template path list
+    :param configs: Config files
+    :param output: Output file
+    :param tmpl: Template file to instantiate
+
+    >>> _mk_tmpl_cmd(["a", "b/c"], ["x/y", "z/*.cfg"], "out.dat", "t.tmpl")
+    'jinja2-cui -T a -T b/c -C "x/y" -C "z/*.cfg" -o out.dat t.tmpl'
+    """
+    params = dict(
+        topts=' '.join("-T " + tp for tp in tpaths),
+        copts=' '.join("-C \"%s\"" % c for c in configs),
+        output=output,
+        tmpl=tmpl,
+    )
+
+    return "jinja2-cui %(topts)s %(copts)s -o %(output)s %(tmpl)s" % params
 
 
 def main(argv):
