@@ -2,6 +2,13 @@ ksdevice: eth0
 swap: 512
 filesystem: ext4
 
+selinux:
+  mode: enforcing
+
+timezone:
+  utc: true
+  timezone: Asia/Tokyo
+
 domain: m2.local
 gateway: 192.168.155.254
 
@@ -16,17 +23,4 @@ disks:
     format: qcow2
     cache: none
     size: 5
-
-# see also: virt-install(1)
-virtinst:
-  ram: 512
-  vcpus: 1
-  basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
-  connect: "qemu:///system"
-  waittime: 20  # [min]
-  arch: x86_64
-  graphics: vnc
-  os_type: linux
-  os_variant: rhel6
-  location: "http://192.168.151.254/kstree/rhel/6/3/x86_64/"
 
