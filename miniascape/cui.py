@@ -56,7 +56,7 @@ def _mk_tmpl_cmd(tpaths, configs, output, tmpl):
     return "jinja2-cui %(topts)s %(copts)s -o %(output)s %(tmpl)s" % params
 
 
-def _gen_guest_files(name, tmpldir, confdir, workdir):
+def gen_guest_files(name, tmpldir, confdir, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
     """
@@ -65,10 +65,6 @@ def _gen_guest_files(name, tmpldir, confdir, workdir):
         os.path.join(confdir, "common/*.yml"),  # e.g. confdir/common/00.yml
         os.path.join(confdir, "guests.d/%s.yml" % name),
     ]
-
-    if not os.path.exists(workdir):
-        logging.info("Creating working dir: " + workdir)
-        os.makedirs(workdir)
 
     kscmd = _mk_tmpl_cmd(
         [os.path.join(tmpldir, "autoinstall.d")], confs,
@@ -80,6 +76,10 @@ def _gen_guest_files(name, tmpldir, confdir, workdir):
         os.path.join(workdir, "vmbuild.sh"),
         os.path.join(tmpldir, "libvirt", "vmbuild.sh"),
     )
+
+    if not os.path.exists(workdir):
+        logging.info("Creating working dir: " + workdir)
+        os.makedirs(workdir)
 
     logging.debug("Generating kickstart config: " + kscmd)
     subprocess.check_output(kscmd, shell=True)
@@ -138,6 +138,6 @@ def main(argv=sys.argv):
     logging.getLogger().setLevel(DEBUG if options.debug else INFO)
 
     vmname = args[0]
-    _gen_guest_files(vmname, options.tmpldir, options.confdir, options.workdir)
+    gen_guest_files(vmname, options.tmpldir, options.confdir, options.workdir)
 
 # vim:sw=4:ts=4:et:
