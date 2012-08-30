@@ -125,7 +125,7 @@ def option_parser(defaults=None):
     return p
 
 
-def main(argv):
+def main(argv=sys.argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
