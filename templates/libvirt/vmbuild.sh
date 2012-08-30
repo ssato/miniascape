@@ -1,10 +1,9 @@
 #! /bin/bash
-#
 # see also virt-install(1)
 #
-set -e
-set -x
-ks_path=${0%/*}/{{ kscfg }} 
+set -ex
+test $# -gt 0 && ks_path=$1 || ks_path=${0%/*}/ks.cfg
+kscfg=${ks_path##*/}
 
 {%- macro net_option(nic) -%}
 network={{ nic.network|default('network') }},model={{ nic.model|default('virtio') }},mac={{ nic.mac|default('RANDOM') }}
@@ -28,5 +27,4 @@ virt-install \
 --initrd-inject=${ks_path} \
 {% for disk in disks %}--disk "{{ disk_option(disk) }}" {% endfor %} \
 {% for nic in interfaces %}--network "{{ net_option(nic) }}" {% endfor %} \
---extra-args="ks=file:/{{ kscfg }} ksdevice={{ ksdevice }} {{ virtinst.extra_args|default('') }}"
-
+--extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice }} {{ virtinst.extra_args|default('') }}"
