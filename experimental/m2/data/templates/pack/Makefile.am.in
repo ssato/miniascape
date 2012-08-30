@@ -1,7 +1,0 @@
-AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = README @PACKAGE@.spec aux/rpm.mk
-ACLOCAL_AMFLAGS = -I aux/m4
-
-SUBDIRS = data
-
-include $(abs_srcdir)/aux/rpm.mk
