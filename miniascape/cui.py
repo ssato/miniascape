@@ -17,8 +17,9 @@
 from logging import DEBUG, INFO
 
 import miniascape.utils as MU
-import jinja2_cui.cui as JC
+import glob
 import logging
+import optparse
 import os.path
 import os
 import subprocess
@@ -101,7 +102,7 @@ def list_names(confdir):
 
 
 def show_vm_names(confdir):
-    print >> "\nAvailable VMs: " + ", ".join(list_names())
+    print >> sys.stderr, "\nAvailable VMs: " + ", ".join(list_names(confdir))
 
 
 def option_parser(defaults=None):
