@@ -19,6 +19,6 @@ import datetime
 
 
 def date():
-    return datetime.datetime.now().strftime(".%Y%m%d")
+    return datetime.datetime.now().strftime("%Y%m%d")
 
 # vim:sw=4:ts=4:et:
