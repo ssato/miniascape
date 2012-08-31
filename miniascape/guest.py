@@ -61,10 +61,10 @@ def gen_guest_files(name, tmpldir, confdir, workdir):
         logging.info("Creating working dir: " + workdir)
         os.makedirs(workdir)
 
-    logging.debug("Generating kickstart config: " + kscmd)
+    logging.info("Generating kickstart config: " + kscmd)
     subprocess.check_output(kscmd, shell=True)
 
-    logging.debug("Generating vm build script: " + vbcmd)
+    logging.info("Generating vm build script: " + vbcmd)
     subprocess.check_output(vbcmd, shell=True)
 
 
@@ -87,21 +87,32 @@ def show_vm_names(confdir):
     print >> sys.stderr, "\nAvailable VMs: " + ", ".join(list_names(confdir))
 
 
+def gen_all(tmpldir, confdir, workdir):
+    for vmname in list_names(confdir):
+        gen_guest_files(vmname, tmpldir, confdir, workdir)
+
+
 def option_parser(defaults=None):
     if defaults is None:
         defaults = dict(
             tmpldir=M_TMPL_DIR,
             confdir=M_CONF_DIR,
             workdir=M_WORK_TOPDIR,
+            genall=False,
             debug=False,
         )
 
-    p = optparse.OptionParser("%prog [OPTION ...] NAME")
+    p = optparse.OptionParser("%prog [OPTION ...] [NAME]")
     p.set_defaults(**defaults)
 
     p.add_option("-t", "--tmpldir", help="Template top dir [%default]")
-    p.add_option("-c", "--confdir", help="Configurations (context files) top dir [%default]")
+    p.add_option("-c", "--confdir",
+        help="Configurations (context files) top dir [%default]"
+    )
     p.add_option("-w", "--workdir", help="Working top dir [%default]")
+    p.add_option("-A", "--genall", action="store_true",
+        help="Generate configs for all guests"
+    )
 
     p.add_option("-D", "--debug", action="store_true", help="Debug mode")
 
@@ -112,15 +123,19 @@ def main(argv=sys.argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
-    if not args:
+    if not args and not options.genall:
         p.print_help()
         show_vm_names(options.confdir)
         sys.exit(0)
 
     logging.getLogger().setLevel(DEBUG if options.debug else INFO)
 
-    vmname = args[0]
-    gen_guest_files(vmname, options.tmpldir, options.confdir, options.workdir)
+    eargs = (options.tmpldir, options.confdir, options.workdir)
+    if options.genall:
+        gen_all(*eargs)
+    else:
+        vmname = args[0]
+        gen_guest_files(vmname, *eargs)
 
 
 if __name__ == '__main__':

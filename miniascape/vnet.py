@@ -104,7 +104,7 @@ def gen_vnet_files(tmpldir, confdir, workdir, force):
         subprocess.check_output(cmd, shell=True)
 
 
-def option_parser(defaults=None):
+def option_parser(argv=sys.argv, defaults=None):
     if defaults is None:
         defaults = dict(
             tmpldir=M_TMPL_DIR,
@@ -114,7 +114,7 @@ def option_parser(defaults=None):
             debug=False,
         )
 
-    p = optparse.OptionParser("%prog [OPTION ...]")
+    p = optparse.OptionParser("%prog [OPTION ...]", prog=argv[0])
     p.set_defaults(**defaults)
 
     p.add_option("-t", "--tmpldir", help="Template top dir [%default]")
@@ -132,7 +132,7 @@ def option_parser(defaults=None):
 
 
 def main(argv):
-    p = option_parser()
+    p = option_parser(argv)
     (options, args) = p.parse_args(argv[1:])
 
     logging.getLogger().setLevel(DEBUG if options.debug else INFO)

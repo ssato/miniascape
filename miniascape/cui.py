@@ -29,118 +29,53 @@ import subprocess
 import sys
 
 
-def _mk_workdir(name, topdir=M_WORK_TOPDIR):
-    return os.path.join(topdir, name)
+import miniascape.guest as G
+import miniascape.vnet as N
+
+from sys import argv
 
 
-def _mk_tmpl_cmd(tpaths, configs, output, tmpl):
-    """Construct template command from given parameters.
-
-    :param tpaths: Template path list
-    :param configs: Config files
-    :param output: Output file
-    :param tmpl: Template file to instantiate
-
-    >>> _mk_tmpl_cmd(["a", "b/c"], ["x/y", "z/*.cfg"], "out.dat", "t.tmpl")
-    'jinja2-cui -T a -T b/c -C "x/y" -C "z/*.cfg" -o out.dat t.tmpl'
-    """
-    params = dict(
-        topts=' '.join("-T " + tp for tp in tpaths),
-        copts=' '.join("-C \"%s\"" % c for c in configs),
-        output=output,
-        tmpl=tmpl,
-    )
-
-    return "jinja2-cui %(topts)s %(copts)s -o %(output)s %(tmpl)s" % params
+def cmd2prog(c):
+    return "miniascape " + c
 
 
-def gen_guest_files(name, tmpldir, confdir, workdir):
-    """
-    Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
-    """
-    workdir = os.path.join(workdir, name)
-    confs = [
-        os.path.join(confdir, "common/*.yml"),  # e.g. confdir/common/00.yml
-        os.path.join(confdir, "guests.d/%s.yml" % name),
-    ]
-
-    conf = MU.load_confs(confs)
-    kscfg = conf.get("kscfg", "%s-ks.cfg" % name)
-
-    kscmd = _mk_tmpl_cmd(
-        [os.path.join(tmpldir, "autoinstall.d")], confs,
-        os.path.join(workdir, "ks.cfg"),
-        os.path.join(tmpldir, "autoinstall.d", kscfg),
-    )
-    vbcmd = _mk_tmpl_cmd(
-        [os.path.join(tmpldir, "libvirt")], confs,
-        os.path.join(workdir, "vmbuild.sh"),
-        os.path.join(tmpldir, "libvirt", "vmbuild.sh"),
-    )
-
-    if not os.path.exists(workdir):
-        logging.info("Creating working dir: " + workdir)
-        os.makedirs(workdir)
-
-    logging.debug("Generating kickstart config: " + kscmd)
-    subprocess.check_output(kscmd, shell=True)
-
-    logging.debug("Generating vm build script: " + vbcmd)
-    subprocess.check_output(vbcmd, shell=True)
-
-
-def _cfg_to_name(config):
-    """
-    >>> _cfg_to_name("/etc/miniascape/config/guests.d/abc.yml")
-    'abc'
-    """
-    return  os.path.basename(os.path.splitext(config)[0])
-
-
-def list_names(confdir):
-    return sorted(
-        _cfg_to_name(f) for f in
-            glob.glob(os.path.join(confdir, "guests.d/*.yml"))
-    )
-
-
-def show_vm_names(confdir):
-    print >> sys.stderr, "\nAvailable VMs: " + ", ".join(list_names(confdir))
-
-
-def option_parser(defaults=None):
-    if defaults is None:
-        defaults = dict(
-            tmpldir=M_TMPL_DIR,
-            confdir=M_CONF_DIR,
-            workdir=M_WORK_TOPDIR,
-            debug=False,
-        )
-
-    p = optparse.OptionParser("%prog [OPTION ...] NAME")
-    p.set_defaults(**defaults)
-
-    p.add_option("-t", "--tmpldir", help="Template top dir [%default]")
-    p.add_option("-c", "--confdir", help="Configurations (context files) top dir [%default]")
-    p.add_option("-w", "--workdir", help="Working top dir [%default]")
-
-    p.add_option("-D", "--debug", action="store_true", help="Debug mode")
-
-    return p
-
-
-def main(argv=sys.argv):
-    p = option_parser()
+def gen_all(argv=argv):
+    p = N.option_parser(argv)
     (options, args) = p.parse_args(argv[1:])
 
-    if not args:
-        p.print_help()
-        show_vm_names(options.confdir)
-        sys.exit(0)
+    N.gen_vnet_files(
+        options.tmpldir, options.confdir, options.workdir, options.force
+    )
+    G.gen_all(options.tmpldir, options.confdir, options.workdir)
 
-    logging.getLogger().setLevel(DEBUG if options.debug else INFO)
 
-    vmname = args[0]
-    gen_guest_files(vmname, options.tmpldir, options.confdir, options.workdir)
+# TODO: define other commands.
+cmds = [("ge", "generate", gen_all), ("gu", "guest", G.main)]
+
+
+def usage():
+    cs = ", ".join(c for _a, c, _f in cmds)
+    cas = ", ".join(a for a, _c, _f in cmds)
+    print """Usage: %s COMMAND_OR_COMMAND_ABBREV [Options] [Arg ...]
+
+Commands: %s
+Command abbreviations: %s
+""" % (argv[0], cs, cas)
+
+
+def main(argv=argv):
+    if len(argv) == 1 or argv[1] in ("-h", "--help"):
+        usage()
+    else:
+        cfs = [(c, f) for abbrev, c, f in cmds if argv[1].startswith(abbrev)]
+        if cfs:
+            (c, f) = cfs[0]
+            f([cmd2prog(c)] + argv[2:])
+        else:
+            usage()
+
+
+if __name__ == '__main__':
+    main(argv)
 
 # vim:sw=4:ts=4:et:
