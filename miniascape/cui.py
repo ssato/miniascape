@@ -15,33 +15,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from logging import DEBUG, INFO
-from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
-
-import miniascape.utils as MU
-import jinja2_cui.render as R
-
-import glob
-import logging
-import optparse
-import os.path
-import os
-import subprocess
-import sys
-
 
 import miniascape.guest as G
 import miniascape.vnet as N
 
-from sys import argv
+import logging
+import sys
 
 
 def cmd2prog(c):
     return "miniascape " + c
 
 
-def gen_all(argv=argv):
+def gen_all(argv):
     p = N.option_parser(argv)
-    (options, args) = p.parse_args(argv[1:])
+    (options, args) = p.parse_args(argv)
+
+    logging.getLogger().setLevel(DEBUG if options.debug else INFO)
 
     N.gen_vnet_files(
         options.tmpldir, options.confdir, options.workdir, options.force
@@ -50,29 +40,34 @@ def gen_all(argv=argv):
 
 
 # TODO: define other commands.
-cmds = [("ge", "generate", gen_all), ("gu", "guest", G.main)]
+cmds = [
+    ("ge", "generate", gen_all),
+    ("gu", "guest", G.main),
+    ("n", "net", N.main),
+]
 
 
-def usage():
+def usage(prog, cmds=cmds):
     cs = ", ".join(c for _a, c, _f in cmds)
     cas = ", ".join(a for a, _c, _f in cmds)
-    print """Usage: %s COMMAND_OR_COMMAND_ABBREV [Options] [Arg ...]
+    print """\
+Usage: %s COMMAND_OR_COMMAND_ABBREV [Options] [Arg ...]
 
 Commands: %s
 Command abbreviations: %s
-""" % (argv[0], cs, cas)
+""" % (prog, cs, cas)
 
 
-def main(argv=argv):
+def main(argv):
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
-        usage()
+        usage(argv[0])
     else:
         cfs = [(c, f) for abbrev, c, f in cmds if argv[1].startswith(abbrev)]
         if cfs:
             (c, f) = cfs[0]
             f([cmd2prog(c)] + argv[2:])
         else:
-            usage()
+            usage(argv[0])
 
 
 if __name__ == '__main__':
