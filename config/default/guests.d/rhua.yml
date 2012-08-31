@@ -1,15 +1,13 @@
-hostname: rhua
 description: RHUA Server
-fqdn: rhua.m2.local
-ip: 192.168.155.20
+hostname: &hostname rhua
+fqdn: &fqdn rhua.m2.local
+ip: &ip 192.168.155.20
 interfaces:
   - device: eth0
-    onboot: "yes"
-    bootproto: dhcp
-    ip: 192.168.155.20
     mac: "52:54:00:05:00:20"
-    host: rhua
-    fqdn: rhua.m2.local
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
     network: service
 
 kscfg: rhua-ks.cfg
