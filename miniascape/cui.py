@@ -29,9 +29,21 @@ def cmd2prog(c):
 
 def gen_all(argv):
     p = N.option_parser(argv)
+    p.add_option(
+        "-y", "--yes", action="store_true", default=False,
+        help="Assume yes for all Questions"
+    )
     (options, args) = p.parse_args(argv)
 
     logging.getLogger().setLevel(DEBUG if options.debug else INFO)
+
+    if not options.yes:
+        yesno = raw_input(
+            "Are you sure to generate for %s [y/n] > " % options.confdir
+        )
+        if not yesno.strip().lower().startswith('y'):
+            print >> sys.stderr, "Cancel generation of files..."
+            sys.exit()
 
     N.gen_vnet_files(
         options.tmpldir, options.confdir, options.workdir, options.force
