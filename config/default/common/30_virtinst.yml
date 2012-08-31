@@ -4,10 +4,10 @@ virtinst:
   vcpus: 1
   basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
   connect: "qemu:///system"
-  waittime: 20  # [min]
+  waittime: 20
   arch: x86_64
   graphics: vnc
   os_type: linux
   os_variant: rhel6
-  location: "http://192.168.151.254/kstree/rhel/6/3/x86_64/"
+  location: "http://ks/kstree/rhel/6/3/x86_64/"
 
