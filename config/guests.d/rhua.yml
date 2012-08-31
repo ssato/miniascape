@@ -25,6 +25,4 @@ cert:
 
 disks:
   - src: default
-    format: qcow2
-    cache: none
     size: 50
