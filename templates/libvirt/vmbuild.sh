@@ -27,4 +27,4 @@ virt-install \
 --initrd-inject=${ks_path} \
 {% for disk in disks %}--disk "{{ disk_option(disk) }}" {% endfor %} \
 {% for nic in interfaces %}--network "{{ net_option(nic) }}" {% endfor %} \
---extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice }} {{ virtinst.extra_args|default('') }}"
+--extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }} {{ virtinst.extra_args|default('') }}"
