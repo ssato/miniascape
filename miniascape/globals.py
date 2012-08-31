@@ -20,5 +20,4 @@ M_CONF_DIR = "/etc/miniascape"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
 M_WORK_TOPDIR = "workdir-" + MU.date()
 
-
 # vim:sw=4:ts=4:et:
