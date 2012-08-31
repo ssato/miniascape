@@ -1,30 +1,24 @@
-hostname: glusterfs-1
 description: GlusterFS-1 Server
-fqdn: glusterfs-1.m2.local
-ip: 192.168.155.51
+hostname: &hostname glusterfs-1
+fqdn: &fqdn glusterfs-1.m2.local
+ip: &ip 192.168.155.51
 interfaces:
   - device: eth0
-    onboot: "yes"
-    bootproto: dhcp
-    ip: 192.168.155.51
     mac: "52:54:00:05:00:51"
-    host: glusterfs-1
-    fqdn: glusterfs-1.m2.local
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
     network: service
 
 kscfg: glusterfs-ks.cfg
 
 disks:
   - src: default
-    format: qcow2
-    cache: none
     size: 5
   - src: default
-    format: qcow2
-    cache: none
     size: 1
 
 ks_repos:
   - name: "RHEL 6 x86_64 - ScalableFileSystem"
-    baseurl: "http://192.168.155.254/kstree/rhel/6/3/x86_64/ScalableFileSystem"
+    baseurl: "http://ks/kstree/rhel/6/3/x86_64/ScalableFileSystem"
 

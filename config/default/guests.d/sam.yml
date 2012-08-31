@@ -12,3 +12,6 @@ interfaces:
     network: service
 
 kscfg: sam-ks.cfg
+virtinst:
+  ram: 2048
+  vcpus: 2

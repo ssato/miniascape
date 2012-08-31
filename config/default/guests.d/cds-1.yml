@@ -1,22 +1,18 @@
-hostname: cds-1
 description: RHUI CDS-1 Server
-fqdn: cds-1.m2.local
-ip: 192.168.155.21
+hostname: &hostname cds-1
+fqdn: &fqdn cds-1.m2.local
+ip: &ip 192.168.155.21
 interfaces:
   - device: eth0
-    onboot: "yes"
-    bootproto: dhcp
-    ip: 192.168.155.21
     mac: "52:54:00:05:00:21"
-    host: cds-1
-    fqdn: cds-1.m2.local
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
     network: service
 
 kscfg: rhui-cds-ks.cfg
 
 disks:
   - src: default
-    format: qcow2
-    cache: none
     size: 50
 
