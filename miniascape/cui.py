@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from logging import DEBUG, INFO
+from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
 
 import miniascape.utils as MU
 import jinja2_cui.render as R
@@ -26,11 +27,6 @@ import os.path
 import os
 import subprocess
 import sys
-
-
-M_CONF_DIR = "/etc/miniascape"
-M_TMPL_DIR = "/usr/share/miniascape/templates"
-M_WORK_TOPDIR = "workdir-" + MU.date()
 
 
 def _mk_workdir(name, topdir=M_WORK_TOPDIR):
@@ -95,7 +91,7 @@ def gen_guest_files(name, tmpldir, confdir, workdir):
 
 def _cfg_to_name(config):
     """
-    >>> _cfg_to_name("/etc/miniascape/config/default/guests.d/abc.yml")
+    >>> _cfg_to_name("/etc/miniascape/config/guests.d/abc.yml")
     'abc'
     """
     return  os.path.basename(os.path.splitext(config)[0])
