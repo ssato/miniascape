@@ -26,5 +26,5 @@ disks:
 
 ks_repos:
   - name: "RHEL 6 x86_64 - ScalableFileSystem"
-    baseurl: "http://192.168.151.254/kstree/rhel/6/3/x86_64/ScalableFileSystem"
+    baseurl: "http://192.168.155.254/kstree/rhel/6/3/x86_64/ScalableFileSystem"
 
