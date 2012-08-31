@@ -28,7 +28,7 @@ import subprocess
 import sys
 
 
-M_CONF_DIR = "/etc/miniascape/default"
+M_CONF_DIR = "/etc/miniascape"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
 M_WORK_TOPDIR = "workdir-" + MU.date()
 
