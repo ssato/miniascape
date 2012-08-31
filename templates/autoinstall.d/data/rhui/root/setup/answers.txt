@@ -12,12 +12,12 @@ hostname: {{ fqdn }}
 ssl_cert: /root/setup/certs/{{ fqdn }}.crt
 ssl_key: /root/setup/certs/{{ fqdn }}.key
 ca_cert: /root/setup/certs/rhui-ca.crt
-{% if proxy.fqdn is defined %}
+{% if proxy is defined %}{% if proxy.fqdn is defined %}
 proxy_server_host: {{ proxy.fqdn }}
 proxy_server_port: {{ proxy.port|default('443') }}
 {% if proxy.user is defined %}proxy_server_username: {{ proxy.user }}{% endif %}
 {% if proxy.password is defined %}proxy_server_password: {{ proxy.password }}{% endif %}
-{% endif %}
+{% endif %}{% endif %}
 
 {% for cds in cdsservers %}[cds-{{ loop.index }}]
 rpm_name: rh-{{ cds.name }}-config
