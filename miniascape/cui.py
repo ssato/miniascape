@@ -17,6 +17,8 @@
 from logging import DEBUG, INFO
 
 import miniascape.utils as MU
+import jinja2_cui.render as R
+
 import glob
 import logging
 import optparse
@@ -66,10 +68,13 @@ def gen_guest_files(name, tmpldir, confdir, workdir):
         os.path.join(confdir, "guests.d/%s.yml" % name),
     ]
 
+    conf = MU.load_confs(confs)
+    kscfg = conf.get("kscfg", "%s-ks.cfg" % name)
+
     kscmd = _mk_tmpl_cmd(
         [os.path.join(tmpldir, "autoinstall.d")], confs,
         os.path.join(workdir, "ks.cfg"),
-        os.path.join(tmpldir, "autoinstall.d", "%s-ks.cfg" % name),
+        os.path.join(tmpldir, "autoinstall.d", kscfg),
     )
     vbcmd = _mk_tmpl_cmd(
         [os.path.join(tmpldir, "libvirt")], confs,
@@ -97,8 +102,10 @@ def _cfg_to_name(config):
 
 
 def list_names(confdir):
-    return [_cfg_to_name(f) for f in
-        glob.glob(os.path.join(confdir, "guests.d/*.yml"))]
+    return sorted(
+        _cfg_to_name(f) for f in
+            glob.glob(os.path.join(confdir, "guests.d/*.yml"))
+    )
 
 
 def show_vm_names(confdir):
