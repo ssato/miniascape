@@ -51,7 +51,7 @@ def gen_guest_files(name, tmpldir, confdir, workdir):
         os.path.join(workdir, "ks.cfg"),
         os.path.join(tmpldir, "autoinstall.d", kscfg),
     )
-    vbcmd = _mk_tmpl_cmd(
+    vbcmd = T.mk_tmpl_cmd(
         [os.path.join(tmpldir, "libvirt")], confs,
         os.path.join(workdir, "vmbuild.sh"),
         os.path.join(tmpldir, "libvirt", "vmbuild.sh"),
@@ -121,5 +121,9 @@ def main(argv=sys.argv):
 
     vmname = args[0]
     gen_guest_files(vmname, options.tmpldir, options.confdir, options.workdir)
+
+
+if __name__ == '__main__':
+    main(sys.argv)
 
 # vim:sw=4:ts=4:et:
