@@ -16,9 +16,42 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import datetime
+import itertools
+
+try:
+    chain_from_iterable = itertools.chain.from_iterable
+except AttributeError:
+    # Borrowed from library doc, 9.7.1 Itertools functions:
+    def _from_iterable(iterables):
+        for it in iterables:
+            for element in it:
+                yield element
+
+    chain_from_iterable = _from_iterable
 
 
 def date():
     return datetime.datetime.now().strftime("%Y%m%d")
+
+
+def concat(xss):
+    """
+    >>> concat([[]])
+    []
+    >>> concat((()))
+    []
+    >>> concat([[1,2,3],[4,5]])
+    [1, 2, 3, 4, 5]
+    >>> concat([[1,2,3],[4,5,[6,7]]])
+    [1, 2, 3, 4, 5, [6, 7]]
+    >>> concat(((1,2,3),(4,5,[6,7])))
+    [1, 2, 3, 4, 5, [6, 7]]
+    >>> concat(((1,2,3),(4,5,[6,7])))
+    [1, 2, 3, 4, 5, [6, 7]]
+    >>> concat((i, i*2) for i in range(3))
+    [0, 0, 1, 2, 2, 4]
+    """
+    return list(chain_from_iterable(xs for xs in xss))
+
 
 # vim:sw=4:ts=4:et:

@@ -1,59 +1,32 @@
-"""
-
-:copyright: (c) 2012 by Satoru SATOH <ssato@redhat.com>
-:license: BSD-3
-
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are met:
-
-   * Redistributions of source code must retain the above copyright notice,
-     this list of conditions and the following disclaimer.
-   * Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
-   * Neither the name of the author nor the names of its contributors may
-     be used to endorse or promote products derived from this software
-     without specific prior written permission.
-
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
- Requirements: python-jinja2-cui
-"""
-import jinja2_cui.cui as C
+#
+# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+import miniascape.utils as U
+import jinja2_cui.render as R
 
 import codecs
-import jinja2
 import locale
 import logging
 import optparse
 import os.path
 import sys
-import yaml
 
-from itertools import chain, groupby
+from itertools import groupby
 from logging import DEBUG, INFO
 from operator import itemgetter
-
-
-try:
-    chain_from_iterable = chain.from_iterable
-except AttributeError:
-    # Borrowed from library doc, 9.7.1 Itertools functions:
-    def _from_iterable(iterables):
-        for it in iterables:
-            for element in it:
-                yield element
-
-    chain_from_iterable = _from_iterable
 
 
 _ENCODING = locale.getdefaultlocale()[1]
@@ -89,43 +62,11 @@ _NETWORK_XML_TEMPLATE = """
 """
 
 
-def concat(xss):
-    """
-    >>> concat([[]])
-    []
-    >>> concat((()))
-    []
-    >>> concat([[1,2,3],[4,5]])
-    [1, 2, 3, 4, 5]
-    >>> concat([[1,2,3],[4,5,[6,7]]])
-    [1, 2, 3, 4, 5, [6, 7]]
-    >>> concat(((1,2,3),(4,5,[6,7])))
-    [1, 2, 3, 4, 5, [6, 7]]
-    >>> concat(((1,2,3),(4,5,[6,7])))
-    [1, 2, 3, 4, 5, [6, 7]]
-    >>> concat((i, i*2) for i in range(3))
-    [0, 0, 1, 2, 2, 4]
-    """
-    return list(chain_from_iterable(xs for xs in xss))
-
-
-def render_s(ctx, tmpl_s=_NETWORK_TEMPLATE):
-    """
-    :param ctx: Context to instantiate `tmpl_s`
-    :param tmpl_s: Template string
-
-
-    >>> render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
-    'a = 1, b = "bbb"'
-    """
-    return jinja2.Environment().from_string(tmpl_s).render(**ctx)
-
-
 def load_network_configs(netconfs):
     """
     Load configuration files for a network
     """
-    return C.parse_and_load_contexts(netconfs, _ENCODING, False)
+    return R.parse_and_load_contexts(netconfs, _ENCODING, False)
 
 
 def aggregate(filepaths):
@@ -133,10 +74,10 @@ def aggregate(filepaths):
     Aggregate host configurations from each host interface data and return the
     list of host list by each network.
     """
-    guests = [C.load_context(f) for f in filepaths]
+    guests = [R.load_context(f) for f in filepaths]
     hostsets = [
         list(g) for k, g in groupby(
-            concat(g["interfaces"] for g in guests), itemgetter("network")
+            U.concat(g["interfaces"] for g in guests), itemgetter("network")
         )
     ]
     return hostsets
@@ -155,11 +96,7 @@ def load_configs(netconfs, guestconfs):
 
 def option_parser():
     defaults = dict(
-        netconf=[],
-        guestconf=[],
-        output=None,
-        xml=False,
-        debug=False
+        netconf=[], guestconf=[], output=None, xml=False, debug=False
     )
 
     p = optparse.OptionParser("%prog [OPTION ...]")
@@ -189,10 +126,10 @@ def main(argv):
 
     tmpl = _NETWORK_XML_TEMPLATE if options.xml else _NETWORK_TEMPLATE
     ctx = load_configs(options.netconf, options.guestconf)
-    result = render_s(ctx, tmpl)
+    result = R.render_s(tmpl, ctx)
 
     if options.output and not options.output == '-':
-        C.open(options.output, 'w').write(result)
+        R.open(options.output, 'w').write(result)
     else:
         codecs.getwriter(_ENCODING)(sys.stdout).write(result)
 
