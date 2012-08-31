@@ -3,7 +3,7 @@ sed -i.save -e '$ a\ttyS0' /etc/securetty
 
 touch /etc/init/serial-ttyS0.conf.save
 
-# @see http://docs.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Migration_Planning_Guide/ch04s02.html
+# @see http://red.ht/OtXavj
 cat << EOF > /etc/init/serial-ttyS0.conf
 start on stopped rc RUNLEVEL=[2345]
 stop on starting runlevel [016]
