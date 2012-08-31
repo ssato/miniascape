@@ -30,8 +30,7 @@ from operator import itemgetter
 
 
 _ENCODING = locale.getdefaultlocale()[1]
-_NETWORK_TEMPLATE = """
-name: {{ name }}
+_NETWORK_TEMPLATE = """name: {{ name }}
 bridge: {{ bridge }}
 gateway: {{ gateway }}
 netmask: {{ netmask }}
@@ -42,13 +41,15 @@ hosts:
 {% for h in hosts %}  - { fqdn: {{ h.fqdn }}, host: {{ h.host }}, ip: {{ h.ip }}, mac: "{{ h.mac }}" }
 {% endfor %}
 """
-_NETWORK_XML_TEMPLATE = """
-<network>
+_NETWORK_XML_TEMPLATE = """<network>
   <name>{{ name }}</name>
   {% if mode in ('nat', 'bridge') -%}<forward mode='{{ mode }}'/>{%- endif %}
   <bridge name='{{ bridge }}' stp='on' delay='0' />
   {% if domain is defined -%}<domain name='{{ domain }}'/>{%- endif %}
   <dns>
+    <!-- KVM host aliases: -->
+    <host ip='{{ gateway }}'><hostname>gw.{{ domain }}</hostname></host>
+    <host ip='{{ gateway }}'><hostname>ks.{{ domain }}</hostname></host>
 {% for h in hosts %}    <host ip='{{ h.ip }}'><hostname>{{ h.fqdn }}</hostname></host>
 {% endfor %}  </dns>
   <ip address='{{ gateway }}' netmask='{{ netmask }}'>
