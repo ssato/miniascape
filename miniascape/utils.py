@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import jinja2_cui.render as R
+
 import datetime
 import itertools
 
@@ -52,6 +54,10 @@ def concat(xss):
     [0, 0, 1, 2, 2, 4]
     """
     return list(chain_from_iterable(xs for xs in xss))
+
+
+def load_confs(confs):
+    return R.parse_and_load_contexts(confs, 'utf-8', False)
 
 
 # vim:sw=4:ts=4:et:
