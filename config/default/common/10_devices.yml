@@ -1,4 +1,5 @@
 storagepool:
+  #- name: default
   - name: miniascape-0
     type: dir
     target:
