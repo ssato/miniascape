@@ -29,21 +29,43 @@ import subprocess
 import sys
 
 
-def _mk_workdir(name, topdir=M_WORK_TOPDIR):
+def _workdir(topdir, name):
     return os.path.join(topdir, name)
+
+
+def list_guest_confs(confdir, name):
+    return [
+        os.path.join(confdir, "common/*.yml"),  # e.g. confdir/common/00.yml
+        os.path.join(confdir, "guests.d/%s.yml" % name),
+    ]
+
+
+def load_guest_confs(confdir, name):
+    return MU.load_confs(list_guest_confs(confdir, name))
+
+
+def arrange_setup_data(tmpldir, config, gworkdir):
+    """
+    Arrange setup data embedded in kickstart files.
+
+    :param tmpldir: Template dir
+    :param config: Guest's config :: dict
+    :param gworkdir: Guest's workdir, e.g. workdir/foo
+    """
+    setup_data = config.get("setup_data", [])
+    if not setup_data:
+        return  # Nothing to do.
+
+    return  # TBD
 
 
 def gen_guest_files(name, tmpldir, confdir, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
     """
-    workdir = os.path.join(workdir, name)
-    confs = [
-        os.path.join(confdir, "common/*.yml"),  # e.g. confdir/common/00.yml
-        os.path.join(confdir, "guests.d/%s.yml" % name),
-    ]
+    confs = list_guest_confs(confdir, name)
 
-    conf = MU.load_confs(confs)
+    conf = load_guest_confs(confdir, name)
     kscfg = conf.get("kscfg", "%s-ks.cfg" % name)
 
     kscmd = T.mk_tmpl_cmd(
@@ -88,8 +110,8 @@ def show_vm_names(confdir):
 
 
 def gen_all(tmpldir, confdir, workdir):
-    for vmname in list_names(confdir):
-        gen_guest_files(vmname, tmpldir, confdir, workdir)
+    for name in list_names(confdir):
+        gen_guest_files(name, tmpldir, confdir, _workdir(workdir, name))
 
 
 def option_parser(defaults=None):
@@ -97,7 +119,7 @@ def option_parser(defaults=None):
         defaults = dict(
             tmpldir=M_TMPL_DIR,
             confdir=M_CONF_DIR,
-            workdir=M_WORK_TOPDIR,
+            workdir=None,
             genall=False,
             debug=False,
         )
@@ -109,7 +131,9 @@ def option_parser(defaults=None):
     p.add_option("-c", "--confdir",
         help="Configurations (context files) top dir [%default]"
     )
-    p.add_option("-w", "--workdir", help="Working top dir [%default]")
+    p.add_option("-w", "--workdir",
+        help="Working dir to dump results [%s/<NAME>]" % M_WORK_TOPDIR
+    )
     p.add_option("-A", "--genall", action="store_true",
         help="Generate configs for all guests"
     )
@@ -130,12 +154,19 @@ def main(argv=sys.argv):
 
     logging.getLogger().setLevel(DEBUG if options.debug else INFO)
 
-    eargs = (options.tmpldir, options.confdir, options.workdir)
     if options.genall:
-        gen_all(*eargs)
+        if options.workdir is None:
+            options.workdir = M_WORK_TOPDIR
+
+        gen_all(options.tmpldir, options.confdir, options.workdir)
     else:
-        vmname = args[0]
-        gen_guest_files(vmname, *eargs)
+        name = args[0]
+        if options.workdir is None:
+            options.workdir = os.path.join(M_WORK_TOPDIR, name)
+
+        gen_guest_files(
+            name, options.tmpldir, options.confdir, options.workdir
+        )
 
 
 if __name__ == '__main__':
