@@ -1,0 +1,67 @@
+# Unnecessary on guests in general:
+-*-firmware
+# The documents are available from http://red.ht/sGpdup :
+-Deployment_Guide-en-US
+-Red_Hat_Enterprise_Linux-Release_Notes-6-en-US
+# Network is configured w/ legacy ifcfg* scripts:
+-NetworkManager*
+# Bug reports are not need to be done automatically:
+-abrt*
+# Don't spell checking on server instances:
+-aspell*
+# Bluetooth device is not present:
+-bluez*
+# USB CCID smart card reader device is not present:
+-ccid
+# Only a few number of console devices installed:
+-conman
+# Don't need to change virtual cpu speed:
+-cpuspeed
+# Don't make / fsck MS-DOS FAT filesystem on servers:
+-dosfstools
+# Don't retrieve and forward from/to remote mail servers:
+-fetchmail
+# Fingerprint reader device is not present:
+-fprintd-pam
+# Don't use it. Better alternatives (w3m, curl) are installed instead:
+-ftp
+# Don't use ISDN.
+-isdn4k*
+# Don't use it as MLS is not fully utilized in guests:
+-mcstrans
+# Don't use Software RAID:
+-mdadm
+# Meaning-less in virt. guests:
+-microcode_ctl
+# Don't use it. Better alternatives (vim-enhanced) is installed instead:
+-nano
+# Don't use X.509 certificate based login mechanism in guests:
+-pam_pkcs11
+# No PCMCIA devices are available in guests:
+-pcmciautils
+# No smartcard devices are available for guests in general:
+-pcsc-lite*
+# Don't use PPP:
+-ppp
+# Quota is not configured in guests:
+-quota
+# Don't need to run radvd for IPv6 routing in guests in general:
+-radvd
+# Dont' use as there are not secure:
+-rdate
+-rdist
+# Don't use PPPoE in guests:
+-rp-pppoe
+# Almost all configuration is done in kickstart:
+-system-config-*
+# No wireless devices are available in guests:
+-wireless-tools
+-wpa_supplicant
+# Don't use them:
+-amtu
+-coolkey
+-eject
+-firstboot*
+-ntsysv
+-talk
+-udftools
