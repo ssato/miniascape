@@ -39,7 +39,8 @@ def gen_all(argv):
 
     if not options.yes:
         yesno = raw_input(
-            "Are you sure to generate for %s [y/n] > " % options.confdir
+            "Are you sure to generate files from '%s' [y/n] > " % \
+                options.confdir
         )
         if not yesno.strip().lower().startswith('y'):
             print >> sys.stderr, "Cancel generation of files..."
