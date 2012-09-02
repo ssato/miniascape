@@ -1,0 +1,4 @@
+{% if hostname == 'glusterfs-1' %}
+{% for i in [2, 3, 4] %}
+gluster peer probe glusterfs-{{ i }}
+{% endfor %}{% endif %}
