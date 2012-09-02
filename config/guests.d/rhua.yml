@@ -32,6 +32,6 @@ setup_data:
   - src: data/rhua/Makefile.certs
     dst: certs/Makefile
   - src: data/rhua/post_rhui_installation.update_configs.sh
-    dst: certs/Makefile
+    dst: post_rhui_installation.update_configs.sh
 #  - src: rhui_entitlement_certs.tar.xz
 
