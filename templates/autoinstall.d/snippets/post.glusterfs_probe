@@ -1,3 +1,4 @@
+{# @see https://sites.google.com/site/glusterfstech/install #}
 {% if hostname == 'glusterfs-1' %}test -d /root/setup || mkdir /root/setup
 cat << EOF > /root/setup/glusterfs.setup.sh
 #! /bin/bash
