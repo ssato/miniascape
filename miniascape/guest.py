@@ -44,50 +44,59 @@ def load_guest_confs(confdir, name):
     return MU.load_confs(list_guest_confs(confdir, name))
 
 
-def arrange_setup_data(tmpldir, config, gworkdir):
+def arrange_setup_data(gtmpldir, config, gworkdir):
     """
     Arrange setup data embedded in kickstart files.
 
-    :param tmpldir: Template dir
+    :param gtmpldir: Guest's template dir
     :param config: Guest's config :: dict
     :param gworkdir: Guest's workdir, e.g. workdir/foo
     """
-    setup_data = config.get("setup_data", [])
-    if not setup_data:
+    tmpls = config.get("setup_data", [])
+    if not tmpls:
         return  # Nothing to do.
 
-    return  # TBD
+    for t in tmpls:
+        src = t.get("src", None)
+        dst = t.get("dst", None)
+
+        assert src is not None, "Lacks 'src'"
+        assert dst is not None, "Lacks 'dst'"
+
+        out = os.path.join(gworkdir, "setup", dst)
+
+        logging.info("Generating %s from %s" % (out, src))
+        T.renderto([gtmpldir, os.path.dirname(out)], config, src, out)
+
+    subprocess.check_output(
+        cmd = "tar --xz -c setup | base64 > setup.tar.xz.base64",
+        shell=True, cwd=gworkdir
+    )
 
 
 def gen_guest_files(name, tmpldir, confdir, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
     """
-    confs = list_guest_confs(confdir, name)
-
     conf = load_guest_confs(confdir, name)
     kscfg = conf.get("kscfg", "%s-ks.cfg" % name)
-
-    kscmd = T.mk_tmpl_cmd(
-        [os.path.join(tmpldir, "autoinstall.d")], confs,
-        os.path.join(workdir, "ks.cfg"),
-        os.path.join(tmpldir, "autoinstall.d", kscfg),
-    )
-    vbcmd = T.mk_tmpl_cmd(
-        [os.path.join(tmpldir, "libvirt")], confs,
-        os.path.join(workdir, "vmbuild.sh"),
-        os.path.join(tmpldir, "libvirt", "vmbuild.sh"),
-    )
+    gtmpldir = os.path.join(tmpldir, "autoinstall.d")
 
     if not os.path.exists(workdir):
-        logging.info("Creating working dir: " + workdir)
+        logging.debug("Creating working dir: " + workdir)
         os.makedirs(workdir)
 
-    logging.info("Generating kickstart config: " + kscmd)
-    subprocess.check_output(kscmd, shell=True)
+    logging.info("Generating setup data archive: " + name)
+    arrange_setup_data(gtmpldir, conf, workdir)
 
-    logging.info("Generating vm build script: " + vbcmd)
-    subprocess.check_output(vbcmd, shell=True)
+    logging.info("Generating vm build data: " + name)
+    T.renderto(
+        [gtmpldir, workdir], conf, kscfg, os.path.join(workdir, "ks.cfg"),
+    )
+    T.renderto(
+        [os.path.join(tmpldir, "libvirt"), workdir],
+        conf, "vmbuild.sh", os.path.join(workdir, "vmbuild.sh")
+    )
 
 
 def _cfg_to_name(config):
