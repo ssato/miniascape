@@ -48,6 +48,7 @@ def renderto(tpaths, config, tmpl, output):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
+    import logging; logging.info("tmpl=%s, tpaths=%s" % (tmpl, tpaths))
     c = R.render(tmpl, config, tpaths)
     open(output, "w").write(c)
 
