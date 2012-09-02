@@ -22,3 +22,12 @@ ks_repos:
   - name: "RHEL 6 x86_64 - ScalableFileSystem"
     baseurl: "http://ks/kstree/rhel/6/3/x86_64/ScalableFileSystem"
 
+glusterfs:
+  nodes:
+    - glusterfs-1
+    - glusterfs-2
+    - glusterfs-3
+    - glusterfs-4
+  volume: vol01
+  brick: /data/brick01
+
