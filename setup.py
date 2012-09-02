@@ -14,29 +14,27 @@ VERSION = "0.3.0"
 # daily snapshots:
 #VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
+def list_files(tdir):
+    return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
+
+
 data_files = [
     # sysconf files:
-    ("/etc/%s/default/common" % PACKAGE, glob.glob("config/default/common/*")),
-    ("/etc/%s/default/networks.d" % PACKAGE,
-        glob.glob("config/default/networks.d/*")),
-    ("/etc/%s/default/guests.d" % PACKAGE,
-        glob.glob("config/default/guests.d/*")),
-    ("/etc/%s/default/storages.d" % PACKAGE,
-        glob.glob("config/default/storages.d/*")),
+    ("/etc/%s/common" % PACKAGE, list_files("config/common")),
+    ("/etc/%s/networks.d" % PACKAGE, list_files("config/networks.d")),
+    ("/etc/%s/guests.d" % PACKAGE, list_files("config/guests.d")),
+    ("/etc/%s/storages.d" % PACKAGE, list_files("config/storages.d")),
 
     # template files:
-    ("share/%s/templates/libvirt" % PACKAGE,
-        glob.glob("templates/libvirt/*")),
+    ("share/%s/templates/libvirt" % PACKAGE, list_files("templates/libvirt")),
     ("share/%s/templates/autoinstall.d" % PACKAGE,
         glob.glob("templates/autoinstall.d/*-ks.cfg")),
     ("share/%s/templates/autoinstall.d/data" % PACKAGE,
-        glob.glob("templates/autoinstall.d/data/*")),
+        list_files("templates/autoinstall.d/data/")),
+    ("share/%s/templates/autoinstall.d/data/rhua" % PACKAGE,
+        list_files("templates/autoinstall.d/data/rhua")),
     ("share/%s/templates/autoinstall.d/snippets" % PACKAGE,
-        glob.glob("templates/autoinstall.d/snippets/*")),
-    ("share/%s/templates/autoinstall.d/data/rhui/root/setup" % PACKAGE,
-        ["templates/autoinstall.d/data/rhui/root/setup/answers.txt"]),
-    ("share/%s/templates/autoinstall.d/data/rhui/root/setup/certs" % PACKAGE,
-        glob.glob("templates/autoinstall.d/data/rhui/root/setup/certs/*")),
+        list_files("templates/autoinstall.d/snippets")),
 ]
 
 
