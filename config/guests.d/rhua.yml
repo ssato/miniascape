@@ -29,7 +29,7 @@ cert:
 setup_data:
   - src: data/rhua/answers.txt
     dst: answers.txt
-  - src: data/rhua/certs/Makefile
+  - src: data/rhua/Makefile.certs
     dst: certs/Makefile
   - src: data/rhua/post_rhui_installation.update_configs.sh
     dst: post_rhui_installation.update_configs.sh
