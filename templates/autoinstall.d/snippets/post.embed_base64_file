@@ -1,0 +1,7 @@
+{% macro embed_base64_file(basename="setup", outdir="/root") -%}
+test -d {{ outdir }} || mkdir -p {{ outdir }}
+cat << EOF > {{ outdir }}/{{ basename }}.tar.xz.base64
+{% include '{{ basename }}.tar.xz.base64' %}
+EOF
+cd {{ outdir }} && base64 --decode {{ basename }}.tar.xz.base64 | tar --xz -xC {{ outdir }}/
+{%- endmacro %}
