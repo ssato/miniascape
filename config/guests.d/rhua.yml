@@ -10,6 +10,9 @@ interfaces:
     fqdn: *fqdn
     network: service
 
+disks:
+  - src: default
+    size: 50
 kscfg: rhua-ks.cfg
 
 cdsservers:
@@ -23,6 +26,12 @@ cert:
   expiration_dates: 1095
   subject: "/C=JP/O=M2 Example, Inc./CN="
 
-disks:
-  - src: default
-    size: 50
+setup_data:
+  - src: data/rhua/answers.txt
+    dst: answers.txt
+  - src: data/rhua/Makefile.certs
+    dst: certs/Makefile
+  - src: data/rhua/post_rhui_installation.update_configs.sh
+    dst: certs/Makefile
+#  - src: rhui_entitlement_certs.tar.xz
+

@@ -58,11 +58,9 @@ def arrange_setup_data(gtmpldir, config, gworkdir):
 
     for t in tmpls:
         src = t.get("src", None)
-        dst = t.get("dst", None)
-
         assert src is not None, "Lacks 'src'"
-        assert dst is not None, "Lacks 'dst'"
 
+        dst = t.get("dst", src)
         out = os.path.join(gworkdir, "setup", dst)
 
         logging.info("Generating %s from %s" % (out, src))
