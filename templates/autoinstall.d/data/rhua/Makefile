@@ -3,6 +3,7 @@
 # Author: Satoru SATOH <ssato@redhat.com>
 # License: MIT
 #
+WORKDIR ?= /root/setup
 
 # @see http://red.ht/RAKEyc :
 RHUI_ISO ?= RHEL-6-RHUI-2-LATEST-Server-x86_64-DVD.iso
@@ -23,17 +24,29 @@ all:
 	@echo "ex. make RHUI_URL=http://example.com/rhui.iso fetch_RHUI_ISO='curl ' fetch"
 	@echo "ex. make install-rhua"
 
+# common:
 fetch: $(RHUI_ISO)
 $(RHUI_ISO):
 	$(fetch_RHUI_ISO) $(RHUI_URL) > $@.tmp
 	mv $@.tmp $@
 
-install-rhua: $(RHUI_ISO)
+# On RHUA
+install-rhua.stamp: $(RHUI_ISO)
 	mount -o ro,loop $(RHUI_ISO) /mnt
 	cd /mnt && ./install_RHUA.sh && cd - && umount /mnt
+	touch $@
 
-install-cds: $(RHUI_ISO)
+certs.stamp:
+	make -C $(WORKDIR)/certs
+	touch $@
+
+genconfig.stamp: certs.stamp install-rhua.stamp
+	rhui-installer $(WORKDIR)/answers.txt 2>&1 | tee $(WORKDIR)/rhui-install.log
+
+# On CDS:
+install-cds.stamp: $(RHUI_ISO)
 	mount -o ro,loop $(RHUI_ISO) /mnt
 	cd /mnt && ./install_CDS.sh && cd - && umount /mnt
+	touch $@
 
-.PHONY: fetch install-rhua install-cds
+.PHONY: fetch
