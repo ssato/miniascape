@@ -1,0 +1,157 @@
+augeas-libs
+jna
+libselinux-ruby
+mod_ssl
+perl-ExtUtils-ParseXS
+policycoreutils-python
+postgresql-jdbc
+postgresql-server
+python-kerberos
+rpm-build
+ruby-rdoc
+tomcat6
+#
+# The followings are not listed explicitly as installed automatically when
+# resolving dependencies for the aboves:
+#
+# alsa-lib
+# atk
+# audit-libs-python
+# avahi-libs
+# axis
+# bcel
+# cairo
+# cdparanoia-libs
+# compat-readline5
+# cups
+# cups-libs
+# cvs
+# ecj
+# elfutils
+# elfutils-libs
+# flac
+# fontconfig
+# foomatic
+# foomatic-db
+# foomatic-db-filesystem
+# foomatic-db-ppds
+# freetype
+# gdb
+# gettext
+# ghostscript
+# ghostscript-fonts
+# giflib
+# gnutls
+# gstreamer
+# gstreamer-plugins-base
+# gstreamer-tools
+# gtk2
+# hicolor-icon-theme
+# httpd
+# iso-codes
+# jakarta-commons-collections
+# jakarta-commons-daemon
+# jakarta-commons-dbcp
+# jakarta-commons-discovery
+# jakarta-commons-httpclient
+# jakarta-commons-logging
+# jakarta-commons-pool
+# jasper-libs
+# java-1.5.0-gcj
+# java-1.6.0-openjdk
+# java_cup
+# jline
+# jpackage-utils
+# lcms-libs
+# libICE
+# libSM
+# libX11
+# libX11-common
+# libXau
+# libXcomposite
+# libXcursor
+# libXdamage
+# libXext
+# libXfixes
+# libXfont
+# libXft
+# libXi
+# libXinerama
+# libXrandr
+# libXrender
+# libXt
+# libXtst
+# libXv
+# libXxf86vm
+# libart_lgpl
+# libasyncns
+# libcgroup
+# libfontenc
+# libgcj
+# libgomp
+# libjpeg
+# libmng
+# libogg
+# liboil
+# libpng
+# libselinux-python
+# libsemanage-python
+# libsndfile
+# libtasn1
+# libthai
+# libtheora
+# libtiff
+# libvisual
+# libvorbis
+# libxcb
+# mailx
+# make
+# mesa-dri-drivers
+# mesa-libGL
+# mesa-libGLU
+# mx4j
+# openjpeg-libs
+# pango
+# patch
+# pax
+# perl-CGI
+# perl-ExtUtils-MakeMaker
+# perl-Test-Harness
+# perl-Test-Simple
+# perl-devel
+# phonon-backend-gstreamer
+# pixman
+# pkgconfig
+# poppler
+# poppler-data
+# poppler-utils
+# portreserve
+# postgresql
+# postgresql-libs
+# pulseaudio-libs
+# qt
+# qt-sqlite
+# qt-x11
+# qt3
+# redhat-lsb
+# redhat-lsb-graphics
+# redhat-lsb-printing
+# regexp
+# rhino
+# ruby
+# ruby-irb
+# ruby-libs
+# setools-libs
+# setools-libs-python
+# sinjdoc
+# tomcat6-el-2.1-api
+# tomcat6-jsp-2.1-api
+# tomcat6-lib
+# tomcat6-servlet-2.5-api
+# tzdata-java
+# urw-fonts
+# wsdl4j
+# xml-common
+# xml-commons-apis
+# xml-commons-resolver
+# xorg-x11-font-utils
