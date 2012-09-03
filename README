@@ -7,7 +7,6 @@ it may not work in your environment or might cause trouble. TRY IT IN YOUR OWN
 RISK, PLEASE.
 
 
-
 miniascape is a collection of configurations and data to setup libvirt based
 virtualization guests build environment quickly.
 
@@ -24,6 +23,52 @@ Main objects are
  * Do not intend to become a replacement for other feature rich software such
    like RHEV, RHN Satellite and cobbler, etc.
 
+ * Fully utilize exsiting library, tools and do not intend to replace or
+   reinvent the wheel
+
+
+Usage
+====================
+
+1. Setup host: mount iso images and setup kickstart installation trees, etc.
+2. Arrange configuration files (examples are in /etc/miniascape/config/)
+3. Run miniascape to generate ks.cfg and vm build scripts:
+
+   miniascape gu [Options ...] <guest_name>
+
+   or 
+
+   miniascape gu [Options ...] --genall
+
+4. Run built script in the working dir, e.g. <workdir>/<guest_name>/vmbuild.sh
+
+
+How it works?
+====================
+
+miniascape just works like a kind of template compiler optimized to generate
+ks.cfg, wrapper scripts around virt-install and configurations installed into
+the libvirt host in current implementation.
+
+
+Configurations
+---------------------
+
+Configurations and parameters are in YAML configuration files (default:
+/etc/miniascape/config/**/*.yml).
+
+
+Templates
+--------------------
+
+I chose jinja2 as template engine for miniascape.
+
+Miniascape contains some concrete template examples under
+/usr/share/miniascape/templates:
+
+* autoinstall.d/: auto installation (kickstart) templates
+* libvirt/: libvirt/virtinst specific templates like network xml, wrapper
+  script for virt-install
 
 
 Prerequisites
@@ -36,52 +81,29 @@ Hardware and base OS
 * RHEL 6 or Fedora 13+ or any linux distributions corresponding to these versions
 
 
-tools
+Tools and libs
 -------------------
 
- * make
- * virsh in libvirt
+ * python-jinja2-cui: https://github.com/ssato/python-jinja2-cui
+ * libvirt and its python binding
+ * python-virtinst
  * qemu-kvm
  * nginx or (apache) httpd
  * etc.
 
 
-
 Build
 ====================
 
-You have to build the followings at least.
-
-* core
-* datasrc/dvd
-
-
-Each modules utilize autotools and can be built like:
-
- [autoreconf -vfi]
- ./configure
+Run `python setup.py srpm` and mock dist/SRPMS/<built-srpm>, or 
+run `python setup.py rpm`.
 
 
 Installation
 ====================
 
-I recommend to use RPMs but you can install them like:
-
-
- make 
- make install
-
-
-Create [S]RPM
------------------------
-
- make rpm | make srpm
-
-
-Actions needed after post/pre installation, update and uninstallation
-------------------------------------------------------------------------
-
-See the README files in each package.
+* [Recommended] build srpm, rpm w/ mock and install it
+* build and install: `python setup.py build` and `python setup.py install`
 
 
 TODO
@@ -91,39 +113,22 @@ upstream works
 -------------------
 
 * -C | --config ffile option for virt-install
-* enhancement for qemu-img to get base image path of delta image
-* more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and make it dynamic
+* more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and
+  make it dynamic
 
 
 miniascape itself
 -----------------------
 
-See TODO section in core/README.
+* Added some more host-configuration stuff, like autofs, www (apache or nginx),
+  nfs, iscsi, etc.
+* Docuemnt
 
 
 License
 ====================
 
-This is distributed under GPLv3 or later except for the Autoconf macros under
-aux/m4 subdir.
-
-See COPYING for details about GPLv3.
-
-
-Special exception aux/m4/*.m4
-----------------------------------
-
-As a special exception, I gives unlimited permission to copy, distribute and
-modify the configure scripts that are the output of Autoconf when processing
-the Macro. You need not follow the terms of the GNU General Public License when
-using or distributing such scripts, even though portions of the text of the
-Macro appear in them. The GNU General Public License (GPL) does govern all
-other use of the material that constitutes the Autoconf Macro.
-
-This special exception to the GPL applies to the Autoconf macro under aux/m4/
-subdir only.  When you make and distribute a modified version of these Autoconf
-Macro, you may extend this special exception to the GPL to apply to your
-modified version as well.
+This is distributed under GPLv3 or later.
 
 
 Author
