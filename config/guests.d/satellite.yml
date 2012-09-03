@@ -10,8 +10,6 @@ interfaces:
     fqdn: *fqdn
     network: service
 
-kscfg: satellite-ks.cfg
-
 disks:
   - src: default
     size: 50
@@ -36,3 +34,9 @@ proxy:
 #  fqdn: proxy.m2.local
 #  username: proxyuser
 #  username: proxypasswd
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/satellite-ks.cfg
+

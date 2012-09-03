@@ -79,26 +79,34 @@ def arrange_setup_data(gtmpldir, config, gworkdir):
 def gen_guest_files(name, tmpldir, confdir, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
+
+templates:
+  - dst: vmbuild.sh
+    src: libvirt/vmbuild.sh
     """
     conf = load_guest_confs(confdir, name)
-    kscfg = conf.get("kscfg", "%s-ks.cfg" % name)
     gtmpldir = os.path.join(tmpldir, "autoinstall.d")
 
     if not os.path.exists(workdir):
         logging.debug("Creating working dir: " + workdir)
         os.makedirs(workdir)
 
-    logging.info("Generating setup data archive: " + name)
+    logging.info("Generating setup data archive to embedded: " + name)
     arrange_setup_data(gtmpldir, conf, workdir)
 
-    logging.info("Generating vm build data: " + name)
-    T.renderto(
-        [gtmpldir, workdir], conf, kscfg, os.path.join(workdir, "ks.cfg"),
-    )
-    T.renderto(
-        [os.path.join(tmpldir, "libvirt"), workdir],
-        conf, "vmbuild.sh", os.path.join(workdir, "vmbuild.sh")
-    )
+    for k, v in conf.get("templates", {}).iteritems():
+        (src, dst) = (v["src"], v["dst"])
+        if os.path.sep in src:
+            srcdir = os.path.join(tmpldir, os.path.dirname(src))
+        else:
+            srcdir = tmpldir
+
+        # strip dir part as it will be searched from srcdir.
+        src = os.path.basename(src)
+        dst = os.path.join(workdir, dst)
+
+        logging.info("Generating %s from %s [%s]" % (dst, src, k))
+        T.renderto([srcdir, workdir], conf, src, dst)
 
 
 def _cfg_to_name(config):

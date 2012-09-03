@@ -10,8 +10,6 @@ interfaces:
     fqdn: *fqdn
     network: service
 
-kscfg: glusterfs-ks.cfg
-
 disks:
   - src: default
     size: 5
@@ -30,4 +28,10 @@ glusterfs:
     - glusterfs-4
   volume: vol01
   brick: /data/brick01
+
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/glusterfs-ks.cfg
 

@@ -14,8 +14,6 @@ disks:
   - src: default
     size: 50
 
-kscfg: rhua-ks.cfg
-
 cdsservers:
   - name: cds-1
     fqdn: cds-1.m2.local
@@ -35,6 +33,11 @@ cert:
 
 rhui_entitlement_cert: &rhui_entitlement_cert rhui_entitlement.cert
 
+## Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhua-ks.cfg
+
 setup_data:
   - src: data/rhua/answers.txt
     dst: answers.txt
@@ -49,4 +52,5 @@ setup_data:
 # The following hack looks not required since RHUI 2.1
 #  - src: data/rhua/post_rhui_installation.update_configs.sh
 #    dst: post_rhui_installation.update_configs.sh
+
 

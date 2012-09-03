@@ -16,6 +16,11 @@ disks:
   - src: default
     size: 50
 
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhui-cds-ks.cfg
+
 setup_data:
   - src: data/rhua/Makefile
     dst: Makefile
