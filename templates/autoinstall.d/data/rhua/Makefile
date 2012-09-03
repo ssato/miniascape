@@ -23,6 +23,9 @@ all:
 	@echo ""
 	@echo "ex. make RHUI_URL=http://example.com/rhui.iso fetch_RHUI_ISO='curl ' fetch"
 	@echo "ex. make install-rhua"
+	@echo ""
+	@echo "  Targets for RHUA: fetch, install-rhua.stamp certs.stamp genconf.stamp"
+	@echo "  Targets for CDS : fetch install-cds.stamp"
 
 # common:
 fetch: $(RHUI_ISO)
@@ -40,7 +43,7 @@ certs.stamp:
 	make -C $(WORKDIR)/certs
 	touch $@
 
-genconfig.stamp: certs.stamp install-rhua.stamp
+genconf.stamp: certs.stamp install-rhua.stamp $(WORKDIR)/answers.txt
 	rhui-installer $(WORKDIR)/answers.txt 2>&1 | tee $(WORKDIR)/rhui-install.log
 
 # On CDS:
