@@ -7,8 +7,9 @@ it may not work in your environment or might cause trouble. TRY IT IN YOUR OWN
 RISK, PLEASE.
 
 
-miniascape is a collection of configurations and data to setup libvirt based
-virtualization guests build environment quickly.
+miniascape is a template compiler optimized to generate collection of
+configurations and data to setup libvirt based virtualization guests build
+environment quickly.
 
 Main objects are
 
@@ -32,13 +33,13 @@ Usage
 
 1. Setup host: mount iso images and setup kickstart installation trees, etc.
 2. Arrange configuration files (examples are in /etc/miniascape/config/)
-3. Run miniascape to generate ks.cfg and vm build scripts:
+3. Run miniascape to generate libvirt network xml, ks.cfg and vm build scripts:
 
-   miniascape gu [Options ...] <guest_name>
+   miniascape ge [Options ...]
 
    or 
 
-   miniascape gu [Options ...] --genall
+   miniascape generate [Options ...]
 
 4. Run built script in the working dir, e.g. <workdir>/<guest_name>/vmbuild.sh
 
