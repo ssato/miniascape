@@ -38,6 +38,8 @@ rhui_entitlement_cert: &rhui_entitlement_cert rhui_entitlement.cert
 setup_data:
   - src: data/rhua/answers.txt
     dst: answers.txt
+  - src: data/rhua/Makefile
+    dst: Makefile
   - src: data/rhua/Makefile.certs
     dst: certs/Makefile
 # RHUI Entitlement certs gotten from Red Hat Customer portal site, and put in

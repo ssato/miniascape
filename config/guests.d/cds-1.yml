@@ -16,3 +16,8 @@ disks:
   - src: default
     size: 50
 
+setup_data:
+  - src: data/rhua/Makefile
+    dst: Makefile
+
+
