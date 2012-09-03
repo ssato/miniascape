@@ -1,0 +1,22 @@
+description: RHUI CDS-2 Server
+hostname: &hostname cds-2
+fqdn: &fqdn cds-2.m2.local
+ip: &ip 192.168.155.22
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:22"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+kscfg: rhui-cds-ks.cfg
+
+disks:
+  - src: default
+    size: 50
+
+setup_data:
+  - src: data/rhua/Makefile
+    dst: Makefile
+
