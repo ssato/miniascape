@@ -13,6 +13,7 @@ interfaces:
 disks:
   - src: default
     size: 50
+
 kscfg: rhua-ks.cfg
 
 cdsservers:
@@ -26,15 +27,24 @@ cert:
   expiration_dates: 1095
   subject: "/C=JP/O=M2 Example, Inc./CN="
 
+#proxy:
+#  fqdn: proxy.m2.local
+#  port: 8080
+#  username: proxyuser
+#  password: proxypasswd
+
+rhui_entitlement_cert: &rhui_entitlement_cert rhui_entitlement.cert
+
 setup_data:
   - src: data/rhua/answers.txt
     dst: answers.txt
   - src: data/rhua/Makefile.certs
     dst: certs/Makefile
-# Tar+xz-ed RHUI Entitlement certs gotten from Red Hat Customer portal site:
-  - src: rhui_entitlement_certs.tar.xz
+# RHUI Entitlement certs gotten from Red Hat Customer portal site, and put in
+# workdir/rhua/setup/:
+  - src: *rhui_entitlement_cert
 
-# The following looks not required since RHUI 2.1
+# The following hack looks not required since RHUI 2.1
 #  - src: data/rhua/post_rhui_installation.update_configs.sh
 #    dst: post_rhui_installation.update_configs.sh
 
