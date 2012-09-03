@@ -9,9 +9,6 @@ WORKDIR ?= /root/setup
 RHUI_ISO ?= RHEL-6-RHUI-2-LATEST-Server-x86_64-DVD.iso
 RHUI_URL ?= https://cdn.redhat.com/content/dist/rhel/rhui/server/6/6Server/x86_64/rhui/2/iso/$(RHUI_ISO)
 
-rhui_crt=/root/setup/rhui_entitlement_certs/70154042338280.pem
-if test \$# -gt 0; then rhui_crt=\$1; fi
-
 fetch_RHUI_ISO = curl --cert {{ rhui_entitlement_cert }} \
   {% if proxy is defined %}--proxy https://{{ proxy.fqdn }}:{{ proxy.port|default("443") }} \
   {% if proxy.user is defined %}--proxy-user {{ proxy.user }}:{{ proxy.password }}{% endif %}{% endif %} \
