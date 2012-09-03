@@ -1,10 +1,7 @@
 # SEE ALSO: /etc/rhui/answers.sample on RHUA
 [general]
-version: 2.0
-dest_dir: /tmp/rhui
-qpid_ca: /tmp/rhua/qpid/ca.crt
-qpid_client: /tmp/rhua/qpid/client.crt
-qpid_nss_db: /tmp/rhua/qpid/nss
+version: 2.1
+dest_dir: /root/setup/rhui
 
 [rhua]
 rpm_name: rh-rhua-config
