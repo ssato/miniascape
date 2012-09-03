@@ -2,6 +2,9 @@
 [general]
 version: 2.1
 dest_dir: /root/setup/rhui
+qpid_ca: /etc/rhui/qpid/ca.crt
+qpid_client: /etc/rhui/qpid/client.crt
+qpid_nss_db: /etc/rhui/qpid/nss
 
 [rhua]
 rpm_name: rh-rhua-config
