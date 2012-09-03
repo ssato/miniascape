@@ -31,7 +31,10 @@ setup_data:
     dst: answers.txt
   - src: data/rhua/Makefile.certs
     dst: certs/Makefile
-  - src: data/rhua/post_rhui_installation.update_configs.sh
-    dst: post_rhui_installation.update_configs.sh
-#  - src: rhui_entitlement_certs.tar.xz
+# Tar+xz-ed RHUI Entitlement certs gotten from Red Hat Customer portal site:
+  - src: rhui_entitlement_certs.tar.xz
+
+# The following looks not required since RHUI 2.1
+#  - src: data/rhua/post_rhui_installation.update_configs.sh
+#    dst: post_rhui_installation.update_configs.sh
 
