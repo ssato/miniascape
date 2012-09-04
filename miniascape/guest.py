@@ -79,10 +79,6 @@ def arrange_setup_data(gtmpldir, config, gworkdir):
 def gen_guest_files(name, tmpldir, confdir, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
-
-templates:
-  - dst: vmbuild.sh
-    src: libvirt/vmbuild.sh
     """
     conf = load_guest_confs(confdir, name)
     gtmpldir = os.path.join(tmpldir, "autoinstall.d")
