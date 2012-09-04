@@ -20,28 +20,6 @@ import os.path
 import os
 
 
-def mk_tmpl_cmd(tpaths, configs, output, tmpl):
-    """Construct template command from given parameters.
-
-    :param tpaths: Template path list
-    :param configs: Config files
-    :param output: Output file
-    :param tmpl: Template file to instantiate
-
-    >>> mk_tmpl_cmd(["a", "b/c"], ["x/y", "z/*.cfg"], "out.dat", "t.tmpl")
-    'jinja2-cui -T a -T b/c -C "x/y" -C "z/*.cfg" -o out.dat t.tmpl'
-    """
-    params = dict(
-        prog="jinja2-cui render",
-        topts=' '.join("-T " + tp for tp in tpaths),
-        copts=' '.join("-C \"%s\"" % c for c in configs),
-        output=output,
-        tmpl=tmpl,
-    )
-
-    return "%(prog)s %(topts)s %(copts)s -o %(output)s %(tmpl)s" % params
-
-
 def renderto(tpaths, config, tmpl, output):
     outdir = os.path.dirname(output)
 
