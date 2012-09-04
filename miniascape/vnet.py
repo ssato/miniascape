@@ -95,13 +95,11 @@ def gen_vnet_files(tmpldir, confdir, workdir, force):
             logging.warn("Net xml already exists: " + netxml)
             return
 
-        cmd = T.mk_tmpl_cmd(
-            [os.path.join(tmpldir, "libvirt")], [netconf], netxml,
-            os.path.join(tmpldir, "libvirt/network.xml"),
+        logging.debug("Generating network xml: " + netxml)
+        T.renderto(
+            [os.path.join(tmpldir, "libvirt")], yaml.load(open(netconf)),
+            os.path.join(tmpldir, "libvirt/network.xml"), netxml
         )
-
-        logging.debug("Generating network xml: " + cmd)
-        subprocess.check_output(cmd, shell=True)
 
 
 def option_parser(argv=sys.argv, defaults=None):
