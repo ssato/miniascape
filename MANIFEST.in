@@ -1,6 +1,6 @@
 include MANIFEST.in
 include README
-include python-miniascape.spec.in
+include miniascape.spec.in
 include setup.py
 include tools/*
 include templates/libvirt/*
