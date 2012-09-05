@@ -20,13 +20,13 @@ import os.path
 import os
 
 
-def renderto(tpaths, config, tmpl, output):
+def renderto(tpaths, config, tmpl, output, ask=False):
     outdir = os.path.dirname(output)
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
-    c = R.render(tmpl, config, tpaths)
+    c = R.render(tmpl, config, tpaths, ask)
     open(output, "w").write(c)
 
 
