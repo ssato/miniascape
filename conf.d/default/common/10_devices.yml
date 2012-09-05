@@ -1,13 +1,12 @@
-storagepool:
-  #- name: default
-  - name: miniascape-0
-    type: dir
-    target:
-      path: /srv/miniascape/storage.d/0
-
+# see also: ../storages.d/
 disks:
   - src: default
+    type: pool
     format: qcow2
     cache: none
     size: 5
+#  - src: /var/lib/libvirt/images/<vm>-disk-0.raw
+#    type: path
+#    format: raw
+#    size: 10  # [GB]
 

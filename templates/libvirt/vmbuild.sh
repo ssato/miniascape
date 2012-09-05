@@ -9,7 +9,7 @@ kscfg=${ks_path##*/}
 network={{ nic.network|default('network') }},model={{ nic.model|default('virtio') }},mac={{ nic.mac|default('RANDOM') }}
 {%- endmacro -%}
 {% macro disk_option(disk) -%}
-pool={{ disk.src|default('default') }},format={{ disk.format|default('qcow2') }},cache={{ disk.cache|default('none') }},size={{ disk.size|default('5') }}
+{{ disk.type|default('pool') }}={{ disk.src|default('default') }},format={{ disk.format|default('qcow2') }},cache={{ disk.cache|default('none') }},size={{ disk.size|default('5') }}
 {%- endmacro %}
 
 virt-install \
