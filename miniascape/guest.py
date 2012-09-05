@@ -66,8 +66,8 @@ def arrange_setup_data(gtmpldir, config, gworkdir):
         logging.info("Generating %s from %s" % (out, src))
         T.renderto(
             [gtmpldir, os.path.join(gtmpldir, os.path.dirname(src)),
-            os.path.dirname(out)],
-            config, src, out
+                os.path.dirname(out)],
+            config, src, out, ask=True
         )
 
     subprocess.check_output(
