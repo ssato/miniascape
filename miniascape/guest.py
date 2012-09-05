@@ -30,7 +30,7 @@ import sys
 
 
 def _workdir(topdir, name):
-    return os.path.join(topdir, name)
+    return os.path.join(topdir, "guests.d", name)
 
 
 def list_guest_confs(confdir, name):
@@ -147,7 +147,7 @@ def option_parser(defaults=None):
         help="Configurations (context files) top dir [%default]"
     )
     p.add_option("-w", "--workdir",
-        help="Working dir to dump results [%s/<NAME>]" % M_WORK_TOPDIR
+        help="Working dir to dump results [%s/guests.d/<NAME>]" % M_WORK_TOPDIR
     )
     p.add_option("-A", "--genall", action="store_true",
         help="Generate configs for all guests"
