@@ -18,7 +18,7 @@ import miniascape.utils as MU
 import locale
 
 
-M_CONF_DIR = "/etc/miniascape"
+M_CONF_DIR = "/etc/miniascape/config/default"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
 M_WORK_TOPDIR = "workdir-" + MU.date()
 M_ENCODING = locale.getdefaultlocale()[1]
