@@ -1,6 +1,5 @@
 from distutils.core import setup, Command
 
-import datetime
 import glob
 import os
 import sys
@@ -8,34 +7,30 @@ import sys
 curdir = os.getcwd()
 sys.path.append(curdir)
 
-PACKAGE = "miniascape"
-VERSION = "0.3.0"
+from miniascape.globals import PACKAGE, VERSION
+from miniascape.utils import concat
 
-# daily snapshots:
-#VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
 def list_files(tdir):
     return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
 
 
-data_files = [
-    # sysconf files:
-    ("/etc/%s/common" % PACKAGE, list_files("config/common")),
-    ("/etc/%s/networks.d" % PACKAGE, list_files("config/networks.d")),
-    ("/etc/%s/guests.d" % PACKAGE, list_files("config/guests.d")),
-    ("/etc/%s/storages.d" % PACKAGE, list_files("config/storages.d")),
+def list_data_files_g(prefix, srcdir):
+    for root, dirs, _files in os.walk(srcdir):
+        for d in dirs:
+            reldir = os.path.join(root, d)
+            instdir = os.path.join(prefix, reldir)
+            files = list_files(reldir)
+            if files:
+                yield (instdir, files)
 
-    # template files:
-    ("share/%s/templates/libvirt" % PACKAGE, list_files("templates/libvirt")),
-    ("share/%s/templates/autoinstall.d" % PACKAGE,
-        glob.glob("templates/autoinstall.d/*-ks.cfg")),
-    ("share/%s/templates/autoinstall.d/data" % PACKAGE,
-        list_files("templates/autoinstall.d/data/")),
-    ("share/%s/templates/autoinstall.d/data/rhua" % PACKAGE,
-        list_files("templates/autoinstall.d/data/rhua")),
-    ("share/%s/templates/autoinstall.d/snippets" % PACKAGE,
-        list_files("templates/autoinstall.d/snippets")),
-]
+
+data_files = concat(
+    list_data_files_g(p, d) for p, d in
+        (("/etc/%s" % PACKAGE, "config"),      # sysconf files
+         ("share/%s" % PACKAGE, "templates"),  # template files
+        )
+)
 
 
 class SrpmCommand(Command):

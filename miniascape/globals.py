@@ -23,4 +23,11 @@ M_TMPL_DIR = "/usr/share/miniascape/templates"
 M_WORK_TOPDIR = "workdir-" + MU.date()
 M_ENCODING = locale.getdefaultlocale()[1]
 
+PACKAGE = "miniascape"
+VERSION = "0.3.0"
+
+# daily snapshots:
+# import datetime
+#VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
+
 # vim:sw=4:ts=4:et:
