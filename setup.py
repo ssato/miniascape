@@ -27,7 +27,7 @@ def list_data_files_g(prefix, srcdir):
 
 data_files = concat(
     list_data_files_g(p, d) for p, d in
-        (("/etc/%s" % PACKAGE, "config"),      # sysconf files
+        (("/etc/%s" % PACKAGE, "conf.d"),      # sysconf files
          ("share/%s" % PACKAGE, "templates"),  # template files
         )
 )

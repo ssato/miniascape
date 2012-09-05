@@ -46,7 +46,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README
 %{_bindir}/*
-%{_sysconfdir}/%{name}
+%{_sysconfdir}/%{name}/conf.d/default
 %{_datadir}/%{name}/templates
 %{python_sitelib}/*
 
