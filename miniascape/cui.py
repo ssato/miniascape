@@ -52,8 +52,13 @@ def gen_all(argv):
     G.gen_all(options.tmpldir, options.confdir, options.workdir)
 
 
+def init_(argv):
+    N.main(argv)
+
+
 # TODO: define other commands.
 cmds = [
+    ("i", "init", init_),
     ("ge", "generate", gen_all),
     ("gu", "guest", G.main),
     ("n", "net", N.main),
