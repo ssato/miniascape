@@ -1,0 +1,33 @@
+description: RHEL 5 Cluster 1
+hostname: &hostname rhel-5-cluster-1
+fqdn: &fqdn rhel-5-cluster-1.m2.local
+ip: &ip 192.168.155.101
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:01:01"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+disks:
+  - src: default
+    size: 5
+  - src: default
+    perms: sh
+    size: 1
+
+ks_repos:
+  - name: "RHEL 5 x86_64 - Cluster"
+    baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
+
+cluster:
+  nodes:
+    - rhel-5-cluster-1
+    - rhel-5-cluster-2
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhel-5-cluster-ks.cfg
+
