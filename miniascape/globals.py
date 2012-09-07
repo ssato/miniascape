@@ -14,13 +14,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import miniascape.utils as MU
+import datetime
 import locale
+
+def date():
+    return datetime.datetime.now().strftime("%Y%m%d")
 
 
 M_CONF_DIR = "/etc/miniascape/conf.d/default"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
-M_WORK_TOPDIR = "workdir-" + MU.date()
+M_WORK_TOPDIR = "workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
 
 PACKAGE = "miniascape"

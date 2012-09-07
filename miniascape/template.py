@@ -20,6 +20,10 @@ import os.path
 import os
 
 
+def load_confs(confs):
+    return R.parse_and_load_contexts(confs, 'utf-8', False)
+
+
 def renderto(tpaths, config, tmpl, output, ask=False):
     outdir = os.path.dirname(output)
 

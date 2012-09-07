@@ -18,7 +18,6 @@ from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
 from logging import DEBUG, INFO
 
 import miniascape.template as T
-import miniascape.utils as MU
 
 import glob
 import logging
@@ -41,7 +40,7 @@ def list_guest_confs(confdir, name):
 
 
 def load_guest_confs(confdir, name):
-    return MU.load_confs(list_guest_confs(confdir, name))
+    return T.load_confs(list_guest_confs(confdir, name))
 
 
 def arrange_setup_data(gtmpldir, config, gworkdir):

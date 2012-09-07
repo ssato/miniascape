@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from miniascape.globals import M_TMPL_DIR, M_CONF_DIR, M_WORK_TOPDIR
+
 from glob import glob
 from logging import DEBUG, INFO
 
@@ -31,14 +33,14 @@ import yaml
 
 def gen_files(tmpldir, confdir, workdir):
     outdir = os.path.join(workdir, "host")
-    conf = yaml.load(confdir, "host.yml")
+    conf = yaml.load(open(os.path.join(confdir, "host.yml")))
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
     xss = [
-        (p, os.path.basename(p) for p in
-            glob(os.path.join(tmpldir, "host/*") if os.path.isfile(p)
+        (p, os.path.basename(p)) for p in
+            glob(os.path.join(tmpldir, "host/*")) if os.path.isfile(p)
     ]
 
     for t, n in xss:
@@ -76,7 +78,7 @@ def main(argv):
 
     logging.getLogger().setLevel(DEBUG if options.debug else INFO)
 
-    gen_files(options.tmpldir, options.confdir, options.workdir):
+    gen_files(options.tmpldir, options.confdir, options.workdir)
 
 
 if __name__ == '__main__':
