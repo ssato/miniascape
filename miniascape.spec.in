@@ -52,5 +52,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep  7 2012 Satoru SATOH <ssato@redhat.com> - 0.3.0.99-1
+- Quick hack for disk configurations
+
 * Thu Aug 30 2012 Satoru SATOH <ssato@redhat.com> - 0.3.0-1
 - Initial packaging
