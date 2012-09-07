@@ -1,0 +1,17 @@
+description: RHEL 5 Client 1
+hostname: &hostname rhel-5-client-1
+fqdn: &fqdn rhel-5-client-1.m2.local
+ip: &ip 192.158.155.151
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:01:51"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhel-5-min-ks.cfg
+

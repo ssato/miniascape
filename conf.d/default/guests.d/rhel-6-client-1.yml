@@ -1,0 +1,17 @@
+description: RHEL 6 Client 1
+hostname: &hostname rhel-6-client-1
+fqdn: &fqdn rhel-6-client-1.m2.local
+ip: &ip 192.168.155.161
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:01:61"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhel-6-min-ks.cfg
+
