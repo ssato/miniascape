@@ -135,6 +135,15 @@ def main(argv):
 
     logging.getLogger().setLevel(DEBUG if options.debug else INFO)
 
+    if not args:
+        yesno = raw_input(
+            "Are you sure to generate networks in %s ? [y/n]: " % \
+                options.workdir
+        )
+        if not yesno.strip().lower().startswith('y'):
+            print >> "Cancel creation of networks..."
+            sys.exit(0)
+
     gen_vnet_files(
         options.tmpldir, options.confdir, options.workdir, options.force
     )
