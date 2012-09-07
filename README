@@ -6,7 +6,6 @@ WARNING: miniascape is in pre-alpha state and will heavily udpate day by day, so
 it may not work in your environment or might cause trouble. TRY IT IN YOUR OWN
 RISK, PLEASE.
 
-
 miniascape is a template compiler optimized to generate collection of
 configurations and data to setup libvirt based virtualization guests build
 environment quickly.
