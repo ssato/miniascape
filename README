@@ -112,6 +112,8 @@ TODO
 upstream works
 -------------------
 
+* Fix a bug that multiple storage volume cannot be created in a same storage pool
+  with virt-install --disk option (rhbz#857424)
 * -C | --config ffile option for virt-install
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and
   make it dynamic
