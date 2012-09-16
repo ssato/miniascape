@@ -123,11 +123,16 @@ def _cfg_to_name(config):
     return  os.path.basename(os.path.splitext(config)[0])
 
 
+def list_names_g(confdir):
+    for x in glob.glob(os.path.join(confdir, "guests.d/*")):
+        if os.path.isfile(x) and x.endswith(".yml"):
+            yield _cfg_to_name(x)
+        else:
+            yield os.path.basename(x)
+
+
 def list_names(confdir):
-    return sorted(
-        _cfg_to_name(f) for f in
-            glob.glob(os.path.join(confdir, "guests.d/*.yml"))
-    )
+    return sorted(list_names_g(confdir))
 
 
 def show_vm_names(confdir):
