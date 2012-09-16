@@ -17,6 +17,7 @@
 from miniascape.globals import M_ENCODING, M_CONF_DIR, M_TMPL_DIR, \
     M_WORK_TOPDIR
 
+import miniascape.guest as MG
 import miniascape.template as T
 import miniascape.utils as U
 import jinja2_cui.render as R
@@ -41,26 +42,36 @@ def load_network_configs(netconfs):
     return R.parse_and_load_contexts(netconfs, M_ENCODING, False)
 
 
-def aggregate_guest_networks(filepaths):
+def list_guest_names_g(confdir):
+    for x in glob.glob(os.path.join(confdir, "guests.d/*")):
+        if os.path.isfile(x) and x.endswith(".yml"):
+            yield os.path.splitext(os.path.basename(x))[0]
+        else:
+            yield os.path.basename(x)
+
+
+def aggregate_guest_networks(confdir):
     """
     Aggregate guest's network interface info from each guest configurations and
     return list of host list grouped by each networks.
     """
-    guests = [R.load_context(f) for f in filepaths]
+    gcs = [
+        MG.load_guest_confs(confdir, n) for n in list_guest_names_g(confdir)
+    ]
     hostsets = [
         list(g) for k, g in groupby(
-            U.concat(g["interfaces"] for g in guests), itemgetter("network")
+            U.concat(g.get("interfaces", []) for g in gcs),
+            itemgetter("network")
         )
     ]
     return hostsets
 
 
 def load_configs(confdir):
-    gconfs = glob.glob(os.path.join(confdir, "guests.d/*.yml"))
-    nconfs = glob.glob(os.path.join(confdir, "networks.d/*.yml"))
+    hostsets = aggregate_guest_networks(confdir)
 
-    hostsets = aggregate_guest_networks(gconfs)
     nets = R.MyDict.createFromDict()
+    nconfs = glob.glob(os.path.join(confdir, "networks.d/*.yml"))
 
     for nc in nconfs:
         netctx = load_network_configs([nc])

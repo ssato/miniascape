@@ -32,10 +32,21 @@ def _workdir(topdir, name):
     return os.path.join(topdir, "guests.d", name)
 
 
+def find_guests_conf(confdir, name):
+    f = os.path.join(confdir, "guests.d/%s.yml" % name)
+    d = os.path.join(confdir, "guests.d", name)
+
+    if os.path.exists(f):
+        return f
+    else:
+        assert os.path.exists(d), "Conf not exists for the guest: " + name
+        return os.path.join(d, "*.yml")  # e.g. /.../guests.d/<name>/00.yml
+
+
 def list_guest_confs(confdir, name):
     return [
         os.path.join(confdir, "common/*.yml"),  # e.g. confdir/common/00.yml
-        os.path.join(confdir, "guests.d/%s.yml" % name),
+        find_guests_conf(confdir, name),
     ]
 
 
