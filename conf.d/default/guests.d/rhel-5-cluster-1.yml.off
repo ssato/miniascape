@@ -11,9 +11,10 @@ interfaces:
     network: service
 
 disks:
-  - src: default
+  - pool: default
     size: 5
-  - src: default
+  - pool: default
+    vol: rhel-5-cluster-data-1.img
     perms: sh
     size: 1
 

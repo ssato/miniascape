@@ -11,7 +11,7 @@ interfaces:
     network: service
 
 disks:
-  - src: default
+  - pool: default
     size: 50
 
 cdsservers:
@@ -52,5 +52,4 @@ setup_data:
 # The following hack looks not required since RHUI 2.1
 #  - src: data/rhua/post_rhui_installation.update_configs.sh
 #    dst: post_rhui_installation.update_configs.sh
-
 

@@ -11,7 +11,7 @@ interfaces:
     network: service
 
 disks:
-  - src: default
+  - pool: default
     size: 50
 
 # Meta:

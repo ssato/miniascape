@@ -13,7 +13,7 @@ interfaces:
 kscfg: rhui-cds-ks.cfg
 
 disks:
-  - src: default
+  - pool: default
     size: 50
 
 # Meta:

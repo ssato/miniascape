@@ -11,9 +11,10 @@ interfaces:
     network: service
 
 disks:
-  - src: default
+  - pool: default
     size: 5
-  - src: default
+  - pool: default
+    vol: glusterfs-1-data-1
     size: 1
 
 ks_repos:
