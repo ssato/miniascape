@@ -1,0 +1,5 @@
+cp /etc/hosts /etc/hosts.save
+cat << EOF >> /etc/hosts
+{% for h in hosts %}{{ h.ip }}{% if h.fqdn is defined %}  {{ h.fqdn }}{% endif %}{% if h.hostname is defined %}  {{ h.hostname }}{% endif %}
+{% endfor -%}
+EOF
