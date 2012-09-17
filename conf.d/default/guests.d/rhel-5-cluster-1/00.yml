@@ -3,12 +3,19 @@ hostname: &hostname rhel-5-cluster-1
 fqdn: &fqdn rhel-5-cluster-1.m2.local
 ip: &ip 192.168.155.101
 interfaces:
-  - device: eth0
+  - device: eth0  # for service
     mac: "52:54:00:05:01:01"
     ip: *ip
     host: *hostname
     fqdn: *fqdn
     network: service
+  - device: eth1  # for heartbeat
+    bootproto: static
+    mac: "52:54:00:02:01:01"
+    ip: 192.168.122.101
+    host: rhel-5-cluster-default-1
+    network: default
+    nodns: true
 
 disks:
   - pool: default
@@ -20,6 +27,6 @@ disks:
 
 cluster:
   nodes:
-    - rhel-5-cluster-1
-    - rhel-5-cluster-2
+    - rhel-5-cluster-default-1
+    - rhel-5-cluster-default-2
 

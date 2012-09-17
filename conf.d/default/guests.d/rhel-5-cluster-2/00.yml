@@ -9,6 +9,13 @@ interfaces:
     host: *hostname
     fqdn: *fqdn
     network: service
+  - device: eth1  # for heartbeat
+    bootproto: static
+    mac: "52:54:00:02:01:02"
+    ip: 192.168.122.102
+    host: rhel-5-cluster-default-2
+    network: default
+    nodns: true
 
 disks:
   - pool: default
@@ -20,6 +27,6 @@ disks:
 
 cluster:
   nodes:
-    - rhel-5-cluster-1
-    - rhel-5-cluster-2
+    - rhel-5-cluster-default-1
+    - rhel-5-cluster-default-2
 

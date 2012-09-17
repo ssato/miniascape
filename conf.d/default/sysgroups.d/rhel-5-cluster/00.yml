@@ -2,6 +2,17 @@ ks_repos:
   - name: "RHEL 5 x86_64 - Cluster"
     baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
 
+cluster:
+  nodes:
+  - &node1 rhel-5-cluster-default-1
+  - &node2 rhel-5-cluster-default-2
+
+hosts:
+  - ip: 192.168.122.101
+    hostname: rhel-5-cluster-default-1
+  - ip: 192.168.122.102
+    hostname: rhel-5-cluster-default-2
+
 # Meta:
 templates:
   autoinst:
