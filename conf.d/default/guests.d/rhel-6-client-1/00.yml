@@ -10,8 +10,3 @@ interfaces:
     fqdn: *fqdn
     network: service
 
-# Meta:
-templates:
-  autoinst:
-    src: autoinstall.d/rhel-6-min-ks.cfg
-

@@ -13,6 +13,8 @@ proxy:
 #  username: proxyuser
 #  password: proxypasswd
 
+rhui_entitlement_cert: &rhui_entitlement_cert rhui_entitlement.cert
+
 ## Meta:
 templates:
   autoinst:

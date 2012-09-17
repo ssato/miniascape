@@ -10,11 +10,3 @@ interfaces:
     fqdn: *fqdn
     network: service
 
-virtinst:
-  location: "http://binaries.nrt.redhat.com/contents/RHEL/5/8/x86_64/default/"
-
-# Meta:
-templates:
-  autoinst:
-    src: autoinstall.d/rhel-5-min-ks.cfg
-

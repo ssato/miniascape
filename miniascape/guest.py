@@ -24,12 +24,42 @@ import logging
 import optparse
 import os.path
 import os
+import re
 import subprocess
 import sys
 
 
 def _workdir(topdir, name):
     return os.path.join(topdir, "guests.d", name)
+
+
+def _sysgroup(name):
+    """
+    FIXME: Ugly.
+
+    >>> _sysgroup('rhel-5-cluster-1')
+    'rhel-5-cluster'
+    >>> _sysgroup('cds-1')
+    'cds'
+    >>> _sysgroup('satellite')
+    'satellite'
+    """
+    return name[:name.rfind('-')] if re.match(r".+-\d+$", name) else name
+
+
+def find_sysgroup_conf(confdir, name):
+    gname = _sysgroup(name)
+
+    f = os.path.join(confdir, "sysgroups.d/%s.yml" % gname)
+    d = os.path.join(confdir, "sysgroups.d", gname)
+
+    if os.path.exists(f):
+        return f
+    else:
+        if os.path.exists(d):
+            return os.path.join(d, "*.yml")
+        else:
+            return None
 
 
 def find_guests_conf(confdir, name):
@@ -44,9 +74,10 @@ def find_guests_conf(confdir, name):
 
 
 def list_guest_confs(confdir, name):
-    return [
-        os.path.join(confdir, "common/*.yml"),  # e.g. confdir/common/00.yml
-        find_guests_conf(confdir, name),
+    return [x for x in
+        [os.path.join(confdir, "common/*.yml"),
+         find_sysgroup_conf(confdir, name),
+         find_guests_conf(confdir, name)] if x is not None
     ]
 
 

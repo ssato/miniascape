@@ -18,17 +18,8 @@ disks:
     perms: sh
     size: 1
 
-ks_repos:
-  - name: "RHEL 5 x86_64 - Cluster"
-    baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
-
 cluster:
   nodes:
     - rhel-5-cluster-1
     - rhel-5-cluster-2
-
-# Meta:
-templates:
-  autoinst:
-    src: autoinstall.d/rhel-5-cluster-ks.cfg
 
