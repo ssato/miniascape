@@ -14,12 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from logging import DEBUG, INFO
-
 import miniascape.guest as G
+import miniascape.utils as U
 import miniascape.vnet as N
 
-import logging
 import sys
 
 
@@ -35,7 +33,7 @@ def gen_all(argv):
     )
     (options, args) = p.parse_args(argv)
 
-    logging.getLogger().setLevel(DEBUG if options.debug else INFO)
+    U.init_log(options.debug)
 
     if not options.yes:
         yesno = raw_input(

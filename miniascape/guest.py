@@ -15,7 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
-from logging import DEBUG, INFO
 
 import miniascape.template as T
 
@@ -213,7 +212,7 @@ def main(argv=sys.argv):
         show_vm_names(options.confdir)
         sys.exit(0)
 
-    logging.getLogger().setLevel(DEBUG if options.debug else INFO)
+    U.init_log(options.debug)
 
     if options.genall:
         if options.workdir is None:
