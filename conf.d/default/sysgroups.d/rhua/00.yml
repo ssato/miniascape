@@ -1,0 +1,35 @@
+disks:
+  - pool: default
+    size: 50
+
+cert:
+  key_length: 2048
+  expiration_dates: 1095
+  subject: "/C=JP/O=M2 Example, Inc./CN="
+
+proxy:
+#  fqdn: proxy.m2.local
+#  port: 8080
+#  username: proxyuser
+#  password: proxypasswd
+
+## Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhua-ks.cfg
+
+setup_data:
+  - src: data/rhua/answers.txt
+    dst: answers.txt
+  - src: data/rhua/Makefile
+    dst: Makefile
+  - src: data/rhua/Makefile.certs
+    dst: certs/Makefile
+# RHUI Entitlement certs gotten from Red Hat Customer portal site, and put in
+# workdir/rhua/setup/:
+  - src: *rhui_entitlement_cert
+
+# The following hack looks not required since RHUI 2.1
+#  - src: data/rhua/post_rhui_installation.update_configs.sh
+#    dst: post_rhui_installation.update_configs.sh
+

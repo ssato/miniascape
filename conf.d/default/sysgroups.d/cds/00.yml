@@ -1,0 +1,11 @@
+description: RHUI CDS-1 Server
+
+disks:
+  - pool: default
+    size: 50
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhui-cds-ks.cfg
+
