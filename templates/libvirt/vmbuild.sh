@@ -44,11 +44,7 @@ virt-install \
 --os-variant={{ virtinst.os_variant }} \
 --location=${location} \
 --initrd-inject=${ks_path} \
-{% for disk in disks -%}
-{%-    if loop.first %}--disk {{ disk_option(disk) }} \
-{%     else %}--disk {{ disk_option(disk, false) }} \
-{%-    endif -%}{% endfor %}
-{% for nic in interfaces -%}--network {{ net_option(nic) }} \
-{%- endfor %}
+{% for disk in disks %}{% if loop.first %}--disk {{ disk_option(disk) }} {% else %}--disk {{ disk_option(disk, false) }} {% endif %}{% endfor %} \
+{% for nic in interfaces %}--network {{ net_option(nic) }} {% endfor %} \
 --extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }} {{ virtinst.extra_args|default('') }}"
 
