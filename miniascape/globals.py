@@ -27,10 +27,10 @@ M_WORK_TOPDIR = "workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
 
 PACKAGE = "miniascape"
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 
 # daily snapshots:
 # import datetime
-VERSION = VERSION + "." + date()
+#VERSION = VERSION + "." + date()
 
 # vim:sw=4:ts=4:et:
