@@ -1,0 +1,25 @@
+description: RHEL 5 Cluster 2
+hostname: &hostname rhel-5-cluster-2
+fqdn: &fqdn rhel-5-cluster-2.m2.local
+ip: &ip 192.168.155.102
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:01:02"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+disks:
+  - pool: default
+    size: 5
+  - pool: default
+    vol: rhel-5-cluster-data-1.img
+    perms: sh
+    size: 1
+
+cluster:
+  nodes:
+    - rhel-5-cluster-1
+    - rhel-5-cluster-2
+

@@ -1,0 +1,19 @@
+description: Red Hat Storage 2 Server
+hostname: &hostname rhs-2
+fqdn: &fqdn rhs-2.m2.local
+ip: &ip 192.168.155.52
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:52"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+disks:
+  - pool: default
+    size: 5
+  - pool: default
+    vol: rhs-2-data-1
+    size: 1
+
