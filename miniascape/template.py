@@ -16,22 +16,12 @@
 #
 import jinja2_cui.render as R
 
-import os.path
-import os
-
 
 def load_confs(confs):
-    return R.parse_and_load_contexts(confs, 'utf-8', False)
+    return R.parse_and_load_contexts(confs)
 
 
 def renderto(tpaths, config, tmpl, output, ask=False):
-    outdir = os.path.dirname(output)
-
-    if not os.path.exists(outdir):
-        os.makedirs(outdir)
-
-    c = R.render(tmpl, config, tpaths, ask)
-    open(output, "w").write(c)
-
+    R.renderto(tmpl, config, tpaths, output, ask=ask)
 
 # vim:sw=4:ts=4:et:
