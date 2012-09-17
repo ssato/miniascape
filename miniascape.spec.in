@@ -46,8 +46,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README
 %{_bindir}/*
-%{_sysconfdir}/%{name}/conf.d/default
-%{_datadir}/%{name}/templates
+%{_sysconfdir}/%{name}/conf.d/default/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/*/*/*.yml
+%{_datadir}/%{name}/templates/autoinstall.d/*-ks.cfg
+%{_datadir}/%{name}/templates/autoinstall.d/*/*
+%{_datadir}/%{name}/templates/host/*
+%{_datadir}/%{name}/templates/libvirt/*
 %{python_sitelib}/*
 
 
