@@ -27,7 +27,7 @@ M_WORK_TOPDIR = "workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
 
 PACKAGE = "miniascape"
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 
 # daily snapshots:
 # import datetime
