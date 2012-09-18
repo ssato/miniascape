@@ -1,0 +1,11 @@
+if test -b /dev/vda; then
+    disk_initial="v"
+elif test -b /dev/sda; then
+    disk_initial="s"
+elif test -b /dev/hda; then
+    disk_initial="h"
+else
+    # FIXME: What should be done here ?
+    echo "Cannot detect disk type"
+    exit 1
+fi
