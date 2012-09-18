@@ -20,3 +20,7 @@ templates:
   autoinst:
     src: autoinstall.d/rhel-5-cluster-ks.cfg
 
+setup_data:
+  - src: data/rhel-5-cluster/cluster.conf
+    dst: cluster.conf
+
