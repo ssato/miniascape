@@ -17,6 +17,7 @@
 from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
 
 import miniascape.template as T
+import miniascape.utils as U
 
 import glob
 import logging
