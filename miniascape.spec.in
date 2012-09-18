@@ -57,8 +57,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Sep  7 2012 Satoru SATOH <ssato@redhat.com> - 0.3.0.99-1
-- Quick hack for disk configurations
+* Tue Sep 18 2012 Satoru SATOH <ssato@redhat.com> - 0.3.2-1
+- Fixed a bug in miniascape.guest lacks of the module import line
+
+* Fri Sep  7 2012 Satoru SATOH <ssato@redhat.com> - 0.3.1-1
+- Allow multiple configurations per guest and splitted some guests config
+- Fixed whitespaces problme in some templates such as vmbuild.sh
+- Added some hacks to create multi disk images, avoiding issue of rhbz#857424
+- Made it depends on the latest python-jinja2-cui >= 0.0.3.12
+- Fixed files list in rpm spec
 
 * Thu Aug 30 2012 Satoru SATOH <ssato@redhat.com> - 0.3.0-1
 - Initial packaging
