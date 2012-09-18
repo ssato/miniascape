@@ -36,32 +36,18 @@ from logging import DEBUG, INFO
 from operator import itemgetter
 
 
-def load_network_configs(netconfs):
-    """Load network configuration files.
-    """
-    return R.parse_and_load_contexts(netconfs, M_ENCODING, False)
-
-
-def list_guest_names_g(confdir):
-    for x in glob.glob(os.path.join(confdir, "guests.d/*")):
-        if os.path.isfile(x) and x.endswith(".yml"):
-            yield os.path.splitext(os.path.basename(x))[0]
-        else:
-            yield os.path.basename(x)
-
-
 def aggregate_guest_networks(confdir):
     """
     Aggregate guest's network interface info from each guest configurations and
     return list of host list grouped by each networks.
     """
-    gcs = [MG.load_guest_confs(confdir, n) for n in MG.list_names(confdir)]
-    hostsets = [
+    gcs = [MG.load_guest_confs(confdir, n, 1) for n in MG.list_names(confdir)]
+    kf = itemgetter("network")
+    hostsets = (
         list(g) for k, g in groupby(
-            U.concat(g.get("interfaces", []) for g in gcs),
-            itemgetter("network")
+            sorted(U.concat(g.get("interfaces", []) for g in gcs), key=kf), kf
         )
-    ]
+    )
     return hostsets
 
 
@@ -72,11 +58,13 @@ def load_configs(confdir):
     nconfs = glob.glob(os.path.join(confdir, "networks.d/*.yml"))
 
     for nc in nconfs:
-        netctx = load_network_configs([nc])
+        netctx = T.load_confs([nc])
         name = netctx["name"]
 
         hss = [hs for hs in hostsets if hs and hs[0]["network"] == name]
         if hss:
+            #for hs in hss:
+            #   logging.debug("Found hosts: " + str(hs))
             netctx["hosts"] = hss[0]
 
         nets[name] = netctx
@@ -86,7 +74,7 @@ def load_configs(confdir):
 
 def gen_vnet_files(tmpldir, confdir, workdir, force):
     nets = load_configs(confdir)
-    outdir = os.path.join(workdir, "libvirt/networks.d")
+    outdir = os.path.join(workdir, "host/networks.d")
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -107,7 +95,7 @@ def gen_vnet_files(tmpldir, confdir, workdir, force):
         logging.debug("Generating network xml: " + netxml)
         T.renderto(
             [os.path.join(tmpldir, "libvirt")], yaml.load(open(netconf)),
-            os.path.join(tmpldir, "libvirt/network.xml"), netxml
+            os.path.join(tmpldir, "host/network.xml"), netxml
         )
 
 
@@ -142,7 +130,7 @@ def main(argv):
     p = option_parser(argv)
     (options, args) = p.parse_args(argv[1:])
 
-    logging.getLogger().setLevel(DEBUG if options.debug else INFO)
+    U.init_log(options.debug)
 
     if not args:
         yesno = raw_input(
