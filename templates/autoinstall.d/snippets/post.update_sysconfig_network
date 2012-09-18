@@ -1,7 +1,8 @@
 {% if fqdn is defined %}# Ensure hostname is set to the FQDN instead of short hostname:
-sed -i.save -e 's/^HOSTNAME=.*/HOSTNAME={{ fqdn }}/' /etc/sysconfig/network
+sed -i.save -e 's/^HOSTNAME=.*/HOSTNAME={{ fqdn }}/' /etc/sysconfig/network{% endif %}
+test -f /etc/sysconfig/network.save || cp /etc/sysconfig/network /etc/sysconfig/network.save
 cat << EOF >> /etc/sysconfig/network
 #NETWORKING_IPV6=no
 NOZEROCONF=yes
+{% if defaultgw is defined %}GATEWAY={{ defaultgw }}{% endif %}
 EOF
-{% endif %}
