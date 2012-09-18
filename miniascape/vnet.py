@@ -51,6 +51,26 @@ def aggregate_guest_networks(confdir):
     return hostsets
 
 
+def dup_check(hosts):
+    ip_seen = {}
+    mac_seen = {}
+
+    for h in hosts:
+        ips = ip_seen.get(h["ip"], [])
+        if ips:
+            logging.warn("Duplicated IP address in " + str(h))
+            ip_seen[h["ip"]].append(h)
+        else:
+            ip_seen[h["ip"]] = [h]
+
+        ms = mac_seen.get(h["mac"], [])
+        if ms:
+            logging.warn("Duplicated MAC address in " + str(h))
+            mac_seen[h["mac"]].append(h)
+        else:
+            mac_seen[h["mac"]] = [h]
+            
+
 def load_configs(confdir):
     hostsets = aggregate_guest_networks(confdir)
 
@@ -63,8 +83,7 @@ def load_configs(confdir):
 
         hss = [hs for hs in hostsets if hs and hs[0]["network"] == name]
         if hss:
-            #for hs in hss:
-            #   logging.debug("Found hosts: " + str(hs))
+            dup_check(hss[0])
             netctx["hosts"] = hss[0]
 
         nets[name] = netctx
