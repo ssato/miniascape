@@ -13,7 +13,7 @@ location={{ virtinst.location }}
 test -f {{ disk.path }} || \
     qemu-img create -f {{ disk.format|default('qcow2') }} {{ disk.path }} {{ disk.size|default('5') }}
 {%-         else -%}
-virsh vol-key {{ disk.vol }} {{ disk.pool|default('default') }} | \
+virsh vol-key {{ disk.vol }} {{ disk.pool|default('default') }} || \
     virsh vol-create-as {{ disk.pool|default('default') }} {{ disk.vol }} {{ disk.size|default('5') }}GiB --format {{ disk.format|default('qcow2') }}
 {%-         endif -%}
 {%-    endif %}{% endfor %}
