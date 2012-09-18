@@ -81,7 +81,9 @@ def list_guest_confs(confdir, name):
     ]
 
 
-def load_guest_confs(confdir, name):
+def load_guest_confs(confdir, name, verbose=False):
+    if verbose:
+        logging.info("Loading %s's config from %s" % (name, confdir))
     return T.load_confs(list_guest_confs(confdir, name))
 
 
