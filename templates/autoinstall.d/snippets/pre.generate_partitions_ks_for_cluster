@@ -1,0 +1,24 @@
+{# Requires to include "snippets/pre_post.find_disk_initial" #}
+{% macro generate_partitions_ks() -%}
+if `grep -q ${disk1}2 /proc/partitions 2>/dev/null`; then
+    # keep contents in disk1 if any partitions exist.
+    part_ks_0="clearpart --all --initlabel --drives=${disk0}
+part /data --onpart=${disk1}2 --noformat
+"
+else
+    part_ks_0="clearpart --all --initlabel
+# Swipe fs and initialize w/ mkqdisk later:
+part /qdisk --size=20 --fstype {{ filesystem }} --ondisk=${disk1}
+part /data  --size=1  --fstype {{ filesystem }} --ondisk=${disk1} --grow
+"
+fi
+
+cat << EOF > /tmp/partitions-ks.cfg
+$part_ks_0
+part /boot  --size=100 --fstype {{ filesystem }} --ondisk=${disk0} --asprimary
+part pv.100 --size=1   --grow --ondisk=${disk0}
+volgroup vg0 pv.100
+logvol /    --fstype {{ filesystem }} --name=lv_root --vgname=vg0 --size=1 --grow
+logvol swap --fstype swap --name=lv_swap --vgname=vg0 --size=1024
+EOF
+{%- endmacro %}
