@@ -2,10 +2,6 @@ abrt-addon-ccpp
 abrt-addon-kerneloops
 abrt-addon-python
 abrt-cli
-abrt-plugin-logger
-abrt-plugin-mailx
-abrt-plugin-rhtsupport
-abrt-plugin-sosreport
 acpid
 alsa-utils
 aspell
@@ -670,6 +666,12 @@ yum-utils
 #man-pages-ko
 #man-pages-pl
 #man-pages-ru
+#
+# There are no such RPMs exist in RHEL 6.3 AFAIK:
+#abrt-plugin-logger
+#abrt-plugin-mailx
+#abrt-plugin-rhtsupport
+#abrt-plugin-sosreport
 #
 # Needed to run stsclient:
 pexpect
