@@ -2,11 +2,12 @@
 {%-     if ni.nodns is defined %}
 f=/etc/sysconfig/network-scripts/ifcfg-{{ ni.device }}
 bf=/etc/sysconfig/network-scripts/saved.ifcfg-{{ ni.device }}
+test -f $bf || cp $f $bf
 if `grep -q PEERDNS=yes $f 2>/dev/null`; then
-    cp $f $bf
     sed -i -e 's/PEERDNS=.*/PEERDNS=no/' $f
-else  # It should be a bug in anaconda...
-    cp $f $bf
+else
+    # It should be a bug in anaconda to forget adding "PEERDNS=..." line in
+    # ifcfg-XXXX for network --nodns options:
     echo "PEERDNS=no" >> $f
 fi
 {%-     endif -%}
