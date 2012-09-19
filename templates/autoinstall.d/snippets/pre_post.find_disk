@@ -10,7 +10,6 @@ fi
 {%- for c in ['a', 'b', 'c', 'd', 'e', 'f', 'g'] -%}{# FIXME: Ugly #}
 {%     if loop.index0 < max -%}
 grep -q ${disk_initial_char}d{{ c }} /proc/partitions 2>/dev/null && \
-    disk{{ loop.index0 }}=${disk_initial_char}d{{ c }}
-{%-    endif -%}
+    disk{{ loop.index0 }}=${disk_initial_char}d{{ c }}{% endif -%}
 {%- endfor -%}
 {%- endmacro -%}
