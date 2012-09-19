@@ -6,5 +6,5 @@ EOF
 cd {{ outdir }} && \
 base64 -i -d setup.tar.xz.base64 > setup.tar.xz && \
 xz -d setup.tar.xz && \
-tar -xC {{ outdir }}/ setup.tar && cd -
+tar -xf setup.tar -C {{ outdir }}/ && cd -
 {%- endmacro %}
