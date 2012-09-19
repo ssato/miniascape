@@ -1,0 +1,6 @@
+description: RHUI RHEL 6 Client 1
+hostname: &hostname rhui-rhel-6-client-1
+interfaces:
+  - device: eth0
+    network: service
+
