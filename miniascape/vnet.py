@@ -56,19 +56,23 @@ def dup_check(hosts):
     mac_seen = {}
 
     for h in hosts:
-        ips = ip_seen.get(h["ip"], [])
-        if ips:
-            logging.warn("Duplicated IP address in " + str(h))
-            ip_seen[h["ip"]].append(h)
-        else:
-            ip_seen[h["ip"]] = [h]
+        ip = h.get("ip", None)
+        if ip is not None:
+            ips = ip_seen.get(ip, [])
+            if ips:
+                logging.warn("Duplicated IP address in " + str(h))
+                ip_seen[ip].append(h)
+            else:
+                ip_seen[ip] = [h]
 
-        ms = mac_seen.get(h["mac"], [])
-        if ms:
-            logging.warn("Duplicated MAC address in " + str(h))
-            mac_seen[h["mac"]].append(h)
-        else:
-            mac_seen[h["mac"]] = [h]
+        mac = h.get("mac", None)
+        if mac is not None:
+            ms = mac_seen.get(mac, [])
+            if ms:
+                logging.warn("Duplicated MAC address in " + str(h))
+                mac_seen[mac].append(h)
+            else:
+                mac_seen[mac] = [h]
             
 
 def load_configs(confdir):
