@@ -33,4 +33,6 @@ templates:
 setup_data:
   - src: data/rhel-5-cluster/cluster.conf
     dst: cluster.conf
+  - src: data/rhel-5-cluster/init_qdisk.sh
+    dst: init_qdisk.sh
 
