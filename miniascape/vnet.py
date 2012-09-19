@@ -124,7 +124,7 @@ def gen_vnet_files(tmpldir, confdir, workdir, force):
         logging.debug("Generating network xml: " + netxml)
         nc = filterout_hosts_wo_macs(netconf)
         T.renderto(
-            [os.path.join(tmpldir, "libvirt")], nc,
+            [os.path.join(tmpldir, "host")], nc,
             os.path.join(tmpldir, "host/network.xml"), netxml
         )
 
