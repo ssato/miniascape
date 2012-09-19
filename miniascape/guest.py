@@ -177,6 +177,10 @@ def gen_all(tmpldir, confdir, workdir):
         gen_guest_files(name, tmpldir, confdir, _workdir(workdir, name))
 
 
+def load_guests_confs(confdir):
+    return [load_guest_confs(confdir, n, 1) for n in list_names(confdir)]
+
+
 def option_parser(defaults=None):
     if defaults is None:
         defaults = dict(
