@@ -1,5 +1,5 @@
-{# Requires to include "snippets/pre_post.find_disk_initial" #}
-{% macro generate_partitions_ks(filesystem) -%}
+{#- Requires to include "snippets/pre_post.find_disk_initial" -#}
+{%- macro generate_partitions_ks(filesystem) -%}
 if `grep -q ${disk1}2 /proc/partitions 2>/dev/null`; then
     # keep contents in disk1 if any partitions exist.
     part_ks_0="clearpart --all --initlabel --drives=${disk0}
@@ -21,4 +21,4 @@ volgroup vg0 pv.100
 logvol /    --fstype {{ filesystem }} --name=lv_root --vgname=vg0 --size=1 --grow
 logvol swap --fstype swap --name=lv_swap --vgname=vg0 --size=1024
 EOF
-{%- endmacro %}
+{%- endmacro -%}
