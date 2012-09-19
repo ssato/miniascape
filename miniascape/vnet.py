@@ -41,7 +41,7 @@ def aggregate_guest_networks(confdir):
     Aggregate guest's network interface info from each guest configurations and
     return list of host list grouped by each networks.
     """
-    gcs = [MG.load_guest_confs(confdir, n, 1) for n in MG.list_names(confdir)]
+    gcs = MG.load_guests_confs(confdir)
     kf = itemgetter("network")
     hostsets = (
         list(g) for k, g in groupby(
