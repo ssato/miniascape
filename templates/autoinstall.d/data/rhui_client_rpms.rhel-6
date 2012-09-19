@@ -59,7 +59,6 @@ lsof
 ltrace
 lvm2
 man-pages
-man-pages-ja
 man-pages-overrides
 mgetty
 microcode_ctl
@@ -663,6 +662,7 @@ yum-utils
 #man-pages-es
 #man-pages-fr
 #man-pages-it
+#man-pages-ja
 #man-pages-ko
 #man-pages-pl
 #man-pages-ru
