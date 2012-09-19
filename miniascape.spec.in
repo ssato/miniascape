@@ -46,7 +46,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README
 %{_bindir}/*
-%{_sysconfdir}/%{name}/conf.d/default/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/*/*/*.yml
 %{_datadir}/%{name}/templates/autoinstall.d/*-ks.cfg
