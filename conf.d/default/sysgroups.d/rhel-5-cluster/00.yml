@@ -2,6 +2,14 @@ ks_repos:
   - name: "RHEL 5 x86_64 - Cluster"
     baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
 
+disks:
+  - pool: default
+    size: 5
+  - pool: default
+    vol: rhel-5-cluster-data-1.img
+    perms: sh
+    size: 1
+
 cluster:
   nodes:
   - &node1 rhel-5-cluster-default-1

@@ -17,16 +17,3 @@ interfaces:
     network: default
     nodns: true
 
-disks:
-  - pool: default
-    size: 5
-  - pool: default
-    vol: rhel-5-cluster-data-1.img
-    perms: sh
-    size: 1
-
-cluster:
-  nodes:
-    - rhel-5-cluster-default-1
-    - rhel-5-cluster-default-2
-
