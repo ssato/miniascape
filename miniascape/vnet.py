@@ -95,6 +95,12 @@ def load_configs(confdir):
     return nets
 
 
+def filterout_hosts_wo_macs(netconf):
+    nc = yaml.load(open(netconf))
+    nc["hosts"] = [h for h in nc["hosts"] if getattr(h, "mac", False)]
+    return nc
+
+
 def gen_vnet_files(tmpldir, confdir, workdir, force):
     nets = load_configs(confdir)
     outdir = os.path.join(workdir, "host/networks.d")
@@ -116,8 +122,9 @@ def gen_vnet_files(tmpldir, confdir, workdir, force):
             return
 
         logging.debug("Generating network xml: " + netxml)
+        nc = filterout_hosts_wo_macs(netconf)
         T.renderto(
-            [os.path.join(tmpldir, "libvirt")], yaml.load(open(netconf)),
+            [os.path.join(tmpldir, "libvirt")], nc,
             os.path.join(tmpldir, "host/network.xml"), netxml
         )
 
