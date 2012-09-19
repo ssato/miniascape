@@ -1,3 +1,4 @@
+filesystem: ext3
 virtinst:
   location: "http://ks/kstree/rhel/5/8/x86_64/"
 

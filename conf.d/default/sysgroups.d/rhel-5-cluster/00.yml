@@ -1,3 +1,5 @@
+filesystem: ext3
+
 ks_repos:
   - name: "RHEL 5 x86_64 - Cluster"
     baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
