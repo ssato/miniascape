@@ -671,3 +671,10 @@ yum-utils
 #man-pages-pl
 #man-pages-ru
 #
+# Needed to run stsclient:
+pexpect
+pyparted
+rpm-build
+libselinux-python
+python-paramiko
+redhat-lsb
