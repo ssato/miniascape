@@ -1,0 +1,2 @@
+# Quick hack to avoid mounting shared disk from boths cluster nodes:
+sed -i.save -r 's,(.*/qdisk.*),# \1,; s,(.*/data.*),# \1,' /etc/fstab
