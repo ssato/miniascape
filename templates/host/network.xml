@@ -7,6 +7,9 @@
     <!-- Libvirt host aliases: -->
     <host ip='{{ gateway }}'><hostname>gw.{{ domain }}</hostname></host>
     <host ip='{{ gateway }}'><hostname>ks.{{ domain }}</hostname></host>
+    <!-- TODO: Parameterize the followings and get from config files -->
+    <host ip='192.168.155.100'><hostname>rhel-5-cluster.{{ domain }}</hostname></host>
+    <host ip='192.168.155.110'><hostname>rhel-6-cluster.{{ domain }}</hostname></host>
 {% for h in hosts|sort(attribute="mac") %}    <host ip='{{ h.ip }}'><hostname>{{ h.fqdn }}</hostname></host>
 {% endfor %}  </dns>
   <ip address='{{ gateway }}' netmask='{{ netmask|default("255.255.255.0") }}'>
