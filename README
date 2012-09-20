@@ -2,37 +2,54 @@
 miniascape
 ====================
 
-WARNING: miniascape is in pre-alpha state and will heavily udpate day by day, so
-it may not work in your environment or might cause trouble. TRY IT IN YOUR OWN
-RISK, PLEASE.
+Disclaimer
+-----------------
 
-miniascape is a template compiler optimized to generate collection of
-configurations and data to setup libvirt based virtualization guests build
-environment quickly.
+WARNING: miniascape is in pre-alpha state and will heavily udpate day by day,
+so it may not work in your environment or might cause trouble. TRY IT IN YOUR
+OWN RISK, PLEASE.
+
+
+About
+----------------
+
+Miniascape is a template compiler optimized for specific purpose, generating
+collection of configuration files for virt. host, script to build VMs, and misc
+data for VMs, to setup libvirt based virtualization environment (virtualization
+'miniascape') to build guests build VMs quickly and easily.
 
 Main objects are
 
- * Make network configuration for virtualization guests much easier.
-   (pre-defined libvirt networks and DHCP configurations to allow access from
-   host by hostnames)
+* Setup network configuration including DHCP and DNS for VMs much easier.
 
- * Lightweight; Does not require expensive high-performance servers. I try to
-   make it works on my non-high power vaio note pc having Intel Atom CPU and
-   only 2G RAM.
+* Lightweight; Does not require expensive high-performance servers.
+  
+  I try to make it working on my non-high power vaio note pc having Intel Atom
+  CPU and only 2G RAM.
 
- * Do not intend to become a replacement for other feature rich software such
-   like RHEV, RHN Satellite and cobbler, etc.
+* Fully utilize exsiting library, tools and do not intend to replace or
+  reinvent wheels.
 
- * Fully utilize exsiting library, tools and do not intend to replace or
-   reinvent the wheel
+* Do not bring yet-another runtime dependency other than existing ones
+  like libvirt and virt-install and miniascape trys to generate scripts
+  utilizing these and runnable standalone.
+
+
+And non-goals are:
+
+* Intend to become a replacement for other feature rich software such like
+  RHEV, RHN Satellite and cobbler, CloudForms/SystemEngine, etc.
+
+* Provides a UI (GUI, Web UI) to manage lifecycle of VMs at ease.
 
 
 Usage
 ====================
 
 1. Setup host: mount iso images and setup kickstart installation trees, etc.
-2. Arrange configuration files (examples are in /etc/miniascape/config/)
-3. Run miniascape to generate libvirt network xml, ks.cfg and vm build scripts:
+2. Arrange configuration files (examples are in /etc/miniascape/conf.d/default)
+3. Run miniascape to generate libvirt network xml, auto installation script and
+   vm build scripts:
 
    miniascape ge [Options ...]
 
@@ -40,22 +57,45 @@ Usage
 
    miniascape generate [Options ...]
 
-4. Run built script in the working dir, e.g. <workdir>/<guest_name>/vmbuild.sh
+4. Run built script in the working dir (<workdir>/guests.d/<guest_name>/vmbuild.sh)
+   on target libvirt host
 
 
 How it works?
 ====================
 
-miniascape just works like a kind of template compiler optimized to generate
-ks.cfg, wrapper scripts around virt-install and configurations installed into
-the libvirt host in current implementation.
+Miniascape just a template compiler optimized to generate ks.cfg, wrapper
+scripts around virt-install and configurations installed into the libvirt host
+in current implementation.
+
+* Inputs: multiple YAML configuration files and template files
+* Outputs: libvirt network XML, kickstart files and VM build scripts, etc.
+* Template engine used: Jinja2: http://jinja.pocoo.org
 
 
 Configurations
 ---------------------
 
 Configurations and parameters are in YAML configuration files (default:
-/etc/miniascape/config/**/*.yml).
+/etc/miniascape/config/default/**/*.yml).
+
+* Common: common/*.yml 
+
+* Host global:
+
+  * host.d/*.yml
+  * networks.d/*.yml: Libvirt network parameters
+  * storages.d/*.yml: Libvirt storage pool parameters
+
+
+* VM (guest) specific:
+
+  1. sysgroups.d/<guest kind>: Parameters common in system groups
+  2. guests.d/<guest name>: Guest specific parameters
+
+
+Configuration files are loaded in the above order and possible to customize by
+putting your configuration files.
 
 
 Templates
@@ -66,9 +106,8 @@ I chose jinja2 as template engine for miniascape.
 Miniascape contains some concrete template examples under
 /usr/share/miniascape/templates:
 
-* autoinstall.d/: auto installation (kickstart) templates
-* libvirt/: libvirt/virtinst specific templates like network xml, wrapper
-  script for virt-install
+* autoinstall.d/: Auto installation configuration files (kickstart) templates
+* host/: Templates for host like network xml, wrapper script for virt-install
 
 
 Prerequisites
@@ -88,7 +127,7 @@ Tools and libs
  * libvirt and its python binding
  * python-virtinst
  * qemu-kvm
- * nginx or (apache) httpd
+ * nginx or (apache) httpd [option]
  * etc.
 
 
@@ -122,9 +161,11 @@ upstream works
 miniascape itself
 -----------------------
 
+* Some more guest configurations and templates
+* Write unit tests for template files including snippets
 * Added some more host-configuration stuff, like autofs, www (apache or nginx),
   nfs, iscsi, etc.
-* Docuemnt
+* Documents
 
 
 License
@@ -136,5 +177,5 @@ This is distributed under GPLv3 or later.
 Author
 =======================
 
-Satoru SATOH <satoru.satoh at gmail.com>
+Satoru SATOH <ssato at redhat.com>
 
