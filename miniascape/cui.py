@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from miniascape.globals import M_TMPL_DIR
+
 import miniascape.guest as G
 import miniascape.utils as U
 import miniascape.vnet as N
@@ -30,6 +32,7 @@ def gen_all(argv):
     (options, args) = p.parse_args(argv)
 
     U.init_log(options.debug)
+    options.tmpldir.append(M_TMPL_DIR)
 
     if not options.yes:
         yesno = raw_input(
