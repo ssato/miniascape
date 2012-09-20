@@ -87,11 +87,11 @@ def load_guest_confs(confdir, name, verbose=False):
     return T.load_confs(list_guest_confs(confdir, name))
 
 
-def arrange_setup_data(gtmpldir, config, gworkdir):
+def arrange_setup_data(gtmpldirs, config, gworkdir):
     """
     Arrange setup data embedded in kickstart files.
 
-    :param gtmpldir: Guest's template dir
+    :param gtmpldirs: Guest's template dirs :: [path]
     :param config: Guest's config :: dict
     :param gworkdir: Guest's workdir, e.g. workdir/foo
     """
@@ -105,13 +105,12 @@ def arrange_setup_data(gtmpldir, config, gworkdir):
 
         dst = t.get("dst", src)
         out = os.path.join(gworkdir, "setup", dst)
+        tpaths = gtmpldirs + \
+            [os.path.join(d, os.path.dirname(src)) for d in gtmpldirs] + \
+            [os.path.dirname(out)]
 
         logging.info("Generating %s from %s" % (out, src))
-        T.renderto(
-            [gtmpldir, os.path.join(gtmpldir, os.path.dirname(src)),
-                os.path.dirname(out)],
-            config, src, out, ask=True
-        )
+        T.renderto(tpaths, config, src, out, ask=True)
 
     subprocess.check_output(
         "tar --xz -c setup | base64 > setup.tar.xz.base64",
@@ -119,33 +118,33 @@ def arrange_setup_data(gtmpldir, config, gworkdir):
     )
 
 
-def gen_guest_files(name, tmpldir, confdir, workdir):
+def gen_guest_files(name, tmpldirs, confdir, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
     """
     conf = load_guest_confs(confdir, name)
-    gtmpldir = os.path.join(tmpldir, "autoinstall.d")
+    gtmpldirs = [os.path.join(d, "autoinstall.d") for d in tmpldirs]
 
     if not os.path.exists(workdir):
         logging.debug("Creating working dir: " + workdir)
         os.makedirs(workdir)
 
     logging.info("Generating setup data archive to embedded: " + name)
-    arrange_setup_data(gtmpldir, conf, workdir)
+    arrange_setup_data(gtmpldirs, conf, workdir)
 
     for k, v in conf.get("templates", {}).iteritems():
         (src, dst) = (v["src"], v["dst"])
         if os.path.sep in src:
-            srcdir = os.path.join(tmpldir, os.path.dirname(src))
+            srcdirs = [os.path.join(d, os.path.dirname(src)) for d in tmpldirs]
         else:
-            srcdir = tmpldir
+            srcdirs = tmpldirs
 
         # strip dir part as it will be searched from srcdir.
         src = os.path.basename(src)
         dst = os.path.join(workdir, dst)
 
         logging.info("Generating %s from %s [%s]" % (dst, src, k))
-        T.renderto([srcdir, workdir], conf, src, dst)
+        T.renderto(srcdirs + [workdir], conf, src, dst)
 
 
 def _cfg_to_name(config):
@@ -172,9 +171,9 @@ def show_vm_names(confdir):
     print >> sys.stderr, "\nAvailable VMs: " + ", ".join(list_names(confdir))
 
 
-def gen_all(tmpldir, confdir, workdir):
+def gen_all(tmpldirs, confdir, workdir):
     for name in list_names(confdir):
-        gen_guest_files(name, tmpldir, confdir, _workdir(workdir, name))
+        gen_guest_files(name, tmpldirs, confdir, _workdir(workdir, name))
 
 
 def load_guests_confs(confdir):
@@ -184,17 +183,16 @@ def load_guests_confs(confdir):
 def option_parser(defaults=None):
     if defaults is None:
         defaults = dict(
-            tmpldir=M_TMPL_DIR,
-            confdir=M_CONF_DIR,
-            workdir=None,
-            genall=False,
+            tmpldir=[], confdir=M_CONF_DIR, workdir=None, genall=False,
             debug=False,
         )
 
     p = optparse.OptionParser("%prog [OPTION ...] [NAME]")
     p.set_defaults(**defaults)
 
-    p.add_option("-t", "--tmpldir", help="Template top dir [%default]")
+    p.add_option("-t", "--tmpldir", action="append",
+        help="Template top dir[s] [[%s]]" % M_TMPL_DIR
+    )
     p.add_option("-c", "--confdir",
         help="Configurations (context files) top dir [%default]"
     )
@@ -204,7 +202,6 @@ def option_parser(defaults=None):
     p.add_option("-A", "--genall", action="store_true",
         help="Generate configs for all guests"
     )
-
     p.add_option("-D", "--debug", action="store_true", help="Debug mode")
 
     return p
@@ -220,6 +217,9 @@ def main(argv=sys.argv):
         sys.exit(0)
 
     U.init_log(options.debug)
+
+    # System template path is always appended to the tail of search list.
+    options.tmpldir.append(M_TMPL_DIR)
 
     if options.genall:
         if options.workdir is None:

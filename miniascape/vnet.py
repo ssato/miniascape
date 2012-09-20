@@ -101,7 +101,20 @@ def filterout_hosts_wo_macs(netconf):
     return nc
 
 
-def gen_vnet_files(tmpldir, confdir, workdir, force):
+def _find_template(tmpldirs, template):
+    for tdir in tmpldirs:
+        tmpl = os.path.join(tdir, template)
+        if os.path.exists(tmpl):
+            return tmpl
+
+    logging.warn(
+        "Could not find template %s in paths: %s" % \
+            (template, str(tmpldirs))
+    )
+    return template  # Could not find in tmpldirs
+
+
+def gen_vnet_files(tmpldirs, confdir, workdir, force):
     nets = load_configs(confdir)
     outdir = os.path.join(workdir, "host/networks.d")
 
@@ -123,26 +136,25 @@ def gen_vnet_files(tmpldir, confdir, workdir, force):
 
         logging.debug("Generating network xml: " + netxml)
         nc = filterout_hosts_wo_macs(netconf)
+        tpaths = [os.path.join(d, "host") for d in tmpldirs]
         T.renderto(
-            [os.path.join(tmpldir, "host")], nc,
-            os.path.join(tmpldir, "host/network.xml"), netxml
+            tpaths, nc, _find_template(tmpldirs, "host/network.xml"), netxml
         )
 
 
 def option_parser(argv=sys.argv, defaults=None):
     if defaults is None:
         defaults = dict(
-            tmpldir=M_TMPL_DIR,
-            confdir=M_CONF_DIR,
-            workdir=M_WORK_TOPDIR,
-            force=False,
-            debug=False,
+            tmpldir=[], confdir=M_CONF_DIR, workdir=M_WORK_TOPDIR,
+            force=False, yes=False, debug=False,
         )
 
     p = optparse.OptionParser("%prog [OPTION ...]", prog=argv[0])
     p.set_defaults(**defaults)
 
-    p.add_option("-t", "--tmpldir", help="Template top dir [%default]")
+    p.add_option("-t", "--tmpldir", action="append", 
+        help="Template top dirs [[%s]]" % M_TMPL_DIR
+    )
     p.add_option("-c", "--confdir",
         help="Configuration files top dir [%default]"
     )
@@ -150,7 +162,9 @@ def option_parser(argv=sys.argv, defaults=None):
     p.add_option("-f", "--force", action="store_true",
         help="Force outputs even if these exist"
     )
-
+    p.add_option("-y", "--yes", action="store_true", default=False,
+        help="Assume yes for all Questions"
+    )
     p.add_option("-D", "--debug", action="store_true", help="Debug mode")
 
     return p
@@ -162,7 +176,7 @@ def main(argv):
 
     U.init_log(options.debug)
 
-    if not args:
+    if not args or not options.yes:
         yesno = raw_input(
             "Are you sure to generate networks in %s ? [y/n]: " % \
                 options.workdir
@@ -170,6 +184,9 @@ def main(argv):
         if not yesno.strip().lower().startswith('y'):
             print >> "Cancel creation of networks..."
             sys.exit(0)
+
+    # System template path is always appended to the tail of search list.
+    options.tmpldir.append(M_TMPL_DIR)
 
     gen_vnet_files(
         options.tmpldir, options.confdir, options.workdir, options.force

@@ -27,10 +27,6 @@ def cmd2prog(c):
 
 def gen_all(argv):
     p = N.option_parser(argv)
-    p.add_option(
-        "-y", "--yes", action="store_true", default=False,
-        help="Assume yes for all Questions"
-    )
     (options, args) = p.parse_args(argv)
 
     U.init_log(options.debug)
