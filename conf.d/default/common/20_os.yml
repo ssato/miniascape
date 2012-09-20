@@ -1,5 +1,6 @@
 swap: 512
 filesystem: ext4
+lang: en_US.UTF-8
 
 selinux:
   mode: enforcing
