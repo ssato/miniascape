@@ -1,9 +1,10 @@
 swap: 512
 filesystem: ext4
-lang: en_US.UTF-8
+auth:
+  options: "--passalgo=sha512"
 
-selinux:
-  mode: enforcing
+selinux: enforcing
+ks_finish: poweroff
 
 timezone:
   utc: true
