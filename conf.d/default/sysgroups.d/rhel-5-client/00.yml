@@ -1,6 +1,7 @@
 filesystem: ext3
 virtinst:
   location: "http://ks/kstree/rhel/5/8/x86_64/"
+  os_variant: rhel5.4
 
 # Meta:
 templates:
