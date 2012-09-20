@@ -2,7 +2,11 @@
 sed -i.save -e 's/^HOSTNAME=.*/HOSTNAME={{ fqdn }}/' /etc/sysconfig/network{% endif %}
 test -f /etc/sysconfig/network.save || cp /etc/sysconfig/network /etc/sysconfig/network.save
 cat << EOF >> /etc/sysconfig/network
-#NETWORKING_IPV6=no
+{% if noipv6 is defined and noipv6 -%}
+NETWORKING_IPV6=no
+{%- endif %}
 NOZEROCONF=yes
-{% if defaultgw is defined %}GATEWAY={{ defaultgw }}{% endif %}
+{% if defaultgw is defined -%}
+GATEWAY={{ defaultgw }}
+{%- endif %}
 EOF
