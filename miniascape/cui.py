@@ -18,7 +18,7 @@ from miniascape.globals import M_TMPL_DIR
 
 import miniascape.guest as G
 import miniascape.utils as U
-import miniascape.vnet as N
+import miniascape.host as H
 
 import sys
 
@@ -28,7 +28,7 @@ def cmd2prog(c):
 
 
 def gen_all(argv):
-    p = N.option_parser(argv)
+    p = H.option_parser(argv)
     (options, args) = p.parse_args(argv)
 
     U.init_log(options.verbose)
@@ -43,14 +43,14 @@ def gen_all(argv):
             print >> sys.stderr, "Cancel generation of files..."
             sys.exit()
 
-    N.gen_vnet_files(
+    H.gen_vnet_files(
         options.tmpldir, options.confdir, options.workdir, options.force
     )
     G.gen_all(options.tmpldir, options.confdir, options.workdir)
 
 
 def init_(argv):
-    N.main(argv)
+    H.main(argv)
 
 
 # TODO: define other commands.
@@ -58,7 +58,7 @@ cmds = [
     ("i", "init", init_),
     ("ge", "generate", gen_all),
     ("gu", "guest", G.main),
-    ("n", "net", N.main),
+    ("h", "host", H.main),
 ]
 
 
