@@ -14,25 +14,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_ENCODING, M_CONF_DIR, M_TMPL_DIR, \
-    M_WORK_TOPDIR
+from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
 
 import miniascape.guest as MG
 import miniascape.template as T
 import miniascape.utils as U
-import jinja2_cui.render as R
 
 import glob
 import logging
 import optparse
 import os.path
 import os
-import subprocess
 import sys
 import yaml
 
 from itertools import groupby
-from logging import DEBUG, INFO
 from operator import itemgetter
 
 
@@ -78,7 +74,7 @@ def dup_check(hosts):
 def load_configs(confdir):
     hostsets = aggregate_guest_networks(confdir)
 
-    nets = R.MyDict.createFromDict()
+    nets = dict()
     nconfs = glob.glob(os.path.join(confdir, "networks.d/*.yml"))
 
     for nc in nconfs:
