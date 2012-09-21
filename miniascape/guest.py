@@ -222,7 +222,7 @@ def option_parser(defaults=None):
     if defaults is None:
         defaults = dict(
             tmpldir=[], confdir=M_CONF_DIR, workdir=None, genall=False,
-            debug=False,
+            verbose=1,
         )
 
     p = optparse.OptionParser("%prog [OPTION ...] [NAME]")
@@ -240,7 +240,12 @@ def option_parser(defaults=None):
     p.add_option("-A", "--genall", action="store_true",
         help="Generate configs for all guests"
     )
-    p.add_option("-D", "--debug", action="store_true", help="Debug mode")
+    p.add_option("-D", "--debug", action="store_const", const=0,
+        dest="verbose", help="Debug mode"
+    )
+    p.add_option("-q", "--quiet", action="store_const", const=2,
+        dest="verbose", help="Quiet mode"
+    )
 
     return p
 
@@ -254,7 +259,7 @@ def main(argv=sys.argv):
         show_vm_names(options.confdir)
         sys.exit(0)
 
-    U.init_log(options.debug)
+    U.init_log(options.verbose)
 
     # System template path is always appended to the tail of search list.
     options.tmpldir.append(M_TMPL_DIR)

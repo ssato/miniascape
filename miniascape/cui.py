@@ -31,7 +31,7 @@ def gen_all(argv):
     p = N.option_parser(argv)
     (options, args) = p.parse_args(argv)
 
-    U.init_log(options.debug)
+    U.init_log(options.verbose)
     options.tmpldir.append(M_TMPL_DIR)
 
     if not options.yes:

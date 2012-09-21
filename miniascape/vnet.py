@@ -142,7 +142,7 @@ def option_parser(argv=sys.argv, defaults=None):
     if defaults is None:
         defaults = dict(
             tmpldir=[], confdir=M_CONF_DIR, workdir=M_WORK_TOPDIR,
-            force=False, yes=False, debug=False,
+            force=False, yes=False, verbose=1,
         )
 
     p = optparse.OptionParser("%prog [OPTION ...]", prog=argv[0])
@@ -161,7 +161,12 @@ def option_parser(argv=sys.argv, defaults=None):
     p.add_option("-y", "--yes", action="store_true", default=False,
         help="Assume yes for all Questions"
     )
-    p.add_option("-D", "--debug", action="store_true", help="Debug mode")
+    p.add_option("-D", "--debug", action="store_const", const=0,
+        dest="verbose", help="Debug mode"
+    )
+    p.add_option("-q", "--quiet", action="store_const", const=2,
+        dest="verbose", help="Quiet mode"
+    )
 
     return p
 
@@ -170,7 +175,7 @@ def main(argv):
     p = option_parser(argv)
     (options, args) = p.parse_args(argv[1:])
 
-    U.init_log(options.debug)
+    U.init_log(options.verbose)
 
     if not args or not options.yes:
         yesno = raw_input(

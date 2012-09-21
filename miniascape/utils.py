@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from logging import DEBUG, INFO
-
 import itertools
 import logging
 
@@ -52,11 +50,8 @@ def concat(xss):
     return list(chain_from_iterable(xs for xs in xss))
 
 
-def init_log(debug=False):
-    logging.basicConfig(
-        format="[%(levelname)s] %(message)s",
-        level=(DEBUG if debug else INFO),
-    )
-
+def init_log(level):
+    lvl = [logging.DEBUG, logging.INFO, logging.WARN][level]
+    logging.basicConfig(format="[%(levelname)s] %(message)s", level=lvl)
 
 # vim:sw=4:ts=4:et:
