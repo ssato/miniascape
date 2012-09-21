@@ -31,6 +31,6 @@ VERSION = "0.3.2"
 
 # daily snapshots:
 # import datetime
-#VERSION = VERSION + "." + date()
+VERSION = VERSION + "." + date()
 
 # vim:sw=4:ts=4:et:
