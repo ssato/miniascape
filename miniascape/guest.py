@@ -120,7 +120,7 @@ def load_guest_confs(confdir, name):
     :param confdir: Config topdir
     :param name: Guest's name
     """
-    logging.info("Loading %s's config from %s" % (name, confdir))
+    logging.info("Loading %s's config under %s" % (name, confdir))
 
     return T.load_confs(list_guest_confs(confdir, name))
 
