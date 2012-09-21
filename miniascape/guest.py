@@ -215,7 +215,7 @@ def gen_all(tmpldirs, confdir, workdir):
 
 
 def load_guests_confs(confdir):
-    return [load_guest_confs(confdir, n, 1) for n in list_names(confdir)]
+    return [load_guest_confs(confdir, n) for n in list_names(confdir)]
 
 
 def option_parser(defaults=None):
