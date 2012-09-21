@@ -159,6 +159,11 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
 def gen_guest_files(name, tmpldirs, confdir, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
+
+    :param name: Guest's name
+    :param tmpldirs: Template dirs :: [path]
+    :param confdir: Config top dir
+    :param workdir: Working top dir
     """
     conf = load_guest_confs(confdir, name)
     gtmpldirs = [os.path.join(d, _AUTOINST_SUBDIR) for d in tmpldirs]
@@ -185,36 +190,38 @@ def gen_guest_files(name, tmpldirs, confdir, workdir):
         T.renderto(srcdirs + [workdir], conf, src, dst)
 
 
-def _cfg_to_name(config):
-    """
-    >>> _cfg_to_name("/etc/miniascape/config/guests.d/abc.yml")
-    'abc'
-    """
-    return  os.path.basename(os.path.splitext(config)[0])
-
-
-def list_names_g(confdir):
-    for x in glob.glob(os.path.join(confdir, "guests.d/*")):
-        if os.path.isfile(x) and x.endswith(".yml"):
-            yield _cfg_to_name(x)
-        else:
-            yield os.path.basename(x)
-
-
 def list_names(confdir):
-    return sorted(list_names_g(confdir))
+    """
+    :param confdir: Config top dir
+    """
+    return sorted((
+        os.path.basename(x) for x in
+            glob.glob(os.path.join(confdir, _GUEST_SUBDIR, "*")) \
+                if os.path.isdir(x)
+    ))
 
 
 def show_vm_names(confdir):
+    """
+    :param confdir: Config top dir
+    """
     print >> sys.stderr, "\nAvailable VMs: " + ", ".join(list_names(confdir))
 
 
 def gen_all(tmpldirs, confdir, workdir):
+    """
+    :param tmpldirs: Template dirs :: [path]
+    :param confdir: Config top dir
+    :param workdir: Working top dir
+    """
     for name in list_names(confdir):
         gen_guest_files(name, tmpldirs, confdir, _workdir(workdir, name))
 
 
 def load_guests_confs(confdir):
+    """
+    :param confdir: Config top dir
+    """
     return [load_guest_confs(confdir, n) for n in list_names(confdir)]
 
 
@@ -246,7 +253,6 @@ def option_parser(defaults=None):
     p.add_option("-q", "--quiet", action="store_const", const=2,
         dest="verbose", help="Quiet mode"
     )
-
     return p
 
 
