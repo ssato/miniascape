@@ -1,0 +1,5 @@
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhui-rhel-5-client-ks.cfg
+
