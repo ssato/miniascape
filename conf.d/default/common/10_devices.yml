@@ -3,7 +3,7 @@ disks:
   - pool: default
     format: qcow2
     cache: none
-    size: 5
+    size: 6
     bus: virtio
 #  - path: /var/lib/libvirt/images/<vm>-disk-0.raw
 #    format: raw
