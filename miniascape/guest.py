@@ -232,7 +232,8 @@ def main(argv=sys.argv):
             options.workdir = os.path.join(M_WORK_TOPDIR, name)
 
         gen_guest_files(
-            name, options.tmpldir, options.confdir, options.workdir
+            name, options.tmpldir, options.confdir,
+            _workdir(options.workdir, name)
         )
 
 
