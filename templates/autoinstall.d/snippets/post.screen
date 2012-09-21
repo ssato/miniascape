@@ -1,1 +1,0 @@
-echo "escape ^t^t" > /root/dot.screenrc && cd /root && ln -s dot.screenrc .screenrc
