@@ -97,7 +97,7 @@ def load_configs(confdir):
 
 def filterout_hosts_wo_macs(netconf):
     nc = yaml.load(open(netconf))
-    nc["hosts"] = [h for h in nc.get("hosts", [])] if "mac" in h]
+    nc["hosts"] = [h for h in nc.get("hosts", []) if "mac" in h]
     return nc
 
 
