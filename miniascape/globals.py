@@ -17,6 +17,7 @@
 import datetime
 import locale
 
+
 def date():
     return datetime.datetime.now().strftime("%Y%m%d")
 
@@ -26,11 +27,15 @@ M_TMPL_DIR = "/usr/share/miniascape/templates"
 M_WORK_TOPDIR = "workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
 
+M_COMMON_CONFDIR = "common"
+
+
 PACKAGE = "miniascape"
 VERSION = "0.3.2"
 
 # daily snapshots:
 # import datetime
 VERSION = VERSION + "." + date()
+
 
 # vim:sw=4:ts=4:et:

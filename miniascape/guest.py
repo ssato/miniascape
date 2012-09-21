@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
+from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR, \
+    M_COMMON_CONFDIR
 
 import miniascape.template as T
 import miniascape.utils as U
@@ -29,8 +30,25 @@ import subprocess
 import sys
 
 
+_GUEST_SUBDIR = "guests.d"
+_GROUP_SUBDIR = "sysgroups.d"
+_AUTOINST_SUBDIR = "autoinstall.d"
+
+
 def _workdir(topdir, name):
-    return os.path.join(topdir, "guests.d", name)
+    """
+    :param topdir: Working top dir
+    :param name: Guest's name
+    """
+    return os.path.join(topdir, _GUEST_SUBDIR, name)
+
+
+def _guestconfdir(confdir, name):
+    """
+    :param confdir: Config topdir
+    :param name: Guest's name
+    """
+    return os.path.join(confdir, _GUEST_SUBDIR, name)
 
 
 def _sysgroup(name):
@@ -47,53 +65,73 @@ def _sysgroup(name):
     return name[:name.rfind('-')] if re.match(r".+-\d+$", name) else name
 
 
-def find_sysgroup_conf(confdir, name):
-    gname = _sysgroup(name)
-
-    f = os.path.join(confdir, "sysgroups.d/%s.yml" % gname)
-    d = os.path.join(confdir, "sysgroups.d", gname)
-
-    if os.path.exists(f):
-        return f
-    else:
-        if os.path.exists(d):
-            return os.path.join(d, "*.yml")
-        else:
-            return None
+def _groupconfdir(confdir, name):
+    """
+    :param confdir: Config topdir
+    :param name: Guest's name
+    """
+    return os.path.join(confdir, _GROUP_SUBDIR, _sysgroup(name))
 
 
-def find_guests_conf(confdir, name):
-    f = os.path.join(confdir, "guests.d/%s.yml" % name)
-    d = os.path.join(confdir, "guests.d", name)
+def common_confs(confdir):
+    """
+    :param confdir: Config topdir
+    """
+    d = os.path.join(confdir, M_COMMON_CONFDIR)
 
-    if os.path.exists(f):
-        return f
-    else:
-        assert os.path.exists(d), "Conf not exists for the guest: " + name
-        return os.path.join(d, "*.yml")  # e.g. /.../guests.d/<name>/00.yml
+    assert os.path.exists(d), "Could not find common confdir: " + d
+    return os.path.join(d, "*.yml")
+
+
+def group_confs(confdir, name):
+    """
+    :param confdir: Config topdir
+    :param name: Guest's name
+    """
+    d = _groupconfdir(confdir, name)
+    return os.path.join(d, "*.yml") if os.path.exists(d) else None
+
+
+def guest_confs(confdir, name):
+    """
+    :param confdir: Config topdir
+    :param name: Guest's name
+    """
+    d = _guestconfdir(confdir, name)
+
+    assert os.path.exists(d), "Could not find guest's confdir: " + name
+    return os.path.join(d, "*.yml")  # e.g. /.../guests.d/<name>/00.yml
 
 
 def list_guest_confs(confdir, name):
-    return [x for x in
-        [os.path.join(confdir, "common/*.yml"),
-         find_sysgroup_conf(confdir, name),
-         find_guests_conf(confdir, name)] if x is not None
+    """
+    :param confdir: Config topdir
+    :param name: Guest's name
+    """
+    return [
+        x for x in [common_confs(confdir),
+                    group_confs(confdir, name),
+                    guest_confs(confdir, name)] if x is not None
     ]
 
 
-def load_guest_confs(confdir, name, verbose=False):
-    if verbose:
-        logging.info("Loading %s's config from %s" % (name, confdir))
+def load_guest_confs(confdir, name):
+    """
+    :param confdir: Config topdir
+    :param name: Guest's name
+    """
+    logging.info("Loading %s's config from %s" % (name, confdir))
+
     return T.load_confs(list_guest_confs(confdir, name))
 
 
 def arrange_setup_data(gtmpldirs, config, gworkdir):
     """
-    Arrange setup data embedded in kickstart files.
+    Arrange setup data to be embedded in kickstart files.
 
     :param gtmpldirs: Guest's template dirs :: [path]
     :param config: Guest's config :: dict
-    :param gworkdir: Guest's workdir, e.g. workdir/foo
+    :param gworkdir: Guest's workdir
     """
     tmpls = config.get("setup_data", [])
     if not tmpls:
@@ -123,7 +161,7 @@ def gen_guest_files(name, tmpldirs, confdir, workdir):
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
     """
     conf = load_guest_confs(confdir, name)
-    gtmpldirs = [os.path.join(d, "autoinstall.d") for d in tmpldirs]
+    gtmpldirs = [os.path.join(d, _AUTOINST_SUBDIR) for d in tmpldirs]
 
     if not os.path.exists(workdir):
         logging.debug("Creating working dir: " + workdir)
