@@ -13,7 +13,9 @@ proxy:
 #  username: proxyuser
 #  password: proxypasswd
 
-rhui_entitlement_cert: &rhui_entitlement_cert rhui_entitlement.cert
+rhui_entitlement_certs:
+  - &rhui_entitlement_cert rhui_entitlement.cert
+  - &rhui_rhel_entitlement_cert rhui_rhel_entitlement.cert
 
 ## Meta:
 templates:
@@ -30,8 +32,5 @@ setup_data:
 # RHUI Entitlement certs gotten from Red Hat Customer portal site, and put in
 # workdir/rhua/setup/:
   - src: *rhui_entitlement_cert
-
-# The following hack looks not required since RHUI 2.1
-#  - src: data/rhua/post_rhui_installation.update_configs.sh
-#    dst: post_rhui_installation.update_configs.sh
+  - src: *rhui_rhel_entitlement_cert
 
