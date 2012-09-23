@@ -17,6 +17,7 @@
 from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR, \
     M_COMMON_CONFDIR
 
+import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
@@ -235,33 +236,12 @@ def load_guests_confs(confdir):
     return [load_guest_confs(confdir, n) for n in list_names(confdir)]
 
 
-def option_parser(defaults=None):
-    if defaults is None:
-        defaults = dict(
-            tmpldir=[], confdir=M_CONF_DIR, workdir=None, genall=False,
-            verbose=1,
-        )
+def option_parser():
+    defaults = dict(genall=False, **O.M_DEFAULTS)
+    p = O.option_parser(defaults)
 
-    p = optparse.OptionParser("%prog [OPTION ...] [NAME]")
-    p.set_defaults(**defaults)
-
-    p.add_option("-t", "--tmpldir", action="append",
-        help="Template top dir[s] [[%s]]" % M_TMPL_DIR
-    )
-    p.add_option("-c", "--confdir",
-        help="Configurations (context files) top dir [%default]"
-    )
-    p.add_option("-w", "--workdir",
-        help="Working dir to dump results [%s/guests.d/<NAME>]" % M_WORK_TOPDIR
-    )
     p.add_option("-A", "--genall", action="store_true",
         help="Generate configs for all guests"
-    )
-    p.add_option("-D", "--debug", action="store_const", const=0,
-        dest="verbose", help="Debug mode"
-    )
-    p.add_option("-q", "--quiet", action="store_const", const=2,
-        dest="verbose", help="Quiet mode"
     )
     return p
 
@@ -276,20 +256,12 @@ def main(argv=sys.argv):
         sys.exit(0)
 
     U.init_log(options.verbose)
-
-    # System template path is always appended to the tail of search list.
-    options.tmpldir.append(M_TMPL_DIR)
+    options = O.tweak_tmpldir(options)
 
     if options.genall:
-        if options.workdir is None:
-            options.workdir = M_WORK_TOPDIR
-
         gen_all(options.tmpldir, options.confdir, options.workdir)
     else:
         name = args[0]
-        if options.workdir is None:
-            options.workdir = os.path.join(M_WORK_TOPDIR, name)
-
         gen_guest_files(
             name, options.tmpldir, options.confdir,
             _workdir(options.workdir, name)
