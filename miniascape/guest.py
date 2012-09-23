@@ -238,7 +238,7 @@ def load_guests_confs(confdir):
 
 def option_parser():
     defaults = dict(genall=False, **O.M_DEFAULTS)
-    p = O.option_parser(defaults)
+    p = O.option_parser(defaults, "%prog [OPTION ...] [GUEST_NAME]")
 
     p.add_option("-A", "--genall", action="store_true",
         help="Generate configs for all guests"
