@@ -39,6 +39,7 @@ def _workdir(topdir, name):
     """
     :param topdir: Working top dir
     :param name: Guest's name
+    :return: Guest's working (output) directory
     """
     return os.path.join(topdir, _GUEST_SUBDIR, name)
 
@@ -47,6 +48,7 @@ def _guestconfdir(confdir, name):
     """
     :param confdir: Config topdir
     :param name: Guest's name
+    :return: Guest's config files directory
     """
     return os.path.join(confdir, _GUEST_SUBDIR, name)
 
@@ -69,6 +71,7 @@ def _groupconfdir(confdir, name):
     """
     :param confdir: Config topdir
     :param name: Guest's name
+    :return: Guest's group config files directory
     """
     return os.path.join(confdir, _GROUP_SUBDIR, _sysgroup(name))
 
@@ -76,6 +79,7 @@ def _groupconfdir(confdir, name):
 def common_confs(confdir):
     """
     :param confdir: Config topdir
+    :return: Common config files (path pattern)
     """
     d = os.path.join(confdir, M_COMMON_CONFDIR)
 
@@ -85,8 +89,12 @@ def common_confs(confdir):
 
 def group_confs(confdir, name):
     """
+    note: Group's config dir may not exist differently from common and guest's
+    config dir.
+
     :param confdir: Config topdir
     :param name: Guest's name
+    :return: Guest group's config files (path pattern)
     """
     d = _groupconfdir(confdir, name)
     return os.path.join(d, "*.yml") if os.path.exists(d) else None
@@ -96,6 +104,7 @@ def guest_confs(confdir, name):
     """
     :param confdir: Config topdir
     :param name: Guest's name
+    :return: Guest's config files (path pattern)
     """
     d = _guestconfdir(confdir, name)
 
@@ -107,6 +116,7 @@ def list_guest_confs(confdir, name):
     """
     :param confdir: Config topdir
     :param name: Guest's name
+    :return: Guest's all config files (path pattern)
     """
     return [
         x for x in [common_confs(confdir),
