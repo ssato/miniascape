@@ -50,7 +50,7 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
 
 def tweak_tmpldir(options):
     """
-    Thist function will be called after options and args parsed, and ensure
+    This function will be called after options and args parsed, and ensure
     system template path is always appended to the tail of search list.
     """
     options.tmpldir.append(G.M_TMPL_DIR)
