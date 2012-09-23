@@ -1,2 +1,15 @@
 isomntdir: /srv/content
 isodatadir: /srv/images
+
+# FIXME: Duplicated entries
+# see also: conf.d/default/networks.d/service.yml
+bridge: virbr5
+
+host_templates:
+  fence_virt:
+    src: host/fence_virt.conf
+    dst: host/etc/fence_virt.conf
+  auto_iso:
+    src: host/auto.iso
+    dst: host/etc/auto.iso
+
