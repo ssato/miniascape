@@ -26,8 +26,8 @@ M_DEFAULTS = dict(
 )
 
 
-def option_parser(defaults=M_DEFAULTS):
-    p = optparse.OptionParser("%prog [OPTION ...] [NAME]")
+def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
+    p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
 
     p.add_option("-t", "--tmpldir", action="append",
