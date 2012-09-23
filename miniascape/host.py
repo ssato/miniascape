@@ -155,6 +155,41 @@ def gen_vnet_files(tmpldirs, confdir, workdir, force):
         )
 
 
+def host_confs(confdir):
+    """
+    :param confdir: Config topdir
+    :param name: Guest's name
+    :return: Guest's config files (path pattern)
+    """
+    d = os.path.join(confdir, "host.d")
+
+    assert os.path.exists(d), "Could not find host's confdir under " + confdir
+    return os.path.join(d, "*.yml")
+
+
+def gen_host_files(tmpldirs, confdir, workdir, force):
+    conf =  T.load_confs([MG.common_confs(confdir), host_confs(confdir)])
+    gen_vnet_files(tmpldirs, confdir, workdir, force)
+
+    for k, v in conf.get("host_templates", {}).iteritems():
+        (src, dst) = (v.get("src", None), v.get("dst", None))
+
+        if src is None or dst is None:
+            continue
+
+        if os.path.sep in src:
+            srcdirs = [os.path.join(d, os.path.dirname(src)) for d in tmpldirs]
+        else:
+            srcdirs = tmpldirs
+
+        # strip dir part as it will be searched from srcdir.
+        src = os.path.basename(src)
+        dst = os.path.join(workdir, dst)
+
+        logging.info("Generating %s from %s [%s]" % (dst, src, k))
+        T.renderto(srcdirs + [workdir], conf, src, dst)
+
+
 def option_parser():
     defaults = dict(force=False, yes=False, **O.M_DEFAULTS)
     p = O.option_parser(defaults, "%prog [OPTION ...]")
@@ -185,7 +220,7 @@ def main(argv):
             print >> "Cancel creation of networks..."
             sys.exit(0)
 
-    gen_vnet_files(
+    gen_host_files(
         options.tmpldir, options.confdir, options.workdir, options.force
     )
 
