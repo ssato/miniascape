@@ -14,9 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_TMPL_DIR
-
 import miniascape.guest as G
+import miniascape.options as O
 import miniascape.utils as U
 import miniascape.host as H
 
@@ -28,11 +27,11 @@ def cmd2prog(c):
 
 
 def gen_all(argv):
-    p = H.option_parser(argv)
+    p = H.option_parser()
     (options, args) = p.parse_args(argv)
 
     U.init_log(options.verbose)
-    options.tmpldir.append(M_TMPL_DIR)
+    options = O.tweak_tmpldir(options)
 
     if not options.yes:
         yesno = raw_input(
@@ -73,7 +72,7 @@ Command abbreviations: %s
 """ % (prog, cs, cas)
 
 
-def main(argv):
+def main(argv=sys.argv):
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])
     else:
@@ -86,6 +85,6 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(argv)
+    main(sys.argv)
 
 # vim:sw=4:ts=4:et:

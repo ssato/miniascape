@@ -14,9 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR
-
 import miniascape.guest as MG
+import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
@@ -156,46 +155,28 @@ def gen_vnet_files(tmpldirs, confdir, workdir, force):
         )
 
 
-def option_parser(argv=sys.argv, defaults=None):
-    if defaults is None:
-        defaults = dict(
-            tmpldir=[], confdir=M_CONF_DIR, workdir=M_WORK_TOPDIR,
-            force=False, yes=False, verbose=1,
-        )
+def option_parser():
+    defaults = dict(force=False, yes=False, **O.M_DEFAULTS)
+    p = O.option_parser(defaults, "%prog [OPTION ...]")
 
-    p = optparse.OptionParser("%prog [OPTION ...]", prog=argv[0])
-    p.set_defaults(**defaults)
-
-    p.add_option("-t", "--tmpldir", action="append",
-        help="Template top dirs [[%s]]" % M_TMPL_DIR
-    )
-    p.add_option("-c", "--confdir",
-        help="Configuration files top dir [%default]"
-    )
-    p.add_option("-w", "--workdir", help="Working top dir [%default]")
     p.add_option("-f", "--force", action="store_true",
         help="Force outputs even if these exist"
     )
-    p.add_option("-y", "--yes", action="store_true", default=False,
+    p.add_option("-y", "--yes", action="store_true",
         help="Assume yes for all Questions"
     )
-    p.add_option("-D", "--debug", action="store_const", const=0,
-        dest="verbose", help="Debug mode"
-    )
-    p.add_option("-q", "--quiet", action="store_const", const=2,
-        dest="verbose", help="Quiet mode"
-    )
-
     return p
 
 
 def main(argv):
-    p = option_parser(argv)
+    p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
     U.init_log(options.verbose)
+    options = O.tweak_tmpldir(options)
 
-    if not args or not options.yes:
+    houtdir = os.path.join(options.workdir, _HOST_SUBDIR)
+    if os.path.exists(houtdir) and not options.yes:
         yesno = raw_input(
             "Are you sure to generate networks in %s ? [y/n]: " % \
                 options.workdir
@@ -203,9 +184,6 @@ def main(argv):
         if not yesno.strip().lower().startswith('y'):
             print >> "Cancel creation of networks..."
             sys.exit(0)
-
-    # System template path is always appended to the tail of search list.
-    options.tmpldir.append(M_TMPL_DIR)
 
     gen_vnet_files(
         options.tmpldir, options.confdir, options.workdir, options.force
