@@ -13,10 +13,11 @@
 #
 {%- for arch in ["i386", "x86_64"] %}
 {%    for i in [5, 6] %}
-{%      for i in range(0, 10) %}rhel-{{ i }}-{{ j }}-server-{{ arch }}  -fstype=iso9660,ro,loop :{{ isodatadir }}/rhel-{{ i }}-{{ j }}-server-{{ arch }}-dvd.iso
+{%      for j in range(0, 10) %}rhel-{{ i }}-{{ j }}-server-{{ arch }}  -fstype=iso9660,ro,loop :{{ isodatadir }}/rhel-{{ i }}-{{ j }}-server-{{ arch }}-dvd.iso
 {%      endfor -%}
 {%    endfor -%}
 # fedora
-{%    for i in [17, 18, 19, 20] %}fedora-{{ i }}-{{ arch }}  -fstype=iso9660,ro,loop :{{ isodatadir }}/fedora-{{ i }}-{{ arch }}-dvd.iso
+{%    for k in [17, 18, 19, 20] %}fedora-{{ k }}-{{ arch }}  -fstype=iso9660,ro,loop :{{ isodatadir }}/fedora-{{ k }}-{{ arch }}-dvd.iso
+{%    endfor -%}
 {%  endfor -%}
 
