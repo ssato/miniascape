@@ -53,7 +53,9 @@ def tweak_tmpldir(options):
     This function will be called after options and args parsed, and ensure
     system template path is always appended to the tail of search list.
     """
-    options.tmpldir.append(G.M_TMPL_DIR)
+    if G.M_TMPL_DIR not in options.tmpldir:
+        options.tmpldir.append(G.M_TMPL_DIR)
+
     return options
 
          
