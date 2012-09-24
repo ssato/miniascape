@@ -160,6 +160,12 @@ def gen_vnet_files(tmpldirs, confdir, workdir, force):
             tpaths, nc, _find_template(tmpldirs, "host/network.xml"), netxml
         )
 
+    T.renderto(
+        tpaths, {"networks": [n for n in nets]},
+        _find_template(tmpldirs, "host/network_register.sh"),
+        os.path.join(outdir, "network_register.sh")
+    )
+
 
 def host_confs(confdir):
     """
