@@ -3,7 +3,8 @@ set -e
 
 netconfdir=${0%/*}
 {% for net in networks %}
-if `virsh net-list --all | grep -q $net 2>/dev/null`; then
+net={{ net }}
+if `virsh net-list --all | grep -q ${net:?} 2>/dev/null`; then
     echo "Network $net already exists. Nothing to do..."
 else
     netxml=${netconfdir:?}/${net}.xml
