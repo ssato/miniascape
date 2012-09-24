@@ -7,8 +7,6 @@
 -bluez*
 -ccid
 -conman
--cpuspeed
--dosfstools
 -fetchmail
 -fprintd-pam
 -ftp
@@ -17,11 +15,9 @@
 -mdadm
 -microcode_ctl
 -nano
--pam_pkcs11
 -pcmciautils
 -pcsc-lite*
 -ppp
--quota
 -radvd
 -rdate
 -rdist
@@ -35,4 +31,3 @@
 -firstboot*
 -ntsysv
 -talk
--udftools
