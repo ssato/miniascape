@@ -17,7 +17,6 @@ dosfstools
 fbset
 finger
 firstboot-tui
-ftp
 gcc
 grub
 hdparm
@@ -44,7 +43,6 @@ mtools
 mtr
 mutt
 MySQL-python
-nano
 nc
 ncompress
 net-snmp
@@ -450,3 +448,7 @@ yum-utils
 #man-pages-ko
 #man-pages-pl
 #man-pages-ru
+#
+# Alternatives are installed already:
+#nano (vim*)
+#ftp (lftp, w3m, etc.)

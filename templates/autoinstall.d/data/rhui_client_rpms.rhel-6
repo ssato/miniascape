@@ -31,7 +31,6 @@ efibootmgr
 eject
 elinks
 finger
-ftp
 gcc
 gdb
 grub
@@ -71,7 +70,6 @@ mtr
 mutt
 mysql-connector-odbc
 MySQL-python
-nano
 nc
 ncompress
 net-snmp
