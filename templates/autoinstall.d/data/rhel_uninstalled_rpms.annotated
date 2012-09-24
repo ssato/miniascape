@@ -15,10 +15,6 @@
 -ccid
 # Only a few number of console devices installed:
 -conman
-# Don't need to change virtual cpu speed:
--cpuspeed
-# Don't make / fsck MS-DOS FAT filesystem on servers:
--dosfstools
 # Don't retrieve and forward from/to remote mail servers:
 -fetchmail
 # Fingerprint reader device is not present:
@@ -35,16 +31,12 @@
 -microcode_ctl
 # Don't use it. Better alternatives (vim-enhanced) is installed instead:
 -nano
-# Don't use X.509 certificate based login mechanism in guests:
--pam_pkcs11
 # No PCMCIA devices are available in guests:
 -pcmciautils
 # No smartcard devices are available for guests in general:
 -pcsc-lite*
 # Don't use PPP:
 -ppp
-# Quota is not configured in guests:
--quota
 # Don't need to run radvd for IPv6 routing in guests in general:
 -radvd
 # Dont' use as there are not secure:
@@ -64,4 +56,3 @@
 -firstboot*
 -ntsysv
 -talk
--udftools
