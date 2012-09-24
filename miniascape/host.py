@@ -64,28 +64,34 @@ def aggregate_guest_networks(confdir):
     return hostsets
 
 
-def dup_check(hosts):
-    ip_seen = {}
-    mac_seen = {}
+def find_dups(hosts, keys):
+    seens = dict((k, {}) for k in keys)
 
     for h in hosts:
-        ip = h.get("ip", None)
-        if ip is not None:
-            ips = ip_seen.get(ip, [])
-            if ips:
-                logging.warn("Duplicated IP address in " + str(h))
-                ip_seen[ip].append(h)
-            else:
-                ip_seen[ip] = [h]
+        for k in keys:
+            x = h.get(k, None)
+            if x is not None:
+                xs = seens[k].get(x, [])
+                if xs:
+                    seens[k][x].append(h)
+                else:
+                    seens[k][x] = [h]
 
-        mac = h.get("mac", None)
-        if mac is not None:
-            ms = mac_seen.get(mac, [])
-            if ms:
-                logging.warn("Duplicated MAC address in " + str(h))
-                mac_seen[mac].append(h)
-            else:
-                mac_seen[mac] = [h]
+    for k in keys:
+        for x, hs in seens[k].iteritems():
+            if len(hs) > 1:  # duplicated entries
+                yield (k, x, hs)
+
+
+def check_dups_by_ip_and_mac(hosts):
+    """
+    Check if duplicated IP or MAC found in host list and warns about them.
+    """
+    for k, x, hs in find_dups(hosts, ("ip", "mac")):
+        logging.warn(
+            "Duplicated entries: key=%s, x=%s, hosts=%s" % \
+                (k, x, ", ".join(h.get("host", str(h)) for h in hs))
+        )
 
 
 def load_configs(confdir):
@@ -100,7 +106,7 @@ def load_configs(confdir):
 
         hss = [hs for hs in hostsets if hs and hs[0]["network"] == name]
         if hss:
-            dup_check(hss[0])
+            check_dups_by_ip_and_mac(hss[0])
             netctx["hosts"] = hss[0]
 
         nets[name] = netctx
