@@ -24,7 +24,7 @@ def date():
 
 M_CONF_DIR = "/etc/miniascape/conf.d/default"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
-M_WORK_TOPDIR = "workdir-" + date()
+M_WORK_TOPDIR = "miniascape-workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
 
 M_COMMON_CONFDIR = "common"
