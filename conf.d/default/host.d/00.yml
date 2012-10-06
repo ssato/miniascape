@@ -12,4 +12,7 @@ host_templates:
   auto_iso:
     src: host/auto.iso
     dst: host/etc/auto.iso
+  fix_bug_in_software_bridge_sh:
+    src: host/fix_bug_in_software_bridge.sh
+    dst: host/usr/sbin/fix_bug_in_software_bridge.sh
 
