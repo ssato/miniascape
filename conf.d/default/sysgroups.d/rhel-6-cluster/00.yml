@@ -1,5 +1,3 @@
-filesystem: ext3
-
 ks_repos:
   - name: "RHEL 6 x86_64 - Cluster"
     baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
