@@ -1,6 +1,25 @@
 #! /bin/bash
 set -ex
 
+cconf=/etc/cluster/cluster.conf
+if test -f $cconf; then
+  echo "Cluster config '$1' not found. Aborting..."
+  exit 1
+else
+  if `/sbin/service cman status`; then
+    if `cman_tool status`; then
+      echo "Cluster looks working. Going forward..."
+    else
+      echo "Cluster does not look working. Check it before initializing GFS..."
+      exit 1
+    fi
+  else
+    echo "CMAN does not look working. Check cluster configuration before initializing GFS..."
+    exit 1
+  fi
+fi
+
+
 # Enable CLVM lock, system service (clvmd) and start it if not:
 grep -q -E '^[ ]+locking_type = 3' /etc/lvm/lvm.conf 2>/dev/null || \
   lvmconf --enable-cluster
