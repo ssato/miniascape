@@ -2,7 +2,7 @@
 set -ex
 
 cconf=/etc/cluster/cluster.conf
-if test -f $cconf; then
+if test ! -f $cconf; then
   echo "Cluster config '$1' not found. Aborting..."
   exit 1
 else
