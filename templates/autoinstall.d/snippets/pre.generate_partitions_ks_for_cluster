@@ -7,7 +7,8 @@ so that 'zerombr' and 'ignoredisk --only-use=$dev' combination trick is needed.
 if `grep -q ${disk1}2 /proc/partitions 2>/dev/null`; then
     # keep contents in disk1 if any partitions exist.
     part_ks_0="zerombr
-ignoredisk --only-use=${disk0}
+# FIXME: This line causes hiding ${disk1} from anaconda.
+#ignoredisk --only-use=${disk0}
 clearpart --all --initlabel --drives=${disk0}
 part /data --onpart=${disk1}2 --noformat
 "
