@@ -38,6 +38,6 @@ templates:
 setup_data:
   - src: data/rhel-6-cluster-gfs/cluster.conf
     dst: cluster.conf
-  - src: data/rhel-6-cluster-gfs/init_qdisk.sh
-    dst: init_qdisk.sh
+  - src: data/rhel-6-cluster-gfs/init_gfs.sh
+    dst: init_gfs.sh
 
