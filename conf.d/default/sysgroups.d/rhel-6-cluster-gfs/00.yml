@@ -13,6 +13,11 @@ disks:
     size: 1
 
 cluster:
+  name: GFS_CLUSTER
+  vol:
+    vg: clusteredvg
+    lv: clusteredlv
+    fs: clusteredfs
   nodes:
   - &node1 rhel-6-cluster-gfs-default-1
   - &node2 rhel-6-cluster-gfs-default-2
