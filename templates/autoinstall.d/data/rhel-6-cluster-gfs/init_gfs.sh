@@ -24,6 +24,6 @@ pvscan -s | grep -q $diskdev 2>/dev/null || pvcreate $diskdev
 vgdisplay -s --nosuffix | grep -q "\"$vg\"" 2>/dev/null || vgcreate -cy $vg $diskdev
 lvscan -a | grep -q /dev/$vg/$lv 2>/dev/null || lvcreate -n $lv -l 100%VG $vg
 
-mkfs.gfs2 -t DEMO_GFS_CLUSTER:gfs01 -j {% cluster.nodes|length %} -J 64 /dev/clusteredvg/lv_gfs
+mkfs.gfs2 -t DEMO_GFS_CLUSTER:gfs01 -j {{ cluster.nodes|length }} -J 64 /dev/clusteredvg/lv_gfs
 
 # vim:sw=2:ts=2:et:
