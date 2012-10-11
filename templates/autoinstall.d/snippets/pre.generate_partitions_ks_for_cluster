@@ -1,12 +1,19 @@
 {#- Requires some parameters ${diskN} defined by the macro in "snippets/pre_post.find_disk" -#}
+{#- TODO: It seems anaconda in RHEL 6.3+ does not initialize disks w/
+'clearpart --initlabel' (https://access.redhat.com/knowledge/solutions/117513)
+so that 'zerombr' and 'ignoredisk --only-use=$dev' combination trick is needed.
+#}
 {%- macro generate_partitions_ks(filesystem) -%}
 if `grep -q ${disk1}2 /proc/partitions 2>/dev/null`; then
     # keep contents in disk1 if any partitions exist.
-    part_ks_0="clearpart --all --initlabel --drives=${disk0}
+    part_ks_0="zerombr
+ignoredisk --only-use=${disk0}
+clearpart --all --initlabel --drives=${disk0}
 part /data --onpart=${disk1}2 --noformat
 "
 else
-    part_ks_0="clearpart --all --initlabel
+    part_ks_0="zerombr
+clearpart --all --initlabel
 # Swipe fs and initialize w/ mkqdisk later:
 part /qdisk --size=20 --fstype {{ filesystem }} --ondisk=${disk1}
 part /data  --size=1  --fstype {{ filesystem }} --ondisk=${disk1} --grow
