@@ -1,0 +1,7 @@
+If you have files to embed in ks.cfg, put here and list in conf:
+
+::
+
+        setup_data:
+          - src: data/rhel-5-cluster/cluster.conf
+            dst: cluster.conf

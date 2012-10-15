@@ -5,7 +5,7 @@ templates:
   autoinst:
     src: autoinstall.d/rhel-6-lvs-rs-ks.cfg
 
-#setup_data:
-#  - src: data/lvs/Makefile
-#    dst: Makefile
+setup_data:
+  - src: data/README.embed
+    dst: README.embed
 
