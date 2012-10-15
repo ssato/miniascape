@@ -10,6 +10,5 @@ interfaces:
     fqdn: *fqdn
     mac: "52:54:00:02:01:82"
     network: default
-    gateway: 192.168.122.170
     nodns: true
 
