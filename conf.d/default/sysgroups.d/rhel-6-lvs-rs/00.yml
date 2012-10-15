@@ -1,0 +1,11 @@
+gateway: 192.168.155.170
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhel-6-lvs-rs-ks.cfg
+
+#setup_data:
+#  - src: data/lvs/Makefile
+#    dst: Makefile
+
