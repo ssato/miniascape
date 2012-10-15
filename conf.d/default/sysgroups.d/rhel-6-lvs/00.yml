@@ -4,7 +4,7 @@ ks_repos:
 
 lvs:
   ip:
-    addr: 192.168.155.170
+    addr: 192.168.122.170
     maskbit: 24
 
 hosts:
