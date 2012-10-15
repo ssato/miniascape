@@ -1,0 +1,19 @@
+description: RHEL 6 LVS
+hostname: &hostname rhel-6-lvs-1
+fqdn: &fqdn rhel-6-lvs-1.m2.local
+ip: &ip 192.168.155.171
+interfaces:
+  - device: eth0  # for service
+    mac: "52:54:00:05:01:71"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+  - device: eth1  # for heartbeat
+    bootproto: static
+    mac: "52:54:00:02:01:71"
+    ip: 192.168.122.171
+    host: rhel-6-lvs-default-1
+    network: default
+    nodns: true
+
