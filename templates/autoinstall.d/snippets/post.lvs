@@ -1,6 +1,9 @@
 cp /sbin/sysctl.conf /sbin/sysctl.conf.save
-/sbin/sysctl -w net.ipv4.ip_forward=1
-/sbin/sysctl -w net.ipv4.conf.all.promote_secondaries=1
+cat << EOF >> /sbin/sysctl.conf
+net.ipv4.ip_forward = 1
+net.ipv4.conf.all.promote_secondaries = 1
+EOF
+/sbin/sysctl -p
 
 cp /etc/rc.d/rc.local /etc/rc.d/rc.local.save
 cat << EOF >> /etc/rc.d/rc.local
