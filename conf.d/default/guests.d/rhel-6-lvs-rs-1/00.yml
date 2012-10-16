@@ -1,13 +1,18 @@
 description: RHEL 6 LVS Real server
 hostname: &hostname rhel-6-lvs-rs-1
-fqdn: &fqdn rhel-6-lvs-rs-1.example.com
-ip: &ip 192.168.122.181
+fqdn: &fqdn rhel-6-lvs-rs-1.m2.local
+ip: &ip 192.168.155.181
 interfaces:
-  - device: eth0
-    bootproto: static
+  - device: eth0  # for service
+    mac: "52:54:00:05:01:81"
     ip: *ip
     host: *hostname
     fqdn: *fqdn
+    network: service
+  - device: eth1
+    bootproto: static
+    ip: 192.168.122.181
+    host: rhel-6-lvs-rs-default-1
     mac: "52:54:00:02:01:81"
     network: default
     nodns: true
