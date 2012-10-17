@@ -2,11 +2,6 @@ ks_repos:
   - name: "RHEL 6 x86_64 - LoadBalancer"
     baseurl: "http://ks/kstree/rhel/6/3/x86_64/LoadBalancer/"
 
-lvs:
-  ip:
-    addr: 192.168.122.170
-    maskbit: 24
-
 hosts:
   - ip: 192.168.122.171
     hostname: rhel-6-lvs-default-1
@@ -21,4 +16,8 @@ templates:
 setup_data:
   - src: data/lvs/Makefile
     dst: Makefile
+  - src: data/lvs/setup_nat.sh
+    dst: setup_nat.sh
+  - src: data/lvs/setup_dr.sh
+    dst: setup_dr.sh
 
