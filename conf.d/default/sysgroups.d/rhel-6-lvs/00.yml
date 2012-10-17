@@ -20,4 +20,5 @@ setup_data:
     dst: setup_nat.sh
   - src: data/lvs/setup_dr.sh
     dst: setup_dr.sh
-
+#  - src: data/lvs/lvs.cf
+#    dst: lvs.cf
