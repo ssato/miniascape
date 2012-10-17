@@ -10,6 +10,9 @@
 #
 arptables -A IN  -d {{ lvs.virtual_ip }} -j DROP
 arptables -A OUT -s {{ lvs.virtual_ip }} -j mangle --mangle-ip-s {{ lvs.real_ip }}
+service arptables_jf save
+chkconfig arptables_jf on
+service arptables_jf restart
 
 # TODO: alternative for arptables_jf:
 #iptables -t nat -A PREROUTING -p <tcp|udp> -d <vip> --dport <port> -j REDIRECT
