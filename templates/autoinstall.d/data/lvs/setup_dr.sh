@@ -17,8 +17,8 @@
 # [LVS Howto, 7.2. How LVS-DR works] (above link)
 #
 #
-cp /sbin/sysctl.conf /sbin/sysctl.conf.save
-cat << EOF >> /sbin/sysctl.conf
+cp /etc/sysctl.conf /etc/sysctl.conf.save
+cat << EOF >> /etc/sysctl.conf
 net.ipv4.conf.all.promote_secondaries = 1
 EOF
 /sbin/sysctl -p

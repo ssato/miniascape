@@ -2,8 +2,8 @@
 # Author: Satoru SATOH <ssato@redhat.com>
 # License: MIT
 #
-cp /sbin/sysctl.conf /sbin/sysctl.conf.save
-cat << EOF >> /sbin/sysctl.conf
+cp /etc/sysctl.conf /etc/sysctl.conf.save
+cat << EOF >> /etc/sysctl.conf
 net.ipv4.ip_forward = 1
 net.ipv4.conf.all.promote_secondaries = 1
 EOF
