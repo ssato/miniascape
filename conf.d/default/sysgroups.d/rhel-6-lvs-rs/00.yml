@@ -1,3 +1,5 @@
+description: RHEL 6 LVS Real server
+
 # Meta:
 templates:
   autoinst:
