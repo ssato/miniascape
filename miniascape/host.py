@@ -57,7 +57,7 @@ def aggregate_guest_networks(confdir):
     gcs = MG.load_guests_confs(confdir)
     kf = itemgetter("network")
     hostsets = (
-        list(g) for k, g in groupby(
+        (k, list(g)) for k, g in groupby(
             sorted(U.concat(g.get("interfaces", []) for g in gcs), key=kf), kf
         )
     )
@@ -95,7 +95,7 @@ def check_dups_by_ip_and_mac(hosts):
 
 
 def load_configs(confdir):
-    hostsets = aggregate_guest_networks(confdir)
+    hostsets = dict(aggregate_guest_networks(confdir))
 
     nets = dict()
     nconfs = glob.glob(os.path.join(_netconfdir(confdir), "*.yml"))
@@ -104,10 +104,10 @@ def load_configs(confdir):
         netctx = T.load_confs([nc])
         name = netctx["name"]
 
-        hss = [hs for hs in hostsets if hs and hs[0]["network"] == name]
-        if hss:
-            check_dups_by_ip_and_mac(hss[0])
-            netctx["hosts"] = hss[0]
+        hosts = hostsets.get(name, [])
+        if hosts:
+            check_dups_by_ip_and_mac(hosts)
+            netctx["hosts"] = hosts
 
         nets[name] = netctx
 
