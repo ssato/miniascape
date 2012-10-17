@@ -16,3 +16,7 @@ interfaces:
     network: default
     nodns: true
 
+lvs:
+  real_ip: *ip
+  device: eth0
+
