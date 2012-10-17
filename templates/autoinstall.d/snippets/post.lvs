@@ -1,5 +1,5 @@
-cp /etc/rc.d/rc.local /etc/rc.d/rc.local.save
-cat << EOF >> /etc/rc.d/rc.local
+cp /etc/rc.local /etc/rc.local.save
+cat << EOF >> /etc/rc.local
 # To enable passive FTP connections in LVS (http://red.ht/QGRpfB):
 /sbin/modprobe ip_vs_ftp
 EOF
