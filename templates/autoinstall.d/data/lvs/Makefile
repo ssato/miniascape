@@ -7,7 +7,6 @@ WORKDIR ?= /root/setup
 all:
 	@echo "Usage: make [VAR_OVERRIDES ...]"
 
-
 init.stamp:
 	/usr/sbin/piranha-passwd
 	/sbin/service piranha-gui restart
