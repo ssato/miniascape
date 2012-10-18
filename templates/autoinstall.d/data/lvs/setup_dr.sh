@@ -28,3 +28,60 @@ test -f /etc/sysconfig/iptables.save || cp /etc/sysconfig/iptables /etc/sysconfi
 /sbin/service iptables -t mangle -A PREROUTING -p tcp -d {{ lvs.public.ip.addr }}/{{ lvs.public.ip.maskbit }} --dport 10000:20000 -j MARK --set-mark 21
 /sbin/service iptables save
 /sbin/service iptables restasrt
+
+test -f /etc/sysconfig/ha/lvs.cf.save || cp /etc/sysconfig/ha/lvs.cf /etc/sysconfig/ha/lvs.cf.save
+cat << EOF > /etc/sysconfig/ha/lvs.cf
+serial_no = 1
+primary = {{ lvs.routers.primary }}
+service = lvs
+backup = {{ lvs.routers.backup }}
+heartbeat = 1
+heartbeat_port = 539
+keepalive = 6
+deadtime = 18
+network = direct
+debug_level = NONE
+virtual web {
+     active = 1
+     address = {{ lvs.public.ip.addr }} eth0:1
+     vip_nmask = 255.255.255.0
+     port = 80
+     send = "GET / HTTP/1.0\r\n\r\n"
+     expect = "HTTP"
+     use_regex = 0
+     load_monitor = none
+     scheduler = rr
+     protocol = tcp
+     timeout = 6
+     reentry = 15
+     quiesce_server = 0
+{% for rs in lvs.rs %}     server {{ rs.hostname }} {
+         address = {{ rs.ip }}
+         active = 1
+         weight = 1
+     }
+{% endfor %}
+}
+virtual ftp {
+     active = 1
+     address = {{ lvs.public.ip.addr }} eth0:1
+     vip_nmask = 255.255.255.0
+     fwmark = 21
+     port = 21
+     persistent = 1
+     send = "quit"
+     expect = "220"
+     load_monitor = none
+     scheduler = rr
+     protocol = tcp
+     timeout = 6
+     reentry = 15
+     quiesce_server = 0
+{% for rs in lvs.rs %}     server {{ rs.hostname }} {
+         address = {{ rs.ip }}
+         active = 1
+         weight = 1
+     }
+{% endfor %}
+}
+EOF

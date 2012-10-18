@@ -1,4 +1,14 @@
 lvs:
+  routers:
+    primary: 192.168.155.171
+    backup: 192.168.155.172
+
+  rs:
+  - hostname: rhel-6-lvs-rs-1
+    ip: 192.168.155.181
+  - hostname: rhel-6-lvs-rs-2
+    ip: 192.168.155.182
+
   # If NAT or DR mode:
   public:
     ip:
