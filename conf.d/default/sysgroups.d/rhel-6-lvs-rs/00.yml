@@ -5,6 +5,10 @@ lvs:
   virtual_ip: 192.168.155.170
   virtual_ip_mask: 24
 
+ftp:
+  allowed_networks:
+  - 192.168.155.0/24
+
 # Meta:
 templates:
   autoinst:
