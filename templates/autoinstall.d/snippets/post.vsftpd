@@ -15,3 +15,6 @@ pasv_min_port=10000\npasv_max_port=20000\n#log_ftp_protocol=YES\n" /etc/vsftpd/v
 test -f /etc/sysconfig/iptables.save || cp /etc/sysconfig/iptables /etc/sysconfig/iptables.save
 sed -i -e '/^-A INPUT -j REJECT.*/i \
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 10000:20000 -j ACCEPT' /etc/sysconfig/iptables
+
+# FTP test data:
+hostname > /var/ftp/pub/hostname.txt
