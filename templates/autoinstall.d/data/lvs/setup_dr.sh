@@ -16,9 +16,14 @@
 #
 # [LVS Howto, 7.2. How LVS-DR works] (above link)
 #
-#
-cp /etc/sysctl.conf /etc/sysctl.conf.save
-cat << EOF >> /etc/sysctl.conf
-net.ipv4.conf.all.promote_secondaries = 1
-EOF
+sed -i.save /etc/sysctl.conf -r "s/^(net.ipv4.ip_forward =) 0/\1 1\nnet.ipv4.conf.all.promote_secondaries = 1/g"
 /sbin/sysctl -p
+
+/sbin/service iptables save
+cp -f /etc/sysconfig/iptables /etc/sysconfig/iptables.save
+# Firewall marks for FTP
+# Rules for FTP passive connections in LVS (http://red.ht/OBrlF3):
+/sbin/service iptables -t mangle -A PREROUTING -p tcp -d {{ lvs.public.ip.addr }}/{{ lvs.public.ip.maskbit }} --dport 20 -j MARK --set-mark 21
+/sbin/service iptables -t mangle -A PREROUTING -p tcp -d {{ lvs.public.ip.addr }}/{{ lvs.public.ip.maskbit }} --dport 21 -j MARK --set-mark 21
+/sbin/service iptables -t mangle -A PREROUTING -p tcp -d {{ lvs.public.ip.addr }}/{{ lvs.public.ip.maskbit }} --dport 10000:20000 -j MARK --set-mark 21
+/sbin/service iptables save
