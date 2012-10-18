@@ -27,7 +27,7 @@ test -f /etc/sysconfig/iptables.save || cp /etc/sysconfig/iptables /etc/sysconfi
 /sbin/service iptables -t mangle -A PREROUTING -p tcp -d {{ lvs.public.ip.addr }}/{{ lvs.public.ip.maskbit }} --dport 21 -j MARK --set-mark 21
 /sbin/service iptables -t mangle -A PREROUTING -p tcp -d {{ lvs.public.ip.addr }}/{{ lvs.public.ip.maskbit }} --dport 10000:20000 -j MARK --set-mark 21
 /sbin/service iptables save
-/sbin/service iptables restasrt
+/sbin/service iptables restart
 
 test -f /etc/sysconfig/ha/lvs.cf.save || cp /etc/sysconfig/ha/lvs.cf /etc/sysconfig/ha/lvs.cf.save
 cat << EOF > /etc/sysconfig/ha/lvs.cf
