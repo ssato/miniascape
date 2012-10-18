@@ -1,0 +1,2 @@
+sed -i.save -e "$ a \
+ALL: {% for net in ftp.allowed_networks %}{{ net }} {% endfor %} 127.0.0.1" /etc/hosts.allow 
