@@ -17,4 +17,4 @@ service arptables_jf restart
 # TODO: alternative for arptables_jf:
 #iptables -t nat -A PREROUTING -p <tcp|udp> -d <vip> --dport <port> -j REDIRECT
 
-ip addr add {{ lvs.virtual_ip }} dev {{ lvs.device }}
+ip addr add {{ lvs.virtual_ip }}/{{ lvs.virtual_ip_mask }} dev {{ lvs.device }}
