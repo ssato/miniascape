@@ -16,5 +16,10 @@ service arptables_jf restart
 # TODO: alternative for arptables_jf:
 #iptables -t nat -A PREROUTING -p <tcp|udp> -d <vip> --dport <port> -j REDIRECT
 
-# Add route to LVS router (Virtual IP):
+# Assign virtual IP to self:
+test -f /etc/rc.local.save || cp /etc/rc.local /etc/rc.local.save
+cat << EOF >> /etc/rc.local
 ip addr add {{ lvs.virtual_ip }}/{{ lvs.virtual_ip_mask }} dev {{ lvs.device }}
+EOF
+
+bash -x /etc/rc.local
