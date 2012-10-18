@@ -151,8 +151,6 @@ TODO
 upstream works
 -------------------
 
-* Fix a bug that multiple storage volume cannot be created in a same storage pool
-  with virt-install --disk option (rhbz#857424)
 * -C | --config ffile option for virt-install
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and
   make it dynamic
@@ -160,6 +158,10 @@ upstream works
 
 miniascape itself
 -----------------------
+
+* control or meta config file which controls which config files to be loaded
+* site-designer: tool or sub command to generate config files from default or
+  user-defined parameters and config templates
 
 * Some more guest configurations and templates
 * Write unit tests for template files including snippets
