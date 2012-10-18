@@ -1,0 +1,2 @@
+test -f /etc/sysconfig/network.save || cp /etc/sysconfig/network /etc/sysconfig/network.save
+echo "NOZEROCONF=yes" >> /etc/sysconfig/network
