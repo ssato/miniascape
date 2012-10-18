@@ -1,12 +1,17 @@
-# /etc/hosts.allow
+# /etc/hosts.allow:
 sed -i.save -e "$ a \
 ALL: {% for net in ftp.allowed_networks %}{{ net }} {% endfor %} 127.0.0.1" /etc/hosts.allow
+
+# /etc/vsftpd/vsftpd.conf:
+sed -i.save -e "$ a \
+pasv_min_port=10000\npasv_max_port=20000\n#log_ftp_protocol=YES\n" /etc/vsftpd/vsftpd.conf
 
 # IF Dynamic ports for passive-mode FTP connections:
 # /etc/sysconfig/iptables-config: Add 'ip_conntrack_ftp' module to load
 #sed -i.save -r 's/(IPTABLES_MODULES)=""/\1="ip_conntrack_ftp"/' /etc/sysconfig/iptables-config
 
 # ELSE, ranged-ports for passive-mode:
+# (SEE ALSO: /etc/vsftpd/vsftpd.conf updates above)
 test -f /etc/sysconfig/iptables.save || cp /etc/sysconfig/iptables /etc/sysconfig/iptables.save
 sed -i -e '/^-A INPUT -j REJECT.*/i \
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 10000:20000 -j ACCEPT' /etc/sysconfig/iptables
