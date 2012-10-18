@@ -18,3 +18,4 @@ service arptables_jf restart
 
 # Add route to LVS router (Virtual IP):
 ip addr add {{ lvs.virtual_ip }}/{{ lvs.virtual_ip_mask }} dev {{ lvs.device }}
+echo "Don't forget to enable 'GATEWAY' config in /etc/sysconfig/network..."
