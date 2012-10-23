@@ -9,9 +9,18 @@ WORKDIR ?= /root/setup
 RHUI_ISO ?= RHEL-6-RHUI-2-LATEST-Server-x86_64-DVD.iso
 RHUI_URL ?= https://cdn.redhat.com/content/dist/rhel/rhui/server/6/6Server/x86_64/rhui/2/iso/$(RHUI_ISO)
 
+FETCH_PROG ?= wget
+
+ifeq ($(FETCH_PROG),curl)
+# TODO: curl doesn't look work well:
 fetch_RHUI_ISO = curl --cert {{ rhui_entitlement_certs[0] }}
 {% if proxy is defined and proxy.fqdn is defined %}fetch_RHUI_ISO += --proxy https://{{ proxy.fqdn }}:{{ proxy.port|default("443") }} {% if proxy.user is defined %}--proxy-user {{ proxy.user }}:{{ proxy.password }}{% endif %}{% endif %}
 fetch_RHUI_ISO += -v --insecure
+else
+fetch_RHUI_ISO = {% if proxy is defined and proxy.fqdn is defined %}env https_proxy=https://{{ proxy.fqdn }}:{{ proxy.port|default("443") }} {% endif %}wget --certificate {{ rhui_entitlement_certs[0] }}
+fetch_RHUI_ISO += {% if proxy.user is defined %}--proxy-user={{ proxy.user }} --proxy-password={{ proxy.password }}{% endif %}
+fetch_RHUI_ISO += --no-check-certificate
+endif
 
 
 all:
