@@ -18,7 +18,7 @@ fetch_RHUI_ISO = curl --cert {{ rhui_entitlement_certs[0] }}
 fetch_RHUI_ISO += -v --insecure
 else
 fetch_RHUI_ISO = {% if proxy is defined and proxy.fqdn is defined %}env https_proxy=https://{{ proxy.fqdn }}:{{ proxy.port|default("443") }} {% endif %}wget --certificate {{ rhui_entitlement_certs[0] }}
-fetch_RHUI_ISO += {% if proxy.user is defined %}--proxy-user={{ proxy.user }} --proxy-password={{ proxy.password }}{% endif %}
+{% if proxy.user is defined %}fetch_RHUI_ISO += --proxy-user={{ proxy.user }} --proxy-password={{ proxy.password }}{% endif %}
 fetch_RHUI_ISO += --no-check-certificate
 endif
 
