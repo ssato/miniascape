@@ -32,5 +32,7 @@ setup_data:
 # RHUI Entitlement certs gotten from Red Hat Customer portal site, and put in
 # workdir/rhua/setup/:
   - src: *rhui_entitlement_cert
+    dst: rhui_entitlement_cert.pem
   - src: *rhui_rhel_entitlement_cert
+    dst: rhui_rhel_entitlement_cert.pem
 
