@@ -2,6 +2,9 @@ disks:
   - pool: default
     size: 50
 
+virtinst:
+  ram: 2048
+
 satellite:
   admin:
     email: root@localhost
