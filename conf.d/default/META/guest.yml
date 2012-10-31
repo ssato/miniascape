@@ -1,0 +1,5 @@
+files:
+  - "common/*.yml"
+  - "sysgroups.d/%(name)s/*.yml"
+  - "guests.d/%(name)s/*.yml"
+
