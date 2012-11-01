@@ -1,0 +1,4 @@
+files:
+  - "common/*.yml"
+  - "networks.d/%(name)s.yml"
+
