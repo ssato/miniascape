@@ -1,3 +1,4 @@
+subdir: guests.d
 files:
   - "common/*.yml"
   - "sysgroups.d/%(name)s/*.yml"
