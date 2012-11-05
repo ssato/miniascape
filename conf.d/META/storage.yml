@@ -1,5 +1,0 @@
-subdir: storages.d
-files:
-  - "common/*.yml"
-  - "storages.d/%(name)s.yml"
-
