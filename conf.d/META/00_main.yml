@@ -1,3 +1,5 @@
+site: default
+
 guest:
   subdir: guests.d
   files:
