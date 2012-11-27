@@ -21,7 +21,6 @@ from operator import itemgetter
 import miniascape.template as T
 import miniascape.utils as U
 
-import glob
 import logging
 import os.path
 import os
@@ -35,7 +34,7 @@ def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
     Load meta config for miniascape.
     """
     if os.path.isdir(metaconfsrc):
-        confs = glob.glob(os.path.join(metaconfsrc, "*.yml"))
+        confs = U.sglob(os.path.join(metaconfsrc, "*.yml"))
     else:
         confs = [metaconfsrc]  # It's not a dir, just a file.
 
@@ -65,11 +64,7 @@ def list_guest_names(metaconf):
     """
     :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
     """
-    return sorted((
-        os.path.basename(x) for x in
-            glob.glob(os.path.join(metaconf["guest"]["dir"], "*")) \
-                if os.path.isdir(x)
-    ))
+    return U.list_dirnames(os.path.join(metaconf["guest"]["dir"]))
 
 
 def load_guests_confs(metaconf):

@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import glob
 import itertools
 import logging
 
@@ -53,5 +54,20 @@ def concat(xss):
 def init_log(level):
     lvl = [logging.DEBUG, logging.INFO, logging.WARN][level]
     logging.basicConfig(format="[%(levelname)s] %(message)s", level=lvl)
+
+
+def sglob(files_pattern):
+    return glob.glob(files_pattern)
+
+
+def list_dirnames(tdir):
+    """
+    :param tdir: dir in which target dirs exist
+    """
+    return [
+        os.path.basename(x) for x in
+            U.sglob(os.path.join(tdir, "*")) if os.path.isdir(x)
+    ]
+
 
 # vim:sw=4:ts=4:et:

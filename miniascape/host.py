@@ -19,7 +19,6 @@ import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
-import glob
 import logging
 import optparse
 import os.path
@@ -98,7 +97,7 @@ def load_configs(confdir):
     hostsets = dict(aggregate_guest_networks(confdir))
 
     nets = dict()
-    nconfs = glob.glob(os.path.join(_netconfdir(confdir), "*.yml"))
+    nconfs = U.sglob(os.path.join(_netconfdir(confdir), "*.yml"))
 
     for nc in nconfs:
         netctx = T.load_confs([nc])

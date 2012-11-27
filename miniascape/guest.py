@@ -21,7 +21,6 @@ import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
-import glob
 import logging
 import optparse
 import os.path
@@ -205,11 +204,7 @@ def list_names(confdir):
     """
     :param confdir: Config top dir
     """
-    return sorted((
-        os.path.basename(x) for x in
-            glob.glob(os.path.join(confdir, _GUEST_SUBDIR, "*")) \
-                if os.path.isdir(x)
-    ))
+    return U.list_dirnames(os.path.join(confdir, _GUEST_SUBDIR))
 
 
 def show_vm_names(confdir):
