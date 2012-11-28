@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import miniascape.config as C
 import miniascape.guest as MG
 import miniascape.options as O
 import miniascape.template as T
@@ -41,78 +42,6 @@ def _netoutdir(topdir):
     return os.path.join(topdir, _HOST_SUBDIR, _NET_SUBDIR)
 
 
-def _netconfdir(confdir):
-    """
-    :param confdir: Config topdir
-    """
-    return os.path.join(confdir, _NET_SUBDIR)
-
-
-def aggregate_guest_networks(confdir):
-    """
-    Aggregate guest's network interface info from each guest configurations and
-    return list of host list grouped by each networks.
-    """
-    gcs = MG.load_guests_confs(confdir)
-    kf = itemgetter("network")
-    hostsets = (
-        (k, list(g)) for k, g in groupby(
-            sorted(U.concat(g.get("interfaces", []) for g in gcs), key=kf), kf
-        )
-    )
-    return hostsets
-
-
-def find_dups(hosts, keys):
-    seens = dict((k, {}) for k in keys)
-
-    for h in hosts:
-        for k in keys:
-            x = h.get(k, None)
-            if x is not None:
-                xs = seens[k].get(x, [])
-                if xs:
-                    seens[k][x].append(h)
-                else:
-                    seens[k][x] = [h]
-
-    for k in keys:
-        for x, hs in seens[k].iteritems():
-            if len(hs) > 1:  # duplicated entries
-                yield (k, x, hs)
-
-
-def check_dups_by_ip_and_mac(hosts):
-    """
-    Check if duplicated IP or MAC found in host list and warns about them.
-    """
-    for k, x, hs in find_dups(hosts, ("ip", "mac")):
-        logging.warn(
-            "Duplicated entries: key=%s, x=%s, hosts=%s" % \
-                (k, x, ", ".join(h.get("host", str(h)) for h in hs))
-        )
-
-
-def load_configs(confdir):
-    hostsets = dict(aggregate_guest_networks(confdir))
-
-    nets = dict()
-    nconfs = U.sglob(os.path.join(_netconfdir(confdir), "*.yml"))
-
-    for nc in nconfs:
-        netctx = T.load_confs([nc])
-        name = netctx["name"]
-
-        hosts = hostsets.get(name, [])
-        if hosts:
-            check_dups_by_ip_and_mac(hosts)
-            netctx["hosts"] = hosts
-
-        nets[name] = netctx
-
-    return nets
-
-
 def filterout_hosts_wo_macs(netconf):
     nc = yaml.load(open(netconf))
     nc["hosts"] = [h for h in nc.get("hosts", []) if "mac" in h]
@@ -132,8 +61,8 @@ def _find_template(tmpldirs, template):
     return template  # Could not find in tmpldirs
 
 
-def gen_vnet_files(tmpldirs, confdir, workdir, force):
-    nets = load_configs(confdir)
+def gen_vnet_files(metaconf, tmpldirs, workdir, force):
+    nets = C.load_nets_confs(metaconf)
     outdir = _netoutdir(workdir)
 
     if not os.path.exists(outdir):
@@ -166,21 +95,9 @@ def gen_vnet_files(tmpldirs, confdir, workdir, force):
     )
 
 
-def host_confs(confdir):
-    """
-    :param confdir: Config topdir
-    :param name: Guest's name
-    :return: Guest's config files (path pattern)
-    """
-    d = os.path.join(confdir, "host.d")
-
-    assert os.path.exists(d), "Could not find host's confdir under " + confdir
-    return os.path.join(d, "*.yml")
-
-
-def gen_host_files(tmpldirs, confdir, workdir, force):
-    conf =  T.load_confs([MG.common_confs(confdir), host_confs(confdir)])
-    gen_vnet_files(tmpldirs, confdir, workdir, force)
+def gen_host_files(metaconf, tmpldirs, workdir, force):
+    conf =  C.load_host_confs(metaconf)
+    gen_vnet_files(metaconf, tmpldirs, workdir, force)
 
     for k, v in conf.get("host_templates", {}).iteritems():
         (src, dst) = (v.get("src", None), v.get("dst", None))
@@ -208,9 +125,6 @@ def option_parser():
     p.add_option("-f", "--force", action="store_true",
         help="Force outputs even if these exist"
     )
-    p.add_option("-y", "--yes", action="store_true",
-        help="Assume yes for all Questions"
-    )
     return p
 
 
@@ -221,8 +135,10 @@ def main(argv):
     U.init_log(options.verbose)
     options = O.tweak_tmpldir(options)
 
+    metaconf = C.load_metaconfs(options.confdir)
+
     houtdir = os.path.join(options.workdir, _HOST_SUBDIR)
-    if os.path.exists(houtdir) and not options.yes:
+    if os.path.exists(houtdir) and not options.force:
         yesno = raw_input(
             "Are you sure to generate networks in %s ? [y/n]: " % \
                 options.workdir
@@ -231,8 +147,10 @@ def main(argv):
             print >> "Cancel creation of networks..."
             sys.exit(0)
 
+        options.force = True
+
     gen_host_files(
-        options.tmpldir, options.confdir, options.workdir, options.force
+        metaconf, options.tmpldir, options.workdir, options.force
     )
 
 
