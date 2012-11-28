@@ -18,6 +18,7 @@ import miniascape.config as TT  # stands for "Test Target".
 import miniascape.tests.common as C
 
 import os.path
+import pprint
 import unittest
 
 
@@ -75,11 +76,14 @@ class Test_10_effecful_functions(unittest.TestCase):
 
         self.assertNotEquals(ncs, [])
 
-    def test_34_aggregate_guest_networks(self):
+    def test_34__aggregate_guest_network_interfaces(self):
         metaconf = TT.load_metaconfs(METACONF_DIR)
-        ncs = TT.aggregate_guest_networks(metaconf)
+        niss = TT._aggregate_guest_net_interfaces_g(metaconf)
 
-        self.assertNotEquals(ncs, [])
+        self.assertNotEquals(niss, [])
+
+        for _n, nis in niss:
+            TT._check_dups_by_ip_or_mac(nis)
 
     def test_40_host_confs(self):
         metaconf = TT.load_metaconfs(METACONF_DIR)
