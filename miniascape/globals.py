@@ -23,7 +23,6 @@ def date():
 
 
 M_METACONF_DIR = "/etc/miniascape/conf.d/META"
-M_CONF_DIR = "/etc/miniascape/conf.d/default"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
 M_WORK_TOPDIR = "miniascape-workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
