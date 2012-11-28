@@ -21,18 +21,71 @@ import os.path
 import unittest
 
 
+CONFDIR = os.path.abspath(os.path.join(C.TOPDIR, "conf.d", "default"))
+METACONF_DIR = os.path.join(C.TOPDIR, "conf.d", "META")
+
+
 class Test_10_effecful_functions(unittest.TestCase):
 
-    def test_load_metaconfs__00_no_args__load_default_metaconf_by_dir(self):
-        metaconfsrc = os.path.join(C.TOPDIR, "conf.d", "META")
-        confdir = os.path.abspath(os.path.join(C.TOPDIR, "conf.d", "default"))
+    def test_00_load_metaconfs__load_by_dir(self):
+        d = TT.load_metaconfs(METACONF_DIR)
+
+        self.assertEquals(d["confdir"], CONFDIR)
+
+        # see also: conf.d/META/00_main.yml
+        self.assertEquals(d["guest"]["dir"], os.path.join(CONFDIR, "guests.d"))
+
+    def test_02_load_metaconfs__load_by_file(self):
+        metaconfsrc = os.path.join(METACONF_DIR, "00_main.yml")
 
         d = TT.load_metaconfs(metaconfsrc)
 
-        self.assertEquals(d["confdir"], confdir)
+        self.assertEquals(d["confdir"], CONFDIR)
+        self.assertEquals(d["guest"]["dir"], os.path.join(CONFDIR, "guests.d"))
 
-        # see also: conf.d/META/00_main.yml
-        self.assertEquals(d["guest"]["dir"], os.path.join(confdir, "guests.d"))
+    def test_10_load_guest_confs(self):
+        metaconf = TT.load_metaconfs(METACONF_DIR)
+
+        name = "rhel-6-client-1"
+        d = TT.load_guest_confs(metaconf, name)
+
+        self.assertEquals(d["hostname"], name)
+
+    def test_20_list_guest_names(self):
+        metaconf = TT.load_metaconfs(METACONF_DIR)
+        guests = TT.list_guest_names(metaconf)
+
+        self.assertNotEquals(guests, [])
+
+    def test_22_load_guests_confs(self):
+        metaconf = TT.load_metaconfs(METACONF_DIR)
+        gcs = TT.load_guests_confs(metaconf)
+
+        self.assertNotEquals(gcs, [])
+
+    def test_30_list_net_names(self):
+        metaconf = TT.load_metaconfs(METACONF_DIR)
+        nets = TT.list_net_names(metaconf)
+
+        self.assertNotEquals(nets, [])
+
+    def test_32_list_nets_confs(self):
+        metaconf = TT.load_metaconfs(METACONF_DIR)
+        ncs = TT.list_nets_confs(metaconf)
+
+        self.assertNotEquals(ncs, [])
+
+    def test_34_aggregate_guest_networks(self):
+        metaconf = TT.load_metaconfs(METACONF_DIR)
+        ncs = TT.aggregate_guest_networks(metaconf)
+
+        self.assertNotEquals(ncs, [])
+
+    def test_40_host_confs(self):
+        metaconf = TT.load_metaconfs(METACONF_DIR)
+        cs = TT.host_confs(metaconf)
+
+        self.assertTrue(bool(cs))
 
 
 # vim:sw=4:ts=4:et:
