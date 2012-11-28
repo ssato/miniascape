@@ -24,9 +24,24 @@ import miniascape.utils as U
 import logging
 import os.path
 import os
+import re
 
 
-_CATEGORIES = ("guest", "network", "storage")
+_CATEGORIES = ("guest", "network", "storage", "host")
+
+
+def _sysgroup(name):
+    """
+    FIXME: Ugly.
+
+    >>> _sysgroup('rhel-5-cluster-1')
+    'rhel-5-cluster'
+    >>> _sysgroup('cds-1')
+    'cds'
+    >>> _sysgroup('satellite')
+    'satellite'
+    """
+    return name[:name.rfind('-')] if re.match(r".+-\d+$", name) else name
 
 
 def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
@@ -58,8 +73,8 @@ def load_guest_confs(metaconf, name):
     :param name: Guest's name
     """
     confs = [
-        (p % {"name": name} if "%(" in p else p) for p in
-            metaconf["guest"]["confs"]
+        (p % {"name": name, "group": _sysgroup(name)} if "%(" in p else p) \
+            for p in metaconf["guest"]["confs"]
     ]
 
     logging.info("Loading guest config files: " + name)
@@ -146,15 +161,12 @@ def load_nets_confs(metaconf):
     return nets
 
 
-def host_confs(metaconf):
+def load_host_confs(metaconf):
     """
-    :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
-    :return: Guest's config files (path pattern)
+    :param metaconf: Meta conf object.
     """
-    d = os.path.join(metaconf["confdir"], "host.d")
-
-    assert os.path.exists(d), "Could not find host's confdir under " + confdir
-    return os.path.join(d, "*.yml")
+    logging.info("Loading host config files")
+    return T.load_confs(metaconf["host"]["confs"])
 
 
 # vim:sw=4:ts=4:et:
