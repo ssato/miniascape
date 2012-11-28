@@ -18,6 +18,7 @@
 import glob
 import itertools
 import logging
+import os.path
 
 try:
     chain_from_iterable = itertools.chain.from_iterable
@@ -66,7 +67,7 @@ def list_dirnames(tdir):
     """
     return [
         os.path.basename(x) for x in
-            U.sglob(os.path.join(tdir, "*")) if os.path.isdir(x)
+            sglob(os.path.join(tdir, "*")) if os.path.isdir(x)
     ]
 
 
