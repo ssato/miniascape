@@ -11,7 +11,7 @@ network:
   subdir: networks.d
   files:
     - "common/*.yml"
-    - "networks.d/%(name)s.yml"
+    - "networks.d/%(name)s/*.yml"
 
 storage:
   subdir: storages.d
