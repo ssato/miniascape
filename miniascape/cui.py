@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import miniascape.config as C
 import miniascape.guest as G
 import miniascape.options as O
 import miniascape.utils as U
@@ -33,19 +34,10 @@ def gen_all(argv):
     U.init_log(options.verbose)
     options = O.tweak_tmpldir(options)
 
-    if not options.yes:
-        yesno = raw_input(
-            "Are you sure to generate files from '%s' [y/n] > " % \
-                options.confdir
-        )
-        if not yesno.strip().lower().startswith('y'):
-            print >> sys.stderr, "Cancel generation of files..."
-            sys.exit()
+    metaconf = C.load_metaconfs(options.confdir)
 
-    H.gen_vnet_files(
-        options.tmpldir, options.confdir, options.workdir, options.force
-    )
-    G.gen_all(options.tmpldir, options.confdir, options.workdir)
+    H.gen_vnet_files(metaconf, options.tmpldir, options.workdir, options.force)
+    G.gen_all(metaconf, options.tmpldir, options.workdir)
 
 
 def init_(argv):
