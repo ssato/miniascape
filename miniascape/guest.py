@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_CONF_DIR, M_TMPL_DIR, M_WORK_TOPDIR, \
-    M_COMMON_CONFDIR
+from miniascape.globals import M_TMPL_DIR, M_WORK_TOPDIR
 
+import miniascape.config as C
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
@@ -42,97 +42,6 @@ def _workdir(topdir, name):
     :return: Guest's working (output) directory
     """
     return os.path.join(topdir, _GUEST_SUBDIR, name)
-
-
-def _guestconfdir(confdir, name):
-    """
-    :param confdir: Config topdir
-    :param name: Guest's name
-    :return: Guest's config files directory
-    """
-    return os.path.join(confdir, _GUEST_SUBDIR, name)
-
-
-def _sysgroup(name):
-    """
-    FIXME: Ugly.
-
-    >>> _sysgroup('rhel-5-cluster-1')
-    'rhel-5-cluster'
-    >>> _sysgroup('cds-1')
-    'cds'
-    >>> _sysgroup('satellite')
-    'satellite'
-    """
-    return name[:name.rfind('-')] if re.match(r".+-\d+$", name) else name
-
-
-def _groupconfdir(confdir, name):
-    """
-    :param confdir: Config topdir
-    :param name: Guest's name
-    :return: Guest's group config files directory
-    """
-    return os.path.join(confdir, _GROUP_SUBDIR, _sysgroup(name))
-
-
-def common_confs(confdir):
-    """
-    :param confdir: Config topdir
-    :return: Common config files (path pattern)
-    """
-    d = os.path.join(confdir, M_COMMON_CONFDIR)
-
-    assert os.path.exists(d), "Could not find common confdir: " + d
-    return os.path.join(d, "*.yml")
-
-
-def group_confs(confdir, name):
-    """
-    note: Group's config dir may not exist differently from common and guest's
-    config dir.
-
-    :param confdir: Config topdir
-    :param name: Guest's name
-    :return: Guest group's config files (path pattern)
-    """
-    d = _groupconfdir(confdir, name)
-    return os.path.join(d, "*.yml") if os.path.exists(d) else None
-
-
-def guest_confs(confdir, name):
-    """
-    :param confdir: Config topdir
-    :param name: Guest's name
-    :return: Guest's config files (path pattern)
-    """
-    d = _guestconfdir(confdir, name)
-
-    assert os.path.exists(d), "Could not find guest's confdir: " + name
-    return os.path.join(d, "*.yml")  # e.g. /.../guests.d/<name>/00.yml
-
-
-def list_guest_confs(confdir, name):
-    """
-    :param confdir: Config topdir
-    :param name: Guest's name
-    :return: Guest's all config files (path pattern)
-    """
-    return [
-        x for x in [common_confs(confdir),
-                    group_confs(confdir, name),
-                    guest_confs(confdir, name)] if x is not None
-    ]
-
-
-def load_guest_confs(confdir, name):
-    """
-    :param confdir: Config topdir
-    :param name: Guest's name
-    """
-    logging.info("Loading %s's config under %s" % (name, confdir))
-
-    return T.load_confs(list_guest_confs(confdir, name))
 
 
 def arrange_setup_data(gtmpldirs, config, gworkdir):
@@ -166,16 +75,16 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
     )
 
 
-def gen_guest_files(name, tmpldirs, confdir, workdir):
+def gen_guest_files(name, metaconf, tmpldirs, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
 
     :param name: Guest's name
+    :param metaconf: Meta configuration object. see also miniascape.config.
     :param tmpldirs: Template dirs :: [path]
-    :param confdir: Config top dir
     :param workdir: Working top dir
     """
-    conf = load_guest_confs(confdir, name)
+    conf = C.load_guest_confs(metaconf, name)
     gtmpldirs = [os.path.join(d, _AUTOINST_SUBDIR) for d in tmpldirs]
 
     if not os.path.exists(workdir):
@@ -200,35 +109,24 @@ def gen_guest_files(name, tmpldirs, confdir, workdir):
         T.renderto(srcdirs + [workdir], conf, src, dst)
 
 
-def list_names(confdir):
+def show_vm_names(metaconf):
     """
-    :param confdir: Config top dir
+    :param metaconf: Meta configuration object. see also miniascape.config.
     """
-    return U.list_dirnames(os.path.join(confdir, _GUEST_SUBDIR))
+    print >> sys.stderr, "\nAvailable VMs: " + \
+        ", ".join(C.list_guest_names(metaconf))
 
 
-def show_vm_names(confdir):
+def gen_all(metaconf, tmpldirs, workdir):
     """
-    :param confdir: Config top dir
-    """
-    print >> sys.stderr, "\nAvailable VMs: " + ", ".join(list_names(confdir))
+    Generate files to build VM for all VMs.
 
-
-def gen_all(tmpldirs, confdir, workdir):
-    """
+    :param metaconf: Meta configuration object. see also miniascape.config.
     :param tmpldirs: Template dirs :: [path]
-    :param confdir: Config top dir
     :param workdir: Working top dir
     """
-    for name in list_names(confdir):
-        gen_guest_files(name, tmpldirs, confdir, _workdir(workdir, name))
-
-
-def load_guests_confs(confdir):
-    """
-    :param confdir: Config top dir
-    """
-    return [load_guest_confs(confdir, n) for n in list_names(confdir)]
+    for name in C.list_guest_names(metaconf):
+        gen_guest_files(name, metaconf, tmpldirs, _workdir(workdir, name))
 
 
 def option_parser():
@@ -245,21 +143,22 @@ def main(argv=sys.argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
-    if not args and not options.genall:
-        p.print_help()
-        show_vm_names(options.confdir)
-        sys.exit(0)
-
     U.init_log(options.verbose)
     options = O.tweak_tmpldir(options)
 
+    metaconf = C.load_metaconfs(options.confdir)
+
+    if not args and not options.genall:
+        p.print_help()
+        show_vm_names(metaconf)
+        sys.exit(0)
+
     if options.genall:
-        gen_all(options.tmpldir, options.confdir, options.workdir)
+        gen_all(metaconf, options.tmpldir, options.workdir)
     else:
         name = args[0]
         gen_guest_files(
-            name, options.tmpldir, options.confdir,
-            _workdir(options.workdir, name)
+            name, metaconf, options.tmpldir, _workdir(options.workdir, name)
         )
 
 
