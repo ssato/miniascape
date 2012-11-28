@@ -4,7 +4,7 @@ guest:
   subdir: guests.d
   files:
     - "common/*.yml"
-    - "sysgroups.d/%(name)s/*.yml"
+    - "sysgroups.d/%(group)s/*.yml"
     - "guests.d/%(name)s/*.yml"
 
 network:
