@@ -34,14 +34,17 @@ def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
     Load meta config for miniascape.
     """
     if os.path.isdir(metaconfsrc):
+        metaconfdir = metaconfsrc
         confs = U.sglob(os.path.join(metaconfsrc, "*.yml"))
     else:
+        metaconfdir = os.path.dirname(metaconfsrc)
         confs = [metaconfsrc]  # It's not a dir, just a file.
 
     d = T.load_confs(confs)
 
-    confdir = os.path.join(metaconfdir, "..", d["site"])
+    confdir = os.path.abspath(os.path.join(metaconfdir, "..", d["site"]))
     d["confdir"] = confdir
+
     for c in categories:
         d[c]["dir"] = os.path.join(confdir, d[c]["subdir"])
         d[c]["confs"] = [os.path.join(confdir, p) for p in d[c]["files"]]
