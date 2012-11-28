@@ -69,6 +69,7 @@ class Test_10_effecful_functions(unittest.TestCase):
         nets = TT.list_net_names(metaconf)
 
         self.assertNotEquals(nets, [])
+        self.assertEquals(nets, ["default", "service"])
 
     def test_32_list_nets_confs(self):
         metaconf = TT.load_metaconfs(METACONF_DIR)
@@ -85,11 +86,11 @@ class Test_10_effecful_functions(unittest.TestCase):
         for _n, nis in niss:
             TT._check_dups_by_ip_or_mac(nis)
 
-    def test_40_host_confs(self):
+    def test_40_load_host_confs(self):
         metaconf = TT.load_metaconfs(METACONF_DIR)
-        cs = TT.host_confs(metaconf)
+        c = TT.load_host_confs(metaconf)
 
-        self.assertTrue(bool(cs))
+        self.assertTrue(isinstance(c, dict))
 
 
 # vim:sw=4:ts=4:et:
