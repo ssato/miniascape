@@ -57,7 +57,10 @@ def load_guest_confs(metaconf, name):
     :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
     :param name: Guest's name
     """
-    confs = [(p % name if "%(" in p else p) for p in metaconf["guest"]["confs"]]
+    confs = [
+        (p % {"name": name} if "%(" in p else p) for p in
+            metaconf["guest"]["confs"]
+    ]
 
     logging.info("Loading guest config files: " + name)
     return T.load_confs(confs)
@@ -83,14 +86,15 @@ def list_net_names(metaconf):
     """
     return sorted(
         os.path.basename(x) for x in
-            os.path.join(metaconf["net"]["dir"], "*.yml")
+            os.path.join(metaconf["network"]["dir"], "*.yml")
     )
 
 
 def list_nets_confs(metaconf):
     return [
-        [(p % name if "%(" in p else p) for p in metaconf["network"]["confs"]] \
-            for name in list_net_names(metaconf)
+        [(p % {"name": n} if "%(" in p else p) for p in
+            metaconf["network"]["confs"]
+        ] for n in list_net_names(metaconf)
     ]
 
 
