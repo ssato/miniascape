@@ -98,7 +98,7 @@ def list_nets_confs(metaconf):
     ]
 
 
-def aggregate_guest_networks(metaconf):
+def _aggregate_guest_net_interfaces_g(metaconf):
     """
     Aggregate guest's network interface info from each guest configurations and
     return list of host list grouped by each networks.
@@ -107,12 +107,43 @@ def aggregate_guest_networks(metaconf):
     """
     gcs = load_guests_confs(metaconf)
     kf = itemgetter("network")
-    hostsets = (
+    return (
         (k, list(g)) for k, g in groupby(
             sorted(U.concat(g.get("interfaces", []) for g in gcs), key=kf), kf
         )
     )
-    return hostsets
+
+
+def _check_dups_by_ip_or_mac(nis):
+    """
+    Check if duplicated IP or MAC found in host list and warns about them.
+
+    :param nis: A list of network interfaces, {ip, mac, ...}
+    """
+    for k, v, ns in U.find_dups_in_dicts_list_g(nis, ("ip", "mac")):
+        logging.warn(
+            "Duplicated entries: key=%s, v=%s, hosts=%s" % \
+                (k, v, ", ".join(n.get("host", str(n)) for n in ns))
+        )
+
+
+def load_nets_confs(metaconf):
+    nets = dict()
+    ncss = list_nets_confs(metaconf)
+    nis = dict(_aggregate_guest_net_interfaces_g(metaconf))
+
+    for ncs in ncss:
+        netctx = T.load_confs(ncs)
+        name = netctx["name"]
+
+        ns = nis.get(name, [])
+        if ns:
+            _check_dups_by_ip_or_mac(ns)
+            netctx["hosts"] = ns
+
+        nets[name] = netctx
+
+    return nets
 
 
 def host_confs(metaconf):
