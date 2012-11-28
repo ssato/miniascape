@@ -58,7 +58,7 @@ def init_log(level):
 
 
 def sglob(files_pattern):
-    return glob.glob(files_pattern)
+    return sorted(glob.glob(files_pattern))
 
 
 def list_dirnames(tdir):
