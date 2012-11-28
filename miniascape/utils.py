@@ -71,4 +71,36 @@ def list_dirnames(tdir):
     ]
 
 
+def find_dups_in_dicts_list_g(ds, keys):
+    """
+    Generator to find out duplicated items (values) in given list of dicts.
+
+    :param ds: A list of dicts to find out duplicated items.
+    :param keys: Key to search duplicated items.
+
+    >>> d0 = {'a': 1, 'b': 2}
+    >>> d1 = {'b': 2, 'c': 4}
+    >>> ds = [d0, d1, {}]
+
+    >>> dups = [t for t in find_dups_in_dicts_list_g(ds, ('a', 'b'))]
+    >>> assert dups == [('b', 2, [d0, d1])]
+    """
+    seens = dict((k, {}) for k in keys)
+
+    for d in ds:
+        for k in keys:
+            v = d.get(k, None)
+            if v is not None:
+                dups = seens[k].get(v, [])
+                if dups:
+                    seens[k][v].append(d)
+                else:
+                    seens[k][v] = [d]
+
+    for k in keys:
+        for v, dups in seens[k].iteritems():
+            if len(dups) > 1:  # duplicated entries
+                yield (k, v, dups)
+
+
 # vim:sw=4:ts=4:et:
