@@ -19,3 +19,9 @@ storage:
     - "common/*.yml"
     - "storages.d/%(name)s.yml"
 
+host:
+  subdir: host.d
+  files:
+    - "common/*.yml"
+    - "host.d/*.yml"
+
