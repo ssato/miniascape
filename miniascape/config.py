@@ -97,12 +97,9 @@ def load_guests_confs(metaconf):
 
 def list_net_names(metaconf):
     """
-    :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
+    :param metaconf: Meta conf object.
     """
-    return sorted(
-        os.path.basename(x) for x in
-            os.path.join(metaconf["network"]["dir"], "*.yml")
-    )
+    return U.list_dirnames(os.path.join(metaconf["network"]["dir"]))
 
 
 def list_nets_confs(metaconf):
