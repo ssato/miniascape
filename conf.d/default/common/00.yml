@@ -1,3 +1,6 @@
 domain: m2.local
-gateway: 192.168.155.254
+gateway: &gateway 192.168.155.254
 netmask: 255.255.255.0
+nameservers:
+- hostname: *gateway
+#  options:
