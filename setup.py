@@ -92,6 +92,7 @@ setup(name=PACKAGE,
     url="https://github.com/ssato/miniascape",
     packages=[
         "miniascape",
+        "miniascape/tests",
     ],
     scripts=glob.glob("tools/*"),
     data_files=data_files,

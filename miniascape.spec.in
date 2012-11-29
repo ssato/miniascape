@@ -59,6 +59,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 29 2012 Satoru SATOH <ssato@redhat.com> - 0.3.3-1
+- Added some more VM configs and templates such like RHEL 6 LVS and Real servers
+- Replaced simple and hardcoded conf search paths w/ config-based (metaconfig)
+- Re-organized modules relations and do some refacotrings
+- A lot of cleanup and bug fixes in templates and configs
+
 * Fri Sep 21 2012 Satoru SATOH <ssato@redhat.com> - 0.3.2-1
 - Fixed a bug in miniascape.guest lacks of the module import line
 - Added some more VM configs and templates such like RHEL 6 cluster, RHUI clients
