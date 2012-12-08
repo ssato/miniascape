@@ -7,8 +7,8 @@ if test ! -f $cconf; then
   echo "Cluster config '$1' not found. Aborting..."
   exit 1
 else
-  if `/sbin/service cman status`; then
-    if `cman_tool status`; then
+  if `/sbin/service cman status 2>/dev/null >/dev/null`; then
+    if `cman_tool status 2>/dev/null >/dev/null`; then
       echo "Cluster looks working. Going forward..."
     else
       echo "Cluster does not look working. Check it before initializing GFS..."
@@ -22,13 +22,6 @@ fi
 
 # Enable cman service
 /sbin/chkconfig --list cman | grep -q "3:on" 2>/dev/null || /sbin/chkconfig cman on
-if `/sbin/service cman status 2>/dev/null >/dev/null`; then
-  echo "service 'cman' started. Continue to create CLVM LV and GFS partition..."
-else
-  echo "[Error] system service 'cman' not started yet"
-  echo "[Error] Check your cluster configuration and start it on all cluster nodes."
-  exit 1
-fi
 
 # Enable CLVM lock, system service (clvmd) and start it if not:
 grep -q -E '^[ ]+locking_type = 3' /etc/lvm/lvm.conf 2>/dev/null || \
