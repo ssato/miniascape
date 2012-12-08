@@ -1,0 +1,5 @@
+if test -d /root/setup; then
+  {% for data in setup_data if data.install is defined %}install -m{{ data.install.mode }} --suffix=.save --backup /root/setup/{{ data.dst }} {{ data.install.dst }}
+{% endfor %}
+  :
+fi
