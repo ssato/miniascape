@@ -5,6 +5,11 @@ if test ! -f $cconf; then
   echo "[Error] Cluster config '$cconf' not found. Prepare it first!"
   exit 1
 fi
+fence_virt_shared_key=/etc/cluster/fence_xvm.key
+if test ! -f $fence_virt_shared_key; then
+  echo "[Error] Pre-shared key '$fence_virt_shared_key' for fence_xvm not found. Copy it from libvirt host first!"
+  exit 1
+fi
 
 # Enable cman system service and start it if not running:
 /sbin/chkconfig --list cman | grep -q '3:on' || /sbin/chkconfig cman on
