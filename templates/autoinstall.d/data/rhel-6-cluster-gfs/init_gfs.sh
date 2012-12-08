@@ -1,6 +1,6 @@
 #! /bin/bash
-set -e
-#set -x
+set -e -x -v
+exec 1> ${0%/*}/${0##*/}.log 2>&1
 
 cconf=/etc/cluster/cluster.conf
 if test ! -f $cconf; then
