@@ -1,5 +1,4 @@
-{% macro find_disk_device(max=4) -%}
-if test -b /dev/vda; then disk_initial_char="v"
+{% macro find_disk_device(max=4) %}if test -b /dev/vda; then disk_initial_char="v"
 elif test -b /dev/sda; then disk_initial_char="s"
 elif test -b /dev/hda; then disk_initial_char="h"
 else
@@ -11,5 +10,4 @@ fi
 {%     if loop.index0 < max -%}
 grep -q ${disk_initial_char}d{{ c }} /proc/partitions 2>/dev/null && \
     disk{{ loop.index0 }}=${disk_initial_char}d{{ c }}{% endif -%}
-{%- endfor -%}
-{%- endmacro -%}
+{%- endfor -%}{%- endmacro -%}
