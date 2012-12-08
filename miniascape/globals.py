@@ -31,11 +31,9 @@ M_COMMON_CONFDIR = "common"
 
 
 PACKAGE = "miniascape"
-VERSION = "0.3.3"
+VERSION = "0.3.4"
 
 # daily snapshots:
-# import datetime
 #VERSION = VERSION + "." + date()
-
 
 # vim:sw=4:ts=4:et:
