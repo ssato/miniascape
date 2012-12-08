@@ -26,6 +26,9 @@ vgdisplay -s --nosuffix | grep -q "\"$vg\"" 2>/dev/null > /dev/null || \
 lvscan -a | grep -q /dev/$vg/$lv 2>/dev/null >/dev/null || \
   lvcreate -n $lv -l 100%VG $vg && \
     mkfs.gfs2 -t {{ cluster.name }}:{{ cluster.vol.fs }} -j {{ cluster.nodes|length }} -J {{ cluster.vol.journal.size|default('64') }} /dev/$vg/$lv
+mkdir /gfs-0
+sed -i.save "$ a \
+# GFS partitions:\n/dev/$vg/$lv  /gfs-0  gfs2  noatime,nodiratime,noauto,_netdev 0 0" /etc/fstab
 {%- else -%}
 echo "This script should be running on node #1"{% endif %}
 # vim:sw=2:ts=2:et:
