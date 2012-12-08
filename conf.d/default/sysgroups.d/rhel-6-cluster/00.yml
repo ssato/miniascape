@@ -11,6 +11,8 @@ disks:
     size: 1
 
 cluster:
+  # software bridge for inter cluster nodes communication:
+  bridge: virbr0
   nodes:
   - &node1 rhel-6-cluster-default-1
   - &node2 rhel-6-cluster-default-2
