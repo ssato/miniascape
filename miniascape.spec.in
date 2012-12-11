@@ -103,8 +103,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Nov 29 2012 Satoru SATOH <ssato@redhat.com> - 0.3.3-1
-- 
+* Wed Dec 12 2012 Satoru SATOH <ssato@redhat.com> - 0.3.4-1
+- Splitted into some RPMs and separated miniascape and its data files
+- Fixed bugs in RHUI guests' data
+- Fixed and enhanced GFS guests' data to make it works w/ just few config steps
 
 * Thu Nov 29 2012 Satoru SATOH <ssato@redhat.com> - 0.3.3-1
 - Added some more VM configs and templates such like RHEL 6 LVS and Real servers
