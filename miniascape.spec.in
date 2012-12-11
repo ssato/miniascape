@@ -65,10 +65,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 %{_bindir}/*
 %{_sysconfdir}/%{name}/conf.d/META
-%{_sysconfdir}/%{name}/conf.d/default
-%{_sysconfdir}/%{name}/conf.d/META/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/*/*/*.yml
 %{_datadir}/%{name}/templates
 %{_datadir}/%{name}/templates/autoinstall.d/*-ks.cfg
 %{_datadir}/%{name}/templates/autoinstall.d/*/*
