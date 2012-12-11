@@ -22,6 +22,24 @@ Requires:       python-jinja2-cui >= 0.0.3.12
 Personal cloud building and management tool for libvirt/KVM.
 
 
+%package        data-default
+Summary:        Default guests and infra data files for %{name}
+Requires:       %{name} = %{version}-%{release}
+
+
+%description    data-default
+Some default guests and infra data files for %{name}.
+
+
+%package        data-default-rhui
+Summary:        Default RHUI guests data files for %{name}
+Requires:       %{name}-data-default = %{version}-%{release}
+
+
+%description    data-default-rhui
+Some default RHUI guest data files for %{name}.
+
+
 %prep
 %setup -q
 
@@ -58,7 +76,36 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 
 
+%files          data-default
+%defattr(-,root,root,-)
+%doc README
+%{_sysconfdir}/%{name}/conf.d/default/*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhel-*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhs-*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/sam/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/satellite/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/networks.d/*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/sam/*0.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/satellite/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhs/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhel-*/*.yml
+
+
+%files          data-default-rhui
+%defattr(-,root,root,-)
+%doc README
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/cds-*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhua/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhui-*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/cds/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhua/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhui-*/*.yml
+
+
 %changelog
+* Thu Nov 29 2012 Satoru SATOH <ssato@redhat.com> - 0.3.3-1
+- 
+
 * Thu Nov 29 2012 Satoru SATOH <ssato@redhat.com> - 0.3.3-1
 - Added some more VM configs and templates such like RHEL 6 LVS and Real servers
 - Replaced simple and hardcoded conf search paths w/ config-based (metaconfig)
