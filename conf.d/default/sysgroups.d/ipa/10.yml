@@ -1,0 +1,11 @@
+#virtinst:
+#  ram: 1024
+
+templates:
+  autoinst:
+    src: autoinstall.d/ipa-ks.cfg
+
+setup_data:
+  - src: data/ipa/setup.sh
+    dst: setup.sh
+
