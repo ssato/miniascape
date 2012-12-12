@@ -1,0 +1,3 @@
+cluster:
+  # software bridge for inter cluster nodes communication:
+  bridge: virbr0

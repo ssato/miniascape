@@ -14,7 +14,6 @@ disks:
 
 cluster:
   name: GFS_CLUSTER
-  bridge: virbr0
   vol:
     journal:
       size: 64
