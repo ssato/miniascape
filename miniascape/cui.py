@@ -36,7 +36,7 @@ def gen_all(argv):
 
     metaconf = C.load_metaconfs(options.confdir)
 
-    H.gen_vnet_files(metaconf, options.tmpldir, options.workdir, options.force)
+    H.gen_host_files(metaconf, options.tmpldir, options.workdir, options.force)
     G.gen_all(metaconf, options.tmpldir, options.workdir)
 
 
