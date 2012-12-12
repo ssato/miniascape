@@ -9,17 +9,21 @@ lv=$3
 test "x$diskdev" = "x" && diskdev=/dev/${disk1:?}2
 test "x$vg" = "x" && vg={{ cluster.vol.vg|default('gfs-vg-0') }}
 test "x$lv" = "x" && lv={{ cluster.vol.lv|default('gfs-lv-0') }}
-mkdir /gfs-0
-sed -i.save "$ a \
+mkdir -p /gfs-0
+grep -q '/gfs-0' /etc/fstab 2>/dev/null || sed -i.save "$ a \
 # GFS partitions:\n/dev/$vg/$lv  /gfs-0  gfs2  noatime,nodiratime,noauto,_netdev 0 0" /etc/fstab
 {% if cluster_init is defined and cluster_init %}
 check_cman=${curdir}/check_cman.sh
 start_clvmd=${curdir}/start_clvmd.sh
+init_gfs=${curdir}/init_gfs.sh
 {% for node in cluster.nodes %}
-{%   if loop.first %}bash $check_cman{% else %}ssh root@{{ node.name }} "bash $check_cman"{% endif %}
+{%   if loop.first %}bash $check_cman{% else %}ssh root@{{ node.name }} "bash -x $check_cman 2>&1 | tee setup/setup.log.0"{% endif %}
 {% endfor %}
 {% for node in cluster.nodes %}
-{%   if loop.first %}bash $start_clvmd{% else %}ssh root@{{ node.name }} "bash $start_clvmd"{% endif %}
+{%   if loop.first %}bash $start_clvmd{% else %}ssh root@{{ node.name }} "bash $start_clvmd 2>&1 | tee -a setup/setup.log.0"{% endif %}
+{% endfor %}
+{% for node in cluster.nodes %}
+{%   if not loop.first %}ssh root@{{ node.name }} "bash $init_gfs 2>&1 | tee -a setup/setup.log.0"{% endif %}
 {% endfor %}
 # Create pv, vg, lv if not exist:
 pvscan -s | grep -q $diskdev 2>/dev/null > /dev/null || pvcreate $diskdev
