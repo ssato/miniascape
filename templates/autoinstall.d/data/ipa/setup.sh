@@ -1,4 +1,4 @@
 #! /bin/bash
 set -ex
 
-ipa-server-install -a redhat -p redhat --hostname=$(hostname -f) -r m2.local
+ipa-server-install -a {{ ipa.admin.password }} -p {{ ipa.admin.password }} -r {{ domain }} --hostname=$(hostname -f) -U
