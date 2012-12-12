@@ -1,6 +1,10 @@
 #virtinst:
 #  ram: 1024
 
+ipa:
+  admin:
+    password: redhat0971
+
 templates:
   autoinst:
     src: autoinstall.d/ipa-ks.cfg
