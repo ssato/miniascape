@@ -17,5 +17,8 @@ proxy:
 # Meta:
 templates:
   autoinst:
-    src: autoinstall.d/rhev-ks.cfg
+    src: autoinstall.d/rhev-manager-ks.cfg
 
+setup_data:
+  - src: data/rhev-manager/Makefile
+    dst: Makefile
