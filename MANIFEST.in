@@ -6,8 +6,8 @@ include tools/*
 include templates/libvirt/*
 include templates/autoinstall.d/*-ks.cfg
 include templates/autoinstall.d/data/*
+include templates/autoinstall.d/data/*/*
 include templates/autoinstall.d/snippets/*
 include templates/autoinstall.d/data/rhua/certs/Makefile
-include templates/autoinstall.d/data/rhua/*
 recursive-include conf.d *.yml
 recursive-include miniascape *.py
