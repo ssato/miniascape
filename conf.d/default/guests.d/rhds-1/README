@@ -1,0 +1,22 @@
+About
+=========
+
+Here are configuration files to make an RHEV Manager instance
+
+
+Requirements
+==============
+
+RHEV Manager can run anywhere (both physical and virtual), but RHEV-H
+(Hypervisor) only run on VT-enabled systems.
+
+If you want to run RHEV-H on KVM guests, you need hardware and linux kenrel
+support nested-KVM feature.
+
+
+Setup
+=========
+
+* RHEV Quick Start Guide: http://red.ht/SQ9udp
+
+.. vim:sw=2:ts=2:et:

@@ -1,0 +1,12 @@
+description: RHEV Manager
+hostname: &hostname rhev-manager-1
+fqdn: &fqdn rhev-manager-1.m2.local
+ip: &ip 192.168.155.31
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:31"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+

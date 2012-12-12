@@ -1,0 +1,11 @@
+slapd:
+  suffix: "dc=m2,dc=local"
+
+instal_iso_url: "http://ks/isos/DSRV-9-x86_64-DVD1.iso"
+
+setup_data:
+- src: data/rhds/setup.inf
+  dst: setup.inf
+- src: data/rhds/Makefile
+  dst: Makefile
+

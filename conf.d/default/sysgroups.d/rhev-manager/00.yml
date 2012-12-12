@@ -1,0 +1,21 @@
+disks:
+  - pool: default
+    size: 50
+
+virtinst:
+  ram: 2048
+
+rhn:
+#  username: foo@m2.local
+#  password: xyzsecret
+
+proxy:
+#  fqdn: proxy.m2.local
+#  username: proxyuser
+#  username: proxypasswd
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhev-ks.cfg
+

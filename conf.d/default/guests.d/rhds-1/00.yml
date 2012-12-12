@@ -1,0 +1,12 @@
+description: Red Hat Directory Server
+hostname: &hostname rhds-1
+fqdn: &fqdn rhds-1.m2.local
+ip: &ip 192.168.155.18
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:18"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
