@@ -35,9 +35,9 @@ $(WORKDIR)/$(INSTALLATION_ISO):
 # see also: http://red.ht/XRBXnz
 install: $(WORKDIR)/install.stamp
 $(WORKDIR)/install.stamp: $(INSTALLATION_ISO)
-	mount -o ro,loop $(RHUI_ISO) /mnt
-	cd /mnt && yum install -y `ls /mnt/Packages/*.rpm | egrep -iv -e devel -e debuginfo`
-	cd - && umount /mnt
+	mount -o ro,loop $(INSTALLATION_ISO) /mnt && \
+		cd /mnt && yum install -y `ls /mnt/Packages/*.rpm | egrep -iv -e devel -e debuginfo` && \
+		cd - && umount /mnt
 	touch $@
 
 setup: $(WORKDIR)/setup.stamp
