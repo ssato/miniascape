@@ -103,6 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 - Splitted into some RPMs and separated miniascape and its data files
 - Fixed bugs in RHUI guests' data
 - Fixed and enhanced GFS guests' data to make it works w/ just few config steps
+- Fixed a bug that files for host not generated except for network files
 
 * Thu Nov 29 2012 Satoru SATOH <ssato@redhat.com> - 0.3.3-1
 - Added some more VM configs and templates such like RHEL 6 LVS and Real servers
