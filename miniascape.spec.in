@@ -84,7 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/sam/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/satellite/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/networks.d/*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/ipa-*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/ipa/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhel-*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhev*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhds/*.yml
