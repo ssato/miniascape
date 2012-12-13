@@ -15,4 +15,6 @@ host_templates:
   fix_bug_in_software_bridge_sh:
     src: host/fix_bug_in_software_bridge.sh
     dst: host/usr/sbin/fix_bug_in_software_bridge.sh
-
+  enable_nested_kvm:
+    src: host/kvm_intel.conf
+    dst: host/etc/modprobe.d/kvm_intel.conf
