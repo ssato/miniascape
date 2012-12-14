@@ -8,6 +8,7 @@ virtinst:
 rhn:
 #  username: foo@m2.local
 #  password: xyzsecret
+#  activationkeys: xxxxxxxxxxxxxxx
 
 # Meta:
 templates:
