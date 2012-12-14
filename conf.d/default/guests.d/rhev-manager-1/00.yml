@@ -10,3 +10,11 @@ interfaces:
     fqdn: *fqdn
     network: service
 
+rhev:
+  # If remote:
+  # db_host: *fqdn
+  # db_remote_pass: xxxxxxxxx
+  auth_pass: redhat0123
+  db_local_pass: redhat0123
+  override_iptables: no
+
