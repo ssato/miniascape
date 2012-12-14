@@ -3,16 +3,11 @@ disks:
     size: 50
 
 virtinst:
-  ram: 2048
+  ram: 2560
 
 rhn:
 #  username: foo@m2.local
 #  password: xyzsecret
-
-proxy:
-#  fqdn: proxy.m2.local
-#  username: proxyuser
-#  username: proxypasswd
 
 # Meta:
 templates:
@@ -22,3 +17,6 @@ templates:
 setup_data:
   - src: data/rhev-manager/Makefile
     dst: Makefile
+  - src: data/rhev-manager/answers.txt
+    dst: answers.txt
+
