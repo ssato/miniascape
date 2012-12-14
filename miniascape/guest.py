@@ -95,6 +95,9 @@ def gen_guest_files(name, metaconf, tmpldirs, workdir):
     arrange_setup_data(gtmpldirs, conf, workdir)
 
     for k, v in conf.get("templates", {}).iteritems():
+        if not v.get("src", False) or not v.get("dst", False):
+            continue
+
         (src, dst) = (v["src"], v["dst"])
         if os.path.sep in src:
             srcdirs = [os.path.join(d, os.path.dirname(src)) for d in tmpldirs]
