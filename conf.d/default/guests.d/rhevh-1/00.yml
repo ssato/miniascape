@@ -1,0 +1,12 @@
+description: RHEV Hypervisor
+hostname: &hostname rhevh-1
+fqdn: &fqdn rhevh-1.m2.local
+ip: &ip 192.168.155.33
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:33"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+

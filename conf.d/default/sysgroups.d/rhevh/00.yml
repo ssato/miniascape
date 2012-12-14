@@ -1,0 +1,4 @@
+virtinst:
+  ram: 2560
+  cdrom: /var/lib/libvirt/images/rhevh-6.3-20121121.0.el6_3.iso
+
