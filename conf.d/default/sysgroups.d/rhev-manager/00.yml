@@ -4,6 +4,7 @@ disks:
 
 virtinst:
   ram: 2560
+  vcpus: 2
 
 rhn:
 #  username: foo@m2.local
