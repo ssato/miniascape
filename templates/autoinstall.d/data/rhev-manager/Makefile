@@ -12,7 +12,7 @@ ANSTXT ?= $(WORKDIR)/answers.txt
 #
 # Required software channels: jbappplatform-6-x86_64-server-6-rpm,
 # 	rhel-x86_64-server-6, rhel-x86_64-server-6-rhevm-3.1,
-# 	and rhel-x86_64-server-supplementary-6
+# 	rhel-x86_64-server-supplementary-6, rhel-x86_64-server-6-rhevh
 #
 RHN_AKEYS ?= {{ rhn.activationkeys }}
 RHN_PROFILENAME ?= {% if rhn.profilename is defined %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_$(shell date +%Y%m%d_%H_%M_%S){% endif %}
