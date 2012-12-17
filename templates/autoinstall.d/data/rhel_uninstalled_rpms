@@ -22,6 +22,7 @@
 -rdate
 -rdist
 -rp-pppoe
+-smartmontools
 -system-config-*
 -wireless-tools
 -wpa_supplicant
