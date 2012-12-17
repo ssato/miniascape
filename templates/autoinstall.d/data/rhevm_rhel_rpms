@@ -11,6 +11,7 @@ jakarta-commons-pool
 jdom
 log4j
 mailcap
+nfs-utils
 pexpect
 policycoreutils-python
 postgresql-contrib
@@ -85,7 +86,6 @@ kernel-firmware
 # libvorbis
 # libxcb
 # libxslt
-# nfs-utils
 # nfs-utils-lib
 # pango
 # pixman
