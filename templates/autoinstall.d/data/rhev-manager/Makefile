@@ -26,7 +26,11 @@ endef
 
 # http://red.ht/VKPoiY
 nfs_storage_domain_0_dir = /var/lib/exports/guests
-mk_nfs_storage_domain_0 = mkdir -m 0755 $(nfs_storage_domain_0_dir) && chown -R vdsm:kvm $(nfs_storage_domain_0_dir)
+mk_nfs_storage_domain_0 = \
+  mkdir -m 0755 $(nfs_storage_domain_0_dir) && \
+  chown -R vdsm:kvm $(nfs_storage_domain_0_dir) && \
+  echo '$(nfs_storage_domain_0_dir) *(rw)' >> /etc/exports && \
+  service nfs reload
 
 
 install: $(WORKDIR)/install.stamp
@@ -44,4 +48,4 @@ $(WORKDIR)/setup.stamp: $(ANSTXT)
 	rhevm-setup --answer-file=$(ANSTXT).new
 	touch $@
 
-.PHONY: install
+.PHONY: install setup
