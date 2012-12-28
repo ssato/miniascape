@@ -1,0 +1,22 @@
+disks:
+  - pool: default
+    size: 10
+
+virtinst:
+  ram: 1024
+  vcpus: 2
+
+rhn:
+#  username: foo@m2.local
+#  password: xyzsecret
+#  activationkeys: xxxxxxxxxxxxxxx
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/jboss-ks.cfg
+
+setup_data:
+  - src: data/jboss/Makefile
+    dst: Makefile
+

@@ -1,0 +1,21 @@
+description: JBoss Server
+hostname: &hostname jboss-0
+fqdn: &fqdn jboss-0.m2.local
+ip: &ip 192.168.155.40
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:40"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+jboss:
+  # If remote:
+  # db_host: *fqdn
+  # db_remote_pass: xxxxxxxxx
+  auth_pass: redhat0123
+  db_local_pass: redhat0123
+  override_iptables: no
+  #dc_type: ISCSI
+
