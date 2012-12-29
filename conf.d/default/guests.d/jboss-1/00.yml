@@ -11,6 +11,7 @@ interfaces:
     network: service
 
 jboss:
+  secret: jbosssecret
   servers:
     - name: *hostname
       group: group1
