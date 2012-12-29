@@ -10,6 +10,7 @@ rhn:
 #  username: foo@m2.local
 #  password: xyzsecret
 #  activationkeys: xxxxxxxxxxxxxxx
+#  profilename: "jboss-0.example.con_in_thinkpad-x220"
 
 # Meta:
 templates:
@@ -19,4 +20,6 @@ templates:
 setup_data:
   - src: data/jboss/Makefile
     dst: Makefile
+  - src: data/jboss/host.xml
+    dst: host.xml
 

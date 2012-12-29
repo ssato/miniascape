@@ -11,11 +11,16 @@ interfaces:
     network: service
 
 jboss:
-  # If remote:
-  # db_host: *fqdn
-  # db_remote_pass: xxxxxxxxx
-  auth_pass: redhat0123
-  db_local_pass: redhat0123
-  override_iptables: no
-  #dc_type: ISCSI
+  is_domain_controller: true
+  server_groups:
+    - name: group1
+    - name: group2
+
+setup_data:
+  - src: data/jboss/Makefile
+    dst: Makefile
+  - src: data/jboss/host.xml
+    dst: host.xml
+  - src: data/jboss/domain.xml
+    dst: domain.xml
 
