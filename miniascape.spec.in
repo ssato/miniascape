@@ -77,6 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 %{_sysconfdir}/%{name}/conf.d/default/*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/ipa-*/*
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/jboss-*/*
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/rhel-*/*
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/rhds-*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/rhev*/*
@@ -85,6 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/satellite/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/networks.d/*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/ipa/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/jboss/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhel-*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhev*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhds/*.yml
