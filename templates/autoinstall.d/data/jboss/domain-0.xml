@@ -1362,16 +1362,32 @@
             </outbound-socket-binding>
         </socket-binding-group>
     </socket-binding-groups>
-{% if jboss.is_domain_controller %}    <server-groups>
+    <server-groups>
 {% for g in jboss.server_groups %}        <server-group name="{{ g.name }}" profile="{{ g.profile|default('full') }}">
             <!--
-            <jvm name="default">
+                             <jvm name="default">
                 <heap size="1303m" max-size="1303m"/>
                 <permgen max-size="256m"/>
             </jvm>
             -->
             <socket-binding-group ref="full-sockets"/>
         </server-group>
+        <!-- original:
+        <server-group name="main-server-group" profile="full">
+            <jvm name="default">
+                <heap size="1303m" max-size="1303m"/>
+                <permgen max-size="256m"/>
+            </jvm>
+            <socket-binding-group ref="full-sockets"/>
+        </server-group>
+        <server-group name="other-server-group" profile="full-ha">
+            <jvm name="default">
+                <heap size="1303m" max-size="1303m"/>
+                <permgen max-size="256m"/>
+            </jvm>
+            <socket-binding-group ref="full-ha-sockets"/>
+        </server-group>
+        -->
 {% endfor %}
-    </server-groups>{% endif %}
+    </server-groups>
 </domain>
