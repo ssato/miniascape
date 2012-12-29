@@ -4,6 +4,8 @@
 #
 WORKDIR ?= /root/setup
 
+JBOSS_CONF_DIR ?= /etc/jbossas/domain
+
 #
 # Prepare activation keys which required software channels below
 # to install JBoss RPMs from RHN.
@@ -13,17 +15,25 @@ WORKDIR ?= /root/setup
 RHN_AKEYS ?= {{ rhn.activationkeys }}
 RHN_PROFILENAME ?= {% if rhn.profilename is defined %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_$(shell date +%Y%m%d_%H_%M_%S){% endif %}
 
+define update_domain_and_host_xml =
+test -f $(WORKDIR)/host.xml && cp $(JBOSS_CONF_DIR)/host.xml $(JBOSS_CONF_DIR)/host.xml.save && cp $(WORKDIR)/host.xml $(JBOSS_CONF_DIR)/host.xml
+test -f $(WORKDIR)/domain.xml && cp $(JBOSS_CONF_DIR)/domain.xml $(JBOSS_CONF_DIR)/domain.xml.save && cp $(WORKDIR)/domain.xml $(JBOSS_CONF_DIR)/domain.xml
+endef
+
+
 # @se http://red.ht/WLUrCu
 install: $(WORKDIR)/install.stamp
 $(WORKDIR)/install.stamp:
 	test -f /etc/sysconfig/rhn/systemid || rhnreg_ks --profilename=$(RHN_PROFILENAME) -v --activationkey=$(RHN_AKEYS) --force
 	yum -y update
+	yum install -y java-1.7.0-openjdk-devel
 	yum groupinstall -y jboss-eap6
+	yum install -y jbossas-domain
 	touch $@
 
 setup: $(WORKDIR)/setup.stamp
 $(WORKDIR)/setup.stamp: $(WORKDIR)/install.stamp
-	update_domain_and_host_xml
+	$(update_domain_and_host_xml)
 	touch $@
 
 .PHONY: install setup
