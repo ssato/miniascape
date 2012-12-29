@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<host name="{% if is_domain_controller is defind and is_domain_controller %}master{% else %}{{ hostname }}{% endif %}" xmlns="urn:jboss:domain:1.3">
+<host name="{% if is_domain_controller is defined and is_domain_controller %}master{% else %}{{ hostname }}{% endif %}" xmlns="urn:jboss:domain:1.3">
 
     <management>
         <security-realms>
