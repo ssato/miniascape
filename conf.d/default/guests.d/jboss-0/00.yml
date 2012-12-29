@@ -19,8 +19,6 @@ jboss:
 setup_data:
   - src: data/jboss/Makefile
     dst: Makefile
-  - src: data/jboss/host.xml
-    dst: host.xml
-  - src: data/jboss/domain.xml
-    dst: domain.xml
+  - src: data/jboss/domain-0.xml
+    dst: domain-0.xml
 
