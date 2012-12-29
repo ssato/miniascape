@@ -33,7 +33,6 @@ else
 	yum repolist
 endif
 	yum groupinstall -y jboss-eap6
-	yum install -y jbossas-domain
 	touch $@
 
 setup: $(WORKDIR)/setup.stamp
