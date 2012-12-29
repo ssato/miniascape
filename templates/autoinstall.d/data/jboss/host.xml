@@ -5,8 +5,8 @@
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">
-                {% if is_domain_controller is not defined %}<server-identities>
-                    <secret value="cmVkaGF0"/>
+                {% if jboss.is_domain_controller is not defined %}<server-identities>
+                    <secret value="{{ jboss.secret }}"/>
                 </server-identities>{% endif %}
                 <authentication>
                     <local default-user="$local" />
@@ -62,7 +62,7 @@
             </jvm-options>
        </jvm>
  	</jvms>
-{% if jboss.servers is defined %}    <servers>
+{% if jboss.servers is defined %}      <servers>
 {% for s in jboss.servers %}        <server name="{{ s.name }}" group="{{ s.group }}">
             <!-- Remote JPDA debugging for a specific server
             <jvm name="default">
