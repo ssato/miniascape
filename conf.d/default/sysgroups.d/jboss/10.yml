@@ -12,6 +12,15 @@ rhn:
 #  activationkeys: xxxxxxxxxxxxxxx
 #  profilename: "jboss-0.example.con_in_thinkpad-x220"
 
+jboss:
+  master: 192.168.155.40
+  secret:
+    plain: redhat
+    # python: base64.encodestring('redhat')
+    base64: cmVkaGF0
+    # python: hashlib.md5('admin:ManagementRealm:redhat').hexdigest()
+    hash: c06ba95adae374bc766be220fad6cc0a
+
 # Meta:
 templates:
   autoinst:
@@ -20,6 +29,6 @@ templates:
 setup_data:
   - src: data/jboss/Makefile
     dst: Makefile
-  - src: data/jboss/host.xml
-    dst: host.xml
+  - src: data/jboss/host-slave-0.xml
+    dst: host-slave-0.xml
 
