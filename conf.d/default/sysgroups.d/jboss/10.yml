@@ -14,12 +14,14 @@ rhn:
 
 jboss:
   master: 192.168.155.40
-  secret:
-    plain: redhat
-    # python: base64.encodestring('redhat')
-    base64: cmVkaGF0
-    # python: hashlib.md5('admin:ManagementRealm:redhat').hexdigest()
-    hash: c06ba95adae374bc766be220fad6cc0a
+  domain:
+    user: admin
+    secret:
+      plain: redhat
+      # python: base64.encodestring('redhat') or sh: echo -n 'redhat' | base64
+      base64: cmVkaGF0
+      # python: hashlib.md5('admin:ManagementRealm:redhat').hexdigest()
+      hash: c06ba95adae374bc766be220fad6cc0a
 
 # Meta:
 templates:
