@@ -33,7 +33,7 @@
     </management>
 
     <domain-controller>
-       <remote host="${jboss.domain.master.address: {{ jboss.master }}}" port="${jboss.domain.master.port:9999}" security-realm="ManagementRealm"/>
+       <remote host="${jboss.domain.master.address:{{ jboss.master }}}" port="${jboss.domain.master.port:9999}" security-realm="ManagementRealm"/>
     </domain-controller>
 
     <interfaces>
