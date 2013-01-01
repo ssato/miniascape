@@ -44,6 +44,21 @@ def _sysgroup(name):
     return name[:name.rfind('-')] if re.match(r".+-\d+$", name) else name
 
 
+def add_special_confs(conf):
+    """
+    :param conf: Configurations :: dict
+    """
+    diff = dict(
+        builduser=U.get_username(),
+        buildhost=U.get_hostname(fqdn=False),
+    )
+    diff["builder"] = "%(builduser)s@%(buildhost)s" % diff
+
+    conf["miniascape"] = diff
+
+    return conf
+
+
 def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
     """
     Load meta config for miniascape.
@@ -78,7 +93,9 @@ def load_guest_confs(metaconf, name):
     ]
 
     logging.info("Loading guest config files: " + name)
-    return T.load_confs(confs)
+    c = T.load_confs(confs)
+
+    return add_special_confs(c)
 
 
 def list_guest_names(metaconf):
