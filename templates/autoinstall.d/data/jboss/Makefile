@@ -33,7 +33,7 @@ admin={{ jboss.secret.hash }}\n' $(JBOSS_CONF_DIR)/mgmt-users.properties
 # Slave servers in domain:
 # host.xml: Use custom one; updated <secret/> and <servers/>, etc.
 install_conf = $(INSTALL_DATA) $(WORKDIR)/host-slave-0.xml $(JBOSS_CONF_DIR)/ && \
-test -f /etc/sysconfig/jbossas-domain.save || sed -i.save -e '$ a \
+test -f /etc/sysconfig/jbossas-domain.save || sed -i.save -e '$$ a \
 JBOSS_HOST_CONFIG="host-slave-0.xml"\n' /etc/sysconfig/jbossas-domain
 {% endif %}
 # @se http://red.ht/WLUrCu
