@@ -65,6 +65,8 @@ Command abbreviations: %s
 
 
 def main(argv=sys.argv):
+    assert not U.is_superuser(), "Not run this program as root! Aborting..."
+
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])
     else:
