@@ -24,11 +24,13 @@ INSTALL_DATA = install -m 644
 # domain.xml: Use custom one; added <server-groups/> as needed
 # host.xml: Use /etc/jbossas/domain/host-master.xml by jbossas-domain RPM w/o
 #           any modifications.
-install_conf = $(INSTALL_DATA) $(WORKDIR)/domain-0.xml $(JBOSS_CONF_DIR)/ && \
+install_conf = \
+$(INSTALL_DATA) $(WORKDIR)/domain-0.xml $(JBOSS_CONF_DIR)/ && \
+$(INSTALL_DATA) $(WORKDIR)/host-master-0.xml $(JBOSS_CONF_DIR)/ && \
 test -f /etc/sysconfig/jbossas-domain.save || sed -i.save -e '$$ a \
-JBOSS_SERVER_CONFIG="domain-0.xml"\nJBOSS_HOST_CONFIG="host-master.xml"\n' /etc/sysconfig/jbossas-domain && \
+JBOSS_SERVER_CONFIG="domain-0.xml"\nJBOSS_HOST_CONFIG="host-master-0.xml"\n' /etc/sysconfig/jbossas-domain && \
 sed -i.save -e '$$ a \
-admin={{ jboss.secret.hash }}\n' $(JBOSS_CONF_DIR)/mgmt-users.properties
+admin={{ jboss.domain.secret.hash }}\n' $(JBOSS_CONF_DIR)/mgmt-users.properties
 {% else %}
 # Slave servers in domain:
 # host.xml: Use custom one; updated <secret/> and <servers/>, etc.
