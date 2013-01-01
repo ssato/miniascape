@@ -1372,6 +1372,7 @@
             -->
             <socket-binding-group ref="full-sockets"/>
         </server-group>
+{% endfor %}
         <!-- original:
         <server-group name="main-server-group" profile="full">
             <jvm name="default">
@@ -1388,6 +1389,5 @@
             <socket-binding-group ref="full-ha-sockets"/>
         </server-group>
         -->
-{% endfor %}
     </server-groups>
 </domain>
