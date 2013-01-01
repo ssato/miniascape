@@ -15,10 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import miniascape.memoize as M
+
 import glob
 import itertools
 import logging
 import os.path
+import os
+import pwd
+import socket
 
 try:
     chain_from_iterable = itertools.chain.from_iterable
@@ -69,6 +74,26 @@ def list_dirnames(tdir):
         os.path.basename(x) for x in
             sglob(os.path.join(tdir, "*")) if os.path.isdir(x)
     ]
+
+
+@M.memoize
+def is_superuser():
+    return os.getuid() == 0
+
+
+@M.memoize
+def get_username():
+    return pwd.getpwuid(os.getuid()).pw_name
+
+
+@M.memoize
+def get_hostname(fqdn=True):
+    try:
+        h = socket.getfqdn() or socket.gethostname() or os.uname()[1]
+    except:
+        h = "localhost.localdomain"
+
+    return h if fqdn else (h.split('.')[0] if '.' in h else h)
 
 
 def find_dups_in_dicts_list_g(ds, keys):
