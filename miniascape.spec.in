@@ -107,6 +107,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan  2 2013 Satoru SATOH <ssato@redhat.com> - 0.3.5-1
+- Added a set of JBoss AS 7 guests' config and template files
+- Added RHEV Manager and Hypervisor guests' config and template files
+- Added 'ssh.pubkey' to install it as guest:/root/.ssh/authorized_keys
+- Fixed some bugs in Red Hat Cluster and GFS guests' data
+- Fixed a bug that files for host not generated except for network files
+- Some RPM SPEC cleanups; removed some dupliated files in %files, etc.
+
 * Wed Dec 12 2012 Satoru SATOH <ssato@redhat.com> - 0.3.4-1
 - Splitted into some RPMs and separated miniascape and its data files
 - Fixed bugs in RHUI guests' data
