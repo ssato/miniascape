@@ -21,4 +21,6 @@ setup_data:
     dst: Makefile
   - src: data/jboss/domain-0.xml
     dst: domain-0.xml
+  - src: data/jboss/host-master-0.xml
+    dst: host-master-0.xml
 
