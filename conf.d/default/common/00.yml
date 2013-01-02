@@ -4,3 +4,7 @@ netmask: 255.255.255.0
 nameservers:
 - hostname: *gateway
 #  options:
+
+ssh:
+  pubkey: ~/.ssh/id_rsa.pub
+
