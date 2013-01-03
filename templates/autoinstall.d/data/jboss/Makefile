@@ -15,7 +15,7 @@ FULL_UPDATE ?= no
 # Required software channels: jbappplatform-6-x86_64-server-6-rpm
 #
 RHN_AKEYS ?= {{ rhn.activationkeys }}
-RHN_PROFILENAME ?= {% if rhn.profilename is defined %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_{{ miniascape.builder }}_$(shell date +%Y%m%d_%H_%M_%S){% endif %}
+RHN_PROFILENAME ?= {% if rhn.profilename is defined %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_{{ miniascape.builder }}_$(shell date +%Y%m%d_%H%M%S){% endif %}
 
 INSTALL_DATA = install -m 644
 
