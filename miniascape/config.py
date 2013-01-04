@@ -21,6 +21,7 @@ from operator import itemgetter
 import miniascape.template as T
 import miniascape.utils as U
 
+import datetime
 import logging
 import os.path
 import os
@@ -44,15 +45,19 @@ def _sysgroup(name):
     return name[:name.rfind('-')] if re.match(r".+-\d+$", name) else name
 
 
+def _timestamp():
+    return datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
 def add_special_confs(conf):
     """
     :param conf: Configurations :: dict
     """
-    diff = dict(
-        builduser=U.get_username(),
-        buildhost=U.get_hostname(fqdn=False),
-    )
-    diff["builder"] = "%(builduser)s@%(buildhost)s" % diff
+    diff = dict(build=dict(user=U.get_username(),
+                           host=U.get_hostname(fqdn=False),
+                           time=_timestamp()))
+
+    diff["builder"] = "%(user)s@%(host)s" % diff["build"]
 
     conf["miniascape"] = diff
 
