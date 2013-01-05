@@ -23,4 +23,9 @@ setup_data:
     dst: domain-0.xml
   - src: data/jboss/host-master-0.xml
     dst: host-master-0.xml
+  - src: data/jboss/domain-app-deploy.sh
+    dst: domain-app-deploy.sh
+    install:
+      mode: 755
+      dst: /usr/sbin/domain-app-deploy.sh
 
