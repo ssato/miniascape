@@ -14,7 +14,11 @@ objs = rhui-ca.crt $(RHUA_FQDN).crt entitlement-ca.crt
 {% for cds in cdsservers %}objs += $(CDS_{{ loop.index }}_FQDN).crt
 {% endfor %}
 
-all: $(objs)
+all: cert.stamp
+
+
+cert.stamp: $(objs)
+	touch $@
 
 rhui-ca.srl:
 	echo 10 > $@

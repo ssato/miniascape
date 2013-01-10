@@ -5,6 +5,8 @@
 #
 WORKDIR ?= /root/setup
 
+CERTSDIR = $(WORKDIR)/certs
+
 # @see http://red.ht/RAKEyc :
 RHUI_CERT ?= $(WORKDIR)/$(notdir {{ rhui_entitlement_certs[0] }})
 RHUI_ISO ?= RHEL-6-RHUI-2-LATEST-Server-x86_64-DVD.iso
@@ -45,10 +47,9 @@ $(WORKDIR)/install-rhua.stamp: $(RHUI_ISO)
 	cd /mnt && ./install_RHUA.sh && cd - && umount /mnt
 	touch $@
 
-certs: $(WORKDIR)/certs.stamp
-$(WORKDIR)/certs.stamp:
-	make -C $(WORKDIR)/certs
-	touch $@
+certs: $(CERTSDIR)/certs.stamp
+$(CERTSDIR)/certs.stamp:
+	test -f $@ || make -C $(CERTSDIR)
 
 genconf: $(WORKDIR)/genconf.stamp
 $(WORKDIR)/genconf.stamp: certs.stamp install-rhua.stamp $(WORKDIR)/answers.txt
