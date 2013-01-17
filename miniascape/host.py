@@ -64,6 +64,7 @@ def _find_template(tmpldirs, template):
 def gen_vnet_files(metaconf, tmpldirs, workdir, force):
     nets = C.load_nets_confs(metaconf)
     outdir = _netoutdir(workdir)
+    tpaths = [os.path.join(d, "host") for d in tmpldirs]
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -83,7 +84,6 @@ def gen_vnet_files(metaconf, tmpldirs, workdir, force):
 
         logging.debug("Generating network xml: " + netxml)
         nc = filterout_hosts_wo_macs(netconf)
-        tpaths = [os.path.join(d, "host") for d in tmpldirs]
         T.renderto(
             tpaths, nc, _find_template(tmpldirs, "host/network.xml"), netxml
         )
