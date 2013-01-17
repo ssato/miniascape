@@ -71,9 +71,9 @@ def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
     """
     if os.path.isdir(metaconfsrc):
         metaconfdir = metaconfsrc
-        conf = AC.load(os.path.join(metaconfsrc, "*.yml"))
+        conf = AC.load(os.path.join(metaconfsrc, "*.yml"), merge=AC.MS_DICTS)
     else:
-        metaconfdir = os.path.dirname(metaconfsrc)
+        metaconfdir = os.path.dirname(metaconfsrc, merge=AC.MS_DICTS)
         conf = AC.load(metaconfsrc)
 
     confdir = os.path.abspath(os.path.join(metaconfdir, "..", conf["site"]))
@@ -97,7 +97,7 @@ def load_guest_confs(metaconf, name):
     ]
 
     logging.info("Loading guest config files: " + name)
-    c = AC.load(confs)
+    c = AC.load(confs, merge=AC.MS_DICTS)
 
     return add_special_confs(c)
 
@@ -166,7 +166,7 @@ def load_nets_confs(metaconf):
     nis = dict(_aggregate_guest_net_interfaces_g(metaconf))
 
     for ncs in ncss:
-        netctx = AC.load(ncs)
+        netctx = AC.load(ncs, merge=AC.MS_DICTS)
         name = netctx["name"]
 
         ns = nis.get(name, [])
@@ -184,7 +184,7 @@ def load_host_confs(metaconf):
     :param metaconf: Meta conf object.
     """
     logging.info("Loading host config files")
-    return AC.load(metaconf["host"]["confs"])
+    return AC.load(metaconf["host"]["confs"], merge=AC.MS_DICTS)
 
 
 # vim:sw=4:ts=4:et:
