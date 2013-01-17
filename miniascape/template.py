@@ -14,12 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import jinja2_cui.contexts as C
 import jinja2_cui.render as R
-
-
-def load_confs(confs):
-    return C.parse_and_load_contexts(confs)
 
 
 def renderto(tpaths, config, tmpl, output, ask=False):
