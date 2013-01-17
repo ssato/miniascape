@@ -20,6 +20,7 @@ from operator import itemgetter
 
 import miniascape.template as T
 import miniascape.utils as U
+import anyconfig as AC
 
 import datetime
 import logging
@@ -70,21 +71,19 @@ def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
     """
     if os.path.isdir(metaconfsrc):
         metaconfdir = metaconfsrc
-        confs = U.sglob(os.path.join(metaconfsrc, "*.yml"))
+        conf = AC.load(os.path.join(metaconfsrc, "*.yml"))
     else:
         metaconfdir = os.path.dirname(metaconfsrc)
-        confs = [metaconfsrc]  # It's not a dir, just a file.
+        conf = AC.load(metaconfsrc)
 
-    d = T.load_confs(confs)
-
-    confdir = os.path.abspath(os.path.join(metaconfdir, "..", d["site"]))
-    d["confdir"] = confdir
+    confdir = os.path.abspath(os.path.join(metaconfdir, "..", conf["site"]))
+    conf["confdir"] = confdir
 
     for c in categories:
-        d[c]["dir"] = os.path.join(confdir, d[c]["subdir"])
-        d[c]["confs"] = [os.path.join(confdir, p) for p in d[c]["files"]]
+        conf[c]["dir"] = os.path.join(confdir, conf[c]["subdir"])
+        conf[c]["confs"] = [os.path.join(confdir, p) for p in conf[c]["files"]]
 
-    return d
+    return conf
 
 
 def load_guest_confs(metaconf, name):
@@ -98,7 +97,7 @@ def load_guest_confs(metaconf, name):
     ]
 
     logging.info("Loading guest config files: " + name)
-    c = T.load_confs(confs)
+    c = AC.load(confs)
 
     return add_special_confs(c)
 
@@ -167,7 +166,7 @@ def load_nets_confs(metaconf):
     nis = dict(_aggregate_guest_net_interfaces_g(metaconf))
 
     for ncs in ncss:
-        netctx = T.load_confs(ncs)
+        netctx = AC.load(ncs)
         name = netctx["name"]
 
         ns = nis.get(name, [])
@@ -185,7 +184,7 @@ def load_host_confs(metaconf):
     :param metaconf: Meta conf object.
     """
     logging.info("Loading host config files")
-    return T.load_confs(metaconf["host"]["confs"])
+    return AC.load(metaconf["host"]["confs"])
 
 
 # vim:sw=4:ts=4:et:
