@@ -52,7 +52,7 @@ $(CERTSDIR)/certs.stamp:
 	test -f $@ || make -C $(CERTSDIR)
 
 genconf: $(WORKDIR)/genconf.stamp
-$(WORKDIR)/genconf.stamp: certs.stamp install-rhua.stamp $(WORKDIR)/answers.txt
+$(WORKDIR)/genconf.stamp: $(CERTSDIR)/certs.stamp $(WORKDIR)/install-rhua.stamp $(WORKDIR)/answers.txt
 	rhui-installer $(WORKDIR)/answers.txt 2>&1 | tee $(WORKDIR)/rhui-install.log
 
 # On CDS:
