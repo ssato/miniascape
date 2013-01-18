@@ -9,3 +9,6 @@ templates:
   autoinst:
     src: autoinstall.d/rhui-cds-ks.cfg
 
+setup_data:
+  - src: data/rhui-cds/Makefile
+    dst: Makefile
