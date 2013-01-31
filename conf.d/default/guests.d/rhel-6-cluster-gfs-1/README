@@ -20,7 +20,11 @@ Setup
 3.  [Host] Configure and start required libvirt networks if not yet;
     see $workdir/host/networks.d/{network_register.sh,*.xml}
 4.  [Host] Configure iptables to allow inter cluster communications,
-    e.g. 'iptables -I INPUT -i virbr0 -p tcp -m tcp --dport 1229 -j ACCEPT'
+    e.g.
+    
+      iptables -I INPUT -i virbr0 -p udp -m udp --dport 1229 -j ACCEPT
+      iptables -I INPUT -i virbr0 -p tcp -m tcp --dport 1229 -j ACCEPT
+
 5.  [Host] Apply hacks for software bridges to avoid multicast communication issue;
     see and run $workdir/host/usr/sbin/fix_bug_in_software_bridge.sh
 7.  [Host] Arrange pre-shared key for communication between fence_virtd and fence_xvm,
