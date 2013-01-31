@@ -44,7 +44,7 @@ debug_level = NONE
 virtual web {
      active = 1
      address = {{ lvs.public.ip.addr }} eth0:1
-     vip_nmask = 255.255.255.0
+     vip_nmask = 255.255.255.255
      port = 80
      send = "GET / HTTP/1.0\r\n\r\n"
      expect = "HTTP"
@@ -65,7 +65,7 @@ virtual web {
 virtual ftp {
      active = 1
      address = {{ lvs.public.ip.addr }} eth0:1
-     vip_nmask = 255.255.255.0
+     vip_nmask = 255.255.255.255
      fwmark = 21
      port = 21
      persistent = 1
