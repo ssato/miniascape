@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import miniascape.xml as X
+import miniascape.xml_ as X
 
 import libvirt
 import logging
