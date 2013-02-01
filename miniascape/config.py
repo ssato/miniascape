@@ -29,7 +29,7 @@ import os
 import re
 
 
-_CATEGORIES = ("guest", "network", "storage", "host")
+_CATEGORIES = ("guest", "network", "host")
 
 
 def _sysgroup(name):
