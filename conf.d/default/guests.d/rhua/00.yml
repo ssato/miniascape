@@ -13,6 +13,8 @@ interfaces:
 cdsservers:
   - name: cds-1
     fqdn: cds-1.m2.local
+    cli_fqdn: cds-1.m2.local
   - name: cds-2
     fqdn: cds-2.m2.local
+    cli_fqdn: cds-2.m2.local
 
