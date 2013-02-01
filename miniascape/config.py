@@ -82,8 +82,8 @@ def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
         metaconfdir = metaconfsrc
         conf = AC.load(os.path.join(metaconfsrc, "*.yml"), merge=AC.MS_DICTS)
     else:
-        metaconfdir = os.path.dirname(metaconfsrc, merge=AC.MS_DICTS)
-        conf = AC.load(metaconfsrc)
+        metaconfdir = os.path.dirname(metaconfsrc)
+        conf = AC.load(metaconfsrc, merge=AC.MS_DICTS)
 
     confdir = os.path.abspath(os.path.join(metaconfdir, "..", conf["site"]))
     conf["confdir"] = confdir
