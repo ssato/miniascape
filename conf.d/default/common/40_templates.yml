@@ -1,9 +1,0 @@
-templates:
-  autoinst:
-#    src: autoinstall.d/<name>-ks.cfg
-    dst: ks.cfg
-  virtinst:
-    src: host/vmbuild.sh
-    dst: vmbuild.sh
-
-
