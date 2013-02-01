@@ -40,16 +40,11 @@ def gen_all(argv):
     G.gen_all(metaconf, options.tmpldir, options.workdir)
 
 
-def init_(argv):
-    H.main(argv)
-
-
 # TODO: define other commands.
 cmds = [
-    ("i", "init", init_),
+    ("i", "init", H.main),
     ("ge", "generate", gen_all),
     ("gu", "guest", G.main),
-    ("h", "host", H.main),
 ]
 
 
