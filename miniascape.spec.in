@@ -63,7 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc README
+%doc README.rst
 %{_bindir}/*
 %{_sysconfdir}/%{name}/conf.d/META
 %{_datadir}/%{name}/templates
@@ -75,7 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files          data-default
 %defattr(-,root,root,-)
-%doc README
+%doc README.rst
 %{_sysconfdir}/%{name}/conf.d/default/*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/ipa-*/*
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/jboss-*/*
@@ -98,7 +98,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files          data-default-rhui
 %defattr(-,root,root,-)
-%doc README
+%doc README.rst
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/cds-*/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/rhua/*.yml
 %{_sysconfdir}/%{name}/conf.d/default/guests.d/rhui-*/*.yml

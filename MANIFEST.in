@@ -1,5 +1,5 @@
 include MANIFEST.in
-include README
+include README.rst
 include miniascape.spec.in
 include setup.py
 include aux/*
