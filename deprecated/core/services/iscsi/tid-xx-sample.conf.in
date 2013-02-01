@@ -1,7 +1,0 @@
-# <target @ISCSI_TARGET_IQN@:sample.storage-1>
-#     backing-store /var/lib/libvirt/images/iscsi-sample-storage-1.raw # LUN1
-#     backing-store /var/lib/libvirt/images/iscsi-sample-storage-2.raw # LUN2
-#     backing-store /var/lib/libvirt/images/iscsi-sample-storage-3.raw # LUN3
-# 
-#     initiator-address @NET_1_NETWORK@.0/24   # Allowed IPs
-# </target>

@@ -1,5 +1,0 @@
-#
-# Please add the followings lines into /etc/exports and run 'exportfs -av'
-# after that to apply changes.
-#
-@nfsexportdir@/exports @nfs_network@(rw,no_root_squash,fsid=0,sync)
