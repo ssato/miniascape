@@ -53,6 +53,15 @@ def _timestamp():
 def add_special_confs(conf):
     """
     :param conf: Configurations :: dict
+
+    >>> conf = add_special_confs(dict())
+
+    >>> assert "miniascape" in conf, str(conf)
+    >>> assert "build" in conf["miniascape"], str(conf)
+    >>> assert "user" in conf["miniascape"]["build"], str(conf)
+    >>> assert "host" in conf["miniascape"]["build"], str(conf)
+    >>> assert "time" in conf["miniascape"]["build"], str(conf)
+    >>> assert "builder" in conf["miniascape"], str(conf)
     """
     diff = dict(build=dict(user=U.get_username(),
                            host=U.get_hostname(fqdn=False),
