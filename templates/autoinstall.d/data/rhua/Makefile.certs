@@ -8,14 +8,13 @@ DAYS	?= {{ cert.expiration_dates }}
 SUBJ_BASE	?= {{ cert.subject }}
 
 RHUA_FQDN ?= {{ fqdn }}{% for cds in cdsservers %}
-CDS_{{ loop.index }}_FQDN ?= {{ cds.fqdn }}{% endfor %}
+CDS_{{ loop.index }}_FQDN ?= {% if cds.cli_fqdn is defined %}{{ cds.cli_fqdn }}{% else %}{{ cds.fqdn }}{% endif %}{% endfor %}
 
 objs = rhui-ca.crt $(RHUA_FQDN).crt entitlement-ca.crt
 {% for cds in cdsservers %}objs += $(CDS_{{ loop.index }}_FQDN).crt
 {% endfor %}
 
 all: cert.stamp
-
 
 cert.stamp: $(objs)
 	touch $@
