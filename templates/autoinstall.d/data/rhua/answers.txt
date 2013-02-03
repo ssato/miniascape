@@ -18,11 +18,12 @@ proxy_server_port: {{ proxy.port|default('443') }}
 {% if proxy.user is defined %}proxy_server_username: {{ proxy.user }}{% endif %}
 {% if proxy.password is defined %}proxy_server_password: {{ proxy.password }}{% endif %}
 {% endif %}{% endif %}
-
 {% for cds in cdsservers %}[cds-{{ loop.index }}]
 rpm_name: rh-{{ cds.name }}-config
-hostname: {{ cds.fqdn }}
+{% if cds.cli_fqdn is defined %}hostname: {{ cds.cli_fqdn }}
+ssl_cert: /root/setup/certs/{{ cds.cli_fqdn }}.crt
+ssl_key: /root/setup/certs/{{ cds.cli_fqdn }}.key{% else %}hostname: {{ cds.fqdn }}
 ssl_cert: /root/setup/certs/{{ cds.fqdn }}.crt
-ssl_key: /root/setup/certs/{{ cds.fqdn }}.key
+ssl_key: /root/setup/certs/{{ cds.fqdn }}.key{% endif %}
 
 {% endfor %}
