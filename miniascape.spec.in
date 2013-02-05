@@ -32,15 +32,6 @@ Requires:       %{name} = %{version}-%{release}
 Some default guests and infra data files for %{name}.
 
 
-%package        data-default-rhui
-Summary:        Default RHUI guests data files for %{name}
-Requires:       %{name}-data-default = %{version}-%{release}
-
-
-%description    data-default-rhui
-Some default RHUI guest data files for %{name}.
-
-
 %prep
 %setup -q
 
@@ -77,37 +68,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.rst
 %{_sysconfdir}/%{name}/conf.d/default/*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/ipa-*/*
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/jboss-*/*
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhel-*/*
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhds-*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhev*/*
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhs-*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/sam/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/satellite/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/guests.d/*/*
 %{_sysconfdir}/%{name}/conf.d/default/networks.d/*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/ipa/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/jboss/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhel-*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhev*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhds/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhs/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/sam/*0.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/satellite/*.yml
-
-
-%files          data-default-rhui
-%defattr(-,root,root,-)
-%doc README.rst
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/cds-*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhua/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/rhui-*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/cds/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhua/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/rhui-*/*.yml
+%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/*/*.yml
 
 
 %changelog
+* Tue Feb  5 2013 Satoru SATOH <ssato@redhat.com> - 0.3.6-1
+- Removed RHUI related guests data; now these are kept maintained at
+  https://github.com/ssato/miniascape-data-default-rhui
+
 * Wed Jan  2 2013 Satoru SATOH <ssato@redhat.com> - 0.3.5-1
 - Added a set of JBoss AS 7 guests' config and template files
 - Added RHEV Manager and Hypervisor guests' config and template files
