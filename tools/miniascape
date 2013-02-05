@@ -1,6 +1,6 @@
 #! /usr/bin/python
 #
-from miniascape.cui import main
+from miniascape.cli import main
 from sys import argv
 
 main(argv)
