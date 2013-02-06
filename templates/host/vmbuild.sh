@@ -56,3 +56,4 @@ virt-install \
 {% if virtinst.cdrom %}--cdrom {{ virtinst.cdrom }}{% if virtinst.extra_args is defined and false %} --extra-args="{{ virtinst.extra_args }}"{% endif %}{% else %}--location=${location} --initrd-inject=${ks_path} --extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }} {{ virtinst.extra_args|default('') }}"{% endif %} \
 ${disk_options} \
 {% for nic in interfaces %}--network {{ net_option(nic) }} {% endfor %}
+
