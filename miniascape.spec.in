@@ -74,20 +74,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Feb 13 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
-- Switched template rendering module from python-jinja2-cui to python-jinja2-cli
-
-* Tue Feb  5 2013 Satoru SATOH <ssato@redhat.com> - 0.3.6-1
-- Removed RHUI related guests data; now these are kept maintained at
-  https://github.com/ssato/miniascape-data-default-rhui
-
-* Wed Jan  2 2013 Satoru SATOH <ssato@redhat.com> - 0.3.5-1
+* Wed Feb 13 2013 Satoru SATOH <ssato@redhat.com> - 0.3.5-1
 - Added a set of JBoss AS 7 guests' config and template files
 - Added RHEV Manager and Hypervisor guests' config and template files
 - Added 'ssh.pubkey' to install it as guest:/root/.ssh/authorized_keys
 - Fixed some bugs in Red Hat Cluster and GFS guests' data
 - Fixed a bug that files for host not generated except for network files
 - Some RPM SPEC cleanups; removed some dupliated files in %files, etc.
+- Removed RHUI related guests data; now these are kept maintained at
+  https://github.com/ssato/miniascape-data-default-rhui
+- Switched template rendering module from python-jinja2-cui to python-jinja2-cli
 
 * Wed Dec 12 2012 Satoru SATOH <ssato@redhat.com> - 0.3.4-1
 - Splitted into some RPMs and separated miniascape and its data files
