@@ -16,7 +16,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.3.4
-Requires:       python-jinja2-cui >= 0.0.3.12
+Requires:       python-jinja2-cli >= 0.0.4.1
 
 
 %description
@@ -74,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 13 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
+- Switched template rendering module from python-jinja2-cui to python-jinja2-cli
+
 * Tue Feb  5 2013 Satoru SATOH <ssato@redhat.com> - 0.3.6-1
 - Removed RHUI related guests data; now these are kept maintained at
   https://github.com/ssato/miniascape-data-default-rhui
