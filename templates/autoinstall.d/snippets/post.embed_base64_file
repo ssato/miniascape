@@ -4,7 +4,7 @@ cat << EOF > {{ outdir }}/setup.tar.xz.base64
 {% include 'setup.tar.xz.base64' %}
 EOF
 cd {{ outdir }} && base64 --decode setup.tar.xz.base64 | tar --xz -xC {{ outdir }}/ && cd -
-f test -d /root/setup; then
+if test -d /root/setup; then
   {% for data in setup_data if data.install is defined %}install -m{{ data.install.mode }} --suffix=.save --backup /root/setup/{{ data.dst }} {{ data.install.dst }}
 {% endfor %}
   :
