@@ -1,3 +1,4 @@
+# https://access.redhat.com/knowledge/solutions/8709:
 f=/etc/modprobe.d/disable_ipv6.conf
 test -f $f.save || touch $f.save
 cat << EOF > $f
