@@ -38,6 +38,16 @@ timezone:
   utc: true
   timezone: Asia/Tokyo
 
+services:
+  #enabled:
+  disabled:
+    - gpm
+    - ip6tables
+    - lvm2-monitor
+    - lvm2-lvmetad
+    - mdmonitor
+    - netfs
+
 ssh:
   pubkey: ~/.ssh/id_rsa.pub
 
