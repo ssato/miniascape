@@ -1,0 +1,5 @@
+f=/etc/modprobe.d/disable_ipv6.conf
+test -f $f.save || touch $f.save
+cat << EOF > $f
+options ipv6 disable=1
+EOF
