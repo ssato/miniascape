@@ -1,0 +1,14 @@
+filesystem: ext3
+virtinst:
+  location: "http://ks/kstree/rhel/5/8/x86_64/"
+  os_variant: rhel5.4
+
+ks_repos:
+  - name: "RHEL 5 x86_64 - MRG-M"
+    baseurl: "http://ks/kstree/rhel-5-mrg-2.1-x86_64"
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhel-5-mrg-m-ks.cfg
+

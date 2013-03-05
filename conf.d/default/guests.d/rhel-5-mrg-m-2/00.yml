@@ -1,0 +1,11 @@
+hostname: &hostname rhel-5-mrg-m-2
+fqdn: &fqdn rhel-5-mrg-m-2.m2.local
+ip: &ip 192.168.155.72
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:72"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
