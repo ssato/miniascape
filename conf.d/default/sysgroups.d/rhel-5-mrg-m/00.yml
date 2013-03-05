@@ -7,6 +7,15 @@ ks_repos:
   - name: "RHEL 5 x86_64 - MRG-M"
     baseurl: "http://ks/kstree/rhel-5-mrg-2.1-x86_64"
 
+services:
+  enabled:
+    - openais
+    - qpidd
+
+# @see common/00_base.yml:
+openais:
+  bindnetaddr: 192.168.155.0
+
 # Meta:
 templates:
   autoinst:
