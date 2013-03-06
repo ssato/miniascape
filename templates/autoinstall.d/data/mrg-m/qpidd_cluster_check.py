@@ -1,28 +1,42 @@
 #! /usr/bin/python
+#
+# Copyright (C) 2013 Red Hat, Inc.
+# Copyright (C) 2013 Satoru SATOH <ssato@redhat.com>
+# 
+# License: Apache License 2.0
+# 
+# Reference. qpid-cluster in qpid-tools
+#
+"""Example session:
+::
 
-"""
-see: https://cwiki.apache.org/qpid/qpid-management-framework.html
+    [root@rhel-5-mrg-m-1 ~]# ./qpidd_cluster_check.py -h
+    usage: Usage: qpidd_cluster_check.py [Options...]
 
+    options:
+      -h, --help            show this help message and exit
+      -A, --active          Only list active clusters [False]
+      -N NAME, --name=NAME  Specify cluster name to show
+      --expected-nnodes=EXPECTED_NNODES
+                            Do not show stats and only check if the number of
+                            nodes of specified cluster (with --name option)
+                            matches expected number of nodes.
+      -v, --verbose         Verbose mode [False]
+      -D, --debug           Debug mode [False]
+    [root@rhel-5-mrg-m-1 ~]# ./qpidd_cluster_check.py -v 
+    Cluster 'mrgm_cluster' [ACTIVE]:
+      amqp:tcp:192.168.155.71:5672
+      amqp:tcp:192.168.155.72:5672
+    [root@rhel-5-mrg-m-1 ~]# ./qpidd_cluster_check.py -v -N mrgm_cluster 
+    Cluster 'mrgm_cluster' [ACTIVE]:
+      amqp:tcp:192.168.155.71:5672
+      amqp:tcp:192.168.155.72:5672
+    [root@rhel-5-mrg-m-1 ~]# ./qpidd_cluster_check.py -v -N mrgm_cluster --expected-nnodes=2; echo $?
+    ['amqp:tcp:192.168.155.71:5672', 'amqp:tcp:192.168.155.72:5672']
+    0
+    [root@rhel-5-mrg-m-1 ~]#
 
->>> from qmf.console import Session
->>> 
->>> sess = Session()
->>> broker = sess.addBroker()
->>> agents = sess.getAgents()
->>> print len(agents)
-2
->>> clusters = sess.getObjects(_class="cluster", _agent=agents[0])
->>> print len(clusters)
-1
->>> print clusters[0]
-org.apache.qpid.cluster:cluster[0-66-1-0-org.apache.qpid.cluster:cluster:org.apache.qpid.broker:broker:amqp-broker] org.apache.qpid.cluster:cluster:org.apache.qpid.broker:broker:amqp-broker
->>> print clusters[0].clusterName
-amqp_local_cluster
->>> print clusters[0].status
-ACTIVE
->>> print clusters[0].members
-amqp:tcp:192.168.122.13:5671;amqp:tcp:192.168.122.13:5672
->>> 
+see also: https://cwiki.apache.org/qpid/qpid-management-framework.html
 """
 import qmf.console as QC
 import logging
