@@ -21,3 +21,6 @@ templates:
   autoinst:
     src: autoinstall.d/rhel-5-mrg-m-ks.cfg
 
+setup_data:
+  - src: data/mrg-m/qpidd_cluster_check.py
+    dst: qpidd_cluster_check.py
