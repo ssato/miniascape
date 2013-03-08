@@ -1,6 +1,8 @@
 #virtinst:
 #  ram: 1024
 
+description: Red Hat IPA Server
+
 ipa:
   admin:
     password: redhat0971
