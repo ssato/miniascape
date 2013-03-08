@@ -1,0 +1,18 @@
+description: RHEL 5 Cluster 2
+hostname: &hostname rhel-5-cluster-2
+fqdn: &fqdn rhel-5-cluster-2.m2.local
+ip: &ip 192.168.155.102
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:01:02"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+  - device: eth1  # for heartbeat
+    bootproto: static
+    mac: "52:54:00:02:01:02"
+    ip: 192.168.122.102
+    host: rhel-5-cluster-default-2
+    network: default
+    nodns: true

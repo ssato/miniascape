@@ -1,8 +1,0 @@
-virtinst:
-  ram: 2048
-  vcpus: 2
-
-templates:
-  autoinst:
-    src: autoinstall.d/sam-ks.cfg
-

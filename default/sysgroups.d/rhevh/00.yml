@@ -1,0 +1,12 @@
+virtinst:
+  ram: 2560
+  cpu: host
+  vcpus: 2
+  cdrom: /var/lib/libvirt/images/rhevh-6.3-20121121.0.el6_3.iso
+  #TODO: --extra-args requires --local but ...
+  extra_args: storage_init=/dev/vda1 BOOTIF=eth0 adminpw=redhat
+
+# None:
+templates:
+  autoinstall:
+    dst: false

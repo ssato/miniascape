@@ -1,0 +1,18 @@
+description: RHEL 6 Cluster 2
+hostname: &hostname rhel-6-cluster-2
+fqdn: &fqdn rhel-6-cluster-2.m2.local
+ip: &ip 192.168.155.112
+interfaces:
+  - device: eth0  # for service
+    mac: "52:54:00:05:01:12"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+  - device: eth1  # for heartbeat
+    bootproto: static
+    mac: "52:54:00:02:01:12"
+    ip: 192.168.122.112
+    host: rhel-6-cluster-default-2
+    network: default
+    nodns: true

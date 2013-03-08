@@ -1,0 +1,61 @@
+ks_repos:
+  - name: "RHEL 6 x86_64 - Cluster"
+    baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+  - name: "RHEL 6 x86_64 - GFS"
+    baseurl: "http://ks/kstree/rhel/6/3/x86_64/ResilientStorage"
+
+disks:
+  - pool: default
+    size: 5
+  - pool: default
+    vol: rhel-6-cluster-gfs-data-1.img
+    perms: sh
+    size: 1
+
+cluster:
+  name: GFS_CLUSTER
+  vol:
+    journal:
+      size: 64
+    vg: gfs-vg-0
+    lv: gfs-lv-0
+    fs: gfs-fs-0
+  nodes:
+  - name: &node1 rhel-6-cluster-gfs-default-1
+    fence_name: rhel-6-cluster-gfs-1
+  - name: &node2 rhel-6-cluster-gfs-default-2
+    fence_name: rhel-6-cluster-gfs-2
+  - name: &node3 rhel-6-cluster-gfs-default-3
+    fence_name: rhel-6-cluster-gfs-3
+  resources:
+    ip: 192.168.155.120
+
+defaultgw: 192.168.155.254
+
+hosts:
+  - ip: 192.168.122.113
+    hostname: *node1
+  - ip: 192.168.122.114
+    hostname: *node2
+  - ip: 192.168.122.115
+    hostname: *node3
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhel-6-cluster-gfs-ks.cfg
+
+setup_data:
+  - src: data/rhel-6-cluster-gfs/cluster.conf
+    dst: cluster.conf
+    install:
+      mode: 600
+      dst: /etc/cluster/cluster.conf
+  - src: data/rhel-6-cluster-gfs/init_gfs.sh
+    dst: init_gfs.sh
+  - src: data/rhel-6-cluster-gfs/check_cman.sh
+    dst: check_cman.sh
+  - src: data/rhel-6-cluster-gfs/start_cman.sh
+    dst: start_cman.sh
+  - src: data/rhel-6-cluster-gfs/start_clvmd.sh
+    dst: start_clvmd.sh

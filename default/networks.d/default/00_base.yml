@@ -1,0 +1,11 @@
+## libvirt's default virtual (NAT) network:
+name: default
+mode: nat
+bridge: virbr0
+domain: example.com
+gateway: 192.168.122.1
+netmask: 255.255.255.0
+network: 192.168.122.0
+dhcp:
+  start: 192.168.122.200
+  end: 192.168.122.254

@@ -1,0 +1,14 @@
+squid:
+  allowed_network: 192.168.155.0/24
+  auth:
+    username: foo
+    password: secret
+
+# Meta:
+templates:
+  autoinst:
+    src: autoinstall.d/rhel-6-proxy-ks.cfg
+
+setup_data:
+  - src: data/proxy/squid.conf
+    dst: squid.conf

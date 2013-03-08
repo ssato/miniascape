@@ -1,0 +1,16 @@
+description: JBoss Server
+hostname: &hostname jboss-1
+fqdn: &fqdn jboss-1.m2.local
+ip: &ip 192.168.155.41
+interfaces:
+  - device: eth0
+    mac: "52:54:00:05:00:41"
+    ip: *ip
+    host: *hostname
+    fqdn: *fqdn
+    network: service
+
+jboss:
+  servers:
+    - name: *hostname
+      group: group1

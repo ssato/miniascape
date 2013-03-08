@@ -1,0 +1,47 @@
+About
+=========
+
+Here are configuration files to make an VM instance such like the followings:
+
+* one of GFS cluster nodes; RHEL 6 HA Cluster + GFS
+* cluster is consist of 3 nodes
+* fence method is fence_virt (Libvirt Host) + fence_xvm
+
+Setup
+=========
+
+[Host] - tasks on libvirt host
+[Guest] - tasks on VM guest
+
+1.  [Host] Generate build files (ks.cfg and vm build script),
+    e.g. miniascape ge -w m2 -D
+2.  [Host] Build VMs, e.g. sudo bash -x ./m2/guests.d/rhel-6-cluster-gfs-1/vmbuild.sh
+    Please note that you need to build all cluster node VMs to setup the cluster.
+3.  [Host] Configure and start required libvirt networks if not yet;
+    see $workdir/host/networks.d/{network_register.sh,*.xml}
+4.  [Host] Configure iptables to allow inter cluster communications,
+    e.g.
+
+      iptables -I INPUT -i virbr0 -p udp -m udp --dport 1229 -j ACCEPT
+      iptables -I INPUT -i virbr0 -p tcp -m tcp --dport 1229 -j ACCEPT
+
+5.  [Host] Apply hacks for software bridges to avoid multicast communication issue;
+    see and run $workdir/host/usr/sbin/fix_bug_in_software_bridge.sh
+7.  [Host] Arrange pre-shared key for communication between fence_virtd and fence_xvm,
+    e.g. 'dd if=/dev/urandom of=/etc/cluster/fence_xvm.key count=1 bs=1024'
+8.  [Host] Configure fence_virtd (see $workdir/host/etc/fence_virt.conf) and
+    starts its serivce; 'service fence_virtd start' or
+    'systemctl start fence_virtd.service'
+9.  [Guest] boot all cluster nodes
+10. [Guest] scp /etc/cluster/fence_xvm.key to /etc/cluster/ from the host
+11. [Guest] Check fence, e.g. fence_xvm -ddd -H rhel-6-cluster-gfs-1 -o status.
+    If failed, check iptables (host), bridge (echo 0 /sys/...), etc.
+12. [Guest] Check inter cluster communication at least w/ omping, etc.
+13. [Guest] Start cman service in all cluster nodes: run /root/setup/start_cman.sh.
+    Please note that you need to adjust timings of start it between cluster
+    nodes to avoid unintended fence.
+14. [Guest] Run setup script (/root/setup/init_gfs.sh) in node #1
+    (rhel-6-cluster-gfs-1)
+
+
+.. vim:sw=2:ts=2:et:
