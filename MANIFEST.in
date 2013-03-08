@@ -9,5 +9,5 @@ include templates/autoinstall.d/*-ks.cfg
 include templates/autoinstall.d/data/*
 include templates/autoinstall.d/data/*/*
 include templates/autoinstall.d/snippets/*
-recursive-include conf.d *.yml
+recursive-include default *.yml
 recursive-include miniascape *.py

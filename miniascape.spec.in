@@ -3,6 +3,8 @@
 # disable debuginfo
 %define debug_package %{nil}
 
+%define pkgconfdir      %{_sysconfdir}/%{name}.d
+
 
 Name:           miniascape
 Version:        @VERSION@
@@ -56,7 +58,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.rst
 %{_bindir}/*
-%{_sysconfdir}/%{name}/conf.d/META
 %{_datadir}/%{name}/templates
 %{_datadir}/%{name}/templates/autoinstall.d/*-ks.cfg
 %{_datadir}/%{name}/templates/autoinstall.d/*/*
@@ -67,10 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %files          data-default
 %defattr(-,root,root,-)
 %doc README.rst
-%{_sysconfdir}/%{name}/conf.d/default/*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/guests.d/*/*
-%{_sysconfdir}/%{name}/conf.d/default/networks.d/*/*.yml
-%{_sysconfdir}/%{name}/conf.d/default/sysgroups.d/*/*.yml
+%config %{pkgconfdir}/default/*/*.yml
+%config %{pkgconfdir}/default/*/*/*.yml
+%{pkgconfdir}/default/*/*/README
 
 
 %changelog

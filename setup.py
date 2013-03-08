@@ -1,6 +1,6 @@
 from distutils.core import setup, Command
+from glob import glob
 
-import glob
 import os
 import sys
 
@@ -12,7 +12,7 @@ from miniascape.utils import concat
 
 
 def list_files(tdir):
-    return [f for f in glob.glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
+    return [f for f in glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
 
 
 def list_data_files_g(prefix, srcdir):
@@ -27,7 +27,7 @@ def list_data_files_g(prefix, srcdir):
 
 data_files = concat(
     list_data_files_g(p, d) for p, d in
-        (("/etc/%s" % PACKAGE, "conf.d"),      # sysconf files
+        (("/etc/%s.d" % PACKAGE, "default"),      # config files
          ("share/%s" % PACKAGE, "templates"),  # template files
         )
 )
@@ -94,13 +94,12 @@ setup(name=PACKAGE,
         "miniascape",
         "miniascape/tests",
     ],
-    scripts=glob.glob("tools/*"),
+    scripts=glob("tools/*"),
     data_files=data_files,
     cmdclass={
         "srpm": SrpmCommand,
         "rpm":  RpmCommand,
     },
 )
-
 
 # vim:sw=4:ts=4:et:
