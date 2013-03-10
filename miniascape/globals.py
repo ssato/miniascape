@@ -16,19 +16,26 @@
 #
 import datetime
 import locale
+import os.path
 
 
 def date():
     return datetime.datetime.now().strftime("%Y%m%d")
 
 
-M_METACONF_DIR = "/etc/miniascape/conf.d/META"
+M_CONF_TOPDIR = "/etc/miniascape.d"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
+
+M_SITE_DEFAULT = "default"
+M_CONFDIR_DEFAULT = os.path.join(M_CONF_TOPDIR, M_SITE_DEFAULT)
+M_COMMON_CONF_SUBDIR = "common"
+M_GUESTS_CONF_SUBDIR = "guests.d"
+M_NETS_CONF_SUBDIR = "networks.d"
+M_HOST_CONF_SUBDIR = "host.d"
+M_CONF_PATTERN = "*.yml"
+
 M_WORK_TOPDIR = "miniascape-workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
-
-M_COMMON_CONFDIR = "common"
-
 
 PACKAGE = "miniascape"
 VERSION = "0.3.5"
