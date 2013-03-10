@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012, 2013 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import miniascape.config as TT  # stands for "Test Target".
+import miniascape.globals as G
 import miniascape.tests.common as C
 
 import os.path
@@ -22,75 +23,79 @@ import pprint
 import unittest
 
 
-CONFDIR = os.path.abspath(os.path.join(C.TOPDIR, "conf.d", "default"))
-METACONF_DIR = os.path.join(C.TOPDIR, "conf.d", "META")
+CONFDIR = os.path.abspath(os.path.join(C.TOPDIR, "default"))
+
+
+class Test_00_pure_functions(unittest.TestCase):
+
+    def test_10_list_group_and_guests_g(self):
+        self.assertEquals(
+            TT.list_guest_confs("satellite", "satellite-1", CONFDIR,
+                                G.M_COMMON_CONF_SUBDIR,
+                                G.M_GUESTS_CONF_SUBDIR,
+                                G.M_CONF_PATTERN),
+            [os.path.join(CONFDIR, "common/*.yml"),
+             os.path.join(CONFDIR, "guests.d/satellite/*.yml"),
+             os.path.join(CONFDIR, "guests.d/satellite/satellite-1/*.yml")]
+        )
+
+    def test_20_list_net_confs(self):
+        self.assertEquals(
+            TT.list_net_confs("default", CONFDIR, G.M_COMMON_CONF_SUBDIR,
+                              G.M_NETS_CONF_SUBDIR, G.M_CONF_PATTERN),
+            [os.path.join(CONFDIR, "common/*.yml"),
+             os.path.join(CONFDIR, "networks.d/*.yml"),
+             os.path.join(CONFDIR, "networks.d/default/*.yml")]
+        )
+
+    def test_30_list_host_confs(self):
+        self.assertEquals(
+            TT.list_host_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
+                               G.M_HOST_CONF_SUBDIR, G.M_CONF_PATTERN),
+            [os.path.join(CONFDIR, "common/*.yml"),
+             os.path.join(CONFDIR, "host.d/*.yml")]
+        )
 
 
 class Test_10_effecful_functions(unittest.TestCase):
 
-    def test_00_load_metaconfs__load_by_dir(self):
-        d = TT.load_metaconfs(METACONF_DIR)
+    def test_10_list_net_names(self):
+        self.assertEquals(
+            TT.list_net_names(CONFDIR, G.M_NETS_CONF_SUBDIR),
+            ["default", "service"]
+        )
 
-        self.assertEquals(d["confdir"], CONFDIR)
+    def test_20_list_group_and_guests_g(self):
+        self.assertTrue(
+            ("satellite", "satellite-1") in
+            TT.list_group_and_guests_g(CONFDIR, G.M_GUESTS_CONF_SUBDIR)
+        )
 
-        # see also: conf.d/META/00_main.yml
-        self.assertEquals(d["guest"]["dir"], os.path.join(CONFDIR, "guests.d"))
-
-    def test_02_load_metaconfs__load_by_file(self):
-        metaconfsrc = os.path.join(METACONF_DIR, "00_main.yml")
-
-        d = TT.load_metaconfs(metaconfsrc)
-
-        self.assertEquals(d["confdir"], CONFDIR)
-        self.assertEquals(d["guest"]["dir"], os.path.join(CONFDIR, "guests.d"))
-
-    def test_10_load_guest_confs(self):
-        metaconf = TT.load_metaconfs(METACONF_DIR)
-
-        name = "rhel-6-client-1"
-        d = TT.load_guest_confs(metaconf, name)
-
-        self.assertEquals(d["hostname"], name)
-
-    def test_20_list_guest_names(self):
-        metaconf = TT.load_metaconfs(METACONF_DIR)
-        guests = TT.list_guest_names(metaconf)
-
-        self.assertNotEquals(guests, [])
-
-    def test_22_load_guests_confs(self):
-        metaconf = TT.load_metaconfs(METACONF_DIR)
-        gcs = TT.load_guests_confs(metaconf)
-
-        self.assertNotEquals(gcs, [])
-
-    def test_30_list_net_names(self):
-        metaconf = TT.load_metaconfs(METACONF_DIR)
-        nets = TT.list_net_names(metaconf)
-
-        self.assertNotEquals(nets, [])
-        self.assertEquals(nets, ["default", "service"])
-
-    def test_32_list_nets_confs(self):
-        metaconf = TT.load_metaconfs(METACONF_DIR)
-        ncs = TT.list_nets_confs(metaconf)
-
-        self.assertNotEquals(ncs, [])
-
-    def test_34__aggregate_guest_network_interfaces(self):
-        metaconf = TT.load_metaconfs(METACONF_DIR)
-        niss = TT._aggregate_guest_net_interfaces_g(metaconf)
-
-        self.assertNotEquals(niss, [])
-
-        for _n, nis in niss:
-            TT._check_dups_by_ip_or_mac(nis)
+    def test_30_load_guest_confs(self):
+        c = TT.load_guest_confs("satellite", "satellite-1", CONFDIR,
+                                G.M_COMMON_CONF_SUBDIR,
+                                G.M_GUESTS_CONF_SUBDIR,
+                                G.M_CONF_PATTERN)
+        self.assertTrue(c is not None)
 
     def test_40_load_host_confs(self):
-        metaconf = TT.load_metaconfs(METACONF_DIR)
-        c = TT.load_host_confs(metaconf)
+        c = TT.load_host_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
+                                G.M_HOST_CONF_SUBDIR, G.M_CONF_PATTERN)
+        self.assertTrue(c is not None)
 
-        self.assertTrue(isinstance(c, dict))
+    def test_50_load_guests_confs(self):
+        cs = TT.load_guests_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
+                                  G.M_GUESTS_CONF_SUBDIR, G.M_CONF_PATTERN)
+        self.assertTrue(cs)
+        self.assertTrue(cs[0] is not None)
+
+    def test_60_load_nets_confs(self):
+        nets = TT.load_nets_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
+                                  G.M_GUESTS_CONF_SUBDIR, G.M_NETS_CONF_SUBDIR,
+                                  G.M_CONF_PATTERN)
+        self.assertTrue(nets)
+        self.assertTrue("default" in nets.keys())
+        self.assertTrue(nets.keys())
 
 
 # vim:sw=4:ts=4:et:

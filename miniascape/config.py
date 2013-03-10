@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2012, 2013 Satoru SATOH <ssato at redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_METACONF_DIR
+from miniascape.globals import M_CONFDIR_DEFAULT, M_COMMON_CONF_SUBDIR, \
+    M_COMMON_CONF_SUBDIR, M_GUESTS_CONF_SUBDIR, M_NETS_CONF_SUBDIR, \
+    M_HOST_CONF_SUBDIR, M_CONF_PATTERN
 from itertools import groupby
 from operator import itemgetter
 
@@ -27,23 +29,6 @@ import logging
 import os.path
 import os
 import re
-
-
-_CATEGORIES = ("guest", "network", "host")
-
-
-def _sysgroup(name):
-    """
-    FIXME: Ugly.
-
-    >>> _sysgroup('rhel-5-cluster-1')
-    'rhel-5-cluster'
-    >>> _sysgroup('cds-1')
-    'cds'
-    >>> _sysgroup('satellite')
-    'satellite'
-    """
-    return name[:name.rfind('-')] if re.match(r".+-\d+$", name) else name
 
 
 def _timestamp():
@@ -74,36 +59,87 @@ def add_special_confs(conf):
     return conf
 
 
-def load_metaconfs(metaconfsrc=M_METACONF_DIR, categories=_CATEGORIES):
+def list_net_names(confdir=M_CONFDIR_DEFAULT,
+                   subdir=M_NETS_CONF_SUBDIR):
     """
-    Load meta config for miniascape.
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
+    :param subdir: Config sub dir, e.g. guests.d
     """
-    if os.path.isdir(metaconfsrc):
-        metaconfdir = metaconfsrc
-        conf = AC.load(os.path.join(metaconfsrc, "*.yml"), merge=AC.MS_DICTS)
-    else:
-        metaconfdir = os.path.dirname(metaconfsrc)
-        conf = AC.load(metaconfsrc, merge=AC.MS_DICTS)
-
-    confdir = os.path.abspath(os.path.join(metaconfdir, "..", conf["site"]))
-    conf["confdir"] = confdir
-
-    for c in categories:
-        conf[c]["dir"] = os.path.join(confdir, conf[c]["subdir"])
-        conf[c]["confs"] = [os.path.join(confdir, p) for p in conf[c]["files"]]
-
-    return conf
+    return U.list_dirnames(os.path.join(confdir, subdir))
 
 
-def load_guest_confs(metaconf, name):
+def list_group_and_guests_g(confdir=M_CONFDIR_DEFAULT,
+                            subdir=M_GUESTS_CONF_SUBDIR):
     """
-    :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
-    :param name: Guest's name
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
+    :param subdir: Config sub dir, e.g. guests.d
     """
-    confs = [
-        (p % {"name": name, "group": _sysgroup(name)} if "%(" in p else p) \
-            for p in metaconf["guest"]["confs"]
+    guestsdir = os.path.join(confdir, subdir)
+
+    for group in U.list_dirnames(guestsdir):
+        for guest in U.list_dirnames(os.path.join(guestsdir, group)):
+            yield (group, guest)
+
+
+def list_guest_confs(group, name, confdir=M_CONFDIR_DEFAULT,
+                     common_subdir=M_COMMON_CONF_SUBDIR,
+                     subdir=M_GUESTS_CONF_SUBDIR,
+                     pattern=M_CONF_PATTERN):
+    """
+    :param group: Guest's group, e.g. satellite
+    :param name: Guest's name, e.g. satellite-1
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
+    """
+    return [os.path.join(confdir, common_subdir, pattern),
+            os.path.join(confdir, subdir, group, pattern),
+            os.path.join(confdir, subdir, group, name, pattern), ]
+
+
+def list_net_confs(name, confdir=M_CONFDIR_DEFAULT,
+                   common_subdir=M_COMMON_CONF_SUBDIR,
+                   subdir=M_NETS_CONF_SUBDIR,
+                   pattern=M_CONF_PATTERN):
+    """
+    :param name: Net's name
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
+    """
+    return [os.path.join(confdir, common_subdir, pattern),
+            os.path.join(confdir, subdir, pattern),
+            os.path.join(confdir, subdir, name, pattern), ]
+
+
+def list_host_confs(confdir=M_CONFDIR_DEFAULT,
+                    common_subdir=M_COMMON_CONF_SUBDIR,
+                    subdir=M_NETS_CONF_SUBDIR,
+                    pattern=M_CONF_PATTERN):
+    """
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
+    """
+    return [os.path.join(confdir, common_subdir, pattern),
+            os.path.join(confdir, subdir, pattern), ]
+
+
+def list_nets_confs(confdir=M_CONFDIR_DEFAULT,
+                    common_subdir=M_COMMON_CONF_SUBDIR,
+                    subdir=M_NETS_CONF_SUBDIR,
+                    pattern=M_CONF_PATTERN):
+    return [
+        list_net_confs(n, confdir, common_subdir, subdir, pattern) for n in
+        list_net_names(confdir, subdir)
     ]
+
+
+def load_guest_confs(group, name, confdir=M_CONFDIR_DEFAULT,
+                     common_subdir=M_COMMON_CONF_SUBDIR,
+                     subdir=M_GUESTS_CONF_SUBDIR,
+                     pattern=M_CONF_PATTERN):
+    """
+    :param group: Guest's group, e.g. satellite
+    :param name: Guest's name, e.g. satellite-1
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
+    """
+    confs = list_guest_confs(group, name, confdir, common_subdir, subdir,
+                             pattern)
 
     logging.info("Loading guest config files: " + name)
     c = AC.load(confs, merge=AC.MS_DICTS)
@@ -111,43 +147,45 @@ def load_guest_confs(metaconf, name):
     return add_special_confs(c)
 
 
-def list_guest_names(metaconf):
+def load_host_confs(confdir=M_CONFDIR_DEFAULT,
+                    common_subdir=M_COMMON_CONF_SUBDIR,
+                    subdir=M_HOST_CONF_SUBDIR,
+                    pattern=M_CONF_PATTERN):
     """
-    :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
     """
-    return U.list_dirnames(os.path.join(metaconf["guest"]["dir"]))
+    confs = list_host_confs(confdir, common_subdir, subdir, pattern)
+
+    logging.info("Loading host config files")
+    return AC.load(confs, merge=AC.MS_DICTS)
 
 
-def load_guests_confs(metaconf):
+def load_guests_confs(confdir=M_CONFDIR_DEFAULT,
+                      common_subdir=M_COMMON_CONF_SUBDIR,
+                      subdir=M_GUESTS_CONF_SUBDIR,
+                      pattern=M_CONF_PATTERN):
     """
-    :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
+    :param name: Guest's name
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
     """
-    return [load_guest_confs(metaconf, n) for n in list_guest_names(metaconf)]
-
-
-def list_net_names(metaconf):
-    """
-    :param metaconf: Meta conf object.
-    """
-    return U.list_dirnames(os.path.join(metaconf["network"]["dir"]))
-
-
-def list_nets_confs(metaconf):
     return [
-        [(p % {"name": n} if "%(" in p else p) for p in
-            metaconf["network"]["confs"]
-        ] for n in list_net_names(metaconf)
+        load_guest_confs(n, g, confdir, common_subdir, subdir, pattern)
+        for g, n in list_group_and_guests_g(confdir, subdir)
     ]
 
 
-def _aggregate_guest_net_interfaces_g(metaconf):
+def _aggregate_guest_net_interfaces_g(confdir=M_CONFDIR_DEFAULT,
+                                      common_subdir=M_COMMON_CONF_SUBDIR,
+                                      subdir=M_GUESTS_CONF_SUBDIR,
+                                      pattern=M_CONF_PATTERN):
     """
     Aggregate guest's network interface info from each guest configurations and
     return list of host list grouped by each networks.
 
-    :param metaconf: Meta conf object (:: dict) initialized by load_metaconfs.
+    :param name: Guest's name
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
     """
-    gcs = load_guests_confs(metaconf)
+    gcs = load_guests_confs(confdir, common_subdir, subdir, pattern)
     kf = itemgetter("network")
     return (
         (k, list(g)) for k, g in groupby(
@@ -164,15 +202,20 @@ def _check_dups_by_ip_or_mac(nis):
     """
     for k, v, ns in U.find_dups_in_dicts_list_g(nis, ("ip", "mac")):
         logging.warn(
-            "Duplicated entries: key=%s, v=%s, hosts=%s" % \
-                (k, v, ", ".join(n.get("host", str(n)) for n in ns))
+            "Duplicated entries: key=%s, v=%s, hosts=%s" %
+            (k, v, ", ".join(n.get("host", str(n)) for n in ns))
         )
 
 
-def load_nets_confs(metaconf):
+def load_nets_confs(confdir=M_CONFDIR_DEFAULT,
+                    common_subdir=M_COMMON_CONF_SUBDIR,
+                    guest_subdir=M_GUESTS_CONF_SUBDIR,
+                    net_subdir=M_NETS_CONF_SUBDIR,
+                    pattern=M_CONF_PATTERN):
     nets = dict()
-    ncss = list_nets_confs(metaconf)
-    nis = dict(_aggregate_guest_net_interfaces_g(metaconf))
+    ncss = list_nets_confs(confdir, common_subdir, net_subdir, pattern)
+    nis = dict(_aggregate_guest_net_interfaces_g(confdir, common_subdir,
+                                                 guest_subdir, pattern))
 
     for ncs in ncss:
         netctx = AC.load(ncs, merge=AC.MS_DICTS)
@@ -186,14 +229,6 @@ def load_nets_confs(metaconf):
         nets[name] = netctx
 
     return nets
-
-
-def load_host_confs(metaconf):
-    """
-    :param metaconf: Meta conf object.
-    """
-    logging.info("Loading host config files")
-    return AC.load(metaconf["host"]["confs"], merge=AC.MS_DICTS)
 
 
 # vim:sw=4:ts=4:et:
