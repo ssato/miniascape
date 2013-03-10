@@ -7,7 +7,7 @@ import sys
 curdir = os.getcwd()
 sys.path.append(curdir)
 
-from miniascape.globals import PACKAGE, VERSION
+from miniascape.globals import PACKAGE, VERSION, M_CONF_TOPDIR
 from miniascape.utils import concat
 
 
@@ -27,7 +27,7 @@ def list_data_files_g(prefix, srcdir):
 
 data_files = concat(
     list_data_files_g(p, d) for p, d in
-        (("/etc/%s.d" % PACKAGE, "default"),      # config files
+        ((M_CONF_TOPDIR, "default"),      # config files
          ("share/%s" % PACKAGE, "templates"),  # template files
         )
 )

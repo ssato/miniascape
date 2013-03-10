@@ -70,7 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rst
 %config %{pkgconfdir}/default/*/*.yml
 %config %{pkgconfdir}/default/*/*/*.yml
-%{pkgconfdir}/default/*/*/README
+%config %{pkgconfdir}/default/*/*/*/*.yml
+%{pkgconfdir}/default/*/*/*/README
 
 
 %changelog
