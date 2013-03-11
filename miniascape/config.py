@@ -36,30 +36,6 @@ def _timestamp():
     return datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
-def add_special_confs(conf):
-    """
-    :param conf: Configurations :: dict
-
-    >>> conf = add_special_confs(dict())
-
-    >>> assert "miniascape" in conf, str(conf)
-    >>> assert "build" in conf["miniascape"], str(conf)
-    >>> assert "user" in conf["miniascape"]["build"], str(conf)
-    >>> assert "host" in conf["miniascape"]["build"], str(conf)
-    >>> assert "time" in conf["miniascape"]["build"], str(conf)
-    >>> assert "builder" in conf["miniascape"], str(conf)
-    """
-    diff = dict(build=dict(user=U.get_username(),
-                           host=U.get_hostname(fqdn=False),
-                           time=_timestamp()))
-
-    diff["builder"] = "%(user)s@%(host)s" % diff["build"]
-
-    conf["miniascape"] = diff
-
-    return conf
-
-
 def list_net_names(confdir=M_CONFDIR_DEFAULT,
                    subdir=M_NETS_CONF_SUBDIR):
     """
@@ -146,6 +122,30 @@ def _find_group_of_guest(name, confdir=M_CONFDIR_DEFAULT,
 
 
 find_group_of_guest = M.memoize(_find_group_of_guest)
+
+
+def add_special_confs(conf):
+    """
+    :param conf: Configurations :: dict
+
+    >>> conf = add_special_confs(dict())
+
+    >>> assert "miniascape" in conf, str(conf)
+    >>> assert "build" in conf["miniascape"], str(conf)
+    >>> assert "user" in conf["miniascape"]["build"], str(conf)
+    >>> assert "host" in conf["miniascape"]["build"], str(conf)
+    >>> assert "time" in conf["miniascape"]["build"], str(conf)
+    >>> assert "builder" in conf["miniascape"], str(conf)
+    """
+    diff = dict(build=dict(user=U.get_username(),
+                           host=U.get_hostname(fqdn=False),
+                           time=_timestamp()))
+
+    diff["builder"] = "%(user)s@%(host)s" % diff["build"]
+
+    conf["miniascape"] = diff
+
+    return conf
 
 
 def load_guest_confs(name, group=None, confdir=M_CONFDIR_DEFAULT,
