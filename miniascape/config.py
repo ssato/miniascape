@@ -20,6 +20,7 @@ from miniascape.globals import M_CONFDIR_DEFAULT, M_COMMON_CONF_SUBDIR, \
 from itertools import groupby
 from operator import itemgetter
 
+import miniascape.memoize as M
 import miniascape.template as T
 import miniascape.utils as U
 import anyconfig as AC
@@ -73,6 +74,7 @@ def list_group_and_guests_g(confdir=M_CONFDIR_DEFAULT,
     """
     :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
     :param subdir: Config sub dir, e.g. guests.d
+    :return: (group, guest_name)
     """
     guestsdir = os.path.join(confdir, subdir)
 
@@ -129,15 +131,35 @@ def list_nets_confs(confdir=M_CONFDIR_DEFAULT,
     ]
 
 
-def load_guest_confs(group, name, confdir=M_CONFDIR_DEFAULT,
+def _find_group_of_guest(name, confdir=M_CONFDIR_DEFAULT,
+                        subdir=M_GUESTS_CONF_SUBDIR):
+    """
+    :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
+    :param subdir: Config sub dir, e.g. guests.d
+    :return: group :: str
+    """
+    for g, n in list_group_and_guests_g(confdir, subdir):
+        if n == name:
+            return g
+
+    return None
+
+
+find_group_of_guest = M.memoize(_find_group_of_guest)
+
+
+def load_guest_confs(name, group=None, confdir=M_CONFDIR_DEFAULT,
                      common_subdir=M_COMMON_CONF_SUBDIR,
                      subdir=M_GUESTS_CONF_SUBDIR,
                      pattern=M_CONF_PATTERN):
     """
-    :param group: Guest's group, e.g. satellite
     :param name: Guest's name, e.g. satellite-1
+    :param group: Guest's group, e.g. satellite
     :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
     """
+    if group is None:
+        group = find_group_of_guest(name, confdir, subdir)
+
     confs = list_guest_confs(group, name, confdir, common_subdir, subdir,
                              pattern)
 
