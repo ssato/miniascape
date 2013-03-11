@@ -55,14 +55,14 @@ def _find_template(tmpldirs, template):
             return tmpl
 
     logging.warn(
-        "Could not find template %s in paths: %s" % \
-            (template, str(tmpldirs))
+        "Could not find template %s in paths: %s" %
+        (template, str(tmpldirs))
     )
     return template  # Could not find in tmpldirs
 
 
-def gen_vnet_files(metaconf, tmpldirs, workdir, force):
-    nets = C.load_nets_confs(metaconf)
+def gen_vnet_files(cf, tmpldirs, workdir, force):
+    nets = cf.load_nets_confs()
     outdir = _netoutdir(workdir)
     tpaths = [os.path.join(d, "host") for d in tmpldirs]
 
@@ -84,20 +84,17 @@ def gen_vnet_files(metaconf, tmpldirs, workdir, force):
 
         logging.debug("Generating network xml: " + netxml)
         nc = filterout_hosts_wo_macs(netconf)
-        T.renderto(
-            tpaths, nc, _find_template(tmpldirs, "host/network.xml"), netxml
-        )
+        T.renderto(tpaths, nc, _find_template(tmpldirs, "host/network.xml"),
+                   netxml)
 
-    T.renderto(
-        tpaths, {"networks": [n for n in nets]},
-        _find_template(tmpldirs, "host/network_register.sh"),
-        os.path.join(outdir, "network_register.sh")
-    )
+    T.renderto(tpaths, {"networks": [n for n in nets]},
+               _find_template(tmpldirs, "host/network_register.sh"),
+               os.path.join(outdir, "network_register.sh"))
 
 
-def gen_host_files(metaconf, tmpldirs, workdir, force):
-    conf =  C.load_host_confs(metaconf)
-    gen_vnet_files(metaconf, tmpldirs, workdir, force)
+def gen_host_files(cf, tmpldirs, workdir, force):
+    conf = cf.load_host_confs()
+    gen_vnet_files(cf, tmpldirs, workdir, force)
 
     for k, v in conf.get("host_templates", {}).iteritems():
         (src, dst) = (v.get("src", None), v.get("dst", None))
@@ -123,8 +120,7 @@ def option_parser():
     p = O.option_parser(defaults, "%prog [OPTION ...]")
 
     p.add_option("-f", "--force", action="store_true",
-        help="Force outputs even if these exist"
-    )
+                 help="Force outputs even if these exist")
     return p
 
 
@@ -135,13 +131,13 @@ def main(argv):
     U.init_log(options.verbose)
     options = O.tweak_tmpldir(options)
 
-    metaconf = C.load_metaconfs(options.confdir)
+    cf = C.ConfFiles(options.confdir)
 
     houtdir = os.path.join(options.workdir, _HOST_SUBDIR)
     if os.path.exists(houtdir) and not options.force:
         yesno = raw_input(
-            "Are you sure to generate networks in %s ? [y/n]: " % \
-                options.workdir
+            "Are you sure to generate networks in %s ? [y/n]: " %
+            options.workdir
         )
         if not yesno.strip().lower().startswith('y'):
             print >> "Cancel creation of networks..."
@@ -149,9 +145,7 @@ def main(argv):
 
         options.force = True
 
-    gen_host_files(
-        metaconf, options.tmpldir, options.workdir, options.force
-    )
+    gen_host_files(cf, options.tmpldir, options.workdir, options.force)
 
 
 if __name__ == '__main__':
