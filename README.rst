@@ -1,17 +1,16 @@
-====================
+============
 miniascape
-====================
+============
 
 Disclaimer
------------------
+-----------
 
 WARNING: miniascape is in pre-alpha state and will heavily udpate day by day,
 so it may not work in your environment or might cause trouble. TRY IT IN YOUR
 OWN RISK, PLEASE.
 
-
 About
-----------------
+-------
 
 Miniascape is a template compiler optimized for specific purpose to generate
 collection of configuration files for virt. host, script to build VMs, and misc
@@ -34,7 +33,6 @@ Main objects are
   like libvirt and virt-install and miniascape trys to generate scripts
   utilizing these and runnable standalone.
 
-
 And non-goals are:
 
 * Intend to become a replacement for other feature rich software such like
@@ -42,9 +40,8 @@ And non-goals are:
 
 * Provides a UI (GUI, Web UI) to manage lifecycle of VMs at ease.
 
-
 Usage
-====================
+========
 
 1. Setup host: mount iso images and setup kickstart installation trees, etc.
 2. Arrange configuration files to override default configs provided in /etc/miniascape/conf.d/default/;
@@ -64,9 +61,8 @@ Usage
 4. Run built script in the working dir (<workdir>/guests.d/<guest_name>/vmbuild.sh)
    on target libvirt host
 
-
 How it works?
-====================
+==============
 
 Miniascape is just a template compiler optimized to generate ks.cfg, wrapper
 scripts around virt-install and configurations installed into the libvirt host
@@ -76,34 +72,29 @@ in current implementation.
 * Outputs: libvirt network XML, kickstart files and VM build scripts, etc.
 * Template engine used: Jinja2: http://jinja.pocoo.org
 
-
 Configurations
----------------------
+----------------
 
 Configurations and parameters are in YAML configuration files (default:
-/etc/miniascape/conf.d/**/*.yml).
+/etc/miniascape.d/default/\*\*/\*.yml).
 
-* Meta: conf.d/META/*.yml: Define config file dirs and loading orders
-
-* Common: common/*.yml 
+* Common: common/\*.yml
 
 * Host global:
 
-  * host.d/*.yml
-  * networks.d/*.yml: Libvirt network parameters
-  * storages.d/*.yml: Libvirt storage pool parameters (not used in actual)
+  * host.d/\*.yml
+  * networks.d/\*.yml: Libvirt network parameters
 
 * VM (guest) specific:
 
-  1. sysgroups.d/<guest kind>: Parameters common in system groups
-  2. guests.d/<guest name>: Guest specific parameters
+  1. guests.d/<guest group>/\*.yml: Parameters common in system groups
+  2. guests.d/<guest group>/<guest name>/\*.yml: Guest specific parameters
 
 Configuration files are loaded in the above order and possible to customize by
 putting your configuration files.
 
-
 Templates
---------------------
+----------
 
 I chose jinja2 as template engine for miniascape.
 
@@ -113,9 +104,8 @@ Miniascape contains some concrete template examples under
 * autoinstall.d/: Auto installation configuration files (kickstart) templates
 * host/: Templates for host like network xml, wrapper script for virt-install
 
-
 Prerequisites
-====================
+==============
 
 Hardware and base OS
 ----------------------
@@ -123,42 +113,37 @@ Hardware and base OS
 * Intel x86 (i386 or x86_64) machine with VT extension (Intel VT or AMD-V) enabled
 * RHEL 6 or Fedora 13+ or any linux distributions corresponding to these versions
 
-
 Tools and libs
 -------------------
 
- * python-jinja2-cui: https://github.com/ssato/python-jinja2-cui
+ * python-jinja2-cli: https://github.com/ssato/python-jinja2-cli
  * libvirt and its python binding
  * python-virtinst
  * qemu-kvm
  * nginx or (apache) httpd [option]
  * etc.
 
-
 Build
-====================
+========
 
 Run `python setup.py srpm` and mock dist/SRPMS/<built-srpm>, or 
 run `python setup.py rpm`.
 
-
 Installation
-====================
+=============
 
 * [Recommended] build srpm, rpm w/ mock and install it
 * build and install: `python setup.py build` and `python setup.py install`
 
-
 TODO
-=====================
+======
 
 Upstream works
--------------------
+----------------
 
 * --config (or --profile?) file option for virt-install [Should]
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and
   make it dynamic [May]
-
 
 Done:
 
@@ -172,12 +157,8 @@ Done:
 
   * Implemented dnsmasq backend for libvirt: My patch was merged.
 
-
 miniascape itself
------------------------
-
-* Utilize python-anyconfig: WIP; Started to working on enhancements in it to
-  work w/ miniascape
+-------------------
 
 * site-designer: tool or sub command to generate config files from default or
   user-defined parameters and config templates
@@ -190,25 +171,21 @@ miniascape itself
 
 Done:
 
-* control or meta config file which controls which config files to be loaded:
-  Done. see miniascape/config.py
-
+* Utilize python-anyconfig to stack config files
+* control or meta config file which controls which config files to be loaded
 
 License
-====================
+=========
 
 This is distributed under GPLv3 or later.
 
-
 Author
-=======================
+========
 
 Satoru SATOH <ssato at redhat.com>
 
-
-
 EXAMPLE Session
-=========================
+=================
 
 ::
 
@@ -355,6 +332,5 @@ EXAMPLE Session
   Creating domain...                                            |    0 B     00:00
   Domain installation still in progress. Waiting 20 minutes for installation to complete.
   ssato@localhost%
-
 
 .. vim:sw=2:ts=2:et:
