@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_TMPL_DIR, M_WORK_TOPDIR
+from miniascape.globals import M_TMPL_DIR, M_WORK_TOPDIR, M_GUESTS_CONF_SUBDIR
 
 import miniascape.config as C
 import miniascape.options as O
@@ -30,18 +30,16 @@ import subprocess
 import sys
 
 
-_GUEST_SUBDIR = "guests.d"
-_GROUP_SUBDIR = "sysgroups.d"
 _AUTOINST_SUBDIR = "autoinstall.d"
 
 
-def _workdir(topdir, name):
+def _workdir(topdir, name, subdir=M_GUESTS_CONF_SUBDIR):
     """
     :param topdir: Working top dir
     :param name: Guest's name
     :return: Guest's working (output) directory
     """
-    return os.path.join(topdir, _GUEST_SUBDIR, name)
+    return os.path.join(topdir, subdir, name)
 
 
 def arrange_setup_data(gtmpldirs, config, gworkdir):
@@ -75,16 +73,16 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
     )
 
 
-def gen_guest_files(name, metaconf, tmpldirs, workdir):
+def gen_guest_files(name, conffiles, tmpldirs, workdir):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
 
     :param name: Guest's name
-    :param metaconf: Meta configuration object. see also miniascape.config.
+    :param conffiles: ConfFiles object
     :param tmpldirs: Template dirs :: [path]
     :param workdir: Working top dir
     """
-    conf = C.load_guest_confs(metaconf, name)
+    conf = conffiles.load_guest_confs(name)
     gtmpldirs = [os.path.join(d, _AUTOINST_SUBDIR) for d in tmpldirs]
 
     if not os.path.exists(workdir):
@@ -112,24 +110,24 @@ def gen_guest_files(name, metaconf, tmpldirs, workdir):
         T.renderto(srcdirs + [workdir], conf, src, dst)
 
 
-def show_vm_names(metaconf):
+def show_vm_names(conffiles):
     """
-    :param metaconf: Meta configuration object. see also miniascape.config.
+    :param conffiles: config.ConfFiles object
     """
     print >> sys.stderr, "\nAvailable VMs: " + \
-        ", ".join(C.list_guest_names(metaconf))
+        ", ".join(conffiles.list_guest_names())
 
 
-def gen_all(metaconf, tmpldirs, workdir):
+def gen_all(conffiles, tmpldirs, workdir):
     """
     Generate files to build VM for all VMs.
 
-    :param metaconf: Meta configuration object. see also miniascape.config.
+    :param conffiles: config.ConfFiles object
     :param tmpldirs: Template dirs :: [path]
     :param workdir: Working top dir
     """
-    for name in C.list_guest_names(metaconf):
-        gen_guest_files(name, metaconf, tmpldirs, _workdir(workdir, name))
+    for name in cf.list_guest_names():
+        gen_guest_files(name, conffiles, tmpldirs, _workdir(workdir, name))
 
 
 def option_parser():
@@ -137,8 +135,7 @@ def option_parser():
     p = O.option_parser(defaults, "%prog [OPTION ...] [GUEST_NAME]")
 
     p.add_option("-A", "--genall", action="store_true",
-        help="Generate configs for all guests"
-    )
+                 help="Generate configs for all guests")
     return p
 
 
@@ -149,19 +146,19 @@ def main(argv=sys.argv):
     U.init_log(options.verbose)
     options = O.tweak_tmpldir(options)
 
-    metaconf = C.load_metaconfs(options.confdir)
+    cf = C.ConfFiles(options.confdir)
 
     if not args and not options.genall:
         p.print_help()
-        show_vm_names(metaconf)
+        show_vm_names(cf)
         sys.exit(0)
 
     if options.genall:
-        gen_all(metaconf, options.tmpldir, options.workdir)
+        gen_all(cf, options.tmpldir, options.workdir)
     else:
         name = args[0]
         gen_guest_files(
-            name, metaconf, options.tmpldir, _workdir(options.workdir, name)
+            name, cf, options.tmpldir, _workdir(options.workdir, name)
         )
 
 
