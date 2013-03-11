@@ -121,6 +121,9 @@ class ConfFiles(dict):
         self.hostdir = os.path.join(confdir, host_subdir)
         self.pattern = pattern
 
+    def list_guest_names(self):
+        return list(n for _g, n in list_group_and_guests_g(self.guestdir))
+
     def list_host_confs(self):
         return [os.path.join(self.commondir, self.pattern),
                 os.path.join(self.hostdir, self.pattern)]
