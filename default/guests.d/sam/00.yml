@@ -1,3 +1,4 @@
+description: SAM Server
 virtinst:
   ram: 2048
   vcpus: 2

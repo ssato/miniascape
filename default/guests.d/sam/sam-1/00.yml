@@ -1,6 +1,5 @@
-description: SAM Server
-hostname: &hostname sam
-fqdn: &fqdn sam.m2.local
+hostname: &hostname sam-1
+fqdn: &fqdn sam-1.m2.local
 ip: &ip 192.168.155.15
 interfaces:
   - device: eth0
