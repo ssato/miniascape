@@ -19,89 +19,101 @@ import miniascape.globals as G
 import miniascape.tests.common as C
 
 import os.path
-import pprint
 import unittest
 
 
 CONFDIR = os.path.abspath(os.path.join(C.TOPDIR, "default"))
 
 
-class Test_00_pure_functions(unittest.TestCase):
-
-    def test_10_list_group_and_guests_g(self):
-        self.assertEquals(
-            TT.list_guest_confs("satellite", "satellite-1", CONFDIR,
-                                G.M_COMMON_CONF_SUBDIR,
-                                G.M_GUESTS_CONF_SUBDIR,
-                                G.M_CONF_PATTERN),
-            [os.path.join(CONFDIR, "common/*.yml"),
-             os.path.join(CONFDIR, "guests.d/satellite/*.yml"),
-             os.path.join(CONFDIR, "guests.d/satellite/satellite-1/*.yml")]
-        )
-
-    def test_20_list_net_confs(self):
-        self.assertEquals(
-            TT.list_net_confs("default", CONFDIR, G.M_COMMON_CONF_SUBDIR,
-                              G.M_NETS_CONF_SUBDIR, G.M_CONF_PATTERN),
-            [os.path.join(CONFDIR, "common/*.yml"),
-             os.path.join(CONFDIR, "networks.d/*.yml"),
-             os.path.join(CONFDIR, "networks.d/default/*.yml")]
-        )
-
-    def test_30_list_host_confs(self):
-        self.assertEquals(
-            TT.list_host_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
-                               G.M_HOST_CONF_SUBDIR, G.M_CONF_PATTERN),
-            [os.path.join(CONFDIR, "common/*.yml"),
-             os.path.join(CONFDIR, "host.d/*.yml")]
-        )
+def _create_ConfFiles(confdir=CONFDIR,
+                      common_subdir=G.M_COMMON_CONF_SUBDIR,
+                      guest_subdir=G.M_GUESTS_CONF_SUBDIR,
+                      net_subdir=G.M_NETS_CONF_SUBDIR,
+                      host_subdir=G.M_HOST_CONF_SUBDIR,
+                      pattern=G.M_CONF_PATTERN):
+    return TT.ConfFiles(confdir, common_subdir, guest_subdir,
+                        net_subdir, host_subdir, pattern)
 
 
-class Test_10_effecful_functions(unittest.TestCase):
+class Test_00_functions(unittest.TestCase):
 
     def test_10_list_net_names(self):
+        cf = _create_ConfFiles()
         self.assertEquals(
-            TT.list_net_names(CONFDIR, G.M_NETS_CONF_SUBDIR),
-            ["default", "service"]
+            TT.list_net_names(cf.netdir), ["default", "service"]
         )
 
     def test_20_list_group_and_guests_g(self):
-        self.assertTrue(
-            ("satellite", "satellite-1") in
-            TT.list_group_and_guests_g(CONFDIR, G.M_GUESTS_CONF_SUBDIR)
-        )
+        """FIXME: Write 100% inspection test for list_group_and_guests_g
+        """
+        cf = _create_ConfFiles()
+        self.assertTrue(("satellite", "satellite-1") in
+                        TT.list_group_and_guests_g(cf.guestdir))
 
     def test_30__find_group_of_guest(self):
-        self.assertEquals(
-            TT._find_group_of_guest("satellite-1", CONFDIR,
-                                    G.M_GUESTS_CONF_SUBDIR), "satellite")
+        cf = _create_ConfFiles()
+        self.assertEquals(TT._find_group_of_guest("satellite-1", cf.guestdir),
+                          "satellite")
         self.assertEquals(
             TT._find_group_of_guest("system-should-not-exist-999",
-                                    CONFDIR,
-                                    G.M_GUESTS_CONF_SUBDIR), None)
+                                    cf.guestdir), None)
 
-    def test_40_load_guest_confs(self):
-        c = TT.load_guest_confs("satellite-1", "satellite", CONFDIR,
-                                G.M_COMMON_CONF_SUBDIR,
-                                G.M_GUESTS_CONF_SUBDIR,
-                                G.M_CONF_PATTERN)
+
+class Test_10_ConfFiles(unittest.TestCase):
+
+    def setUp(self):
+        self.cf = _create_ConfFiles()
+
+    def test_10_list_host_confs(self):
+        self.assertEquals(
+            self.cf.list_host_confs(),
+            [os.path.join(self.cf.commondir, G.M_CONF_PATTERN),
+             os.path.join(self.cf.hostdir, G.M_CONF_PATTERN)]
+        )
+
+    def test_20_list_guest_confs(self):
+        ref = [os.path.join(self.cf.commondir, G.M_CONF_PATTERN),
+               os.path.join(self.cf.guestdir, "satellite", G.M_CONF_PATTERN),
+               os.path.join(self.cf.guestdir, "satellite/satellite-1",
+                            G.M_CONF_PATTERN)]
+        self.assertEquals(
+            self.cf.list_guest_confs("satellite-1", "satellite"), ref
+        )
+        # Guess group's name:
+        self.assertEquals(self.cf.list_guest_confs("satellite-1"), ref)
+
+    def test_20_list_net_confs(self):
+        self.assertEquals(
+            self.cf.list_net_confs("default"),
+            [os.path.join(self.cf.commondir, G.M_CONF_PATTERN),
+             os.path.join(self.cf.netdir, G.M_CONF_PATTERN),
+             os.path.join(self.cf.netdir, "default", G.M_CONF_PATTERN)]
+        )
+
+    def test_30_list_net_confs(self):
+        """FIXME: Write tests for ConfFiles.list_net_confs.
+        """
+        pass
+
+    def test_40_load_host_confs(self):
+        c = self.cf.load_host_confs()
         self.assertTrue(c is not None)
 
-    def test_50_load_host_confs(self):
-        c = TT.load_host_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
-                               G.M_HOST_CONF_SUBDIR, G.M_CONF_PATTERN)
+    def test_50_load_guest_confs(self):
+        c = self.cf.load_guest_confs("satellite-1", "satellite")
+        self.assertTrue(c is not None)
+
+        # Guess guest's group:
+        c = self.cf.load_guest_confs("satellite-1")
         self.assertTrue(c is not None)
 
     def test_60_load_guests_confs(self):
-        cs = TT.load_guests_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
-                                  G.M_GUESTS_CONF_SUBDIR, G.M_CONF_PATTERN)
+        cs = self.cf.load_guests_confs()
         self.assertTrue(cs)
         self.assertTrue(cs[0] is not None)
 
     def test_70_load_nets_confs(self):
-        nets = TT.load_nets_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
-                                  G.M_GUESTS_CONF_SUBDIR, G.M_NETS_CONF_SUBDIR,
-                                  G.M_CONF_PATTERN)
+        nets = self.cf.load_nets_confs()
         self.assertTrue(nets)
         self.assertTrue("default" in nets.keys())
         self.assertTrue(nets.keys())
