@@ -18,12 +18,8 @@ import miniascape.globals as G
 import optparse
 
 
-M_DEFAULTS = dict(
-    tmpldir=[],
-    confdir=G.M_CONFDIR_DEFAULT,
-    workdir=G.M_WORK_TOPDIR,
-    verbose=1,
-)
+M_DEFAULTS = dict(tmpldir=[], confdir=G.M_CONFDIR_DEFAULT,
+                  workdir=G.M_WORK_TOPDIR, verbose=1)
 
 
 def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
@@ -31,20 +27,15 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     p.set_defaults(**defaults)
 
     p.add_option("-t", "--tmpldir", action="append",
-        help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR
-    )
+                 help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
     p.add_option("-c", "--confdir",
-        help="Top dir to hold site configuration files [%default]"
-    )
+                 help="Top dir to hold site configuration files [%default]")
     p.add_option("-w", "--workdir",
-        help="Working dir to output results [%default]"
-    )
+                 help="Working dir to output results [%default]")
     p.add_option("-D", "--debug", action="store_const", const=0,
-        dest="verbose", help="Debug mode"
-    )
+                 dest="verbose", help="Debug mode")
     p.add_option("-q", "--quiet", action="store_const", const=2,
-        dest="verbose", help="Quiet mode"
-    )
+                 dest="verbose", help="Quiet mode")
     return p
 
 
@@ -58,5 +49,5 @@ def tweak_tmpldir(options):
 
     return options
 
-         
+
 # vim:sw=4:ts=4:et:
