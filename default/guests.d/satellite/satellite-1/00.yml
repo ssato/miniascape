@@ -1,10 +1,9 @@
-description: RHN Satellite server
-hostname: &hostname satellite
-fqdn: &fqdn satellite.m2.local
-ip: &ip 192.168.155.10
+hostname: &hostname satellite-1
+fqdn: &fqdn satellite-1.m2.local
+ip: &ip 192.168.155.11
 interfaces:
   - device: eth0
-    mac: "52:54:00:05:00:10"
+    mac: "52:54:00:05:00:11"
     ip: *ip
     host: *hostname
     fqdn: *fqdn

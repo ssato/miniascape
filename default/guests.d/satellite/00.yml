@@ -1,3 +1,5 @@
+description: RHN Satellite server
+
 disks:
   - pool: default
     size: 50
