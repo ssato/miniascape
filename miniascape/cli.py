@@ -34,10 +34,10 @@ def gen_all(argv):
     U.init_log(options.verbose)
     options = O.tweak_tmpldir(options)
 
-    metaconf = C.load_metaconfs(options.confdir)
+    cf = C.ConfFiles(options.confdir)
 
-    H.gen_host_files(metaconf, options.tmpldir, options.workdir, options.force)
-    G.gen_all(metaconf, options.tmpldir, options.workdir)
+    H.gen_host_files(cf, options.tmpldir, options.workdir, options.force)
+    G.gen_all(cf, options.tmpldir, options.workdir)
 
 
 # TODO: define other commands.
