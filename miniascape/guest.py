@@ -118,7 +118,7 @@ def show_vm_names(conffiles):
         ", ".join(conffiles.list_guest_names())
 
 
-def gen_all(conffiles, tmpldirs, workdir):
+def gen_all(cf, tmpldirs, workdir):
     """
     Generate files to build VM for all VMs.
 
@@ -127,7 +127,7 @@ def gen_all(conffiles, tmpldirs, workdir):
     :param workdir: Working top dir
     """
     for name in cf.list_guest_names():
-        gen_guest_files(name, conffiles, tmpldirs, _workdir(workdir, name))
+        gen_guest_files(name, cf, tmpldirs, _workdir(workdir, name))
 
 
 def option_parser():
