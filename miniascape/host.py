@@ -32,8 +32,8 @@ from itertools import groupby
 from operator import itemgetter
 
 
-def _netoutdir(topdir, host_subdir=G.M_HOST_CONF_SUBDIR,
-               net_subdir=G.M_NETS_CONF_SUBDIR):
+def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
+               net_subdir=G.M_NETS_OUT_SUBDIR):
     """
     :param topdir: Working top dir
     """
