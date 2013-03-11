@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import miniascape.config as C
+import miniascape.globals as G
 import miniascape.guest as MG
 import miniascape.options as O
 import miniascape.template as T
@@ -31,15 +32,12 @@ from itertools import groupby
 from operator import itemgetter
 
 
-_NET_SUBDIR = "networks.d"
-_HOST_SUBDIR = "host"
-
-
-def _netoutdir(topdir):
+def _netoutdir(topdir, host_subdir=G.M_HOST_CONF_SUBDIR,
+               net_subdir=G.M_NETS_CONF_SUBDIR):
     """
     :param topdir: Working top dir
     """
-    return os.path.join(topdir, _HOST_SUBDIR, _NET_SUBDIR)
+    return os.path.join(topdir, host_subdir, net_subdir)
 
 
 def filterout_hosts_wo_macs(netconf):
@@ -54,10 +52,8 @@ def _find_template(tmpldirs, template):
         if os.path.exists(tmpl):
             return tmpl
 
-    logging.warn(
-        "Could not find template %s in paths: %s" %
-        (template, str(tmpldirs))
-    )
+    logging.warn("Could not find template %s in paths: %s" %
+                 (template, str(tmpldirs)))
     return template  # Could not find in tmpldirs
 
 
@@ -133,7 +129,7 @@ def main(argv):
 
     cf = C.ConfFiles(options.confdir)
 
-    houtdir = os.path.join(options.workdir, _HOST_SUBDIR)
+    houtdir = os.path.join(options.workdir, G.M_HOST_CONF_SUBDIR)
     if os.path.exists(houtdir) and not options.force:
         yesno = raw_input(
             "Are you sure to generate networks in %s ? [y/n]: " %
