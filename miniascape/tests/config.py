@@ -74,12 +74,11 @@ class Test_10_effecful_functions(unittest.TestCase):
     def test_30__find_group_of_guest(self):
         self.assertEquals(
             TT._find_group_of_guest("satellite-1", CONFDIR,
-                                   G.M_GUESTS_CONF_SUBDIR),
-            "satellite")
+                                    G.M_GUESTS_CONF_SUBDIR), "satellite")
         self.assertEquals(
-            TT._find_group_of_guest("system-should-not-exist-999", CONFDIR,
-                                   G.M_GUESTS_CONF_SUBDIR),
-            None)
+            TT._find_group_of_guest("system-should-not-exist-999",
+                                    CONFDIR,
+                                    G.M_GUESTS_CONF_SUBDIR), None)
 
     def test_40_load_guest_confs(self):
         c = TT.load_guest_confs("satellite-1", "satellite", CONFDIR,
@@ -90,7 +89,7 @@ class Test_10_effecful_functions(unittest.TestCase):
 
     def test_50_load_host_confs(self):
         c = TT.load_host_confs(CONFDIR, G.M_COMMON_CONF_SUBDIR,
-                                G.M_HOST_CONF_SUBDIR, G.M_CONF_PATTERN)
+                               G.M_HOST_CONF_SUBDIR, G.M_CONF_PATTERN)
         self.assertTrue(c is not None)
 
     def test_60_load_guests_confs(self):
