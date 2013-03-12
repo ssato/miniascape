@@ -365,7 +365,7 @@ guests:
           network: 192.168.122.0
           maskbit: 24
 
-    - name: rhel-6-proxy
+  - name: rhel-6-proxy
     squid:
       allowed_network: 192.168.155.0/24
       auth:
