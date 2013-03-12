@@ -4,10 +4,12 @@ include miniascape.spec.in
 include setup.py
 include aux/*
 include tools/*
-include templates/libvirt/*
 include templates/autoinstall.d/*-ks.cfg
 include templates/autoinstall.d/data/*
 include templates/autoinstall.d/data/*/*
 include templates/autoinstall.d/snippets/*
+include templates/host/*
+recursive-include templates/config *.yaml
+recursive-include templates/config *.j2
 recursive-include default *.yml
 recursive-include miniascape *.py
