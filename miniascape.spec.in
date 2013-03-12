@@ -62,6 +62,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/templates/autoinstall.d/*-ks.cfg
 %{_datadir}/%{name}/templates/autoinstall.d/*/*
 %{_datadir}/%{name}/templates/host/*
+%{_datadir}/%{name}/templates/config/*
 %{python_sitelib}/*
 
 
