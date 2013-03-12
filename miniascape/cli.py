@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012, 2013 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -60,7 +60,8 @@ Command abbreviations: %s
 
 
 def main(argv=sys.argv):
-    assert not U.is_superuser(), "Not run this program as root! Aborting..."
+    assert not U.is_superuser(), \
+           "Danger! You should NOT run this program as root!"
 
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])
