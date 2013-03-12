@@ -19,6 +19,7 @@ import miniascape.guest as G
 import miniascape.options as O
 import miniascape.utils as U
 import miniascape.host as H
+import miniascape.site as S
 
 import sys
 
@@ -42,21 +43,22 @@ def gen_all(argv):
 
 # TODO: define other commands.
 cmds = [
-    ("i", "init", H.main),
-    ("ge", "generate", gen_all),
-    ("gu", "guest", G.main),
+    #("i", "init", H.main),
+    ("c",  "configure", S.main,
+     "Generate site configuration from config src"),
+    ("ge", "generate", gen_all,
+     "Generate all files to build guests and virt. infra"),
+    ("gu", "guest", G.main, "Generate files to build specific guest"),
 ]
 
 
 def usage(prog, cmds=cmds):
-    cs = ", ".join(c for _a, c, _f in cmds)
-    cas = ", ".join(a for a, _c, _f in cmds)
-    print """\
-Usage: %s COMMAND_OR_COMMAND_ABBREV [Options] [Arg ...]
+    cs = "\n".join("\t%s (abbrev: %s)\t%s" % (c, a, h) for a, c, _f, h in cmds)
+    print """Usage: %s COMMAND_OR_COMMAND_ABBREV [Options] [Arg ...]
 
-Commands: %s
-Command abbreviations: %s
-""" % (prog, cs, cas)
+Commands:
+  %s
+""" % (prog, cs)
 
 
 def main(argv=sys.argv):
@@ -66,7 +68,9 @@ def main(argv=sys.argv):
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])
     else:
-        cfs = [(c, f) for abbrev, c, f in cmds if argv[1].startswith(abbrev)]
+        cfs = [
+            (c, f) for abbrev, c, f, _h in cmds if argv[1].startswith(abbrev)
+        ]
         if cfs:
             (c, f) = cfs[0]
             f([cmd2prog(c)] + argv[2:])
