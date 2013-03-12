@@ -1,0 +1,485 @@
+site: default
+domain: &domain m2.local
+gateway: &gateway 192.168.155.254
+netmask: &netmask 255.255.255.0
+nameservers:
+- hostname: *gateway
+#  options:
+
+networks:
+- name: default  # libvirt's default virtual (NAT) network
+  mode: nat
+  bridge: virbr0
+  domain: example.com
+  gateway: 192.168.122.1
+  netmask: 255.255.255.0
+  network: 192.168.122.0
+  dhcp:
+    start: 192.168.122.200
+    end: 192.168.122.254
+    static:
+      start: 192.168.122.10
+      end: 192.168.122.199
+
+- name: service
+  mode: nat
+  bridge: virbr5
+  domain: *domain
+  gateway: *gateway
+  netmask: *netmask
+  network: 192.168.155.0
+  dhcp:
+    start: 192.168.155.200
+    end: 192.168.155.250
+    static:
+      start: 192.168.155.10
+      end: 192.168.155.199
+
+
+guests:
+  - name: ipa
+    description: Red Hat IPA Server
+    ipa:
+      admin: admin
+      password: redhat0971
+
+    templates:
+      autoinst:
+        src: autoinstall.d/ipa-ks.cfg
+
+    setup_data:
+      - src: data/ipa/setup.sh
+        dst: setup.sh
+
+  - name: jboss
+    description: JBoss EAP Server
+    disks:
+      - pool: default
+        size: 10
+
+    virtinst:
+      ram: 1024
+      vcpus: 2
+
+    #rhn:
+    #  username: foo@m2.local
+    #  password: xyzsecret
+    #  activationkeys: xxxxxxxxxxxxxxx
+    #  profilename: "jboss-0.example.con_in_thinkpad-x220"
+
+    jboss:
+      master: 192.168.155.40
+      domain:
+        user: admin
+        secret:
+        plain: redhat
+        # python: base64.encodestring('redhat') or sh: echo -n 'redhat' | base64
+        base64: cmVkaGF0
+        # python: hashlib.md5('admin:ManagementRealm:redhat').hexdigest()
+        hash: c06ba95adae374bc766be220fad6cc0a
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-jboss-ks.cfg
+
+    setup_data:
+      - src: data/jboss/Makefile
+        dst: Makefile
+      - src: data/jboss/host-slave-0.xml
+        dst: host-slave-0.xml
+
+  - name: rhds
+    description: RH Directory Server
+    slapd:
+      suffix: "dc=m2,dc=local"
+
+    virtinst:
+      ram: 1024
+
+    instal_iso_url: "http://ks/isos/DSRV-9-x86_64-DVD1.iso"
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhds-ks.cfg
+
+    setup_data:
+      - src: data/rhds/setup.inf
+        dst: setup.inf
+      - src: data/rhds/Makefile
+        dst: Makefile
+
+  - name: rhel-5-client
+    description: Versatile RHEL 5 client systems
+    filesystem: ext3
+    virtinst:
+      location: "http://ks/kstree/rhel/5/8/x86_64/"
+      os_variant: rhel5.4
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-5-min-ks.cfg
+
+  - name: rhel-5-cluster
+    description: RHEL 5 Cluster (RHCS) nodes
+    filesystem: ext3
+    virtinst:
+      location: "http://ks/kstree/rhel/5/8/x86_64/"
+      os_variant: rhel5.4
+
+    ks_repos:
+      - name: "RHEL 5 x86_64 - Cluster"
+        baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
+
+    disks:
+      - pool: default
+        size: 5
+      - pool: default
+        vol: rhel-5-cluster-data-1.img
+        perms: sh
+        size: 1
+
+    cluster:
+      nodes:
+      - &node1 rhel-5-cluster-default-1
+      - &node2 rhel-5-cluster-default-2
+      resources:
+        ip: 192.168.155.100
+
+    defaultgw: *gateway
+
+    hosts:
+      - ip: 192.168.122.101
+        hostname: rhel-5-cluster-default-1
+      - ip: 192.168.122.102
+        hostname: rhel-5-cluster-default-2
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-5-cluster-ks.cfg
+
+    setup_data:
+      - src: data/rhel-5-cluster/cluster.conf
+        dst: cluster.conf
+      - src: data/rhel-5-cluster/init_qdisk.sh
+        dst: init_qdisk.sh
+
+  - name: rhel-5-mrg-m
+    description: RHEL 5 MRG-M nodes
+    filesystem: ext3
+    virtinst:
+      location: "http://ks/kstree/rhel/5/8/x86_64/"
+      os_variant: rhel5.4
+
+    ks_repos:
+      - name: "RHEL 5 x86_64 - MRG-M"
+        baseurl: "http://ks/kstree/rhel-5-mrg-2.1-x86_64"
+
+    services:
+      enabled:
+        - openais
+        - qpidd
+
+    # @see common/00_base.yml:
+    openais:
+      bindnetaddr: 192.168.155.0
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-5-mrg-m-ks.cfg
+
+    setup_data:
+      - src: data/mrg-m/qpidd_cluster_check.py
+        dst: qpidd_cluster_check.py
+
+  - name: rhel-6-client
+    description: Versatile RHEL 6 client systems
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-min-ks.cfg
+
+  - name: rhel-6-cluster-gfs
+    description: RHEL 6 GFS nodes
+    ks_repos:
+      - name: "RHEL 6 x86_64 - Cluster"
+        baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+      - name: "RHEL 6 x86_64 - GFS"
+        baseurl: "http://ks/kstree/rhel/6/3/x86_64/ResilientStorage"
+
+    disks:
+      - pool: default
+        size: 5
+      - pool: default
+        vol: rhel-6-cluster-gfs-data-1.img
+        perms: sh
+        size: 1
+
+    cluster:
+      name: GFS_CLUSTER
+      vol:
+        journal:
+          size: 64
+        vg: gfs-vg-0
+        lv: gfs-lv-0
+        fs: gfs-fs-0
+      nodes:
+      - name: &rhel_6_cluster_gfs_node1 rhel-6-cluster-gfs-default-1
+        fence_name: rhel-6-cluster-gfs-1
+      - name: &rhel_6_cluster_gfs_node2 rhel-6-cluster-gfs-default-2
+        fence_name: rhel-6-cluster-gfs-2
+      - name: &rhel_6_cluster_gfs_node3 rhel-6-cluster-gfs-default-3
+        fence_name: rhel-6-cluster-gfs-3
+      resources:
+        ip: 192.168.155.120
+
+    defaultgw: 192.168.155.254
+
+    hosts:
+      - ip: 192.168.122.113
+        hostname: *rhel_6_cluster_gfs_node1
+      - ip: 192.168.122.114
+        hostname: *rhel_6_cluster_gfs_node2
+      - ip: 192.168.122.115
+        hostname: *rhel_6_cluster_gfs_node3
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-cluster-gfs-ks.cfg
+
+    setup_data:
+      - src: data/rhel-6-cluster-gfs/cluster.conf
+        dst: cluster.conf
+        install:
+          mode: 600
+          dst: /etc/cluster/cluster.conf
+      - src: data/rhel-6-cluster-gfs/init_gfs.sh
+        dst: init_gfs.sh
+      - src: data/rhel-6-cluster-gfs/check_cman.sh
+        dst: check_cman.sh
+      - src: data/rhel-6-cluster-gfs/start_cman.sh
+        dst: start_cman.sh
+      - src: data/rhel-6-cluster-gfs/start_clvmd.sh
+        dst: start_clvmd.sh
+
+  - name: rhel-6-cluster
+    ks_repos:
+      - name: "RHEL 6 x86_64 - Cluster"
+        baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+
+    disks:
+      - pool: default
+        size: 5
+      - pool: default
+        vol: rhel-6-cluster-data-1.img
+        perms: sh
+        size: 1
+
+    cluster:
+      nodes:
+      - &rhel_6_cluster_node1 rhel-6-cluster-default-1
+      - &rhel_6_cluster_node2 rhel-6-cluster-default-2
+      resources:
+        ip: 192.168.155.110
+
+    defaultgw: *gateway
+
+    hosts:
+      - ip: 192.168.122.111
+        hostname: *rhel_6_cluster_node1
+      - ip: 192.168.122.112
+        hostname: *rhel_6_cluster_node2
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-cluster-ks.cfg
+
+    setup_data:
+      - src: data/rhel-5-cluster/cluster.conf
+        dst: cluster.conf
+      - src: data/rhel-5-cluster/init_qdisk.sh
+        dst: init_qdisk.sh
+
+  - name: rhel-6-lvs-rs
+    description: RHEL 6 LVS Real server
+    lvs:
+      virtual_ip: 192.168.155.170
+      virtual_ip_mask: 24
+
+    ftp:
+      allowed_networks:
+      - 192.168.155.0/24
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-lvs-rs-ks.cfg
+
+    setup_data:
+      - src: data/lvs-rs/setup_dr.sh
+        dst: setup_dr.sh
+
+  - name: rhel-6-lvs
+    ks_repos:
+      - name: "RHEL 6 x86_64 - LoadBalancer"
+        baseurl: "http://ks/kstree/rhel/6/3/x86_64/LoadBalancer/"
+
+    hosts:
+      - ip: 192.168.122.171
+        hostname: rhel-6-lvs-default-1
+      - ip: 192.168.122.172
+        hostname: rhel-6-lvs-default-2
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-lvs-ks.cfg
+
+    setup_data:
+      - src: data/lvs/Makefile
+        dst: Makefile
+      - src: data/lvs/setup_nat.sh
+        dst: setup_nat.sh
+      - src: data/lvs/setup_dr.sh
+        dst: setup_dr.sh
+    # - src: data/lvs/lvs.cf
+    #   dst: lvs.cf
+
+    lvs:
+      routers:
+        primary: 192.168.155.171
+        backup: 192.168.155.172
+
+      rs:
+      - hostname: rhel-6-lvs-rs-1
+        ip: 192.168.155.181
+      - hostname: rhel-6-lvs-rs-2
+        ip: 192.168.155.182
+
+      # If NAT or DR mode:
+      public:
+        ip:
+          addr: 192.168.155.170
+          network: 192.168.155.0
+          maskbit: 24
+      # If NAT mode:
+      private:
+        ip:
+          addr: 192.168.122.170
+          network: 192.168.122.0
+          maskbit: 24
+
+    - name: rhel-6-proxy
+    squid:
+      allowed_network: 192.168.155.0/24
+      auth:
+        username: foo
+        password: secret
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-proxy-ks.cfg
+
+    setup_data:
+      - src: data/proxy/squid.conf
+        dst: squid.conf
+
+  - name: rhevh
+    description: RHEL Hypervisor node
+    virtinst:
+      ram: 2560
+      cpu: host
+      vcpus: 2
+      cdrom: /var/lib/libvirt/images/rhevh-6.3-20121121.0.el6_3.iso
+      #TODO: --extra-args requires --local but ...
+      extra_args: storage_init=/dev/vda1 BOOTIF=eth0 adminpw=redhat
+
+    templates:
+      autoinstall:
+        dst: false
+
+  - name: rhevm
+    description: RHEV Manager node
+    disks:
+      - pool: default
+        size: 50
+
+    virtinst:
+      ram: 2560
+      vcpus: 2
+
+    #rhn:
+    #  username: foo@m2.local
+    #  password: xyzsecret
+    #  activationkeys: xxxxxxxxxxxxxxx
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhev-manager-ks.cfg
+
+    setup_data:
+      - src: data/rhev-manager/Makefile
+        dst: Makefile
+      - src: data/rhev-manager/answers.txt
+        dst: answers.txt
+
+  - name: rhs
+    description: Red Hat Storage node
+    ks_repos:
+      - name: "RHEL 6 x86_64 - ScalableFileSystem"
+        baseurl: "http://ks/kstree/rhel/6/3/x86_64/ScalableFileSystem"
+
+    rhs:
+      nodes:
+        - rhs-1
+        - rhs-2
+        - rhs-3
+        - rhs-4
+      volume: vol01
+      brick: /data/brick01
+
+    templates:
+      autoinst:
+        src: autoinstall.d/glusterfs-ks.cfg
+
+  - name: sam
+    description: RH Subscription Asset Manager server
+    virtinst:
+      ram: 2048
+      vcpus: 2
+
+    templates:
+      autoinst:
+        src: autoinstall.d/sam-ks.cfg
+
+  - name: satellite
+    description: RHN Satellite server
+    disks:
+      - pool: default
+        size: 50
+
+    virtinst:
+      ram: 2048
+
+    satellite:
+      admin:
+        email: root@localhost
+
+      ssl:
+        org: "M2 Example, Inc."
+        unit: "IT Dept."
+        city: Shibuya-ku
+        state: Tokyo
+        country: JP
+        password: sslsecret
+
+    #rhn:
+    #  username: foo@m2.local
+    #  password: xyzsecret
+
+    #proxy:
+    #  fqdn: proxy.m2.local
+    #  username: proxyuser
+    #  username: proxypasswd
+
+    templates:
+      autoinst:
+        src: autoinstall.d/satellite-ks.cfg
+
+# vim:sw=2:ts=2:et:
