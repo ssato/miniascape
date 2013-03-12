@@ -83,7 +83,8 @@ def gen_conf_files(conf, tmpldirs, workdir):
         AC.dump(ggroup_conf, os.path.join(ggoutdir, "00_base.yml"))
 
         for guest in ggroup["guests"]:
-            goutdir = os.path.join(ggoutdir, guest["name"])
+            name = guest.get("name", guest.get("hostname", guest.get("fqdn")))
+            goutdir = os.path.join(ggoutdir, name)
             if not os.path.exists(goutdir):
                 os.makedirs(goutdir)
 
