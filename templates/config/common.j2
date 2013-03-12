@@ -1,0 +1,81 @@
+site: {{ site }}
+domain: {{ domain }}
+gateway: &gateway {{ gateway }}
+netmask: {{ netmask }}
+nameservers:
+{% for ns in nameservers %}- { hostname: {{ ns.hostname }} {% if ns.options is defined %}, options: {{ ns.options }}{% endif %}
+{% endfor %}
+storage_pools:
+  - type: dir
+    name: default
+    target:
+      path: /var/lib/libvirt/images
+
+disks:
+  - pool: default  # see `storage_pools`
+    format: qcow2
+    cache: none
+    size: 6
+    bus: virtio
+#  - path: /var/lib/libvirt/images/<vm>-disk-0.raw
+#    format: raw
+#    size: 10  # [GB]
+
+
+## Basic Configuration of Guests:
+swap: 512  # [MB]
+filesystem: ext4
+auth:
+  options: "--passalgo=sha512"
+
+selinux: enforcing
+ks_finish: poweroff
+
+timezone:
+  utc: true
+  timezone: Asia/Tokyo
+
+services:
+  #enabled:
+  disabled:
+    - gpm
+    - ip6tables
+    - lvm2-monitor
+    - lvm2-lvmetad
+    - mdmonitor
+    - netfs
+
+ssh:
+  pubkey: ~/.ssh/id_rsa.pub
+
+cluster:
+  # software bridge for inter cluster nodes communication:
+  bridge: virbr0
+
+# Virt-install, see also: virt-install(1) :
+virtinst:
+  ram: 512
+  vcpus: 1
+  basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
+  connect: "qemu:///system"
+  waittime: 20
+  arch: x86_64
+  graphics: vnc
+  os_type: linux
+  os_variant: rhel6
+  # FIXME: Is there generic URL which will be automatically redirected to
+  # suitable mirrors to perform kickstart installation, available for CentOS ?
+  #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.3/os/x86_64/"
+  #location: "ftp://ftp.riken.jp/Linux/centos/6.3/os/x86_64/"
+  location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/"
+
+
+## Meta:
+## DO NOT EDIT THE FOLLOWINGS:
+templates:
+  autoinst:
+#    src: autoinstall.d/<name>-ks.cfg
+    dst: ks.cfg
+  virtinst:
+    src: host/vmbuild.sh
+    dst: vmbuild.sh
