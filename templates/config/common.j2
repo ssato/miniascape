@@ -3,7 +3,7 @@ domain: {{ domain }}
 gateway: &gateway {{ gateway }}
 netmask: {{ netmask }}
 nameservers:
-{% for ns in nameservers %}- { hostname: {{ ns.hostname }} {% if ns.options is defined %}, options: {{ ns.options }}{% endif %}
+{% for ns in nameservers %}- { hostname: {{ ns.hostname }} {% if ns.options is defined %}, options: {{ ns.options }}{% endif %} }
 {% endfor %}
 storage_pools:
   - type: dir
