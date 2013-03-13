@@ -90,6 +90,49 @@ def _add_special_confs(conf):
     return conf
 
 
+def _guest_add_missings(conf):
+    assert "hostname" in conf, \
+        "You must specify 'hostname' for guests at least"
+
+    if "hostname" not in conf:
+        conf["hostname"] = conf["name"]
+
+    if "domain" in conf:
+        if "fqdn" not in conf:
+            conf["fqdn"] = '.'.join(conf["hostname"], conf["domain"])
+
+    # TODO: Automatic (static) dhcp address assignment:
+    #if conf.get("ip", None) == "auto":
+    #    ...
+
+    nics = conf.get("interfaces", [])
+    nnics = len(nics)
+
+    if nnics == 1:
+        eth0 = nics[0]
+
+        # see the description of 'mac' assignment in virt-install(1):
+        if "mac" not in eth0:
+            conf["interfaces"][0]["mac"] = "RANDOM"
+
+        for k in ("hostname", "fqdn", "ip"):
+            if k not in eth0 and k in conf:
+                conf["interfaces"][0][k] = conf[k]
+
+        if "device" not in eth0:
+            conf["interfaces"][0]["device"] = "eth0"
+
+    elif nnics > 1:
+        for i in range(0, nnics):
+            if "mac" not in nics[i]:
+                conf["interfaces"][i]["mac"] = "RANDOM"
+
+            if "device" not in nics[i]:
+                conf["interfaces"][i]["device"] = "eth%d" % i
+
+    return conf
+
+
 def _check_dups_by_ip_or_mac(nis):
     """
     Check if duplicated IP or MAC found in host list and warns about them.
@@ -168,7 +211,7 @@ class ConfFiles(dict):
         logging.debug("Configs: " + str(confs))
         c = AC.load(confs, merge=AC.MS_DICTS)
 
-        return _add_special_confs(c)
+        return _add_special_confs(_guest_add_missings(c))
 
     def load_guests_confs(self):
         """
