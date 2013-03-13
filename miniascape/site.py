@@ -14,23 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import miniascape.config as C
-import miniascape.globals as G
-import miniascape.guest as MG
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
 import anyconfig as AC
 import logging
-import optparse
 import os.path
 import os
 import sys
-import yaml
-
-from itertools import groupby
-from operator import itemgetter
 
 
 def _outdir(topdir):
