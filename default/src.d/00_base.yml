@@ -7,34 +7,33 @@ nameservers:
 #  options:
 
 networks:
-- name: default  # libvirt's default virtual (NAT) network
-  mode: nat
-  bridge: virbr0
-  domain: example.com
-  gateway: 192.168.122.1
-  netmask: 255.255.255.0
-  network: 192.168.122.0
-  dhcp:
-    start: 192.168.122.200
-    end: 192.168.122.254
-    static:
-      start: 192.168.122.10
-      end: 192.168.122.199
+  - name: default  # libvirt's default virtual (NAT) network
+    mode: nat
+    bridge: virbr0
+    domain: example.com
+    gateway: 192.168.122.1
+    netmask: 255.255.255.0
+    network: 192.168.122.0
+    dhcp:
+      start: 192.168.122.200
+      end: 192.168.122.254
+      static:
+        start: 192.168.122.10
+        end: 192.168.122.199
 
-- name: service
-  mode: nat
-  bridge: virbr5
-  domain: *domain
-  gateway: *gateway
-  netmask: *netmask
-  network: 192.168.155.0
-  dhcp:
-    start: 192.168.155.200
-    end: 192.168.155.250
-    static:
-      start: 192.168.155.10
-      end: 192.168.155.199
-
+  - name: service
+    mode: nat
+    bridge: virbr5
+    domain: *domain
+    gateway: *gateway
+    netmask: *netmask
+    network: 192.168.155.0
+    dhcp:
+      start: 192.168.155.200
+      end: 192.168.155.250
+      static:
+        start: 192.168.155.10
+        end: 192.168.155.199
 
 guests:
   - name: ipa
