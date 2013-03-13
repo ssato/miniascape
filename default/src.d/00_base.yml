@@ -51,16 +51,11 @@ guests:
         dst: setup.sh
 
     guests:
-      - hostname: &ipa_1_hostname ipa-1
-        fqdn: &ipa_1_fqdn ipa-1.m2.local
-        ip: &ipa_1_ip 192.168.155.17
+      - hostname: ipa-1
+        ip: 192.168.155.17
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:17"
+          - mac: "52:54:00:05:00:17"
             network: service
-            host: *ipa_1_hostname
-            fqdn: *ipa_1_fqdn
-            ip: *ipa_1_ip
 
   - name: jboss
     description: JBoss EAP Server
@@ -72,11 +67,11 @@ guests:
       ram: 1024
       vcpus: 2
 
-    #rhn:
+    rhn:
     #  username: foo@m2.local
     #  password: xyzsecret
-    #  activationkeys: xxxxxxxxxxxxxxx
-    #  profilename: "jboss-0.example.con_in_thinkpad-x220"
+      activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+      profilename: "REPLACE_THIS"
 
     jboss:
       master: 192.168.155.40
@@ -101,16 +96,11 @@ guests:
 
     guests:
       - description: JBoss Domain Controller
-        hostname: &jboss_0_hostname jboss-0
-        fqdn: &jboss_0_fqdn jboss-0.m2.local
-        ip: &jboss_0_ip 192.168.155.40
+        hostname: jboss-0
+        ip: 192.168.155.40
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:40"
+          - mac: "52:54:00:05:00:40"
             network: service
-            ip: *jboss_0_ip
-            host: *jboss_0_hostname
-            fqdn: *jboss_0_fqdn
 
         jboss:
           is_domain_controller: true
@@ -132,15 +122,10 @@ guests:
               dst: /usr/sbin/domain-app-deploy.sh
 
       - hostname: &jboss_1_hostname jboss-1
-        fqdn: &jboss_1_fqdn jboss-1.m2.local
-        ip: &jboss_1_ip 192.168.155.41
+        ip: 192.168.155.41
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:41"
+          - mac: "52:54:00:05:00:41"
             network: service
-            ip: *jboss_1_ip
-            host: *jboss_1_hostname
-            fqdn: *jboss_1_fqdn
 
         jboss:
           servers:
@@ -148,15 +133,10 @@ guests:
               group: group1
 
       - hostname: &jboss_2_hostname jboss-2
-        fqdn: &jboss_2_fqdn jboss-2.m2.local
-        ip: &jboss_2_ip 192.168.155.42
+        ip: 192.168.155.42
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:42"
+          - mac: "52:54:00:05:00:42"
             network: service
-            ip: *jboss_2_ip
-            host: *jboss_2_hostname
-            fqdn: *jboss_2_fqdn
 
         jboss:
           servers:
@@ -164,15 +144,10 @@ guests:
               group: group1
 
       - hostname: &jboss_3_hostname jboss-3
-        fqdn: &jboss_3_fqdn jboss-3.m2.local
-        ip: &jboss_3_ip 192.168.155.43
+        ip: 192.168.155.43
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:43"
+          - mac: "52:54:00:05:00:43"
             network: service
-            ip: *jboss_3_ip
-            host: *jboss_3_hostname
-            fqdn: *jboss_3_fqdn
 
         jboss:
           servers:
@@ -180,15 +155,10 @@ guests:
               group: group2
 
       - hostname: &jboss_4_hostname jboss-4
-        fqdn: &jboss_4_fqdn jboss-4.m2.local
-        ip: &jboss_4_ip 192.168.155.44
+        ip: 192.168.155.44
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:44"
+          - mac: "52:54:00:05:00:44"
             network: service
-            ip: *jboss_4_ip
-            host: *jboss_4_hostname
-            fqdn: *jboss_4_fqdn
 
         jboss:
           servers:
@@ -217,15 +187,10 @@ guests:
 
     guests:
       - hostname: &rhds_1_hostname rhds-1
-        fqdn: &rhds_1_fqdn rhds-1.m2.local
-        ip: &rhds_1_ip 192.168.155.18
+        ip: 192.168.155.18
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:18"
+          - mac: "52:54:00:05:00:18"
             network: service
-            ip: *rhds_1_ip
-            host: *rhds_1_hostname
-            fqdn: *rhds_1_fqdn
 
   - name: rhel-5-client
     description: Versatile RHEL 5 client systems
@@ -239,27 +204,17 @@ guests:
         src: autoinstall.d/rhel-5-min-ks.cfg
 
     guests:
-      - hostname: &rhel_5_client_1_hostname rhel-5-client-1
-        fqdn: &rhel_5_client_1_fqdn rhel-5-client-1.m2.local
-        ip: &rhel_5_client_1_ip 192.158.155.151
+      - hostname: rhel-5-client-1
+        ip: 192.158.155.151
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:01:51"
+          - mac: "52:54:00:05:01:51"
             network: service
-            ip: *rhel_5_client_1_ip
-            host: *rhel_5_client_1_hostname
-            fqdn: *rhel_5_client_1_fqdn
 
-      - hostname: &rhel_5_client_2_hostname rhel-5-client-2
-        fqdn: &rhel_5_client_2_fqdn rhel-5-client-2.m2.local
-        ip: &rhel_5_client_2_ip 192.158.155.152
+      - hostname: rhel-5-client-2
+        ip: 192.158.155.152
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:01:52"
+          - mac: "52:54:00:05:01:52"
             network: service
-            ip: *rhel_5_client_2_ip
-            host: *rhel_5_client_2_hostname
-            fqdn: *rhel_5_client_2_fqdn
 
   - name: rhel-5-cluster
     description: RHEL 5 Cluster (RHCS) nodes
@@ -310,14 +265,12 @@ guests:
         fqdn: &rhel_5_cluster_1_fqdn rhel-5-cluster-1.m2.local
         ip: &rhel_5_cluster_1_ip 192.168.155.101
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:01"
+          - mac: "52:54:00:05:01:01"
             network: service
             ip: *rhel_5_cluster_1_ip
             host: *rhel_5_cluster_1_hostname
             fqdn: *rhel_5_cluster_1_fqdn
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static
             mac: "52:54:00:02:01:01"
             network: default
             ip: 192.168.122.101
@@ -328,14 +281,12 @@ guests:
         fqdn: &rhel_5_cluster_2_fqdn rhel-5-cluster-2.m2.local
         ip: &rhel_5_cluster_2_ip 192.168.155.102
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:02"
+          - mac: "52:54:00:05:01:02"
             network: service
             ip: *rhel_5_cluster_2_ip
             host: *rhel_5_cluster_2_hostname
             fqdn: *rhel_5_cluster_2_fqdn
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static
             mac: "52:54:00:02:01:02"
             network: default
             ip: 192.168.122.102
@@ -371,27 +322,17 @@ guests:
         dst: qpidd_cluster_check.py
 
     guests:
-      - hostname: &rhel_5_mrg_m_1_hostname rhel-5-mrg-m-1
-        fqdn: &rhel_5_mrg_m_1_fqdn rhel-5-mrg-m-1.m2.local
-        ip: &rhel_5_mrg_m_1_ip 192.168.155.71
+      - hostname: rhel-5-mrg-m-1
+        ip: 192.168.155.71
         interfaces:
-          - device: eth0
-            network: service
+          - network: service
             mac: "52:54:00:05:00:71"
-            ip: *rhel_5_mrg_m_1_ip
-            host: *rhel_5_mrg_m_1_hostname
-            fqdn: *rhel_5_mrg_m_1_fqdn
 
-      - hostname: &rhel_5_mrg_m_2_hostname rhel-5-mrg-m-2
-        fqdn: &rhel_5_mrg_m_2_fqdn rhel-5-mrg-m-2.m2.local
-        ip: &rhel_5_mrg_m_2_ip 192.168.155.72
+      - hostname: rhel-5-mrg-m-2
+        ip: 192.168.155.72
         interfaces:
-          - device: eth0
-            network: service
+          - network: service
             mac: "52:54:00:05:00:72"
-            ip: *rhel_5_mrg_m_2_ip
-            host: *rhel_5_mrg_m_2_hostname
-            fqdn: *rhel_5_mrg_m_2_fqdn
 
   - name: rhel-6-client
     description: Versatile RHEL 6 client systems
@@ -400,16 +341,11 @@ guests:
         src: autoinstall.d/rhel-6-min-ks.cfg
 
     guests:
-      - hostname: &rhel_6_client_1_hostname rhel-6-client-1
-        fqdn: &rhel_6_client_1_fqdn rhel-6-client-1.m2.local
-        ip: &rhel_6_client_1_ip 192.168.155.161
+      - hostname: rhel-6-client-1
+        ip: 192.168.155.161
         interfaces:
-          - device: eth0
-            network: service
+          - network: service
             mac: "52:54:00:05:01:61"
-            ip: *rhel_6_client_1_ip
-            host: *rhel_6_client_1_hostname
-            fqdn: *rhel_6_client_1_fqdn
 
   - name: rhel-6-cluster-gfs
     description: RHEL 6 GFS nodes
@@ -479,14 +415,12 @@ guests:
         fqdn: &rhel_6_cluster_gfs_1_fqdn rhel-6-cluster-gfs-1.m2.local
         ip: &rhel_6_cluster_gfs_1_ip 192.168.155.113
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:13"
+          - mac: "52:54:00:05:01:13"
             ip: *rhel_6_cluster_gfs_1_ip
             host: *rhel_6_cluster_gfs_1_hostname
             fqdn: *rhel_6_cluster_gfs_1_fqdn
             network: service
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static
             mac: "52:54:00:02:01:13"
             ip: 192.168.122.113
             host: *rhel_6_cluster_gfs_node1
@@ -499,14 +433,12 @@ guests:
         fqdn: &rhel_6_cluster_gfs_2_fqdn rhel-6-cluster-gfs-2.m2.local
         ip: &rhel_6_cluster_gfs_2_ip 192.168.155.114
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:14"
+          - mac: "52:54:00:05:01:14"
             ip: *rhel_6_cluster_gfs_2_ip
             host: *rhel_6_cluster_gfs_2_hostname
             fqdn: *rhel_6_cluster_gfs_2_fqdn
             network: service
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static
             mac: "52:54:00:02:01:14"
             ip: 192.168.122.114
             host: *rhel_6_cluster_gfs_node2
@@ -517,14 +449,12 @@ guests:
         fqdn: &rhel_6_cluster_gfs_3_fqdn rhel-6-cluster-gfs-3.m2.local
         ip: &rhel_6_cluster_gfs_3_ip 192.168.155.115
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:15"
+          - mac: "52:54:00:05:01:15"
             ip: *rhel_6_cluster_gfs_3_ip
             host: *rhel_6_cluster_gfs_3_hostname
             fqdn: *rhel_6_cluster_gfs_3_fqdn
             network: service
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static
             mac: "52:54:00:02:01:15"
             ip: 192.168.122.115
             host: *rhel_6_cluster_gfs_node3
@@ -574,14 +504,12 @@ guests:
         fqdn: &rhel_6_cluster_1_fqdn rhel-6-cluster-1.m2.local
         ip: &rhel_6_cluster_1_ip 192.168.155.111
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:11"
+          - mac: "52:54:00:05:01:11"  # for service
             ip: *rhel_6_cluster_1_ip
             host: *rhel_6_cluster_1_hostname
             fqdn: *rhel_6_cluster_1_fqdn
             network: service
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:11"
             ip: 192.168.122.111
             host: rhel-6-cluster-default-1
@@ -592,14 +520,12 @@ guests:
         fqdn: &rhel_6_cluster_2_fqdn rhel-6-cluster-2.m2.local
         ip: &rhel_6_cluster_2_ip 192.168.155.112
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:12"
+          - mac: "52:54:00:05:01:12"  # for service
             ip: *rhel_6_cluster_2_ip
             host: *rhel_6_cluster_2_hostname
             fqdn: *rhel_6_cluster_2_fqdn
             network: service
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:12"
             ip: 192.168.122.112
             host: rhel-6-cluster-default-2
@@ -632,14 +558,12 @@ guests:
         fqdn: &rhel_6_lvs_rs_1_fqdn rhel-6-lvs-rs-1.m2.local
         ip: &rhel_6_lvs_rs_1_ip 192.168.155.181
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:01:81"
+          - mac: "52:54:00:05:01:81"
             ip: *rhel_6_lvs_rs_1_ip
             host: *rhel_6_lvs_rs_1_hostname
             fqdn: *rhel_6_lvs_rs_1_fqdn
             network: service
-          - device: eth1
-            bootproto: static
+          - bootproto: static
             ip: 192.168.122.181
             host: rhel-6-lvs-rs-default-1
             mac: "52:54:00:02:01:81"
@@ -653,14 +577,12 @@ guests:
         fqdn: &rhel_6_lvs_rs_2_fqdn rhel-6-lvs-rs-2.m2.local
         ip: &rhel_6_lvs_rs_2_ip 192.168.155.182
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:01:82"
+          - mac: "52:54:00:05:01:82"
             ip: *rhel_6_lvs_rs_2_ip
             host: *rhel_6_lvs_rs_2_hostname
             fqdn: *rhel_6_lvs_rs_2_fqdn
             network: service
-          - device: eth1
-            bootproto: static
+          - bootproto: static
             ip: 192.168.122.182
             host: rhel-6-lvs-rs-default-2
             mac: "52:54:00:02:01:82"
@@ -724,14 +646,12 @@ guests:
         fqdn: &rhel_6_lvs_1_fqdn rhel-6-lvs-1.m2.local
         ip: &rhel_6_lvs_1_ip 192.168.155.171
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:71"
+          - mac: "52:54:00:05:01:71"  # for service
             ip: *rhel_6_lvs_1_ip
             host: *rhel_6_lvs_1_hostname
             fqdn: *rhel_6_lvs_1_fqdn
             network: service
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:71"
             ip: 192.168.122.171
             host: rhel-6-lvs-default-1
@@ -742,14 +662,12 @@ guests:
         fqdn: &rhel_6_lvs_2_fqdn rhel-6-lvs-2.m2.local
         ip: &rhel_6_lvs_2_ip 192.168.155.172
         interfaces:
-          - device: eth0  # for service
-            mac: "52:54:00:05:01:72"
+          - mac: "52:54:00:05:01:72"  # for service
             ip: *rhel_6_lvs_2_ip
             host: *rhel_6_lvs_2_hostname
             fqdn: *rhel_6_lvs_2_fqdn
             network: service
-          - device: eth1  # for heartbeat
-            bootproto: static
+          - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:72"
             ip: 192.168.122.172
             host: rhel-6-lvs-default-2
@@ -776,14 +694,12 @@ guests:
         fqdn: &rhel_6_proxy_1_fqdn rhel-6-proxy-1.m2.local
         ip: &rhel_6_proxy_1_ip 192.168.155.191
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:01:91"
+          - mac: "52:54:00:05:01:91"
             ip: *rhel_6_proxy_1_ip
             host: *rhel_6_proxy_1_hostname
             fqdn: *rhel_6_proxy_1_fqdn
             network: service
-          - device: eth1
-            bootproto: static
+          - bootproto: static
             mac: "52:54:00:02:01:91"
             ip: 192.168.122.191
             host: rhel-6-proxy-default-1
@@ -805,15 +721,10 @@ guests:
         dst: false
 
     guests:
-      - hostname: &rhevh_1_hostname rhevh-1
-        fqdn: &rhevh_1_fqdn rhevh-1.m2.local
-        ip: &rhevh_1_ip 192.168.155.33
+      - hostname: rhevh-1
+        ip: 192.168.155.33
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:33"
-            ip: *rhevh_1_ip
-            host: *rhevh_1_hostname
-            fqdn: *rhevh_1_fqdn
+          - mac: "52:54:00:05:00:33"
             network: service
 
   - name: rhevm
@@ -826,10 +737,11 @@ guests:
       ram: 2560
       vcpus: 2
 
-    #rhn:
+    rhn:
     #  username: foo@m2.local
     #  password: xyzsecret
-    #  activationkeys: xxxxxxxxxxxxxxx
+      activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+      profilename: "REPLACE_THIS"
 
     templates:
       autoinst:
@@ -842,15 +754,10 @@ guests:
         dst: answers.txt
 
     guests:
-      - hostname: &rhevm_1_hostname rhevm-1
-        fqdn: &rhevm_1_fqdn rhevm-1.m2.local
-        ip: &rhevm_1_ip 192.168.155.31
+      - hostname: rhevm-1
+        ip: 192.168.155.31
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:31"
-            ip: *rhevm_1_ip
-            host: *rhevm_1_hostname
-            fqdn: *rhevm_1_fqdn
+          - mac: "52:54:00:05:00:31"
             network: service
 
         rhev:
@@ -882,15 +789,10 @@ guests:
         src: autoinstall.d/glusterfs-ks.cfg
 
     guests:
-      - hostname: &rhs_1_hostname rhs-1
-        fqdn: &rhs_1_fqdn rhs-1.m2.local
-        ip: &rhs_1_ip 192.168.155.51
+      - hostname: rhs-1
+        ip: 192.168.155.51
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:51"
-            ip: *rhs_1_ip
-            host: *rhs_1_hostname
-            fqdn: *rhs_1_fqdn
+          - mac: "52:54:00:05:00:51"
             network: service
 
         disks:
@@ -901,14 +803,9 @@ guests:
             size: 1
 
       - hostname: &rhs_2_hostname rhs-2
-        fqdn: &rhs_2_fqdn rhs-2.m2.local
         ip: &rhs_2_ip 192.168.155.52
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:52"
-            ip: *rhs_2_ip
-            host: *rhs_2_hostname
-            fqdn: *rhs_2_fqdn
+          - mac: "52:54:00:05:00:52"
             network: service
 
         disks:
@@ -919,14 +816,9 @@ guests:
             size: 1
 
       - hostname: &rhs_3_hostname rhs-3
-        fqdn: &rhs_3_fqdn rhs-3.m2.local
         ip: &rhs_3_ip 192.168.155.53
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:53"
-            ip: *rhs_3_ip
-            host: *rhs_3_hostname
-            fqdn: *rhs_3_fqdn
+          - mac: "52:54:00:05:00:53"
             network: service
 
         disks:
@@ -937,14 +829,9 @@ guests:
             size: 1
 
       - hostname: &rhs_4_hostname rhs-4
-        fqdn: &rhs_4_fqdn rhs-4.m2.local
         ip: &rhs_4_ip 192.168.155.54
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:54"
-            ip: *rhs_4_ip
-            host: *rhs_4_hostname
-            fqdn: *rhs_4_fqdn
+          - mac: "52:54:00:05:00:54"
             network: service
 
         disks:
@@ -966,14 +853,9 @@ guests:
 
     guests:
       - hostname: &sam_1_hostname sam-1
-        fqdn: &sam_1_fqdn sam-1.m2.local
         ip: &sam_1_ip 192.168.155.15
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:15"
-            ip: *sam_1_ip
-            host: *sam_1_hostname
-            fqdn: *sam_1_fqdn
+          - mac: "52:54:00:05:00:15"
             network: service
 
   - name: satellite
@@ -997,9 +879,11 @@ guests:
         country: JP
         password: sslsecret
 
-    #rhn:
+    rhn:
     #  username: foo@m2.local
     #  password: xyzsecret
+      activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+      profilename: "REPLACE_THIS"
 
     #proxy:
     #  fqdn: proxy.m2.local
@@ -1011,15 +895,10 @@ guests:
         src: autoinstall.d/satellite-ks.cfg
 
     guests:
-      - hostname: &satellite_1_hostname satellite-1
-        fqdn: &satellite_1_fqdn satellite-1.m2.local
-        ip: &satellite_1_ip 192.168.155.11
+      - hostname: satellite-1
+        ip: 192.168.155.11
         interfaces:
-          - device: eth0
-            mac: "52:54:00:05:00:11"
-            ip: *satellite_1_ip
-            host: *satellite_1_hostname
-            fqdn: *satellite_1_fqdn
+          - mac: "52:54:00:05:00:11"
             network: service
 
 # vim:sw=2:ts=2:et:
