@@ -99,7 +99,7 @@ def _guest_add_missings(conf):
 
     if "domain" in conf:
         if "fqdn" not in conf:
-            conf["fqdn"] = '.'.join(conf["hostname"], conf["domain"])
+            conf["fqdn"] = "%(hostname)s.%(domain)s" % conf
 
     # TODO: Automatic (static) dhcp address assignment:
     #if conf.get("ip", None) == "auto":
