@@ -73,7 +73,8 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
     )
 
 
-def gen_guest_files(name, conffiles, tmpldirs, workdir):
+def gen_guest_files(name, conffiles, tmpldirs, workdir,
+                    subdir=_AUTOINST_SUBDIR):
     """
     Generate files (vmbuild.sh and ks.cfg) to build VM `name`.
 
@@ -83,7 +84,7 @@ def gen_guest_files(name, conffiles, tmpldirs, workdir):
     :param workdir: Working top dir
     """
     conf = conffiles.load_guest_confs(name)
-    gtmpldirs = [os.path.join(d, _AUTOINST_SUBDIR) for d in tmpldirs]
+    gtmpldirs = [os.path.join(d, subdir) for d in tmpldirs]
 
     if not os.path.exists(workdir):
         logging.debug("Creating working dir: " + workdir)
