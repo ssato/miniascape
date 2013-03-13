@@ -113,7 +113,12 @@ def main(argv):
             print >> "Cancel re-generation of configs..."
             sys.exit(0)
 
-    conf = AC.load(options.confdir)
+    if os.path.isdir(options.confdir):
+        confsrc = os.path.join(options.confdir, "*.yml")
+    else:
+        confsrc = options.confdir
+
+    conf = AC.load(confsrc)
     assert conf is not None, "No config loaded from: " + options.confdir
 
     gen_conf_files(conf, options.tmpldir, options.workdir)
