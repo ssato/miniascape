@@ -7,7 +7,7 @@ admin-email = {{ satellite.admin.email }}
 rhn-username = {{ rhn.username }}
 rhn-password = {{ rhn.password }}
 {% endif %}
-{% if proxy.fqdn is defined %}
+{% if proxy is defined and proxy.fqdn is defined %}
 rhn-http-proxy = {{ proxy.fqdn }}
 rhn-http-proxy-username = {{ proxy.username }}
 rhn-http-proxy-password = {{ proxy.password }}
