@@ -41,7 +41,7 @@ M_WORK_TOPDIR = "miniascape-workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
 
 PACKAGE = "miniascape"
-VERSION = "0.3.5"
+VERSION = "0.3.6"
 
 # daily snapshots:
 #VERSION = VERSION + "." + date()
