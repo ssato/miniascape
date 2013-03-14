@@ -20,12 +20,12 @@ import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
+import anyconfig as A
 import logging
 import optparse
 import os.path
 import os
 import sys
-import yaml
 
 
 def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
@@ -37,7 +37,7 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
 
 
 def filterout_hosts_wo_macs(netconf):
-    nc = yaml.load(open(netconf))
+    nc = A.load(netconf)
     nc["hosts"] = [h for h in nc.get("hosts", []) if "mac" in h]
     return nc
 
@@ -67,7 +67,8 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
             logging.warn("Net conf already exists: " + netconf)
             return
 
-        yaml.dump(nets[name], open(netconf, 'w'))
+        logging.debug("Dump conf for the net: " + name)
+        A.dump(nets[name], netconf)
 
         netxml = os.path.join(outdir, "%s.xml" % name)
         if os.path.exists(netxml) and not force:
