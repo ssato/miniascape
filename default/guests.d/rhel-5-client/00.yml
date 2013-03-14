@@ -1,6 +1,10 @@
 filesystem: ext3
 virtinst:
-  location: "http://ks/kstree/rhel/5/8/x86_64/"
+  # FIXME: Is there generic URL which will be automatically redirected to
+  # suitable mirrors to perform kickstart installation, available for CentOS ?
+  #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/5.9/os/x86_64/"
+  #location: "ftp://ftp.riken.jp/Linux/centos/5.9/os/x86_64/"
+  location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
   os_variant: rhel5.4
 
 # Meta:

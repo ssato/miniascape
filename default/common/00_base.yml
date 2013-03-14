@@ -68,9 +68,9 @@ virtinst:
   os_variant: rhel6
   # FIXME: Is there generic URL which will be automatically redirected to
   # suitable mirrors to perform kickstart installation, available for CentOS ?
-  #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.3/os/x86_64/"
-  #location: "ftp://ftp.riken.jp/Linux/centos/6.3/os/x86_64/"
-  location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/"
+  #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.4/os/x86_64/"
+  #location: "ftp://ftp.riken.jp/Linux/centos/6.4/os/x86_64/"
+  location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
 
 
 ## Meta:
