@@ -27,9 +27,6 @@ import os
 import sys
 import yaml
 
-from itertools import groupby
-from operator import itemgetter
-
 
 def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
                net_subdir=G.M_NETS_OUT_SUBDIR):
