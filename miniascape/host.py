@@ -16,7 +16,6 @@
 #
 import miniascape.config as C
 import miniascape.globals as G
-import miniascape.guest as MG
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
