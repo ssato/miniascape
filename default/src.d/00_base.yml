@@ -196,7 +196,11 @@ guests:
     description: Versatile RHEL 5 client systems
     filesystem: ext3
     virtinst:
-      location: "http://ks/kstree/rhel/5/8/x86_64/"
+      # FIXME: Is there generic URL which will be automatically redirected to
+      # suitable mirrors to perform kickstart installation, available for CentOS ?
+      #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/5.9/os/x86_64/"
+      #location: "ftp://ftp.riken.jp/Linux/centos/5.9/os/x86_64/"
+      location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
       os_variant: rhel5.4
 
     templates:
@@ -220,12 +224,13 @@ guests:
     description: RHEL 5 Cluster (RHCS) nodes
     filesystem: ext3
     virtinst:
-      location: "http://ks/kstree/rhel/5/8/x86_64/"
+      location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
       os_variant: rhel5.4
 
     ks_repos:
       - name: "RHEL 5 x86_64 - Cluster"
-        baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
+        #baseurl: "http://ks/kstree/rhel/5/8/x86_64/Cluster"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
 
     disks:
       - pool: default
@@ -297,7 +302,7 @@ guests:
     description: RHEL 5 MRG-M nodes
     filesystem: ext3
     virtinst:
-      location: "http://ks/kstree/rhel/5/8/x86_64/"
+      location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
       os_variant: rhel5.4
 
     ks_repos:
@@ -351,9 +356,11 @@ guests:
     description: RHEL 6 GFS nodes
     ks_repos:
       - name: "RHEL 6 x86_64 - Cluster"
-        baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+        #baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/"
       - name: "RHEL 6 x86_64 - GFS"
-        baseurl: "http://ks/kstree/rhel/6/3/x86_64/ResilientStorage"
+        #baseurl: "http://ks/kstree/rhel/6/3/x86_64/ResilientStorage"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/"
 
     disks:
       - pool: default
@@ -464,7 +471,8 @@ guests:
   - name: rhel-6-cluster
     ks_repos:
       - name: "RHEL 6 x86_64 - Cluster"
-        baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+        #baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
 
     disks:
       - pool: default
@@ -595,7 +603,8 @@ guests:
   - name: rhel-6-lvs
     ks_repos:
       - name: "RHEL 6 x86_64 - LoadBalancer"
-        baseurl: "http://ks/kstree/rhel/6/3/x86_64/LoadBalancer/"
+        #baseurl: "http://ks/kstree/rhel/6/3/x86_64/LoadBalancer/"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
 
     hosts:
       - ip: 192.168.122.171
@@ -773,7 +782,8 @@ guests:
     description: Red Hat Storage node
     ks_repos:
       - name: "RHEL 6 x86_64 - ScalableFileSystem"
-        baseurl: "http://ks/kstree/rhel/6/3/x86_64/ScalableFileSystem"
+        #baseurl: "http://ks/kstree/rhel/6/3/x86_64/ScalableFileSystem"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
 
     rhs:
       nodes:

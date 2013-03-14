@@ -1,8 +1,16 @@
+# FIXME: Is there generic URL which will be automatically redirected to
+# suitable mirrors to perform kickstart installation, available for CentOS ?
+#location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.4/os/x86_64/"
+#location: "ftp://ftp.riken.jp/Linux/centos/6.4/os/x86_64/"
+centos_install_tree_url: &centos_6_4_install_tree_url "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
+
 ks_repos:
   - name: "RHEL 6 x86_64 - Cluster"
-    baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+    #baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+    baseurl: *centos_6_4_install_tree_url
   - name: "RHEL 6 x86_64 - GFS"
-    baseurl: "http://ks/kstree/rhel/6/3/x86_64/ResilientStorage"
+    #baseurl: "http://ks/kstree/rhel/6/3/x86_64/ResilientStorage"
+    baseurl: *centos_6_4_install_tree_url
 
 disks:
   - pool: default
