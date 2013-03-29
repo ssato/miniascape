@@ -58,8 +58,10 @@ def concat(xss):
 
 
 def init_log(level):
+    logging.basicConfig(format="[%(levelname)s] %(message)s")
+
     lvl = [logging.DEBUG, logging.INFO, logging.WARN][level]
-    logging.basicConfig(format="[%(levelname)s] %(message)s", level=lvl)
+    logging.getLogger().setLevel(lvl)
 
 
 def sglob(files_pattern):
