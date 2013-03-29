@@ -133,6 +133,10 @@ def _guest_add_missings(conf):
     return conf
 
 
+def _ignorable_kv_pair(k, v):
+    return k == "mac" and v == "RANDOM"
+
+
 def _check_dups_by_ip_or_mac(nis):
     """
     Check if duplicated IP or MAC found in host list and warns about them.
@@ -140,6 +144,9 @@ def _check_dups_by_ip_or_mac(nis):
     :param nis: A list of network interfaces, {ip, mac, ...}
     """
     for k, v, ns in U.find_dups_in_dicts_list_g(nis, ("ip", "mac")):
+        if _ignorable_kv_pair(k, v):
+            continue
+
         logging.warn(
             "Duplicated entries: key=%s, v=%s, hosts=%s" %
             (k, v, ", ".join(n.get("host", str(n)) for n in ns))
