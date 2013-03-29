@@ -32,7 +32,7 @@ def _outdir(topdir, name):
 
     :return: Output top dir, e.g. $workdir/$site_name
     """
-    return os.path.join(topdir, site)
+    return os.path.join(topdir, name)
 
 
 def gen_conf_files(conf, tmpldirs, workdir):
