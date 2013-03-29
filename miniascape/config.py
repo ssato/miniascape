@@ -233,14 +233,15 @@ class ConfFiles(dict):
 
     def _aggregate_guest_net_interfaces_g(self):
         """
-        Aggregate guest's network interface info from each guest configurations and
-        return list of host list grouped by each networks.
+        Aggregate guest's network interface info from each guest configurations
+        and return list of host list grouped by each networks.
         """
         gcs = self.load_guests_confs()
         kf = itemgetter("network")
         return (
             (k, list(g)) for k, g in groupby(
-                sorted(U.concat(g.get("interfaces", []) for g in gcs), key=kf), kf
+                sorted(U.concat(g.get("interfaces", []) for g in gcs), key=kf),
+                kf
             )
         )
 
