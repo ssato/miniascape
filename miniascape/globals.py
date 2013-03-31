@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import anyconfig
 import datetime
 import locale
 import logging
@@ -69,5 +70,6 @@ def set_loglevel(level):
     assert level in (0, 1, 2), "Invalid log level option was passed: " + level
     lvl = [logging.DEBUG, logging.INFO, logging.WARN][level]
     LOGGER.setLevel(lvl)
+    anyconfig.set_loglevel(lvl)
 
 # vim:sw=4:ts=4:et:
