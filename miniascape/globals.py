@@ -16,6 +16,7 @@
 #
 import datetime
 import locale
+import logging
 import os.path
 
 
@@ -42,5 +43,31 @@ M_ENCODING = locale.getdefaultlocale()[1]
 
 PACKAGE = "miniascape"
 VERSION = "0.3.6"
+
+_LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
+
+
+def getLogger(name="miniascape", format=_LOGGING_FORMAT,
+              level=logging.WARNING, **kwargs):
+    """
+    Initialize custom logger.
+    """
+    logging.basicConfig(level=level, format=format)
+    logger = logging.getLogger(name)
+
+    h = logging.StreamHandler()
+    h.setLevel(level)
+    h.setFormatter(logging.Formatter(format))
+    logger.addHandler(h)
+
+    return logger
+
+
+LOGGER = getLogger()
+
+def set_loglevel(level):
+    assert level in (0, 1, 2), "Invalid log level option was passed: " + level
+    lvl = [logging.DEBUG, logging.INFO, logging.WARN][level]
+    LOGGER.setLevel(lvl)
 
 # vim:sw=4:ts=4:et:
