@@ -11,6 +11,12 @@ from miniascape.globals import PACKAGE, VERSION, M_CONF_TOPDIR
 from miniascape.utils import concat
 
 
+# For daily snapshot versioning mode:
+if os.environ.get("_MINIASCAPE_SNAPSHOT_BUILD", None) is not None:
+    import datetime
+    VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
+
+
 def list_files(tdir):
     return [f for f in glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
 
