@@ -14,8 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import datetime
 import locale
 import os.path
+
+
+def date():
+    return datetime.datetime.now().strftime("%Y%m%d")
 
 
 M_CONF_TOPDIR = "/etc/miniascape.d"
