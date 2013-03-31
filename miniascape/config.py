@@ -16,7 +16,7 @@
 #
 from miniascape.globals import M_CONFDIR_DEFAULT, M_COMMON_CONF_SUBDIR, \
     M_COMMON_CONF_SUBDIR, M_GUESTS_CONF_SUBDIR, M_NETS_CONF_SUBDIR, \
-    M_HOST_CONF_SUBDIR, M_CONF_PATTERN
+    M_HOST_CONF_SUBDIR, M_CONF_PATTERN, LOGGER as logging
 from itertools import groupby
 from operator import itemgetter
 
@@ -26,7 +26,6 @@ import miniascape.utils as U
 import anyconfig as AC
 
 import datetime
-import logging
 import os.path
 import os
 import re

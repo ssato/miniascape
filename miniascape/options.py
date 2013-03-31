@@ -32,8 +32,8 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
                  help="Top dir to hold site configuration files [%default]")
     p.add_option("-w", "--workdir",
                  help="Working dir to output results [%default]")
-    p.add_option("-D", "--debug", action="store_const", const=0,
-                 dest="verbose", help="Debug mode")
+    p.add_option("-v", "--verbose", action="store_const", const=0,
+                 dest="verbose", help="Verbose mode")
     p.add_option("-q", "--quiet", action="store_const", const=2,
                  dest="verbose", help="Quiet mode")
     return p

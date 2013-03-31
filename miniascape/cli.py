@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from miniascape.globals import LOGGER as logging, set_loglevel
+
 import miniascape.config as C
 import miniascape.guest as G
 import miniascape.options as O
@@ -32,8 +34,8 @@ def gen_all(argv):
     p = H.option_parser()
     (options, args) = p.parse_args(argv)
 
-    U.init_log(options.verbose)
     options = O.tweak_tmpldir(options)
+    set_loglevel(options.verbose)
 
     cf = C.ConfFiles(options.confdir)
 

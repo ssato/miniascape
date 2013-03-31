@@ -14,12 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from miniascape.globals import LOGGER as logging, set_loglevel
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
 import anyconfig as AC
-import logging
 import os.path
 import os
 import sys
@@ -98,7 +98,7 @@ def main(argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
-    U.init_log(options.verbose)
+    set_loglevel(options.verbose)
     options = O.tweak_tmpldir(options)
 
     if not options.confdir:
