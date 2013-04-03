@@ -1,10 +1,82 @@
 site: default
-domain: &domain m2.local
-gateway: &gateway 192.168.155.254
-netmask: &netmask 255.255.255.0
-nameservers:
-- hostname: *gateway
-#  options:
+
+common:
+  domain: &domain m2.local
+  gateway: &gateway 192.168.155.254
+  netmask: &netmask 255.255.255.0
+  nameservers:
+  - hostname: *gateway
+    #options:
+
+  storage_pools:
+    - type: dir
+      name: default
+      target:
+        path: /var/lib/libvirt/images
+
+  disks:
+    - pool: default  # see `storage_pools`
+      format: qcow2
+      cache: none
+      size: 6
+      bus: virtio
+    #- path: /var/lib/libvirt/images/<vm>-disk-0.raw
+    #  format: raw
+    #  size: 10  # [GB]
+
+  swap: 512  # [MB]
+  filesystem: ext4
+  auth:
+    options: "--passalgo=sha512"
+
+  selinux: enforcing
+  ks_finish: poweroff
+
+  timezone:
+    utc: true
+    timezone: Asia/Tokyo
+
+  services:
+    #enabled:
+    disabled:
+      - gpm
+      - ip6tables
+      - lvm2-monitor
+      - lvm2-lvmetad
+      - mdmonitor
+      - netfs
+
+  ssh:
+    pubkey: ~/.ssh/id_rsa.pub
+
+  cluster:
+    # software bridge for inter cluster nodes communication:
+    bridge: virbr0
+
+  virtinst:
+    ram: 512
+    vcpus: 1
+    basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
+    connect: "qemu:///system"
+    waittime: 20
+    arch: x86_64
+    graphics: vnc
+    os_type: linux
+    os_variant: rhel6
+    # FIXME: Is there generic URL which will be automatically redirected to
+    # suitable mirrors to perform kickstart installation, available for CentOS ?
+    #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.4/os/x86_64/"
+    #location: "ftp://ftp.riken.jp/Linux/centos/6.4/os/x86_64/"
+    location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
+
+  ## Meta:
+  templates:
+    autoinst:
+      #src: autoinstall.d/<name>-ks.cfg
+      dst: ks.cfg
+    virtinst:
+      src: host/vmbuild.sh
+      dst: vmbuild.sh
 
 networks:
   - name: default  # libvirt's default virtual (NAT) network
@@ -23,7 +95,7 @@ networks:
 
   - name: service
     mode: nat
-    bridge: virbr5
+    bridge: &net_service_bridge virbr5
     domain: *domain
     gateway: *gateway
     netmask: *netmask
@@ -910,5 +982,36 @@ guests:
         interfaces:
           - mac: "52:54:00:05:00:11"
             network: service
+
+host:
+  isomntdir: /srv/content
+  isodatadir: /srv/images
+
+  bridge: *net_service_bridge
+
+  iscsi:
+    targets:
+      - name: iscsi-0
+        path: /var/lib/libvirt/images/iscsi-0.img
+        size: 30G
+        iqn: iqn.2003-01.org.linux-iscsi.localhost.x8664:sn.0001
+
+  host_templates:
+    fence_virt:
+      src: host/fence_virt.conf
+      dst: host/etc/fence_virt.conf
+    auto_iso:
+      src: host/auto.iso
+      dst: host/etc/auto.iso
+    fix_bug_in_software_bridge_sh:
+      src: host/fix_bug_in_software_bridge.sh
+      dst: host/usr/sbin/fix_bug_in_software_bridge.sh
+    enable_nested_kvm:
+      src: host/kvm_intel.conf
+      dst: host/etc/modprobe.d/kvm_intel.conf
+
+    create_lio_iscsi_lun:
+      src: host/create_lio_iscsi_lun.sh
+      dst: host/usr/sbin/create_lio_iscsi_lun.sh
 
 # vim:sw=2:ts=2:et:
