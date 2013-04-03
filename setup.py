@@ -12,7 +12,7 @@ from miniascape.utils import concat
 
 
 # For daily snapshot versioning mode:
-if os.environ.get("_MINIASCAPE_SNAPSHOT_BUILD", None) is not None:
+if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
     import datetime
     VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
 
