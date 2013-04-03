@@ -49,9 +49,11 @@ def gen_conf_files(conf, tmpldirs, workdir):
 
     logging.info("Generating site config files into %s" % outdir)
 
-    for tmpl, subdir in (("common.j2", "common"), ("host.j2", "host.d")):
-        T.renderto(tpaths, conf, tmpl,
-                   os.path.join(outdir, subdir, "00_base.yml"))
+    AC.dump(conf.get("common", {}),
+            os.path.join(outdir, "common", "00_base.yml"))
+
+    AC.dump(conf.get("host", {}),
+            os.path.join(outdir, "host.d", "00_base.yml"))
 
     for net in conf.get("networks"):
         netoutdir = os.path.join(outdir, "networks.d", net["name"])
