@@ -1,0 +1,16 @@
+{# NOTE: ifcfg-ethX must NOT be saved as ifcfg-ethX.save #}{% for ni in interfaces %}{% if ni.bootproto == 'static' -%}
+f=/etc/sysconfig/network-scripts/ifcfg-{{ ni.device }}
+bf=/etc/sysconfig/network-scripts/saved.ifcfg-{{ ni.device }}
+test -f $bf || cp $f $bf
+cat < EOF > $f
+DEVICE={{ ni.device }}
+BOOTPROTO=static
+ONBOOT={{ ni.onboot|default('yes') }}
+IPADDR={{ ni.ip }} 
+NETMASK={{ ni.netmask|default('255.255.255.0') }}
+{% if ni.gateway is defined %}GATEWAY={{ ni.gateway }}{% endif %}
+PEERDNS={% if ni.nodns is defined %}no{% else %}yes{% endif %}
+USERCTL=no
+NM_CONTROLLED=no
+EOF{% endif %}
+{%  endfor %}

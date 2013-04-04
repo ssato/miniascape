@@ -1,0 +1,5 @@
+{% if etc_sysconfig_iptables is defined and etc_sysconfig_iptables.input_rules is defined -%}
+f=/etc/sysconfig/iptables
+test -f $f.save || cp $f $f.save
+sed -i -e '/^-A INPUT -j REJECT/i \
+{% for rule in etc_sysconfig_iptables.input_rules %}{{ rule }}\n{% endfor %}' $f{% endif %}
