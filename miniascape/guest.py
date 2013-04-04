@@ -67,7 +67,7 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
         logging.info("Generating %s from %s" % (out, src))
         T.renderto(tpaths, config, src, out, ask=True)
 
-    subprocess.check_output(
+    return subprocess.check_output(
         "tar --xz -c setup | base64 > setup.tar.xz.base64",
         shell=True, cwd=gworkdir
     )
