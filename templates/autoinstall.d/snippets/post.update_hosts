@@ -1,4 +1,5 @@
-cp /etc/hosts /etc/hosts.save
+f=/etc/hosts
+test -f $f.save || cp $f $f.save
 cat << EOF >> /etc/hosts
 # self:
 {% if ip is defined and fqdn is defined %}{{ ip }} {{ fqdn }}{% if hostname is defined %} {{ hostname }}{% endif %}{% endif %}
