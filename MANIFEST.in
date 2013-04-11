@@ -11,5 +11,6 @@ include templates/autoinstall.d/snippets/*
 include templates/host/*
 recursive-include templates/config *.yaml
 recursive-include templates/config *.j2
+recursive-include tests *.py
 recursive-include default *.yml
 recursive-include miniascape *.py
