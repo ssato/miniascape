@@ -35,6 +35,7 @@ data_files = concat(
     list_data_files_g(p, d) for p, d in
         ((M_CONF_TOPDIR, "default"),      # config files
          ("share/%s" % PACKAGE, "templates"),  # template files
+         ("share/%s" % PACKAGE, "tests"),  # test cases
         )
 )
 
