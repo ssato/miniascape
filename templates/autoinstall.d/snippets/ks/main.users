@@ -1,0 +1,9 @@
+{% for user in users -%}
+user --name={{ user.name }}
+{%-  if user.groups is defined %} --groups={{ user.groups|join(',') }}{% endif -%}
+{%-  if user.homedir is defined %} --homedir={{ user.homedir }}{% endif -%}
+{%-  if user.password is defined %} --password={{ user.password }}{% endif -%}
+{%-  if user.iscrypted is defined %} --iscrypted{% endif -%}
+{%-  if user.shell is defined %} --shell={{ user.shell }}{% endif -%}
+{%-  if user.uid is defined %} --uid={{ user.uid }}{% endif %}
+{% endfor %}

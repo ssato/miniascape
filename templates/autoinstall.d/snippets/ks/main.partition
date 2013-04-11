@@ -1,0 +1,17 @@
+{% block partition -%}
+zerombr
+clearpart {{ partitions.clearpart_options|default('--all --initlabel') }}
+{% if partitions is defined -%}
+part /boot  --size={{ parititions.boot.size|default('200') }} --fstype {{ filesystem|default('ext4') }}
+{%    if partitions.lvm is defined and partitions.lvm -%}
+part pv.100 --size=1 --grow
+volgroup {{ partitions.lvm.vg }} pv.100
+{%    for lv in partitions.lvm.lvs -%}
+logvol {{ lv.mount }} --fstype {{ filesystem|default('ext4') }} --name={{ lv.name }} --vgname={{ partitions.lvm.vg }} --size={{ lv.size|default('1') }} {% if lv.grow %}--grow{% endif %}
+{%    endfor %}
+logvol swap --fstype swap --name=lv_swap --vgname={{ partitions.lvm.vg }} --size={{ swap }}
+{%    else -%}
+{%    for part in partitions.parts -%}
+part {{ part.mount }} --size={{ part.size|default('1') }} --fstype {{ filesystem|default('ext4') }} {% if lv.grow %}--grow{% endif %}
+{%    endfor %}{% else -%}
+autopart{% endif %}{% endblock %}
