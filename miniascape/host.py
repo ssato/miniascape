@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012, 2013 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,10 +37,13 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
     return os.path.join(topdir, host_subdir, net_subdir)
 
 
-def filterout_hosts_wo_macs(netconf):
-    nc = A.load(netconf)
-    nc["hosts"] = [h for h in nc.get("hosts", []) if "mac" in h]
-    return nc
+def hosts_w_unique_macs(nc):
+    """
+    :return: list of hosts having nics w unique mac addresses assigned.
+    """
+    return [
+        h for h in nc.get("hosts", []) if "mac" in h and h["mac"] != "RANDOM"
+    ]
 
 
 def _find_template(tmpldirs, template):
@@ -76,8 +79,10 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
             logging.warn("Net xml already exists: " + netxml)
             return
 
+        nc = A.load(netconf)
+        nc["hosts"] = hosts_w_unique_macs(nc)
+
         logging.debug("Generating network xml: " + netxml)
-        nc = filterout_hosts_wo_macs(netconf)
         T.renderto(tpaths, nc, _find_template(tmpldirs, "host/network.xml"),
                    netxml)
 
