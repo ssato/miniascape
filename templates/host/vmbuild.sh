@@ -22,7 +22,7 @@ kscfg=${ks_path##*/}{% endblock %}
 
 {% block virtinst_disks_hack %}{% if disks|length >= 2 %}
 virtinst_ver_s=`virt-install --version 2>/dev/null`
-virtinst_ver=${${virtinst_ver_s#*.}%.*}
+virtinst_ver_0=${virtinst_ver_s#*.}; virtinst_ver=${virtinst_ver_0%.*}
 virtinst_rel=${virtinst_ver_s##*.}
 need_disks_hack=$( (test ${virtinst_ver} -lt 600 || test ${virtinst_ver} -eq 600 && test ${virtinst_rel} -lt 3) && echo "true" || echo "false")
 if test $need_disks_hack = "true"; then
