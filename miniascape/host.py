@@ -115,11 +115,12 @@ def gen_host_files(cf, tmpldirs, workdir, force):
 
 
 def option_parser():
-    defaults = dict(force=False, yes=False, **O.M_DEFAULTS)
+    defaults = dict(force=False, yes=False, dryrun=False, **O.M_DEFAULTS)
     p = O.option_parser(defaults, "%prog [OPTION ...]")
 
     p.add_option("-f", "--force", action="store_true",
                  help="Force outputs even if these exist")
+    p.add_option("", "--dryrun", action="store_true", help="Dry run mode")
     return p
 
 
