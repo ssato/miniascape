@@ -53,7 +53,7 @@ virt-install \
 --graphics {{ virtinst.graphics }} \
 --os-type={{ virtinst.os_type }} \
 --os-variant={{ virtinst.os_variant }} \
-{% if virtinst.cdrom %}--cdrom {{ virtinst.cdrom }}{% if virtinst.extra_args is defined and false %} --extra-args="{{ virtinst.extra_args }}"{% endif %}{% else %}--location=${location} --initrd-inject=${ks_path} --extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }} {{ virtinst.extra_args|default('') }}"{% endif %} \
+{% if virtinst.cdrom %}--cdrom {{ virtinst.cdrom }}{% if virtinst.extra_args is defined and false %} --extra-args="{{ virtinst.extra_args }}"{% endif %}{% else %}--location=${location} --initrd-inject=${ks_path} --extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }} sshd=1 {{ virtinst.extra_args|default('') }}"{% endif %} \
 ${disk_options} \
 {% for nic in interfaces %}--network {{ net_option(nic) }} {% endfor %}
 
