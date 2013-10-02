@@ -1,7 +1,0 @@
-#
-# Packages from RHEL distribution which we need to be installed
-# on top of the @base group
-#
-compat-db
-compat-db42
-compat-db43
