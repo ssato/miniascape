@@ -6,7 +6,7 @@ admin-email = {{ satellite.admin.email }}
 {% if rhn.username is defined %}
 rhn-username = {{ rhn.username }}
 rhn-password = {{ rhn.password }}
-{% endif %}
+{%- endif %}
 {% if proxy is defined and proxy.fqdn is defined %}
 rhn-http-proxy = {{ proxy.fqdn }}
 rhn-http-proxy-username = {{ proxy.username }}
@@ -22,4 +22,7 @@ satellite-cert-file = {{ satellite.cert|default('/root/setup/satellite.cert') }}
 # added to avoid some unknown errors:
 ssl-set-email = {{ satellite.admin.email }}
 ssl-config-sslvhost = y
+# Marked as optional but requried ones:
+run-updater = y
+enable-tftp = y
 EOA
