@@ -14,7 +14,7 @@ mac=$4      # mac address
 
 if test $# -lt 3; then
     echo "Usage: $0 NETWORK_NAME IP FQDN [MAC_ADDR]"
-    exit 1
+    exit 0
 fi
 
 function register_dns_host () {
