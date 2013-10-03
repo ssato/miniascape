@@ -56,10 +56,10 @@ for f in *.xml; do install -m 644 $f %{netsrcdir}; done
 nname={{ net.name }}
 if test $1 -eq 1 && test ! -f %{_sysconfdir}/libvirt/qemu/networks/${nname}.xml ; then
     UUID=`/usr/bin/uuidgen`
-    sed -e "s,</name>,</name>\n  <uuid>$UUID</uuid>," \
-        < %{_datadir}/libvirt/networks/${nname}.xml \
-        > %{_sysconfdir}/libvirt/qemu/networks/${nname}.xml
-    ln -s ../${nname}.xml %{_sysconfdir}/libvirt/qemu/networks/autostart/${nname}.xml
+    (cd %{_sysconfdir}/libvirt/qemu/networks/autostart && \
+     sed -e "s,</name>,</name>\n  <uuid>$UUID</uuid>," \
+        %{_datadir}/libvirt/networks/${nname}.xml > ../${nname}.xml && \
+     ln -s ../${nname}.xml ./)
 fi
 {% endfor %}
 
