@@ -9,7 +9,7 @@
 set -e
 network=$1  # Virtual network name, e.g. 'default'
 ip=$2       # ip address
-fqdn=$4     # fqdn
+fqdn=$3     # fqdn
 mac=$4      # mac address
 
 if test $# -lt 3; then
@@ -28,7 +28,11 @@ function register_dns_host () {
         echo "The DNS entry for ${fqdn:?} already exist! Nothing to do..."
     else
         echo "Adding DNS entry of ${fqdn:?} to the network ${network}..."
-        virsh net-update --config --live ${network} add dns-host "<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
+        dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
+        virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
+        (sed -e "s,</dns>,    ${dns_entry}\n   </dns>" \
+            /etc/libvirt/networks/${network}.xml > /etc/libvirt/networks/${network}.xml.save && \\
+            mv /etc/libvirt/networks/${network}.xml.save && /etc/libvirt/networks/${network}.xml)
     fi
 }
 
@@ -43,7 +47,11 @@ function register_dhcp_host () {
         echo "The DHCP entry for ${mac:?} already exist! Nothing to do..."
     else
         echo "Adding DHCP entry of ${fqdn:?} to the network ${network}..."
-        virsh net-update --config --live ${network} add ip-dhcp-host "<host mac='${mac:?}' name='${fqdn}' ip='${ip}' />"
+        dhcp_entry="<host mac='${mac:?}' name='${fqdn}' ip='${ip}' />"
+        virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
+        (sed -e "s,</dhcp>,    ${dhcp_entry}\n    </dhcp>" \
+            /etc/libvirt/networks/${network}.xml > /etc/libvirt/networks/${network}.xml.save && \\
+            mv /etc/libvirt/networks/${network}.xml.save && /etc/libvirt/networks/${network}.xml)
     fi
 }
 
