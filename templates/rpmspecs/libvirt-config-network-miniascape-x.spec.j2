@@ -43,11 +43,15 @@ mkdir -p $RPM_BUILD_ROOT%{netsrcdir}
 for f in *.xml; do install -m 644 $f %{netsrcdir}; done
 
 %post
-# Do almost same thing as:
+# The following code snippet is originally copy-n-paste from libvirt.spec.in in
+# libvirt git repo which is distributed under LGPLv2+ license.
+#
+# Do almost same thing as the followings in safer (it should work even if
+# libvirtd is not running) and conservative way w/o virsh:
+#
 #   virsh net-define %{_sysconfdir}/libvirt/qemu/networks/${nname}.xml
 #   virsh net-autostart ${nname}
 #
-# Originally copy-n-paste from libvirt.spec.in:
 {% for net in networks -%}
 nname={{ net.name }}
 if test $1 -eq 1 && test ! -f %{_sysconfdir}/libvirt/qemu/networks/${nname}.xml ; then
