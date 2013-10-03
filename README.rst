@@ -39,6 +39,8 @@ And non-goals are:
   RHEV, RHN Satellite and cobbler, CloudForms/SystemEngine, etc.
 
 * Provides a UI (GUI, Web UI) to manage lifecycle of VMs at ease.
+* Provides a CLI interface wraps exsiting tools and forcing users to learn new
+  its way like vagrant
 
 Usage
 ========
