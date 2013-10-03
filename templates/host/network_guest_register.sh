@@ -30,9 +30,11 @@ function register_dns_host () {
         echo "Adding DNS entry of ${fqdn:?} to the network ${network}..."
         dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
         virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
-        (sed -e "s,</dns>,    ${dns_entry}\n   </dns>" \
-            /etc/libvirt/networks/${network}.xml > /etc/libvirt/networks/${network}.xml.save && \\
-            mv /etc/libvirt/networks/${network}.xml.save && /etc/libvirt/networks/${network}.xml)
+        (sed -e "s,</dns>,    ${dns_entry}\n   </dns>," \
+            /etc/libvirt/qemu/networks/${network}.xml > /etc/libvirt/qemu/networks/${network}.xml.save && \
+            mv /etc/libvirt/qemu/networks/${network}.xml.save /etc/libvirt/qemu/networks/${network}.xml && \
+            echo "${ip}  ${fqdn}" >> /var/lib/libvirt/dnsmasq/${network:?}.addnhosts && \
+            test -f /var/run/libvirt/network/${network}.pid && kill -HUP $(cat /var/run/libvirt/network/${network}.pid) || : )
     fi
 }
 
@@ -49,9 +51,11 @@ function register_dhcp_host () {
         echo "Adding DHCP entry of ${fqdn:?} to the network ${network}..."
         dhcp_entry="<host mac='${mac:?}' name='${fqdn}' ip='${ip}' />"
         virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
-        (sed -e "s,</dhcp>,    ${dhcp_entry}\n    </dhcp>" \
-            /etc/libvirt/networks/${network}.xml > /etc/libvirt/networks/${network}.xml.save && \\
-            mv /etc/libvirt/networks/${network}.xml.save && /etc/libvirt/networks/${network}.xml)
+        (sed -e "s,</dhcp>,    ${dhcp_entry}\n    </dhcp>," \
+            /etc/libvirt/qemu/networks/${network}.xml > /etc/libvirt/qemu/networks/${network}.xml.save && \
+            mv /etc/libvirt/qemu/networks/${network}.xml.save && /etc/libvirt/qemu/networks/${network}.xml && \
+            echo "${mac},${ip},${fqdn}" >> /var/lib/libvirt/dnsmasq/${network:?}.hostsfile && \
+            test -f /var/run/libvirt/network/${network}.pid && kill -HUP $(cat /var/run/libvirt/network/${network}.pid) || : )
     fi
 }
 
