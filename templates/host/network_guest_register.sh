@@ -17,6 +17,17 @@ if test $# -lt 3; then
     exit 0
 fi
 
+# files:
+net_def=/etc/libvirt/qemu/networks/${network}.xml
+dns_map=/var/lib/libvirt/dnsmasq/${network}.addnhosts
+dhcp_map=/var/lib/libvirt/dnsmasq/${network}.hostsfile
+
+
+function dnsmasq_reload () {
+    local pidfile=/var/run/libvirt/network/${network}.pid
+    test -f $pidfile && kill -HUP $(cat $pidfile)
+}
+
 function register_dns_host () {
     network=$1
     ip=$2
@@ -24,17 +35,15 @@ function register_dns_host () {
 
     # Check if the target entry exist in DNS map file of dnsmasq run by
     # libvirtd:
-    if `grep -q ${fqdn:?} /var/lib/libvirt/dnsmasq/${network:?}.addnhosts 2>/dev/null`; then
+    if `grep -q ${fqdn:?} ${dns_map} 2>/dev/null`; then
         echo "The DNS entry for ${fqdn:?} already exist! Nothing to do..."
     else
         echo "Adding DNS entry of ${fqdn:?} to the network ${network}..."
         dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
         virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
         (sed -e "s,</dns>,    ${dns_entry}\n   </dns>," \
-            /etc/libvirt/qemu/networks/${network}.xml > /etc/libvirt/qemu/networks/${network}.xml.save && \
-            mv /etc/libvirt/qemu/networks/${network}.xml.save /etc/libvirt/qemu/networks/${network}.xml && \
-            echo "${ip}  ${fqdn}" >> /var/lib/libvirt/dnsmasq/${network:?}.addnhosts && \
-            test -f /var/run/libvirt/network/${network}.pid && kill -HUP $(cat /var/run/libvirt/network/${network}.pid) || : )
+            ${net_def} > ${network}.save && mv ${net_def}.save ${net_def} && \
+            echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload
     fi
 }
 
@@ -44,29 +53,28 @@ function register_dhcp_host () {
     ip=$3
     fqdn=$4
 
-    # DNS
-    if `grep -q ${mac:?} /var/lib/libvirt/dnsmasq/${network:?}.hostsfile 2>/dev/null`; then
+    if `grep -q ${mac:?} ${dhcp_map} 2>/dev/null`; then
         echo "The DHCP entry for ${mac:?} already exist! Nothing to do..."
     else
         echo "Adding DHCP entry of ${fqdn:?} to the network ${network}..."
         dhcp_entry="<host mac='${mac:?}' name='${fqdn}' ip='${ip}' />"
         virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
         (sed -e "s,</dhcp>,    ${dhcp_entry}\n    </dhcp>," \
-            /etc/libvirt/qemu/networks/${network}.xml > /etc/libvirt/qemu/networks/${network}.xml.save && \
-            mv /etc/libvirt/qemu/networks/${network}.xml.save && /etc/libvirt/qemu/networks/${network}.xml && \
-            echo "${mac},${ip},${fqdn}" >> /var/lib/libvirt/dnsmasq/${network:?}.hostsfile && \
-            test -f /var/run/libvirt/network/${network}.pid && kill -HUP $(cat /var/run/libvirt/network/${network}.pid) || : )
+            ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def}.xml && \
+            echo "${mac},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload \
     fi
 }
 
-if test -f /etc/libvirt/qemu/networks/${network:?}.xml; then
+if test -f ${net_def}; then
     register_dns_host ${network} ${ip} ${fqdn}; rc=$?
     if test $rc != 0; then
         echo "Failed to register DNS host entry: ip=${ip}, fqdn=${fqdn}"
         exit $rc
     fi
 
-    if test "x$mac" != "x"; then
+    if test "x$mac" = "x"; then
+        echo "[Info] MAC address was not given. Do not add DHCP entry for this guest."
+    else
         register_dhcp_host ${network} ${mac} ${ip} ${fqdn}; rc=$?
         if test $rc != 0; then
             echo "Failed to register DHCP host entry: mac=${mac}, ip=${ip}, fqdn=${fqdn}"
