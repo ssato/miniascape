@@ -1,0 +1,68 @@
+%define pname miniascape-{{ site }}
+%define netsrcdir %{_datadir}/libvirt/networks
+%define pversion {{ version|default('0.0.1') }}
+
+Name:           libvirt-%{pname}-config-network
+Version:        %{pversion}
+Release:        1%{?dist}
+Summary:        Libvirt network configuration files for the site {{ site }}
+Group:          Development/Libraries
+License:        MIT
+URL:            {{ url|default('https://github.com/ssato/miniascape') }}
+{% for net in networks -%}
+Source{{ loop.index0 }}:        {{ net.name }}.xml
+{% endfor %}
+#BuildRequires:  
+#Requires:       /usr/bin/virsh
+Requires:       /usr/bin/uuidgen
+
+
+%description
+This package contains libvirt network xml definition files for the site
+{{ site }}.
+
+
+%prep
+%setup -q -T -c %{name}-%{version}
+{% for net in networks -%}
+cp %{Source{{ loop.index0 }}} ./
+{% endfor %}
+
+%build
+cat << EOF > README
+This package contains libvirt network xml definition files for the site
+{{ site }}.
+
+The network xml files is under /usr/share/libvirt/networks/ and the network is
+registered and set to autostart after installation.
+EOF
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{netsrcdir}
+for f in *.xml; do install -m 644 $f %{netsrcdir}; done
+
+%post
+# Do almost same thing as:
+#   virsh net-define %{_sysconfdir}/libvirt/qemu/networks/${nname}.xml
+#   virsh net-autostart ${nname}
+#
+# Originally copy-n-paste from libvirt.spec.in:
+{% for net in networks -%}
+nname={{ net.name }}
+if test $1 -eq 1 && test ! -f %{_sysconfdir}/libvirt/qemu/networks/${nname}.xml ; then
+    UUID=`/usr/bin/uuidgen`
+    sed -e "s,</name>,</name>\n  <uuid>$UUID</uuid>," \
+        < %{_datadir}/libvirt/networks/${nname}.xml \
+        > %{_sysconfdir}/libvirt/qemu/networks/${nname}.xml
+    ln -s ../${nname}.xml %{_sysconfdir}/libvirt/qemu/networks/autostart/${nname}.xml
+fi
+{% endfor %}
+
+%files
+%doc README
+%{_netsrcdir}/*.xml
+
+%changelog
+* {{ datestamp }} {{ fullname }} <{{ email }}> - %{pversion}-1
+- Initial packaging.
