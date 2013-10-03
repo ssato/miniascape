@@ -24,7 +24,7 @@ function register_dns_host () {
 
     # Check if the target entry exist in DNS map file of dnsmasq run by
     # libvirtd:
-    if `grep -q ${ip:?} /var/lib/libvirt/dnsmasq/${network:?}.addnhosts 2>/dev/null`; then
+    if `grep -q ${fqdn:?} /var/lib/libvirt/dnsmasq/${network:?}.addnhosts 2>/dev/null`; then
         echo "The DNS entry for ${fqdn:?} already exist! Nothing to do..."
     else
         echo "Adding DNS entry of ${fqdn:?} to the network ${network}..."
