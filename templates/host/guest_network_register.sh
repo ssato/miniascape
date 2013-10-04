@@ -81,9 +81,13 @@ function register_dns_host () {
         echo "Adding DNS entry of ${fqdn} to the network ${network}..."
         dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
         virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
-        (sed -e "s,</dns>,    ${dns_entry}\n   </dns>," \
-            ${net_def} > ${network}.save && mv ${net_def}.save ${net_def} && \
-            echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload)
+        (grep -q "</dns>" ${net_def} 2>/dev/null && \
+            sed -e "s,</dns>,    ${dns_entry}\n   </dns>," \
+              ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def} || \
+            sed -e "s,</network>,  <dns>\n    ${dns_entry}\n  </dns>\n</network>," \
+              ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def} && \
+            echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload && \
+         virsh net-define ${net_def})
     fi
 }
 
@@ -99,19 +103,14 @@ function register_dhcp_host () {
         echo "Adding DHCP entry of ${fqdn} to the network ${network}..."
         dhcp_entry="<host mac='${macaddr}' name='${fqdn}' ip='${ip}' />"
         virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
-        (sed -e "s,</dhcp>,    ${dhcp_entry}\n    </dhcp>," \
+        (sed -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," \
             ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def} && \
-            echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload)
+            echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload && \
+         virsh net-define ${net_def})
     fi
 }
 
 if test -f ${net_def}; then
-    register_dns_host ${network} ${ip} ${fqdn}; rc=$?
-    if test $rc != 0; then
-        echo "Failed to register DNS host entry: ip=${ip}, fqdn=${fqdn}"
-        exit $rc
-    fi
-
     if test "x$macaddr" = "x"; then
         echo "[Info] MAC address was not given. Do not add DHCP entry for this guest."
     else
@@ -120,6 +119,11 @@ if test -f ${net_def}; then
             echo "Failed to register DHCP host entry: mac=${macaddr}, ip=${ip}, fqdn=${fqdn}"
             exit $rc
         fi
+    fi
+    register_dns_host ${network} ${ip} ${fqdn}; rc=$?
+    if test $rc != 0; then
+        echo "Failed to register DNS host entry: ip=${ip}, fqdn=${fqdn}"
+        exit $rc
     fi
 else
     echo "The network ${network} does not exist! Register it first"
