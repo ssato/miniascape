@@ -77,16 +77,14 @@ function register_dns_host () {
     if `grep -q ${fqdn} ${dns_map} 2>/dev/null`; then
         echo "The DNS entry for ${fqdn} already exist! Nothing to do..."
     else
-        # FIXME: The part 'sed -e ...' is a quick and dirty hack.
+        # FIXME: The part 'sed ...' is a quick and dirty hack.
         echo "Adding DNS entry of ${fqdn} to the network ${network}..."
         dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
         virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
-        (grep -q "</dns>" ${net_def} 2>/dev/null && \
-            sed -e "s,</dns>,    ${dns_entry}\n   </dns>," \
-              ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def} || \
-            sed -e "s,</network>,  <dns>\n    ${dns_entry}\n  </dns>\n</network>," \
-              ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def} && \
-            echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload && \
+        ((grep -q "</dns>" ${net_def} 2>/dev/null && \
+          sed -i.save "s,</dns>,    ${dns_entry}\n   </dns>," ${net_def} ||
+          sed -i.save "s,</network>,  <dns>\n    ${dns_entry}\n  </dns>\n</network>," ${net_def}) && \
+         echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload && \
          virsh net-define ${net_def})
     fi
 }
@@ -103,9 +101,8 @@ function register_dhcp_host () {
         echo "Adding DHCP entry of ${fqdn} to the network ${network}..."
         dhcp_entry="<host mac='${macaddr}' name='${fqdn}' ip='${ip}' />"
         virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
-        (sed -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," \
-            ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def} && \
-            echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload && \
+        (sed -i.save "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def} && \
+         echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload && \
          virsh net-define ${net_def})
     fi
 }
