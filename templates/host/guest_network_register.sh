@@ -7,24 +7,60 @@
 # Author: Satoru SATOH <ssato@redhat.com>
 #
 set -e
-ip=$1       # ip address
-fqdn=$2     # fqdn
-network=$3  # virtual network name, e.g. 'default'
-mac=$4      # mac address
+
+# defaults:
+network=default
+macaddr=random
+
+function show_help () {
+    cat << EOH
+Usage: $0 [Options] FQDN IP
+Options:
+  -n    specify libvirt's virtual network [$network]
+  -m    specify MAC address of the guest, or special keyword 'random' to
+        generate random mac address, or 'no' not to register DHCP entry for
+        the guest [$macaddr]
+  -h    show this help
+EOH
+}
+
+function gen_mac () {
+    local prefix=$1
+    test "x${prefix}" = "x" && prefix="52:54:00"
+    dd if=/dev/urandom bs=1024 count=1 2>/dev/null | md5sum | \
+        sed "s/^\(..\)\(..\)\(..\).*$/${prefix}:\1:\2:\3/"
+}
 
 if test $# -lt 2; then
-    echo "Usage: $0 IP FQDN [NETWORK_NAME] [MAC_ADDR]"
+    show_help
     exit 0
 fi
 
-# Default network to apply changes:
-test "x$network" = "x" && network="default"
+while getopts "n:m:h" opt
+do
+    case $opt in
+        n) network=$OPTARG ;;
+        m) macaddr=$OPTARG ;;
+        h) show_help; exit 0 ;;
+        \?) show_help; exit 0 ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+fqdn=$1
+ip=$2
+
+if test "$macaddr" = "random"; then
+    macaddr=`gen_mac`
+    echo "[Info] Generated mac address: $macaddr"
+else
+    test "$macaddr" = "no" && macaddr=""
+fi
 
 # files:
 net_def=/etc/libvirt/qemu/networks/${network}.xml
 dns_map=/var/lib/libvirt/dnsmasq/${network}.addnhosts
 dhcp_map=/var/lib/libvirt/dnsmasq/${network}.hostsfile
-
 
 function dnsmasq_reload () {
     local pidfile=/var/run/libvirt/network/${network}.pid
@@ -32,39 +68,40 @@ function dnsmasq_reload () {
 }
 
 function register_dns_host () {
-    network=$1
-    ip=$2
-    fqdn=$3
+    local network=$1
+    local ip=$2
+    local fqdn=$3
 
     # Check if the target entry exist in DNS map file of dnsmasq run by
     # libvirtd:
     if `grep -q ${fqdn} ${dns_map} 2>/dev/null`; then
         echo "The DNS entry for ${fqdn} already exist! Nothing to do..."
     else
+        # FIXME: The part 'sed -e ...' is a quick and dirty hack.
         echo "Adding DNS entry of ${fqdn} to the network ${network}..."
         dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
         virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
         (sed -e "s,</dns>,    ${dns_entry}\n   </dns>," \
             ${net_def} > ${network}.save && mv ${net_def}.save ${net_def} && \
-            echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload
+            echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload)
     fi
 }
 
 function register_dhcp_host () {
-    network=$1
-    mac=$2
-    ip=$3
-    fqdn=$4
+    local network=$1
+    local macaddr=$2
+    local ip=$3
+    local fqdn=$4
 
-    if `grep -q ${mac} ${dhcp_map} 2>/dev/null`; then
-        echo "The DHCP entry for ${mac} already exist! Nothing to do..."
+    if `grep -q ${macaddr} ${dhcp_map} 2>/dev/null`; then
+        echo "The DHCP entry for ${macaddr} already exist! Nothing to do..."
     else
         echo "Adding DHCP entry of ${fqdn} to the network ${network}..."
-        dhcp_entry="<host mac='${mac}' name='${fqdn}' ip='${ip}' />"
+        dhcp_entry="<host mac='${macaddr}' name='${fqdn}' ip='${ip}' />"
         virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
         (sed -e "s,</dhcp>,    ${dhcp_entry}\n    </dhcp>," \
-            ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def}.xml && \
-            echo "${mac},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload \
+            ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def} && \
+            echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload)
     fi
 }
 
@@ -75,12 +112,12 @@ if test -f ${net_def}; then
         exit $rc
     fi
 
-    if test "x$mac" = "x"; then
+    if test "x$macaddr" = "x"; then
         echo "[Info] MAC address was not given. Do not add DHCP entry for this guest."
     else
-        register_dhcp_host ${network} ${mac} ${ip} ${fqdn}; rc=$?
+        register_dhcp_host ${network} ${macaddr} ${ip} ${fqdn}; rc=$?
         if test $rc != 0; then
-            echo "Failed to register DHCP host entry: mac=${mac}, ip=${ip}, fqdn=${fqdn}"
+            echo "Failed to register DHCP host entry: mac=${macaddr}, ip=${ip}, fqdn=${fqdn}"
             exit $rc
         fi
     fi
