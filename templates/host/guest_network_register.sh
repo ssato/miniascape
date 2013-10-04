@@ -7,15 +7,18 @@
 # Author: Satoru SATOH <ssato@redhat.com>
 #
 set -e
-network=$1  # Virtual network name, e.g. 'default'
-ip=$2       # ip address
-fqdn=$3     # fqdn
+ip=$1       # ip address
+fqdn=$2     # fqdn
+network=$3  # virtual network name, e.g. 'default'
 mac=$4      # mac address
 
-if test $# -lt 3; then
-    echo "Usage: $0 NETWORK_NAME IP FQDN [MAC_ADDR]"
+if test $# -lt 2; then
+    echo "Usage: $0 IP FQDN [NETWORK_NAME] [MAC_ADDR]"
     exit 0
 fi
+
+# Default network to apply changes:
+test "x$network" = "x" && network="default"
 
 # files:
 net_def=/etc/libvirt/qemu/networks/${network}.xml
@@ -35,10 +38,10 @@ function register_dns_host () {
 
     # Check if the target entry exist in DNS map file of dnsmasq run by
     # libvirtd:
-    if `grep -q ${fqdn:?} ${dns_map} 2>/dev/null`; then
-        echo "The DNS entry for ${fqdn:?} already exist! Nothing to do..."
+    if `grep -q ${fqdn} ${dns_map} 2>/dev/null`; then
+        echo "The DNS entry for ${fqdn} already exist! Nothing to do..."
     else
-        echo "Adding DNS entry of ${fqdn:?} to the network ${network}..."
+        echo "Adding DNS entry of ${fqdn} to the network ${network}..."
         dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
         virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
         (sed -e "s,</dns>,    ${dns_entry}\n   </dns>," \
@@ -53,11 +56,11 @@ function register_dhcp_host () {
     ip=$3
     fqdn=$4
 
-    if `grep -q ${mac:?} ${dhcp_map} 2>/dev/null`; then
-        echo "The DHCP entry for ${mac:?} already exist! Nothing to do..."
+    if `grep -q ${mac} ${dhcp_map} 2>/dev/null`; then
+        echo "The DHCP entry for ${mac} already exist! Nothing to do..."
     else
-        echo "Adding DHCP entry of ${fqdn:?} to the network ${network}..."
-        dhcp_entry="<host mac='${mac:?}' name='${fqdn}' ip='${ip}' />"
+        echo "Adding DHCP entry of ${fqdn} to the network ${network}..."
+        dhcp_entry="<host mac='${mac}' name='${fqdn}' ip='${ip}' />"
         virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
         (sed -e "s,</dhcp>,    ${dhcp_entry}\n    </dhcp>," \
             ${net_def} > ${net_def}.save && mv ${net_def}.save ${net_def}.xml && \
