@@ -36,7 +36,7 @@ function gen_macaddr () {
 
 function netdef_path () {
     local network=$1
-    return "/etc/libvirt/qemu/networks/${network:?}.xml"
+    echo "/etc/libvirt/qemu/networks/${network:?}.xml"
 }
 
 # FIXME: This is a dirty hack.
