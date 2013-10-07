@@ -6,6 +6,11 @@
 # License: MIT
 # Author: Satoru SATOH <ssato@redhat.com>
 #
+# NOTEs:
+# * Libvirt < 0.10.2 does not support partial dynamic network def updates
+# * It seems that some versions of libvirt will fail to add DNS entry even if
+#   its is newer than 0.10.2, e.g. libvirt in RHEL 6.4
+#
 # TODOs:
 # * Dynamic IP address generation w/ ipcalc, etc.
 # * Tweak DHCP range to exclude statically assigned DHCP addresses
@@ -90,15 +95,23 @@ function register_dhcp_host () {
     local dhcp_map=/var/lib/libvirt/dnsmasq/${network:?}.hostsfile
     local dhcp_entry="<host mac='${macaddr:?}' name='${fqdn:?}' ip='${ip:?}'/>"
     local net_def=$(netdef_path ${network})
+    local domain=${fqdn#*.}
 
-    if `grep -q ${macaddr} ${dhcp_map} 2>/dev/null`; then
+    if $(grep -q ${macaddr} ${dhcp_map} 2>/dev/null); then
         echo "[Info] The DHCP entry for ${macaddr} already exist! Nothing to do..."
     else
         echo "[Info] Adding DHCP entry of ${fqdn} to the network ${network}..."
-        virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
-        (sed -i.save "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def} && \
-         echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && reload_dnsmasq ${network} && \
-         virsh net-define ${net_def})
+        if ! $(virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}"); then
+            if $(grep -q "<domain name=" ${net_def} 2>/dev/null); then
+                local add_domain=""
+            else
+                echo "[Info] Domain entry ${domain} will also be added."
+                local add_domain="-e 's,</network>,  <domain name=\"${domain}\"/>\n</network>,'"
+            fi
+            sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${add_domain} ${net_def} && \
+            echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && reload_dnsmasq ${network} && \
+            virsh net-define ${net_def}
+        fi
     fi
 }
 
