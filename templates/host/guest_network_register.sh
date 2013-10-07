@@ -82,8 +82,8 @@ function register_dns_host () {
         ((grep -q "</dns>" ${net_def} 2>/dev/null && \
           sed -i.save "s,</dns>,    ${dns_entry}\n   </dns>," ${net_def} ||
           sed -i.save "s,</network>,  <dns>\n    ${dns_entry}\n  </dns>\n</network>," ${net_def}) && \
-         echo "${ip}  ${fqdn}" >> ${dns_map} && reload_dnsmasq ${network} && \
-         virsh net-define ${net_def})
+         echo "${ip}  ${fqdn}" >> ${dns_map} && \
+         virsh net-define ${net_def} && reload_dnsmasq ${network})
     fi
 }
 
@@ -99,7 +99,8 @@ function register_dhcp_host () {
 
     grep -q "<domain name=" ${net_def} 2>/dev/null || \
     (echo "[Info] Adding domain entry ${domain} to the network ${network}" && \
-     sed -i.save.domain "s,</network>,  <domain name='${domain}'/>\n</network>," ${net_def})
+     sed -i.save.domain "s,</network>,  <domain name='${domain}'/>\n</network>," ${net_def} && \
+     virsh net-define ${net_def} && reload_dnsmasq ${network})
 
     if $(grep -q ${macaddr} ${dhcp_map} 2>/dev/null); then
         echo "[Info] The DHCP entry for ${macaddr} already exist! Nothing to do..."
@@ -107,8 +108,8 @@ function register_dhcp_host () {
         echo "[Info] Adding DHCP entry of ${fqdn} to the network ${network}..."
         virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
         (sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def} && \
-         echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && reload_dnsmasq ${network} && \
-         virsh net-define ${net_def})
+         echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && \
+         virsh net-define ${net_def} && reload_dnsmasq ${network})
     fi
 }
 
