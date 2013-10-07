@@ -42,7 +42,7 @@ do
         n) network=$OPTARG ;;
         m) macaddr=$OPTARG ;;
         h) show_help; exit 0 ;;
-        \?) show_help; exit 0 ;;
+        \?) show_help; exit 1 ;;
     esac
 done
 shift $(($OPTIND - 1))
