@@ -101,6 +101,20 @@ function register_dhcp_host () {
     fi
 }
 
+function print_ssh_config () {
+    local ip=$1
+    local fqdn=$2
+    local hostname=$(echo ${fqdn:?} | cut -f 1 -d '.')
+    test "x$ip" != "x"  # assert
+
+    cat << EOC
+# Sample configuration to access for this guest in ~/.ssh/config:
+Host ${hostname}
+  Hostname ${ip}
+  User root
+EOC
+}
+
 # main:
 if test $# -lt 2; then
     show_help
@@ -140,7 +154,9 @@ if test -f ${net_def}; then
         fi
     fi
     register_dns_host ${network} ${ip} ${fqdn}; rc=$?
-    if test $rc != 0; then
+    if test $rc = 0; then
+        print_ssh_config ${ip} ${fqdn}
+    else
         echo "[Error] Failed to add DNS host entry: ip=${ip}, fqdn=${fqdn}"
         exit $rc
     fi
