@@ -103,12 +103,12 @@ function register_dhcp_host () {
         echo "[Info] Adding DHCP entry of ${fqdn} to the network ${network}..."
         if ! $(virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}"); then
             if $(grep -q "<domain name=" ${net_def} 2>/dev/null); then
-                local add_domain=""
+                sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def}
             else
                 echo "[Info] Domain entry ${domain} will also be added."
-                local add_domain="-e 's,</network>,  <domain name=\"${domain}\"/>\n</network>,'"
+                sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," \
+                    -e "s,</network>,  <domain name='${domain}'/>\n</network>," ${net_def}
             fi
-            sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${add_domain} ${net_def} && \
             echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && reload_dnsmasq ${network} && \
             virsh net-define ${net_def}
         fi
