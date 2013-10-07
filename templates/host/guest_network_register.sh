@@ -108,6 +108,7 @@ function print_ssh_config () {
     test "x$ip" != "x"  # assert
 
     cat << EOC
+
 # Sample configuration to access for this guest in ~/.ssh/config:
 Host ${hostname}
   Hostname ${ip}
