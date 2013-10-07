@@ -97,21 +97,18 @@ function register_dhcp_host () {
     local net_def=$(netdef_path ${network})
     local domain=${fqdn#*.}
 
+    grep -q "<domain name=" ${net_def} 2>/dev/null || \
+    (echo "[Info] Adding domain entry ${domain} to the network ${network}" && \
+     sed -i.save.domain "s,</network>,  <domain name='${domain}'/>\n</network>," ${net_def})
+
     if $(grep -q ${macaddr} ${dhcp_map} 2>/dev/null); then
         echo "[Info] The DHCP entry for ${macaddr} already exist! Nothing to do..."
     else
         echo "[Info] Adding DHCP entry of ${fqdn} to the network ${network}..."
-        if ! $(virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}"); then
-            if $(grep -q "<domain name=" ${net_def} 2>/dev/null); then
-                sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def}
-            else
-                echo "[Info] Domain entry ${domain} will also be added."
-                sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," \
-                    -e "s,</network>,  <domain name='${domain}'/>\n</network>," ${net_def}
-            fi
-            echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && reload_dnsmasq ${network} && \
-            virsh net-define ${net_def}
-        fi
+        virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
+        (sed -i.save -e "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def} && \
+         echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && reload_dnsmasq ${network} && \
+         virsh net-define ${net_def})
     fi
 }
 
