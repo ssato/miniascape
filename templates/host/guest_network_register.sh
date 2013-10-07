@@ -24,7 +24,7 @@ Options:
 EOH
 }
 
-function gen_mac () {
+function gen_macaddr () {
     local prefix=$1
     test "x${prefix}" = "x" && prefix="52:54:00"
     dd if=/dev/urandom bs=1024 count=1 2>/dev/null | md5sum | \
@@ -51,7 +51,7 @@ fqdn=$1
 ip=$2
 
 if test "$macaddr" = "random"; then
-    macaddr=`gen_mac`
+    macaddr=`gen_macaddr`
     echo "[Info] Generated mac address: $macaddr"
 else
     test "$macaddr" = "no" && macaddr=""
