@@ -1,7 +1,7 @@
 #! /bin/bash
 #
-# A quick and dirty hack to register DNS and DHCP entry of given guests to
-# libvirt NAT-ed virtual network.
+# A quick and *very* dirty hack to register DNS and DHCP entry of given guests
+# to libvirt NAT-ed virtual network.
 #
 # License: MIT
 # Author: Satoru SATOH <ssato@redhat.com>
