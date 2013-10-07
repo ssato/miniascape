@@ -6,6 +6,10 @@
 # License: MIT
 # Author: Satoru SATOH <ssato@redhat.com>
 #
+# TODOs:
+# * Dynamic IP address generation w/ ipcalc, etc.
+# * Tweak DHCP range to exclude statically assigned DHCP addresses
+#
 set -e
 
 # defaults:
@@ -31,6 +35,57 @@ function gen_macaddr () {
         sed "s/^\(..\)\(..\)\(..\).*$/${prefix}:\1:\2:\3/"
 }
 
+function dnsmasq_reload () {
+    local network=$1
+    local pidfile=/var/run/libvirt/network/${network:?}.pid
+    test -f $pidfile && kill -HUP $(cat $pidfile)
+}
+
+function register_dns_host () {
+    local network=$1
+    local ip=$2
+    local fqdn=$3
+
+    local dns_map=/var/lib/libvirt/dnsmasq/${network}.addnhosts
+    local dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
+
+    # Check if the target entry exist in DNS map file of dnsmasq run by
+    # libvirtd:
+    if `grep -q ${fqdn} ${dns_map} 2>/dev/null`; then
+        echo "The DNS entry for ${fqdn} already exist! Nothing to do..."
+    else
+        # FIXME: The part 'sed ...' is a quick and dirty hack.
+        echo "Adding DNS entry of ${fqdn} to the network ${network}..."
+        virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
+        ((grep -q "</dns>" ${net_def} 2>/dev/null && \
+          sed -i.save "s,</dns>,    ${dns_entry}\n   </dns>," ${net_def} ||
+          sed -i.save "s,</network>,  <dns>\n    ${dns_entry}\n  </dns>\n</network>," ${net_def}) && \
+         echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload ${network} && \
+         virsh net-define ${net_def})
+    fi
+}
+
+function register_dhcp_host () {
+    local network=$1
+    local macaddr=$2
+    local ip=$3
+    local fqdn=$4
+
+    local dhcp_map=/var/lib/libvirt/dnsmasq/${network}.hostsfile
+    local dhcp_entry="<host mac='${macaddr}' name='${fqdn}' ip='${ip}' />"
+
+    if `grep -q ${macaddr} ${dhcp_map} 2>/dev/null`; then
+        echo "The DHCP entry for ${macaddr} already exist! Nothing to do..."
+    else
+        echo "Adding DHCP entry of ${fqdn} to the network ${network}..."
+        virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
+        (sed -i.save "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def} && \
+         echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload ${network} && \
+         virsh net-define ${net_def})
+    fi
+}
+
+# main:
 if test $# -lt 2; then
     show_help
     exit 0
@@ -59,53 +114,6 @@ fi
 
 # files:
 net_def=/etc/libvirt/qemu/networks/${network}.xml
-dns_map=/var/lib/libvirt/dnsmasq/${network}.addnhosts
-dhcp_map=/var/lib/libvirt/dnsmasq/${network}.hostsfile
-
-function dnsmasq_reload () {
-    local pidfile=/var/run/libvirt/network/${network}.pid
-    test -f $pidfile && kill -HUP $(cat $pidfile)
-}
-
-function register_dns_host () {
-    local network=$1
-    local ip=$2
-    local fqdn=$3
-
-    # Check if the target entry exist in DNS map file of dnsmasq run by
-    # libvirtd:
-    if `grep -q ${fqdn} ${dns_map} 2>/dev/null`; then
-        echo "The DNS entry for ${fqdn} already exist! Nothing to do..."
-    else
-        # FIXME: The part 'sed ...' is a quick and dirty hack.
-        echo "Adding DNS entry of ${fqdn} to the network ${network}..."
-        dns_entry="<host ip='${ip}'><hostname>${fqdn}</hostname></host>"
-        virsh net-update --config --live ${network} add dns-host "${dns_entry}" || \
-        ((grep -q "</dns>" ${net_def} 2>/dev/null && \
-          sed -i.save "s,</dns>,    ${dns_entry}\n   </dns>," ${net_def} ||
-          sed -i.save "s,</network>,  <dns>\n    ${dns_entry}\n  </dns>\n</network>," ${net_def}) && \
-         echo "${ip}  ${fqdn}" >> ${dns_map} && dnsmasq_reload && \
-         virsh net-define ${net_def})
-    fi
-}
-
-function register_dhcp_host () {
-    local network=$1
-    local macaddr=$2
-    local ip=$3
-    local fqdn=$4
-
-    if `grep -q ${macaddr} ${dhcp_map} 2>/dev/null`; then
-        echo "The DHCP entry for ${macaddr} already exist! Nothing to do..."
-    else
-        echo "Adding DHCP entry of ${fqdn} to the network ${network}..."
-        dhcp_entry="<host mac='${macaddr}' name='${fqdn}' ip='${ip}' />"
-        virsh net-update --config --live ${network} add ip-dhcp-host "${dhcp_entry}" || \
-        (sed -i.save "s,</dhcp>,  ${dhcp_entry}\n    </dhcp>," ${net_def} && \
-         echo "${macaddr},${ip},${fqdn}" >> ${dhcp_map} && dnsmasq_reload && \
-         virsh net-define ${net_def})
-    fi
-}
 
 if test -f ${net_def}; then
     if test "x$macaddr" = "x"; then
