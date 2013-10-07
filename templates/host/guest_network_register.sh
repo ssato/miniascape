@@ -15,6 +15,7 @@ set -e
 # defaults:
 network=default
 macaddr=random
+check_if_dns=no  # or 'yes'
 
 function show_help () {
     cat << EOH
@@ -116,6 +117,24 @@ Host ${hostname}
 EOC
 }
 
+function check_dns_host () {
+    local network=$1
+    local ip=$2
+    local fqdn=$3
+    local net_def=$(netdef_path ${network:?})
+
+    # The gateway (libvirt host) should also provide DNS service:
+    local gateway=$(sed -nr "s/.*<ip address=.([^\"\']+). .*/\1/p" ${net_def})
+
+    echo -n "[Info] Try resolving DNS entry for ${fqdn:?} ... "
+    if $(host ${fqdn} ${gateway:?} > /dev/null); then
+        echo "OK"
+    else
+        echo "Failure!"
+        exit 1
+    fi
+}
+
 # main:
 if test $# -lt 2; then
     show_help
@@ -155,6 +174,7 @@ if test -f ${net_def}; then
         fi
     fi
     register_dns_host ${network} ${ip} ${fqdn}; rc=$?
+    test "x${check_if_dns}" = "xyes" && check_dns_host ${network} ${ip} ${fqdn} || :
     if test $rc = 0; then
         print_ssh_config ${ip} ${fqdn}
     else
