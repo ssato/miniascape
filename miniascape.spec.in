@@ -2,9 +2,7 @@
 
 # disable debuginfo
 %define debug_package %{nil}
-
 %define pkgconfdir      %{_sysconfdir}/%{name}.d
-
 
 Name:           miniascape
 Version:        @VERSION@
@@ -32,6 +30,17 @@ Requires:       %{name} = %{version}-%{release}
 
 %description    data-default
 Some default guests and infra data files for %{name}.
+
+
+%package        data-default-devel
+Summary:        Source of default guests and infra data files for %{name}
+Requires:       %{name} = %{version}-%{release}
+
+
+%description    data-default-devel
+Some default guests and infra data files for %{name}.
+
+This package contains source files to build data in %{name}-data-default.
 
 
 %prep
@@ -70,10 +79,19 @@ rm -rf $RPM_BUILD_ROOT
 %files          data-default
 %defattr(-,root,root,-)
 %doc README.rst
-%config %{pkgconfdir}/default/*/*.yml
+%config %{pkgconfdir}/default/common/*.yml
+%config %{pkgconfdir}/default/guests.d/*.yml
+%config %{pkgconfdir}/default/host.d/*.yml
+%config %{pkgconfdir}/default/networks.d/*.yml
 %config %{pkgconfdir}/default/*/*/*.yml
 %config %{pkgconfdir}/default/*/*/*/*.yml
 %{pkgconfdir}/default/*/*/*/README
+
+
+%files          data-default-devel
+%defattr(-,root,root,-)
+%doc README.rst
+%config %{pkgconfdir}/default/src.d/*.yml
 
 
 %changelog
