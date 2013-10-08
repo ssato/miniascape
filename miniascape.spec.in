@@ -80,9 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.rst
 %config %{pkgconfdir}/default/common/*.yml
-%config %{pkgconfdir}/default/guests.d/*.yml
 %config %{pkgconfdir}/default/host.d/*.yml
-%config %{pkgconfdir}/default/networks.d/*.yml
 %config %{pkgconfdir}/default/*/*/*.yml
 %config %{pkgconfdir}/default/*/*/*/*.yml
 %{pkgconfdir}/default/*/*/*/README
