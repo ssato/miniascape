@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Red Hat, Inc.
+# Copyright (C) 2012, 2013 Red Hat, Inc.
 # Red Hat Author(s): Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from miniascape.globals import LOGGER as logging
-import miniascape.memoize as M
+from miniascape.memoize import memoize
 
 import glob
 import itertools
@@ -65,30 +65,43 @@ def list_dirnames(tdir):
     """
     :param tdir: dir in which target dirs exist
     """
-    return [
-        os.path.basename(x) for x in
-            sglob(os.path.join(tdir, "*")) if os.path.isdir(x)
-    ]
+    return [os.path.basename(x) for x in
+            sglob(os.path.join(tdir, "*")) if os.path.isdir(x)]
 
 
-@M.memoize
-def is_superuser():
+def is_superuser_():
     return os.getuid() == 0
 
 
-@M.memoize
-def get_username():
+def get_username_():
     return pwd.getpwuid(os.getuid()).pw_name
 
 
-@M.memoize
-def get_hostname(fqdn=True):
-    try:
-        h = socket.getfqdn() or socket.gethostname() or os.uname()[1]
-    except:
-        h = "localhost.localdomain"
+def get_hostname_(h=None, fqdn=True):
+    """
+    :param h: A parameter to explicitly pass hostname
+    :param fqdn: Try getting FQDN instead of short hostname if True
+
+    :return: A string represents hostname or fqdn
+
+    >>> get_hostname_("foo.example.com")
+    'foo.example.com'
+    >>> get_hostname_("foo.example.com", False)
+    'foo'
+    """
+    if h is None:
+        try:
+            h = socket.getfqdn() or socket.gethostname() or os.uname()[1]
+        except:
+            h = "localhost.localdomain"
 
     return h if fqdn else (h.split('.')[0] if '.' in h else h)
+
+
+# Memoized versions:
+is_superuser = memoize(is_superuser_)
+get_username = memoize(get_username_)
+get_hostname = memoize(get_username_)
 
 
 def find_dups_in_dicts_list_g(ds, keys):
