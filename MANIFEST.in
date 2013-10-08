@@ -9,6 +9,12 @@ include templates/autoinstall.d/data/*
 include templates/autoinstall.d/data/*/*
 include templates/autoinstall.d/snippets/*
 include templates/host/*
+include templates/host/usr/libexec/miniascape/*
+include templates/host/usr/libexec/miniascape/default/*
+include templates/host/etc/*
+include templates/host/etc/cluster/*
+include templates/host/etc/httpd/conf.d/*
+include templates/host/etc/auto.master.d/*
 recursive-include templates/config *.yaml
 recursive-include templates/config *.j2
 recursive-include tests *.py
