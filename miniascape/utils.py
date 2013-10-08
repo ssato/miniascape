@@ -101,7 +101,7 @@ def get_hostname_(h=None, fqdn=True):
 # Memoized versions:
 is_superuser = memoize(is_superuser_)
 get_username = memoize(get_username_)
-get_hostname = memoize(get_username_)
+get_hostname = memoize(get_hostname_)
 
 
 def find_dups_in_dicts_list_g(ds, keys):
