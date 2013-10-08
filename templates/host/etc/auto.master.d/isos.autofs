@@ -6,4 +6,4 @@
 # * http://www.mail-archive.com/autofs@linux.kernel.org/msg08466.html
 # * http://www.mail-archive.com/autofs@linux.kernel.org/msg08623.html
 #
-/srv/content    /etc/auto.master.d/map.d/isos.map
+/srv/content    /etc/auto.isos
