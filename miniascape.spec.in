@@ -17,6 +17,7 @@ BuildArch:      noarch
 BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.3.4
 Requires:       python-jinja2-cli >= 0.0.4.1
+Requires:       python-gevent
 
 
 %description
