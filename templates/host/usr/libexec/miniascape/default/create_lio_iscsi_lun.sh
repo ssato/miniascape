@@ -22,6 +22,14 @@ targetcli /iscsi/{{ target.iqn }}/tpg1/luns create /backstores/fileio/{{ target.
 targetcli /iscsi/{{ target.iqn }}/tpg1/portals create {% if target.ip is defined %}{{ target.ip }}{% else %}{{ gateway }}{% endif %}
 {% endfor %}
 
-# iptables:
-echo "Check to see needed port is open and if not: "
-echo "    run 'iptables -I INPUT -m tcp -p tcp --dport 3260 -j ACCEPT'"
+# firewall:
+if `systemctl is-active firewalld.service 2>/dev/null`; then
+    cmd="firewall-cmd --permanent --zone=<zone_of_virtual_network> --add-port=3260/tcp"
+else
+    cmd="iptables -I INPUT -m tcp -p tcp --dport 3260 -j ACCEPT"
+fi
+cat << EOH
+Try like the followings to see needed port 3260/tcp (iscsi) is open:
+
+    $cmd
+EOH
