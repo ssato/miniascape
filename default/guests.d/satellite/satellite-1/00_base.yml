@@ -1,0 +1,4 @@
+hostname: satellite-1
+interfaces:
+- {mac: '52:54:00:05:00:11', network: service}
+ip: 192.168.155.11

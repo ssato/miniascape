@@ -1,0 +1,17 @@
+description: JBoss Domain Controller
+hostname: jboss-0
+interfaces:
+- {mac: '52:54:00:05:00:40', network: service}
+ip: 192.168.155.40
+jboss:
+  is_domain_controller: true
+  server_groups:
+  - {name: group1}
+  - {name: group2}
+setup_data:
+- {dst: Makefile, src: data/jboss/Makefile}
+- {dst: domain-0.xml, src: data/jboss/domain-0.xml}
+- {dst: host-master-0.xml, src: data/jboss/host-master-0.xml}
+- dst: domain-app-deploy.sh
+  install: {dst: /usr/sbin/domain-app-deploy.sh, mode: 755}
+  src: data/jboss/domain-app-deploy.sh

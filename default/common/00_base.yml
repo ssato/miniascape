@@ -1,83 +1,27 @@
-## Networks:
-domain: m2.local
-gateway: &gateway 192.168.155.254
-netmask: 255.255.255.0
-nameservers:
-- hostname: *gateway
-#  options:
-
-## Storage Infra:
-storage_pools:
-  - type: dir
-    name: default
-    target:
-      path: /var/lib/libvirt/images
-
-## Guest Hardware:
+auth: {options: --passalgo=sha512}
+cluster: {bridge: virbr0}
 disks:
-  - pool: default  # see `storage_pools`
-    format: qcow2
-    cache: none
-    size: 6
-    bus: virtio
-#  - path: /var/lib/libvirt/images/<vm>-disk-0.raw
-#    format: raw
-#    size: 10  # [GB]
-
-
-## Basic Configuration of Guests:
-swap: 512  # [MB]
+- {bus: virtio, cache: none, format: qcow2, pool: default, size: 6}
+domain: m2.local
 filesystem: ext4
-auth:
-  options: "--passalgo=sha512"
-
-selinux: enforcing
+gateway: 192.168.155.254
 ks_finish: poweroff
-
-timezone:
-  utc: true
-  timezone: Asia/Tokyo
-
+nameservers:
+- {hostname: 192.168.155.254}
+netmask: 255.255.255.0
+selinux: enforcing
 services:
-  #enabled:
-  disabled:
-    - gpm
-    - ip6tables
-    - lvm2-monitor
-    - lvm2-lvmetad
-    - mdmonitor
-    - netfs
-
-ssh:
-  pubkey: ~/.ssh/id_rsa.pub
-
-cluster:
-  # software bridge for inter cluster nodes communication:
-  bridge: virbr0
-
-# Virt-install, see also: virt-install(1) :
-virtinst:
-  ram: 512
-  vcpus: 1
-  basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
-  connect: "qemu:///system"
-  waittime: 20
-  arch: x86_64
-  graphics: vnc
-  os_type: linux
-  os_variant: rhel6
-  # FIXME: Is there generic URL which will be automatically redirected to
-  # suitable mirrors to perform kickstart installation, available for CentOS ?
-  #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.4/os/x86_64/"
-  #location: "ftp://ftp.riken.jp/Linux/centos/6.4/os/x86_64/"
-  location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
-
-
-## Meta:
+  disabled: [gpm, ip6tables, lvm2-monitor, lvm2-lvmetad, mdmonitor, netfs]
+ssh: {pubkey: ~/.ssh/id_rsa.pub}
+storage_pools:
+- name: default
+  target: {path: /var/lib/libvirt/images}
+  type: dir
+swap: 512
 templates:
-  autoinst:
-#    src: autoinstall.d/<name>-ks.cfg
-    dst: ks.cfg
-  virtinst:
-    src: host/vmbuild.sh
-    dst: vmbuild.sh
+  autoinst: {dst: ks.cfg}
+  virtinst: {dst: vmbuild.sh, src: host/vmbuild.sh}
+timezone: {timezone: Asia/Tokyo, utc: true}
+virtinst: {arch: x86_64, basic_options: --check-cpu --hvm --accelerate --noreboot
+    --noautoconsole, connect: 'qemu:///system', graphics: vnc, location: 'ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/',
+  os_type: linux, os_variant: rhel6, ram: 512, vcpus: 1, waittime: 20}

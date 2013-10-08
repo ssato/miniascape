@@ -1,0 +1,9 @@
+fqdn: rhel-6-lvs-rs-1.m2.local
+hostname: rhel-6-lvs-rs-1
+interfaces:
+- {fqdn: rhel-6-lvs-rs-1.m2.local, host: rhel-6-lvs-rs-1, ip: 192.168.155.181, mac: '52:54:00:05:01:81',
+  network: service}
+- {bootproto: static, host: rhel-6-lvs-rs-default-1, ip: 192.168.122.181, mac: '52:54:00:02:01:81',
+  network: default, nodns: true}
+ip: 192.168.155.181
+lvs: {real_ip: 192.168.155.181}

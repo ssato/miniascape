@@ -1,0 +1,5 @@
+description: RH Subscription Asset Manager server
+name: sam
+templates:
+  autoinst: {src: autoinstall.d/sam-ks.cfg}
+virtinst: {ram: 2048, vcpus: 2}

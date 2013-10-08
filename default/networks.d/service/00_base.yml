@@ -8,5 +8,6 @@ network: 192.168.155.0
 dhcp:
   start: 192.168.155.200
   end: 192.168.155.250
-
-fence_virt: true
+  static:
+    start: 192.168.155.10
+    end: 192.168.155.199

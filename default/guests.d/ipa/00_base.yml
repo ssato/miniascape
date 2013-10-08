@@ -1,0 +1,7 @@
+description: Red Hat IPA Server
+ipa: {admin: admin, password: redhat0971}
+name: ipa
+setup_data:
+- {dst: setup.sh, src: data/ipa/setup.sh}
+templates:
+  autoinst: {src: autoinstall.d/ipa-ks.cfg}

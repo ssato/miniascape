@@ -1,0 +1,4 @@
+description: Versatile RHEL 6 client systems
+name: rhel-6-client
+templates:
+  autoinst: {src: autoinstall.d/rhel-6-min-ks.cfg}

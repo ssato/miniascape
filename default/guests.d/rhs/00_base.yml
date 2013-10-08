@@ -1,0 +1,11 @@
+description: Red Hat Storage node
+ks_repos:
+- {baseurl: 'ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/', name: RHEL
+    6 x86_64 - ScalableFileSystem}
+name: rhs
+rhs:
+  brick: /data/brick01
+  nodes: [rhs-1, rhs-2, rhs-3, rhs-4]
+  volume: vol01
+templates:
+  autoinst: {src: autoinstall.d/glusterfs-ks.cfg}

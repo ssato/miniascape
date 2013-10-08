@@ -1,0 +1,10 @@
+description: RH Directory Server
+instal_iso_url: http://ks/isos/DSRV-9-x86_64-DVD1.iso
+name: rhds
+setup_data:
+- {dst: setup.inf, src: data/rhds/setup.inf}
+- {dst: Makefile, src: data/rhds/Makefile}
+slapd: {suffix: 'dc=m2,dc=local'}
+templates:
+  autoinst: {src: autoinstall.d/rhds-ks.cfg}
+virtinst: {ram: 1024}
