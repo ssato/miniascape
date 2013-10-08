@@ -27,4 +27,10 @@ class Test_00(unittest.TestCase):
 
         self.assertEquals(s, ref, C.diff(s, ref))
 
+    def test_00_host_storagepool_xml(self):
+        ref = C.get_expected_output("00_host_storagepool.xml")
+        s = C.render("host/storagepool.xml", "00_host_storagepool_xml.yml")
+
+        self.assertEquals(s, ref, C.diff(s, ref))
+
 # vim:sw=4:ts=4:et:
