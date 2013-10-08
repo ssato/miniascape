@@ -1005,7 +1005,7 @@ host:
       src: host/etc/auto.isos
 
     apache_autoinst_conf:
-      src: templates/host/etc/httpd/conf.d/miniascape_autoinst.conf
+      src: host/etc/httpd/conf.d/miniascape_autoinst.conf
 
     # Avoid multicast snoopoing problem in software bridge:
     fixup_software_bridge:
@@ -1021,7 +1021,7 @@ host:
       dst: host/etc/fence_virt.conf
 
     create_lio_iscsi_lun:
-      src: host/libexec/miniascape/default/create_lio_iscsi_lun.sh
+      src: host/usr/libexec/miniascape/default/create_lio_iscsi_lun.sh
 
     # Register DNS and DHCP entry of guest:
     register_guest_dns_and_dhcp_entry_to_virt_network:
