@@ -96,9 +96,10 @@ def gen_host_files(cf, tmpldirs, workdir, force):
     gen_vnet_files(cf, tmpldirs, workdir, force)
 
     for k, v in conf.get("host_templates", {}).iteritems():
-        (src, dst) = (v.get("src", None), v.get("dst", None))
+        src = v.get("src", None)
+        dst = v.get("dst", src)
 
-        if src is None or dst is None:
+        if src is None:
             continue
 
         if os.path.sep in src:
