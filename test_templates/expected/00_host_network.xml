@@ -1,0 +1,22 @@
+<network>
+  <name>default</name>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0' />
+  <domain name='example.com'/>
+  <dns>
+    <!-- Libvirt host aliases: -->
+    <host ip='192.168.122.1'><hostname>gw.example.com</hostname></host>
+    <host ip='192.168.122.1'><hostname>ks.example.com</hostname></host>
+    <host ip='192.168.122.101'><hostname>rhel-5-cluster-default-1.example.com</hostname></host>
+    <host ip='192.168.122.102'><hostname>rhel-5-cluster-default-2.example.com</hostname></host>
+    <host ip='192.168.122.191'><hostname>rhel-6-proxy-default-1.example.com</hostname></host>
+  </dns>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.200' end='192.168.122.254'/>
+      <host mac='52:54:00:02:01:01' name='rhel-5-cluster-default-1.example.com' ip='192.168.122.101'/>
+      <host mac='52:54:00:02:01:02' name='rhel-5-cluster-default-2.example.com' ip='192.168.122.102'/>
+      <host mac='52:54:00:02:01:91' name='rhel-6-proxy-default-1.example.com' ip='192.168.122.191'/>
+    </dhcp>
+  </ip>
+</network>

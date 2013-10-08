@@ -1,0 +1,22 @@
+name: default
+mode: nat
+bridge: virbr0
+domain: example.com
+gateway: 192.168.122.1
+netmask: 255.255.255.0
+dhcp:
+  start: 192.168.122.200
+  end: 192.168.122.254
+
+hosts:
+  - mac: "52:54:00:02:01:01"
+    ip: 192.168.122.101
+    fqdn: rhel-5-cluster-default-1.example.com
+  - mac: "52:54:00:02:01:02"
+    ip: 192.168.122.102
+    host: rhel-5-cluster-default-2
+  - mac: "52:54:00:02:01:91"
+    ip: 192.168.122.191
+    host: rhel-6-proxy-default-1
+ 
+# vim:sw=2:ts=2:et:

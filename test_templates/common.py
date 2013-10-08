@@ -15,21 +15,48 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import anyconfig
+import difflib
 import jinja2_cli.render as R
 import os.path
+import sys
 
 
 # = $topdir/test_templates/
-_CURDIR = os.path.abspath(os.path.dirname(__file__)
+_CURDIR = os.path.abspath(os.path.dirname(__file__))
 
 
-def render(tfile, ctx={}, curdir=_CURDIR):
+def get_expected_output(filename, curdir=_CURDIR):
+    """
+    >>> get_expected_output("result.hello_world.j2", "/tmp/a/b")
+    '/tmp/a/b/result.hello_world.j2'
+    """
+    return open(os.path.join(curdir, "expected", filename)).read().strip()
+
+
+def load_context_from_file(filename, curdir=_CURDIR):
+    return anyconfig.load(os.path.join(curdir, "contexts.d", filename))
+
+
+def render(tfile, ctxfile=None, ctx={}, curdir=_CURDIR):
     tpaths = [os.path.join(curdir, "..", "templates"), curdir]
+
+    if os.path.sep in tfile:
+        subdir = os.path.dirname(tfile)
+        tfile = os.path.basename(tfile)
+        tpaths = [os.path.join(tpaths[0], subdir)] + tpaths
+
+    #print >> sys.stderr, "tfile=%s, tpaths=%s" % (tfile, str(tpaths))
+
+    if ctxfile is not None:
+        ctx = load_context_from_file(ctxfile, curdir)
+
     return R.render(tfile, ctx, tpaths)
 
 
-def get_expected(filename, curdir=_CURDIR):
-    return os.path.join(curdir, "expected", filename).read().strip()
-
+def diff(s, ref):
+    return "\n'" + "\n".join(difflib.unified_diff(s.splitlines(),
+                                                  ref.splitlines(),
+                                                  'Result', 'Expected')) + "'"
 
 # vim:sw=4:ts=4:et:
