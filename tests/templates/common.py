@@ -39,7 +39,7 @@ def load_context_from_file(filename, curdir=_CURDIR):
 
 
 def render(tfile, ctxfile=None, ctx={}, curdir=_CURDIR):
-    tpaths = [os.path.join(curdir, "..", "templates"), curdir]
+    tpaths = [os.path.join(curdir, "..", "..", "templates"), curdir]
 
     if os.path.sep in tfile:
         subdir = os.path.dirname(tfile)
