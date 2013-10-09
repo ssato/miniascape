@@ -1011,6 +1011,10 @@ host:
     fixup_software_bridge:
       src: host/usr/libexec/miniascape/default/fixup_software_bridge.sh
 
+    # Utility script to register libvirt networks:
+    register_libvirt_network:
+      src: host/usr/libexec/miniascape/register_libvirt_network.sh
+
     # Enable nested KVM feature:
     enable_nested_kvm:
       src: host/etc/modprobe.d/kvm.conf
@@ -1020,6 +1024,7 @@ host:
       src: host/etc/cluster/fence_virt.conf
       dst: host/etc/fence_virt.conf
 
+    # iSCSI
     create_lio_iscsi_lun:
       src: host/usr/libexec/miniascape/default/create_lio_iscsi_lun.sh
 
