@@ -29,6 +29,11 @@ import os
 import sys
 
 
+def _netxml_path(hsubdir=G.M_HOST_OUT_SUBDIR, subdir=G.M_NETS_OUT_SUBDIR,
+                 netxml="network.xml"):
+    return os.path.join(hsubdir, subdir, netxml)
+
+
 def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
                net_subdir=G.M_NETS_OUT_SUBDIR):
     """
@@ -37,7 +42,7 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
     >>> _netoutdir("/tmp/a", "host", "usr/share/libvirt/networks")
     '/tmp/a/host/usr/share/libvirt/networks'
     """
-    return os.path.join(topdir, host_subdir, net_subdir)
+    return os.path.join(topdir, _netxml_path(host_subdir, net_subdir))
 
 
 def hosts_w_unique_macs(nc):
@@ -78,6 +83,7 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
     nets = cf.load_nets_confs()
     outdir = _netoutdir(workdir)
     tpaths = [os.path.join(d, "host") for d in tmpldirs]
+    tmpl = _find_template(tmpldirs, _netxml_path())
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -100,8 +106,7 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
         nc["hosts"] = hosts_w_unique_macs(nc)
 
         logging.debug("Generating network xml: " + netxml)
-        T.renderto(tpaths, nc, _find_template(tmpldirs, "host/network.xml"),
-                   netxml)
+        T.renderto(tpaths, nc, tmpl, netxml)
 
     T.renderto(tpaths, {"networks": [n for n in nets]},
                _find_template(tmpldirs, "host/network_register.sh"),
