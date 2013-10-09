@@ -15,6 +15,10 @@ include templates/host/etc/*
 include templates/host/etc/cluster/*
 include templates/host/etc/httpd/conf.d/*
 include templates/host/etc/auto.master.d/*
+include tests/*.py
+include tests/templates/*.py
+include tests/templates/contexts.d/*.yml
+include tests/templates/expected/*
 recursive-include templates/config *.yaml
 recursive-include templates/config *.j2
 recursive-include tests *.py
