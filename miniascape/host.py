@@ -33,6 +33,9 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
                net_subdir=G.M_NETS_OUT_SUBDIR):
     """
     :param topdir: Working top dir
+
+    >>> _netoutdir("/tmp/a", "host", "usr/share/libvirt/networks")
+    '/tmp/a/host/usr/share/libvirt/networks'
     """
     return os.path.join(topdir, host_subdir, net_subdir)
 
@@ -40,10 +43,16 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
 def hosts_w_unique_macs(nc):
     """
     :return: list of hosts having nics w unique mac addresses assigned.
+
+    >>> nc = dict(hosts=[dict(mac="RANDOM"),
+    ...                  dict(mac="52:54:00:07:10:58"),
+    ...                  dict(mac="52:54:00:07:10:59"),
+    ...                  dict(mac="RANDOM")])
+    >>> hosts_w_unique_macs(nc)
+    [{'mac': '52:54:00:07:10:58'}, {'mac': '52:54:00:07:10:59'}]
     """
-    return [
-        h for h in nc.get("hosts", []) if "mac" in h and h["mac"] != "RANDOM"
-    ]
+    return [h for h in nc.get("hosts", [])
+            if "mac" in h and h["mac"] != "RANDOM"]
 
 
 def _find_template(tmpldirs, template):
@@ -58,6 +67,14 @@ def _find_template(tmpldirs, template):
 
 
 def gen_vnet_files(cf, tmpldirs, workdir, force):
+    """
+    Generate libvirt network def. XML files.
+
+    :param cf: An instance of miniascape.config.ConfFiles
+    :param tmpldirs: Template search paths
+    :param workdir: Working dir to save generated XML files
+    :param force: Existing ones may be overwritten if True
+    """
     nets = cf.load_nets_confs()
     outdir = _netoutdir(workdir)
     tpaths = [os.path.join(d, "host") for d in tmpldirs]
@@ -92,6 +109,14 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
 
 
 def gen_host_files(cf, tmpldirs, workdir, force):
+    """
+    Generate files for libvirt host.
+
+    :param cf: An instance of miniascape.config.ConfFiles
+    :param tmpldirs: Template search paths
+    :param workdir: Working dir to save generated XML files
+    :param force: Existing ones may be overwritten if True
+    """
     conf = cf.load_host_confs()
     gen_vnet_files(cf, tmpldirs, workdir, force)
 
