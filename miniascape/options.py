@@ -18,19 +18,26 @@ import miniascape.globals as G
 import optparse
 
 
-M_DEFAULTS = dict(tmpldir=[], confdir=G.M_CONFDIR_DEFAULT,
+M_DEFAULTS = dict(tmpldir=[], confdir=G.M_CONFDIR_DEFAULT, confext="yml",
                   workdir=G.M_WORK_TOPDIR, verbose=1)
 
+_CONFEXT_CHOICES = ["yml", "yaml", "json", "jsn"]
 
-def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
+
+def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]",
+                  confext_choices=_CONFEXT_CHOICES):
     p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
+
+    confext_help = "Choose supported configuration file extension from " + \
+                   ", ".join(confext_choices) + " [%default]"
 
     p.add_option("-t", "--tmpldir", action="append",
                  help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
     p.add_option("-c", "--confdir",
                  help="Top dir to hold site configuration files or "
                       "configuration file [%default]")
+    #p.add_option("-x", "--confext", choices=confext_choices, help=confext_help)
     p.add_option("-w", "--workdir",
                  help="Working dir to output results [%default]")
     p.add_option("-v", "--verbose", action="store_const", const=0,
