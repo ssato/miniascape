@@ -42,7 +42,7 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
     >>> _netoutdir("/tmp/a", "host", "usr/share/libvirt/networks")
     '/tmp/a/host/usr/share/libvirt/networks'
     """
-    return os.path.join(topdir, _netxml_path(host_subdir, net_subdir))
+    return os.path.join(topdir, host_subdir, net_subdir)
 
 
 def hosts_w_unique_macs(nc):
@@ -107,10 +107,6 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
 
         logging.debug("Generating network xml: " + netxml)
         T.renderto(tpaths, nc, tmpl, netxml)
-
-    T.renderto(tpaths, {"networks": [n for n in nets]},
-               _find_template(tmpldirs, "host/network_register.sh"),
-               os.path.join(outdir, "network_register.sh"))
 
 
 def gen_host_files(cf, tmpldirs, workdir, force):
