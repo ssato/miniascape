@@ -26,7 +26,7 @@ EOH
 }
 
 function is_libvirtd_running () {
-    if `systemctl --version`; then
+    if `systemctl --version >/dev/null 2>/dev/null`; then
         systemctl status libvirtd >/dev/null 2>/dev/null && echo "true" || echo "false"
     else
         service libvirtd status >/dev/null 2>/dev/null && echo "true" || echo "false"
