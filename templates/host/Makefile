@@ -15,8 +15,8 @@ install:
 	mkdir -p $(DESTDIR)/etc/modprobe.d
 	mkdir -p $(DESTDIR)/etc/httpd/conf.d
 	mkdir -p $(DESTDIR)/etc/auto.master.d
-	mkdir -p $(DESTDIR)/usr/share/libvirt/networks
-	{% for net in networks %}$(INSTALL_DATA) $(CURDIR)/usr/share/libvirt/networks/{{ net }}.xml $(DESTDIR)/usr/share/libvirt/networks
+	mkdir -p $(DESTDIR)/usr/share/miniascape/networks.d
+	{% for net in networks %}$(INSTALL_DATA) $(CURDIR)/usr/share/miniascape/networks.d/{{ net }}.xml $(DESTDIR)/usr/share/miniascape/networks.d
 	{% endfor %}
 	$(INSTALL_DATA) $(CURDIR)/etc/modprobe.d/kvm.conf $(DESTDIR)/etc/modprobe.d
 	$(INSTALL_DATA) $(CURDIR)/etc/fence_virt.conf $(DESTDIR)/etc

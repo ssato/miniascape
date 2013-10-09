@@ -39,8 +39,8 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
     """
     :param topdir: Working top dir
 
-    >>> _netoutdir("/tmp/a", "host", "usr/share/libvirt/networks")
-    '/tmp/a/host/usr/share/libvirt/networks'
+    >>> _netoutdir("/tmp/a", "host", "usr/share/miniascape/networks.d")
+    '/tmp/a/host/usr/share/miniascape/networks.d'
     """
     return os.path.join(topdir, host_subdir, net_subdir)
 
