@@ -1,0 +1,50 @@
+# Libvirt host specific configurations:
+
+host:
+  isomntdir: /srv/content
+  isodatadir: /srv/images
+
+  iscsi:
+    targets:
+      - name: iscsi-0
+        path: /var/lib/libvirt/images/iscsi-0.img
+        size: 30G
+        iqn: iqn.2003-01.org.linux-iscsi.localhost.x8664:sn.0001
+
+  host_templates:
+
+    # Autofs configuration to serve kickstart installation trees via http:
+    auto_isos_master:
+      src: host/etc/auto.master.d/isos.autofs
+    auto_isos_map:
+      src: host/etc/auto.isos
+
+    apache_autoinst_conf:
+      src: host/etc/httpd/conf.d/miniascape_autoinst.conf
+
+    # Avoid multicast snoopoing problem in software bridge:
+    fixup_software_bridge:
+      src: host/usr/libexec/miniascape/default/fixup_software_bridge.sh
+
+    # Utility script to register libvirt networks:
+    register_libvirt_network:
+      src: host/usr/libexec/miniascape/register_libvirt_network.sh
+
+    # Enable nested KVM feature:
+    enable_nested_kvm:
+      src: host/etc/modprobe.d/kvm.conf
+
+    # For VM fencing in HA cluster and GFS environments:
+    fence_virt:
+      src: host/etc/cluster/fence_virt.conf
+      dst: host/etc/fence_virt.conf
+
+    # iSCSI
+    create_lio_iscsi_lun:
+      src: host/usr/libexec/miniascape/default/create_lio_iscsi_lun.sh
+
+    # Register DNS and DHCP entry of guest:
+    register_guest_dns_and_dhcp_entry_to_virt_network:
+      src: host/usr/libexec/miniascape/guest_network_register.sh
+
+# vim:sw=2:ts=2:et:

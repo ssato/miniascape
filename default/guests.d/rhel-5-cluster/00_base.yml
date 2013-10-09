@@ -1,7 +1,6 @@
 cluster:
   nodes: [rhel-5-cluster-default-1, rhel-5-cluster-default-2]
   resources: {ip: 192.168.155.100}
-defaultgw: 192.168.155.254
 description: RHEL 5 Cluster (RHCS) nodes
 disks:
 - {pool: default, size: 5}
