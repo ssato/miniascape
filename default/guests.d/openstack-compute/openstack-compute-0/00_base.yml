@@ -1,0 +1,8 @@
+hostname: openstack-compute-0
+interfaces:
+- {mac: '52:54:00:12:20:20', network: default}
+- {fqdn: openstack-compute-120.example.com, host: openstack-compute-120, ip: 192.168.122.120,
+  mac: '52:54:00:12:21:20', network: default, onboot: false}
+- {fqdn: openstack-compute-0.os.local, host: openstack-compute-0, ip: 192.168.160.20,
+  mac: '52:54:00:16:00:20', network: openstack-private}
+ip: 192.168.122.20

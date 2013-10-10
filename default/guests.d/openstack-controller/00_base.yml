@@ -1,0 +1,7 @@
+description: Red Hat OpenStack Controller
+disks:
+- {pool: default, size: 100}
+name: openstack-controller
+templates:
+  autoinst: {src: autoinstall.d/openstack-controller-ks.cfg}
+virtinst: {ram: 2048}

@@ -1,0 +1,7 @@
+description: Red Hat OpenStack Compute node
+disks:
+- {pool: default, size: 50}
+name: openstack-compute
+templates:
+  autoinst: {src: autoinstall.d/openstack-compute-ks.cfg}
+virtinst: {ram: 2048}

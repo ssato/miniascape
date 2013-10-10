@@ -901,4 +901,35 @@ guests:
             fqdn: openstack-controller-0.os.local
             network: openstack-private
 
+  - name: openstack-compute
+    description: Red Hat OpenStack Compute node
+    disks:
+      - pool: default
+        size: 50
+
+    virtinst:
+      ram: 2048
+
+    templates:
+      autoinst:
+        src: autoinstall.d/openstack-compute-ks.cfg
+
+    guests:
+      - hostname: openstack-compute-0
+        ip: 192.168.122.20
+        interfaces:
+          - mac: "52:54:00:12:20:20"
+            network: default
+          - mac: "52:54:00:12:21:20"
+            ip: 192.168.122.120
+            host: openstack-compute-120
+            fqdn: openstack-compute-120.example.com
+            network: default
+            onboot: no
+          - mac: "52:54:00:16:00:20"
+            ip: 192.168.160.20
+            host: openstack-compute-0
+            fqdn: openstack-compute-0.os.local
+            network: openstack-private
+
 # vim:sw=2:ts=2:et:
