@@ -680,9 +680,9 @@ guests:
       ram: 2560
       cpu: host
       vcpus: 2
-      cdrom: /var/lib/libvirt/images/rhevh-6.3-20121121.0.el6_3.iso
+      cdrom: /var/lib/libvirt/images/rhev-hypervisor6-6.4-20130912.1.iso
       #TODO: --extra-args requires --local but ...
-      extra_args: storage_init=/dev/vda1 BOOTIF=eth0 adminpw=redhat
+      extra_args: storage_init=/dev/sda1 BOOTIF=eth0 adminpw=redhat
 
     templates:
       autoinstall:

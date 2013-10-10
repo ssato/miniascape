@@ -2,5 +2,5 @@ description: RHEL Hypervisor node
 name: rhevh
 templates:
   autoinstall: {dst: false}
-virtinst: {cdrom: /var/lib/libvirt/images/rhevh-6.3-20121121.0.el6_3.iso, cpu: host,
-  extra_args: storage_init=/dev/vda1 BOOTIF=eth0 adminpw=redhat, ram: 2560, vcpus: 2}
+virtinst: {cdrom: /var/lib/libvirt/images/rhev-hypervisor6-6.4-20130912.1.iso, cpu: host,
+  extra_args: storage_init=/dev/sda1 BOOTIF=eth0 adminpw=redhat, ram: 2560, vcpus: 2}
