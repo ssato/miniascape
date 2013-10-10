@@ -107,6 +107,20 @@ networks:
         start: 192.168.155.10
         end: 192.168.155.199
 
+  - name: openstack-private
+    mode: nat
+    bridge: virbr100
+    domain: os.local
+    gateway: 192.168.160.254
+    netmask: 255.255.255.0
+    network: 192.168.160.0
+    dhcp:
+      start: 192.168.160.200
+      end: 192.168.160.250
+      static:
+        start: 192.168.160.2
+        end: 192.168.160.100
+
 host:
   bridge: *net_service_bridge
 
