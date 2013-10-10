@@ -682,7 +682,10 @@ guests:
       vcpus: 2
       cdrom: /var/lib/libvirt/images/rhev-hypervisor6-6.4-20130912.1.iso
       #TODO: --extra-args requires --local but ...
-      extra_args: storage_init=/dev/sda1 BOOTIF=eth0 adminpw=redhat
+      #
+      # see also: RHEV Hypervisor Deployment Guide, 4.2. Automated
+      # Installation: http://red.ht/1apjAJg
+      extra_args: install storage_init=/dev/sda BOOTIF=eth0 adminpw=redhat management_server=rhevm-1 rhevm_admin_password=redhat ...
 
     templates:
       autoinstall:
