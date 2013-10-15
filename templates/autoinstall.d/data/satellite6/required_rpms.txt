@@ -1,0 +1,13 @@
+# originally copied from ../sam_required_rpms_min:
+augeas-libs
+jna
+libselinux-ruby
+mod_ssl
+perl-ExtUtils-ParseXS
+policycoreutils-python
+postgresql-jdbc
+postgresql-server
+python-kerberos
+rpm-build
+ruby-rdoc
+tomcat6
