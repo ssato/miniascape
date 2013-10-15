@@ -35,7 +35,9 @@ test $# -gt 0 && ks_path=$1 || ks_path=${0%/*}/ks.cfg
 kscfg=${ks_path##*/}
 {%- endblock %}
 {% block location -%}
+{%     if virtinst.cdrom -%}
 location={{ virtinst.location }}
+{%-    endif %} \
 {%- endblock %}
 name={% if name_prefix is defined %}{{ name_prefix }}{% endif -%}
 {%  if hostname is defined %}{{ hostname }}{% else %}{{ name }}{% endif %}
