@@ -3,20 +3,24 @@
 HOST_FQDN={% if rhev.host_fqdn is defined %}{{ rhev.host_fqdn }}{% else %}{{ fqdn }}{% endif %}
 AUTH_PASS={{ rhev.auth_pass }}
 DB_LOCAL_PASS={{ rhev.db_local_pass }}
-{% if rhev.override_iptables %}OVERRIDE_IPTABLES=yes{% else %}OVERRIDE_IPTABLES=no{% endif %}
-# Optional:
-{% if rhev.override_httpd_config is defined %}OVERRIDE_HTTPD_CONFIG={{ rhev.override_httpd_config }}{% endif %}
+OVERRIDE_IPTABLES={{ rhev.override_iptables|default('yes') }}
+OVERRIDE_HTTPD_CONFIG={{ rhev.override_httpd_config|default('yes') }}
+ORG_NAME={% if rhev.org_name is defined %}{{ rhev.org_name }}{% else %}{{ domain }}{% endif %}
+DC_TYPE={{ "NFS" if rhev.dc_type is not defined else rhev.dc_type }}
+{% if rhev.db_host is defined -%}
+DB_REMOTE_INSTALL=remote
+DB_REMOTE_PASS
+DB_HOST={{ rhev.db_host }}
+{%- else -%}
+DB_REMOTE_INSTALL=local
+{%- endif %}
+DB_SECURE_CONNECTION={{ rhev.db_secure_connection|default('no') }}
+NFS_MP={{ rhev.nfs_mp|default('/var/lib/exports/iso') }}
+ISO_DOMAIN_NAME={{ rhev.iso_domain_name|default('ISO_DOMAIN') }}
+CONFIG_NFS={{ rhev.config_nfs|default('yes') }}
+
 {% if rhev.http_port is defined %}HTTP_PORT={{ rhev.http_port }}{% endif %}
 {% if rhev.https_port is defined %}HTTPS_PORT={{ rhev.https_port }}{% endif %}
-{% if rhev.mac_range is defined %}MAC_RANGE={{ rhev.mac_range }}{% endif %}
-{% if rhev.org_name is defined %}ORG_NAME={{ rhev.org_name }}{% endif %}
-{% if rhev.dc_type is defined %}DC_TYPE={{ rhev.dc_type }}{% endif %}
-{% if rhev.db_host is defined %}DB_REMOTE_INSTALL=remote
-DB_HOST={{ rhev.db_host }}
-DB_REMOTE_PASS={{ rhev.db_remote_pass }}{% endif %}
 {% if rhev.db_port is defined %}DB_PORT={{ rhev.db_port }}{% endif %}
 {% if rhev.db_admin is defined %}DB_ADMIN={{ rhev.db_admin }}{% endif %}
-{% if rhev.db_secure_connection is defined and rhev.db_secure_connection %}DB_SECURE_CONNECTION=yes{% endif %}
-{% if rhev.nfs_mp is defined %}NFS_MP={{ rhev.nfs_mp }}{% endif %}
-{% if rhev.iso_domain_name is defined %}ISO_DOMAIN_NAME={{ rhev.iso_domain_name }}{% endif %}
-{% if rhev.config_nfs is defined and rhev.config_nfs %}CONFIG_NFS=yes{% endif %}
+{% if rhev.mac_range is defined %}MAC_RANGE={{ rhev.mac_range }}{% endif %}
