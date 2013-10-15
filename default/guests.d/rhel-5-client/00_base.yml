@@ -1,4 +1,6 @@
 description: Versatile RHEL 5 client systems
+disks:
+- {bus: virtio, cache: none, format: qcow2, pool: default, size: 6}
 filesystem: ext3
 name: rhel-5-client
 templates:

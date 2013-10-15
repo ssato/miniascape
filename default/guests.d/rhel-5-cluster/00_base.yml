@@ -3,8 +3,8 @@ cluster:
   resources: {ip: 192.168.155.100}
 description: RHEL 5 Cluster (RHCS) nodes
 disks:
-- {pool: default, size: 5}
-- {perms: sh, pool: default, size: 1, vol: rhel-5-cluster-data-1.img}
+- {bus: virtio, pool: default, size: 5}
+- {bus: virtio, perms: sh, pool: default, size: 1, vol: rhel-5-cluster-data-1.img}
 filesystem: ext3
 hosts:
 - {hostname: rhel-5-cluster-default-1, ip: 192.168.122.101}

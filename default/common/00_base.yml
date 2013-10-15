@@ -1,7 +1,7 @@
 auth: {options: --passalgo=sha512}
 cluster: {bridge: virbr0}
 disks:
-- {bus: virtio, cache: none, format: qcow2, pool: default, size: 6}
+- {bus: scsi, cache: none, format: qcow2, pool: default, size: 6}
 domain: m2.local
 filesystem: ext4
 gateway: 192.168.155.254

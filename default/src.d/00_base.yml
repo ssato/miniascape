@@ -19,7 +19,7 @@ common:
       format: qcow2
       cache: none
       size: 6
-      bus: virtio
+      bus: scsi
     #- path: /var/lib/libvirt/images/<vm>-disk-0.raw
     #  format: raw
     #  size: 10  # [GB]
