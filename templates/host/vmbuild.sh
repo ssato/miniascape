@@ -43,12 +43,10 @@ name={% if name_prefix is defined %}{{ name_prefix }}{% endif -%}
 # --extra-args="{{ virtinst.extra_args }}"  # It does not work w/ --cdrom but ...
 {%     endif -%}
 location_opts="--cdrom {{ virtinst.cdrom }}"
-extra_opts=""
 {% else -%}
 location_opts="--location={{ virtinst.location }} --initrd-inject=${ks_path}"
 ksdevice={{ ksdevice|default('eth0') }}
 more_extra_args={{ virtinst.extra_args|default('') }}
-extra_opts="--extra-args='ks=file:/${kscfg} ksdevice=${ksdevice} ${more_extra_args}'"
 {% endif -%}
 {%- endblock %}
 
@@ -70,8 +68,7 @@ virt-install \
 --os-type={{ virtinst.os_type }} \
 --os-variant={{ virtinst.os_variant }} \
 ${virtio_scsi_controller} \
-${location_opts} \
-"${extra_opts}" \
+${location_opts} {% if virtinst.cdrom is not defined %}--extra-args="ks=file:/${kscfg} ksdevice=${ksdevice} ${more_extra_args}"{% endif %} \
 {% for disk in disks -%}
 --disk {{ disk_option(disk) }} \
 {% endfor %} \
