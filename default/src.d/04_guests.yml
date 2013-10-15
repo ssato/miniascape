@@ -831,7 +831,7 @@ guests:
             network: service
 
   - name: satellite
-    description: RHN Satellite server
+    description: Red Hat Satellite server
     disks:
       - pool: default
         size: 50
@@ -871,6 +871,44 @@ guests:
         ip: 192.168.155.11
         interfaces:
           - mac: "52:54:00:05:00:11"
+            network: service
+
+  - name: satellite6
+    description: Red Hat Satellite 6 server
+    disks:
+      - pool: default
+        size: 50
+
+    virtinst:
+      ram: 2048
+
+    satellite:
+      admin:
+        email: root@localhost
+
+      ssl:
+        org: "M2 Example, Inc."
+        unit: "IT Dept."
+        city: Shibuya-ku
+        state: Tokyo
+        country: JP
+        password: sslsecret
+
+    rhn:
+    #  username: foo@m2.local
+    #  password: xyzsecret
+      activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+      profilename: "REPLACE_THIS"
+
+    templates:
+      autoinst:
+        src: autoinstall.d/satellite6-ks.cfg
+
+    guests:
+      - hostname: satellite6-1
+        ip: 192.168.155.16
+        interfaces:
+          - mac: "52:54:00:05:00:16"
             network: service
 
   - name: openstack-controller
