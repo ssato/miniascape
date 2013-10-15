@@ -31,13 +31,11 @@ def list_data_files_g(prefix, srcdir):
                 yield (instdir, files)
 
 
-data_files = concat(
-    list_data_files_g(p, d) for p, d in
-        ((M_CONF_TOPDIR, "default"),      # config files
-         ("share/%s" % PACKAGE, "templates"),  # template files
-         ("share/%s" % PACKAGE, "tests"),  # test cases
-        )
-)
+data_files = concat(list_data_files_g(p, d) for p, d in
+                    ((M_CONF_TOPDIR, "default"),           # config files
+                     ("share/%s" % PACKAGE, "templates"),  # template files
+                     ("share/%s" % PACKAGE, "tests"),      # test cases
+                     ))
 
 
 class SrpmCommand(Command):
@@ -66,12 +64,10 @@ class SrpmCommand(Command):
         params = dict()
 
         params["build_stage"] = self.build_stage
-        rpmdir = params["rpmdir"] = os.path.join(
-            os.path.abspath(os.curdir), "dist"
-        )
-        rpmspec = params["rpmspec"] = os.path.join(
-            rpmdir, "../%s.spec" % PACKAGE
-        )
+        rpmdir = params["rpmdir"] = os.path.join(os.path.abspath(os.curdir),
+                                                 "dist")
+        rpmspec = params["rpmspec"] = os.path.join(rpmdir,
+                                                   "../%s.spec" % PACKAGE)
 
         for subdir in ("SRPMS", "RPMS", "BUILD", "BUILDROOT"):
             sdir = params[subdir] = os.path.join(rpmdir, subdir)
@@ -91,22 +87,17 @@ class RpmCommand(SrpmCommand):
 
 
 setup(name=PACKAGE,
-    version=VERSION,
-    description="Personal cloud building and management tool",
-    author="Satoru SATOH",
-    author_email="ssato@redhat.com",
-    license="GPLv3+",
-    url="https://github.com/ssato/miniascape",
-    packages=[
-        "miniascape",
-        "miniascape/tests",
-    ],
-    scripts=glob("tools/*"),
-    data_files=data_files,
-    cmdclass={
-        "srpm": SrpmCommand,
-        "rpm":  RpmCommand,
-    },
-)
+      version=VERSION,
+      description="Personal cloud building and management tool",
+      author="Satoru SATOH",
+      author_email="ssato@redhat.com",
+      license="GPLv3+",
+      url="https://github.com/ssato/miniascape",
+      packages=["miniascape",
+                "miniascape/tests"],
+      scripts=glob("tools/*"),
+      data_files=data_files,
+      cmdclass=dict(srpm=SrpmCommand,
+                    rpm=RpmCommand))
 
 # vim:sw=4:ts=4:et:
