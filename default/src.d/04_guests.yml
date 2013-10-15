@@ -706,6 +706,15 @@ guests:
         size: 6
         bus: virtio
 
+    # NOTE: These accounts should be created automatically when to install
+    # rhevm RPMs. see also: RHEV Installation Guide, 2.3.6. Required User
+    # Accounts and Groups, http://red.ht/1bUaUjD
+    #ks_users:
+    #  - name: vdsm
+    #    uid: 36
+    #  - name: ovirt
+    #    uid: 108
+
     guests:
       - hostname: rhevh-1
         ip: 192.168.155.33
