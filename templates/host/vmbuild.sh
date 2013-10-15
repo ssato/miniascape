@@ -38,7 +38,7 @@ kscfg=${ks_path##*/}
 location={{ virtinst.location }}
 {%- endblock %}
 name={% if name_prefix is defined %}{{ name_prefix }}{% endif -%}
-{%  if name is defined %}{{ name }}{% else %}{{ hostname }}{% endif %}
+{%  if hostname is defined %}{{ hostname }}{% else %}{{ name }}{% endif %}
 
 # Use virtio-scsi if available and there is a scsi disk:
 virtio_scsi_controller=
