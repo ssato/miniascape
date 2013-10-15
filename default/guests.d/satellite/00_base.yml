@@ -1,4 +1,4 @@
-description: RHN Satellite server
+description: Red Hat Satellite server
 disks:
 - {pool: default, size: 50}
 name: satellite
