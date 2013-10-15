@@ -33,7 +33,7 @@ def _renderto(tpaths, ctx, tmpl, output, ask=False):
     jinja2_cli.render.renderto(tmpl, ctx, tpaths, output, ask=ask)
 
 
-def renderto(tpaths, ctx, tmpl, output, ask=False, async=False):
+def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
     """
     NOTE: Take care not to forget stop (join) threads run from this function
     if ask = False and async = True.
