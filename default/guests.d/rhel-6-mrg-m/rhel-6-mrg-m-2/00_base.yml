@@ -1,0 +1,4 @@
+hostname: rhel-6-mrg-m-2
+interfaces:
+- {mac: '52:54:00:05:00:72', network: service}
+ip: 192.168.155.72

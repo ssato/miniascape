@@ -1,0 +1,11 @@
+description: RHEL 6 MRG-M nodes
+ks_repos:
+- {baseurl: 'http://ks/kstree/rhel-6-mrg-2.1-x86_64', name: RHEL 6 x86_64 - MRG-M}
+name: rhel-6-mrg-m
+openais: {bindnetaddr: 192.168.155.0}
+services:
+  enabled: [openais, qpidd]
+setup_data:
+- {dst: qpidd_cluster_check.py, src: data/mrg-m/qpidd_cluster_check.py}
+templates:
+  autoinst: {src: autoinstall.d/rhel-6-mrg-m-ks.cfg}
