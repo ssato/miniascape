@@ -59,7 +59,7 @@ virt-install \
 --os-variant={{ virtinst.os_variant }} \
 {% if virtinst.cdrom -%}
 --cdrom {{ virtinst.cdrom }}
-{%-    if virtinst.extra_args is defined and false -%}
+{%-    if virtinst.extra_args is defined and virtinst.extra_args -%}
  --extra-args="{{ virtinst.extra_args }}"
 {%-    endif -%}
 {% else -%}
