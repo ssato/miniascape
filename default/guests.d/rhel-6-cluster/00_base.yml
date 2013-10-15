@@ -2,8 +2,8 @@ cluster:
   nodes: [rhel-6-cluster-default-1, rhel-6-cluster-default-2]
   resources: {ip: 192.168.155.110}
 disks:
-- {pool: default, size: 5}
-- {perms: sh, pool: default, size: 1, vol: rhel-6-cluster-data-1.img}
+- {bus: scsi, pool: default, size: 5}
+- {bus: scsi, perms: sh, pool: default, size: 1, vol: rhel-6-cluster-data-1.img}
 hosts:
 - {hostname: rhel-6-cluster-default-1, ip: 192.168.122.111}
 - {hostname: rhel-6-cluster-default-2, ip: 192.168.122.112}

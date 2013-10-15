@@ -1,6 +1,6 @@
 description: JBoss EAP Server
 disks:
-- {pool: default, size: 10}
+- {bus: scsi, pool: default, size: 10}
 jboss:
   domain: {base64: cmVkaGF0, hash: c06ba95adae374bc766be220fad6cc0a, plain: redhat,
     secret: null, user: admin}

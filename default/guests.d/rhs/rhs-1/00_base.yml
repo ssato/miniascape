@@ -1,6 +1,6 @@
 disks:
-- {pool: default, size: 5}
-- {pool: default, size: 1, vol: rhs-1-data-1}
+- {bus: scsi, pool: default, size: 5}
+- {bus: scsi, pool: default, size: 1, vol: rhs-1-data-1}
 hostname: rhs-1
 interfaces:
 - {mac: '52:54:00:05:00:51', network: service}

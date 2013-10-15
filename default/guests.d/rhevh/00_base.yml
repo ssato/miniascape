@@ -1,4 +1,6 @@
 description: RHEL Hypervisor node
+disks:
+- {bus: virtio, pool: default, size: 6}
 name: rhevh
 templates:
   autoinstall: {dst: false}

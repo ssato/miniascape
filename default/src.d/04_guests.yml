@@ -25,6 +25,7 @@ guests:
     disks:
       - pool: default
         size: 10
+        bus: scsi
 
     virtinst:
       ram: 1024
@@ -331,12 +332,12 @@ guests:
     disks:
       - pool: default
         size: 5
-        bus: virtio
+        bus: scsi
       - pool: default
         vol: rhel-6-cluster-gfs-data-1.img
         perms: sh
         size: 1
-        bus: virtio
+        bus: scsi
 
     cluster:
       name: GFS_CLUSTER
@@ -445,10 +446,12 @@ guests:
     disks:
       - pool: default
         size: 5
+        bus: scsi
       - pool: default
         vol: rhel-6-cluster-data-1.img
         perms: sh
         size: 1
+        bus: scsi
 
     cluster:
       nodes:
@@ -698,6 +701,11 @@ guests:
       autoinstall:
         dst: false
 
+    disks:
+      - pool: default
+        size: 6
+        bus: virtio
+
     guests:
       - hostname: rhevh-1
         ip: 192.168.155.33
@@ -705,11 +713,19 @@ guests:
           - mac: "52:54:00:05:00:33"
             network: service
 
+    guests:
+      - hostname: rhevh-2
+        ip: 192.168.155.34
+        interfaces:
+          - mac: "52:54:00:05:00:34"
+            network: service
+
   - name: rhevm
     description: RHEV Manager node
     disks:
       - pool: default
         size: 50
+        bus: scsi
 
     virtinst:
       ram: 2560
@@ -777,9 +793,11 @@ guests:
         disks:
           - pool: default
             size: 5
+            bus: scsi
           - pool: default
             vol: rhs-1-data-1
             size: 1
+            bus: scsi
 
       - hostname: &rhs_2_hostname rhs-2
         ip: &rhs_2_ip 192.168.155.52
@@ -790,9 +808,11 @@ guests:
         disks:
           - pool: default
             size: 5
+            bus: scsi
           - pool: default
             vol: rhs-2-data-1
             size: 1
+            bus: scsi
 
       - hostname: &rhs_3_hostname rhs-3
         ip: &rhs_3_ip 192.168.155.53
@@ -803,9 +823,11 @@ guests:
         disks:
           - pool: default
             size: 5
+            bus: scsi
           - pool: default
             vol: rhs-3-data-1
             size: 1
+            bus: scsi
 
       - hostname: &rhs_4_hostname rhs-4
         ip: &rhs_4_ip 192.168.155.54
@@ -816,9 +838,11 @@ guests:
         disks:
           - pool: default
             size: 5
+            bus: scsi
           - pool: default
             vol: rhs-4-data-1
             size: 1
+            bus: scsi
 
   - name: sam
     description: RH Subscription Asset Manager server
@@ -841,7 +865,10 @@ guests:
     description: Red Hat Satellite server
     disks:
       - pool: default
-        size: 50
+        size: 70
+        bus: scsi
+        format: raw
+        sparse: false
 
     virtinst:
       ram: 2048
@@ -884,7 +911,10 @@ guests:
     description: Red Hat Satellite 6 server
     disks:
       - pool: default
-        size: 50
+        size: 70
+        bus: scsi
+        format: raw
+        sparse: false
 
     virtinst:
       ram: 2048
@@ -923,6 +953,9 @@ guests:
     disks:
       - pool: default
         size: 100
+        bus: scsi
+        format: raw
+        sparse: false
 
     virtinst:
       ram: 2048
@@ -954,6 +987,7 @@ guests:
     disks:
       - pool: default
         size: 50
+        bus: scsi
 
     virtinst:
       ram: 2048

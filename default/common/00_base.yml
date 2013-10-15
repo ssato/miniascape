@@ -24,4 +24,4 @@ templates:
 timezone: {timezone: Asia/Tokyo, utc: true}
 virtinst: {arch: x86_64, basic_options: --check-cpu --hvm --accelerate --noreboot
     --noautoconsole, connect: 'qemu:///system', graphics: vnc, location: 'ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/',
-  os_type: linux, os_variant: rhel6, ram: 512, vcpus: 1, waittime: 20}
+  os_type: linux, os_variant: rhel6, ram: 512, vcpus: 1, waittime: 12}

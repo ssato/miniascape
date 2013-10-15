@@ -34,13 +34,21 @@ set -ex
 test $# -gt 0 && ks_path=$1 || ks_path=${0%/*}/ks.cfg
 kscfg=${ks_path##*/}
 {%- endblock %}
-{% block location -%}
-{%     if virtinst.cdrom -%}
-location={{ virtinst.location }}
-{%-    endif %} \
-{%- endblock %}
 name={% if name_prefix is defined %}{{ name_prefix }}{% endif -%}
 {%  if hostname is defined %}{{ hostname }}{% else %}{{ name }}{% endif %}
+
+{% block location -%}
+{% if virtinst.cdrom -%}
+{%     if virtinst.extra_args is defined and virtinst.extra_args -%}
+# --extra-args="{{ virtinst.extra_args }}"  # It does not work w/ --cdrom but ...
+{%     endif -%}
+locaiton_opts="--cdrom {{ virtinst.cdrom }}"
+{% else -%}
+locaiton_opts="\
+--location={{ virtinst.location }} --initrd-inject=${ks_path} \
+--extra-args=\"ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }} {{ virtinst.extra_args|default('') }}\""
+{% endif -%}
+{%- endblock %}
 
 # Use virtio-scsi if available and there is a scsi disk:
 virtio_scsi_controller=
@@ -59,16 +67,8 @@ virt-install \
 --graphics {{ virtinst.graphics }} \
 --os-type={{ virtinst.os_type }} \
 --os-variant={{ virtinst.os_variant }} \
-{% if virtinst.cdrom -%}
---cdrom {{ virtinst.cdrom }}
-{%-    if virtinst.extra_args is defined and virtinst.extra_args -%}
- --extra-args="{{ virtinst.extra_args }}"
-{%-    endif -%}
-{% else -%}
---location=${location} --initrd-inject=${ks_path} \
- --extra-args="ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }}{% if virtinst.extra_args %} {{ virtinst.extra_args }}{% endif %}"
-{%- endif %} \
 ${virtio_scsi_controller} \
+${location_opts} \
 {% for disk in disks -%}
 --disk {{ disk_option(disk) }} \
 {% endfor %} \
