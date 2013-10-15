@@ -42,9 +42,9 @@ name={% if name_prefix is defined %}{{ name_prefix }}{% endif -%}
 {%     if virtinst.extra_args is defined and virtinst.extra_args -%}
 # --extra-args="{{ virtinst.extra_args }}"  # It does not work w/ --cdrom but ...
 {%     endif -%}
-locaiton_opts="--cdrom {{ virtinst.cdrom }}"
+location_opts="--cdrom {{ virtinst.cdrom }}"
 {% else -%}
-locaiton_opts="\
+location_opts="\
 --location={{ virtinst.location }} --initrd-inject=${ks_path} \
 --extra-args=\"ks=file:/${kscfg} ksdevice={{ ksdevice|default('eth0') }} {{ virtinst.extra_args|default('') }}\""
 {% endif -%}
