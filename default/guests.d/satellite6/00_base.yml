@@ -2,7 +2,7 @@ description: Red Hat Satellite 6 server
 disks:
 - {bus: scsi, format: raw, pool: default, size: 70, sparse: false}
 name: satellite6
-rhn: {activationkeys: REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY, profilename: REPLACE_THIS}
+rhn: {activationkeys: REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY}
 satellite:
   admin: {email: root@localhost}
   ssl: {city: Shibuya-ku, country: JP, org: 'M2 Example, Inc.', password: sslsecret,
