@@ -15,7 +15,7 @@ ANSTXT ?= $(WORKDIR)/answers.txt
 # 	rhel-x86_64-server-supplementary-6, rhel-x86_64-server-6-rhevh
 #
 RHN_AKEYS ?= {{ rhn.activationkeys }}
-RHN_PROFILENAME ?= {% if rhn.profilename is defined %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_$(shell date +%Y%m%d_%H_%M_%S){% endif %}
+RHN_PROFILENAME ?= {% if rhn.profilename is defined and rhn.profilename %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_$(shell date +%Y%m%d_%H_%M_%S){% endif %}
 
 # http://red.ht/UKeD47
 define rhn_register =
