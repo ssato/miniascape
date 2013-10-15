@@ -58,7 +58,7 @@ common:
     vcpus: 1
     basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
     connect: "qemu:///system"
-    waittime: 20
+    waittime: 12
     arch: x86_64
     graphics: vnc
     os_type: linux
