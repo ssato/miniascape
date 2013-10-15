@@ -91,7 +91,7 @@ def _add_special_confs(conf):
 
 def _guest_add_missings(conf):
     assert "hostname" in conf, \
-        "You must specify 'hostname' for guests at least"
+        "You must specify 'hostname' for guests at least: " + str(conf)
 
     if "hostname" not in conf:
         conf["hostname"] = conf["name"]
