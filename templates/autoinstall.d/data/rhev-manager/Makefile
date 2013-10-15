@@ -27,7 +27,7 @@ endef
 # http://red.ht/VKPoiY
 nfs_storage_domain_0_dir = /var/lib/exports/guests
 mk_nfs_storage_domain_0 = \
-  mkdir -m 0755 $(nfs_storage_domain_0_dir) && \
+  mkdir -p -m 0755 $(nfs_storage_domain_0_dir) && \
   chown -R vdsm:kvm $(nfs_storage_domain_0_dir) && \
   echo '$(nfs_storage_domain_0_dir) *(rw)' >> /etc/exports && \
   service nfs reload
