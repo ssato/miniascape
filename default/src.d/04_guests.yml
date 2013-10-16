@@ -943,6 +943,10 @@ guests:
         country: JP
         password: sslsecret
 
+    # NOTE: Must be configured for satellite servers.
+    #ntpservers:
+    #  - ...
+
     rhn:
     #  username: foo@m2.local
     #  password: xyzsecret
