@@ -38,6 +38,8 @@ $(WORKDIR)/install.stamp:
 	rpm -q rhevm || yum -y install rhevm
 	rpm -q rhevm-cli || yum -y install rhevm-cli
 	rpm -q ipa-client || yum -y install ipa-client
+	rpm -q rhevm-dwh || yum -y install rhevm-dwh
+	rpm -q rhevm-reports || yum -y install rhevm-reports
 	$(mk_nfs_storage_domain_0)
 	touch $@
 
