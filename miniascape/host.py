@@ -82,8 +82,10 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
     """
     nets = cf.load_nets_confs()
     outdir = _netoutdir(workdir)
-    tpaths = [os.path.join(d, "host") for d in tmpldirs]
     tmpl = _find_template(tmpldirs, _netxml_path())
+    tpaths = [os.path.dirname(tmpl)]
+
+    logging.debug("Network XML params: tpaths=%s, tmpl=%s" % (tpaths, tmpl))
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
