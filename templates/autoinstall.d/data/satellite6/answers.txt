@@ -1,29 +1,32 @@
+## Originally taken from /usr/share/katello/install/default-answer-file
+## on a server running Satellite 6.
+## see also: http://red.ht/1gkb9Gw
 # Path of the answer file.
-answer_file =
+answer_file = {{ satellite.answer_file|default('/root/setup/answers.txt') }}
 
 # Katello administrative user (default: admin)
-user_name = admin
+user_name = {{ satellite.admin.name|default('admin') }}
 
 # Katello user's password
-user_pass =
+user_pass = {{ satellite.admin.password|default('secret') }}
 
 # Katello user's email (default: root@localhost)
-user_email = root@localhost
+user_email = {{ satellite.admin.email|default('root@localhost') }}
 
 # Katello initial Organization (default: ACME_Corporation)
-org_name = ACME_Corporation
+org_name = {{ satellite.admin.org_name|default('ACME_Corporation') }}
 
 # HTTP Proxy URL (example: http://172.31.1.1)
-proxy_url = NONE
+proxy_url = {{ proxy.url|default('NONE') }}
 
 # HTTP Proxy port (default: 3128)
-proxy_port = NONE
+proxy_port = {{ proxy.port|default('NONE') }}
 
 # HTTP Proxy user (proxy username, if auth is required)
-proxy_user = NONE
+proxy_user = {{ proxy.user|default('NONE') }}
 
 # HTTP Proxy pass (proxy password, if auth is required)
-proxy_pass = NONE
+proxy_pass = {{ proxy.password|default('NONE') }}
 
 # Katello database name.
 # PostgreSQL database name used to store the Katello database
@@ -55,28 +58,28 @@ non_interactive = true
 ssl_ca_password = katellocapw
 
 # SSL CA country
-ssl_ca_country = US
+ssl_ca_country = {{ satellite.ssl.country|default('JP') }}
 
 # SSL CA state
-ssl_ca_state = North Carolina
+ssl_ca_state = {{ satellite.ssl.state|default('Shibuya-ku') }}
 
 # SSL CA city
-ssl_ca_city = Raleigh
+ssl_ca_city = {{ satellite.ssl.city|default('Tokyo') }}
 
 # SSL CA organization
-ssl_ca_org = SomeOrg
+ssl_ca_org = {{ satellite.ssl.org }}
 
 # SSL CA organization unit
-ssl_ca_org_unit = SomeOrgUnit
+ssl_ca_org_unit = {{ satellite.ssl.unit }}
 
 # SSL CA common name
-ssl_ca_cn = Katello machine
+ssl_ca_cn = {{ satellite.ssl.cn|default('Katello machine') }}
 
 # SSL CA e-mail address
 ssl_ca_email = root@localhost
 
 # SSL certificate expiration (in days)
-ssl_cert_expiration = 365
+ssl_cert_expiration = {{ satellite.ssl.expires|default('365') }}
 
 # SSL CA password file path
 ssl_ca_password_file = /etc/katello/ssl_ca_password-file
