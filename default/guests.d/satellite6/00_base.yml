@@ -7,6 +7,8 @@ satellite:
   admin: {email: root@localhost}
   ssl: {city: Shibuya-ku, country: JP, org: 'M2 Example, Inc.', password: sslsecret,
     state: Tokyo, unit: IT Dept.}
+services:
+  enabled: [ntpd]
 templates:
   autoinst: {src: autoinstall.d/satellite6-ks.cfg}
 virtinst: {ram: 2048, vcpus: 2}

@@ -947,6 +947,10 @@ guests:
     #ntpservers:
     #  - ...
 
+    services:
+      enabled:
+        - ntpd
+
     rhn:
     #  username: foo@m2.local
     #  password: xyzsecret
