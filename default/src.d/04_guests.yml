@@ -960,6 +960,8 @@ guests:
     setup_data:
       - src: data/satellite6/Makefile
         dst: Makefile
+      - src: data/satellite6/answers.txt
+        dst: answers.txt
 
     templates:
       autoinst:

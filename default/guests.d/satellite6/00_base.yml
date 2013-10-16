@@ -11,6 +11,7 @@ services:
   enabled: [ntpd]
 setup_data:
 - {dst: Makefile, src: data/satellite6/Makefile}
+- {dst: answers.txt, src: data/satellite6/answers.txt}
 templates:
   autoinst: {src: autoinstall.d/satellite6-ks.cfg}
 virtinst: {ram: 2048, vcpus: 2}
