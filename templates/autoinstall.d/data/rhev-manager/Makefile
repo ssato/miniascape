@@ -52,6 +52,7 @@ $(ANSTXT).first_half: $(WORKDIR)/install.stamp
 setup: $(WORKDIR)/setup.stamp
 $(WORKDIR)/setup.stamp: $(ANSTXT)
 	rhevm-setup --answer-file=$(ANSTXT)
+	python rhevm_setup_wrapper.py --password {{ rhev.auth_pass }}
 	touch $@
 
 .PHONY: install setup

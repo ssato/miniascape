@@ -755,6 +755,8 @@ guests:
         dst: Makefile
       - src: data/rhev-manager/answers.txt
         dst: answers.txt
+      - src: data/rhev-manager/rhevm_setup_wrapper.py
+        dst: rhevm_setup_wrapper.py
 
     guests:
       - hostname: rhevm-1
