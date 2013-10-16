@@ -3,7 +3,7 @@
 WORKDIR ?= /root/setup
 SATELLITE_ISO ?= Satellite-6.0.1-RHEL-6-20130807.0-Satellite-x86_64-dvd1.iso
 
-#CONFIGURE_OPTS ?= --user-name=admin --user-pass={{ katello.password|default('secret') }}{% if katello.org_name is defined %}--org-name={{ katello.org_name }}{% endif %}
+#CONFIGURE_OPTS ?= --user-name=admin --user-pass={{ satellite.admin.password|default('secret') }}{% if satellite.admin.org_name is defined %}--org-name={{ satellite.admin.org_name }}{% endif %}
 CONFIGURE_OPTS ?= --answer-file=$(WORKDIR)/answers.txt
 
 
