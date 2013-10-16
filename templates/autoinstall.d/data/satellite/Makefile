@@ -4,7 +4,7 @@
 #
 WORKDIR ?= /root/setup
 
-SATELLITE_ISO ?= $(WORKDIR)/satellite-5.5.0-20120911-rhel-6-x86_64.iso
+SATELLITE_ISO ?= $(WORKDIR)/satellite-5.6.0-20130927-rhel-6-x86_64.iso
 ANSTXT ?= $(WORKDIR)/answers.txt
 
 EXTRA_INSTALLER_OPTS ?= --disconnected
