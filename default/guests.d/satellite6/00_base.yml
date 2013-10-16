@@ -9,6 +9,8 @@ satellite:
     state: Tokyo, unit: IT Dept.}
 services:
   enabled: [ntpd]
+setup_data:
+- {dst: Makefile, src: data/satellite6/Makefile}
 templates:
   autoinst: {src: autoinstall.d/satellite6-ks.cfg}
 virtinst: {ram: 2048, vcpus: 2}

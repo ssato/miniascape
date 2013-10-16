@@ -957,6 +957,10 @@ guests:
       activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
     #  profilename: "REPLACE_THIS"
 
+    setup_data:
+      - src: data/satellite6/Makefile
+        dst: Makefile
+
     templates:
       autoinst:
         src: autoinstall.d/satellite6-ks.cfg
