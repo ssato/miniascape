@@ -873,7 +873,7 @@ guests:
             network: service
 
   - name: satellite
-    description: Red Hat Satellite server
+    description: Red Hat Satellite 5.x server
     disks:
       - pool: default
         size: 70
@@ -906,6 +906,14 @@ guests:
     #  fqdn: proxy.m2.local
     #  username: proxyuser
     #  username: proxypasswd
+
+    setup_data:
+      - src: data/satellite/Makefile
+        dst: Makefile
+      - src: data/satellite/answers.txt
+        dst: answers.txt
+      - src: data/satellite/switch-to-online-mode.sh
+        dst: switch-to-online-mode.sh
 
     templates:
       autoinst:
