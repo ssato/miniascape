@@ -929,6 +929,7 @@ guests:
 
     virtinst:
       ram: 2048
+      vcpus: 2
 
     satellite:
       admin:

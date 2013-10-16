@@ -9,4 +9,4 @@ satellite:
     state: Tokyo, unit: IT Dept.}
 templates:
   autoinst: {src: autoinstall.d/satellite6-ks.cfg}
-virtinst: {ram: 2048}
+virtinst: {ram: 2048, vcpus: 2}
