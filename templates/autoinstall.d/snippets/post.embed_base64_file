@@ -3,6 +3,8 @@
 outdir={{ outdir }}
 datadir=${outdir}/setup
 test -d ${outdir} || mkdir -p ${outdir}
+chown -R root.root ${outdir}
+chmod -R -m 700 ${outdir}
 cat << EOF > ${outdir}/setup.tar.xz.base64
 {% include 'setup.tar.xz.base64' %}
 EOF
