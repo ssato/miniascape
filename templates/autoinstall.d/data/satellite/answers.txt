@@ -1,0 +1,21 @@
+# Originally taken from RHN Satellite DVD (install/answers.txt)
+admin-email = {{ satellite.admin.email }}
+{% if rhn.username is defined -%}
+rhn-username = {{ rhn.username }}
+rhn-password = {{ rhn.password }}{% endif %}
+{% if proxy is defined and proxy.fqdn is defined -%}
+rhn-http-proxy = {{ proxy.fqdn }}
+rhn-http-proxy-username = {{ proxy.username }}
+rhn-http-proxy-password = {{ proxy.password }}{% endif %}
+ssl-set-org = {{ satellite.ssl.org }}
+ssl-set-org-unit = {{ satellite.ssl.unit }}
+ssl-set-city = {{ satellite.ssl.city }}
+ssl-set-state = {{ satellite.ssl.state }}
+ssl-set-country = {{ satellite.ssl.country }}
+ssl-password = {{ satellite.ssl.password|default('redhat') }}
+satellite-cert-file = {{ satellite.cert|default('/root/setup/satellite.cert') }}
+# added to avoid some unknown errors:
+ssl-set-email = {{ satellite.admin.email }}
+ssl-config-sslvhost = y
+enable-tftp = no
+
