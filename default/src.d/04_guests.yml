@@ -931,9 +931,14 @@ guests:
       ram: 2048
       vcpus: 2
 
+    # see also: templates/autoinstall.d/data/satellite6/answers.txt
     satellite:
+      #answer_file: /root/setup/answers.txt
       admin:
-        email: root@localhost
+        #name: admin
+        #password: secret
+        #email: root@localhost
+        org_name: M2_Example_Inc
 
       ssl:
         org: "M2 Example, Inc."
@@ -942,6 +947,14 @@ guests:
         state: Tokyo
         country: JP
         password: sslsecret
+        cn: M2 Example Inc
+        expires: 3650
+
+    proxy:
+      #url:
+      #port:
+      #user:
+      #password:
 
     # NOTE: Must be configured for satellite servers.
     #ntpservers:
