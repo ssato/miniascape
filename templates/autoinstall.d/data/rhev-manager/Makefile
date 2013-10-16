@@ -3,7 +3,6 @@
 # License: MIT
 #
 WORKDIR ?= /root/setup
-
 ANSTXT ?= $(WORKDIR)/answers.txt
 
 #
@@ -42,11 +41,15 @@ $(WORKDIR)/install.stamp:
 	$(mk_nfs_storage_domain_0)
 	touch $@
 
+$(ANSTXT): $(ANSTXT).first_half $(ANSTXT).last_half
+	cat $^ > $@
+
+$(ANSTXT).first_half: $(WORKDIR)/install.stamp
+	rhevm-setup --gen-answer-file=$@
+
 setup: $(WORKDIR)/setup.stamp
 $(WORKDIR)/setup.stamp: $(ANSTXT)
-	rhevm-setup --gen-answer-file=$(ANSTXT).header
-	cat $(ANSTXT).header $(ANSTXT) > $(ANSTXT).new
-	rhevm-setup --answer-file=$(ANSTXT).new
+	rhevm-setup --answer-file=$(ANSTXT)
 	touch $@
 
 .PHONY: install setup

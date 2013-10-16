@@ -18,9 +18,9 @@ DB_SECURE_CONNECTION={{ rhev.db_secure_connection|default('no') }}
 NFS_MP={{ rhev.nfs_mp|default('/var/lib/exports/iso') }}
 ISO_DOMAIN_NAME={{ rhev.iso_domain_name|default('ISO_DOMAIN') }}
 CONFIG_NFS={{ rhev.config_nfs|default('yes') }}
+HTTP_PORT={{ rhev.http_port|default('80') }}
+HTTPS_PORT={{ rhev.https_port|default('443') }}
 
-{% if rhev.http_port is defined %}HTTP_PORT={{ rhev.http_port }}{% endif %}
-{% if rhev.https_port is defined %}HTTPS_PORT={{ rhev.https_port }}{% endif %}
 {% if rhev.db_port is defined %}DB_PORT={{ rhev.db_port }}{% endif %}
 {% if rhev.db_admin is defined %}DB_ADMIN={{ rhev.db_admin }}{% endif %}
 {% if rhev.mac_range is defined %}MAC_RANGE={{ rhev.mac_range }}{% endif %}

@@ -770,7 +770,7 @@ guests:
           auth_pass: redhat0123
           db_local_pass: redhat0123
           override_iptables: no
-          #dc_type: ISCSI
+          dc_type: NFS
 
   - name: rhs
     description: Red Hat Storage node
