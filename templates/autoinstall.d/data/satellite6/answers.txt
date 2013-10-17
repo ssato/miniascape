@@ -1,6 +1,8 @@
-## Originally taken from /usr/share/katello/install/default-answer-file
-## on a server running Satellite 6.
-## see also: http://red.ht/1gkb9Gw
+# Originally taken from
+# https://git.fedorahosted.org/cgit/katello.git/tree/katello-configure/default-answer-file
+#
+# see also: http://red.ht/1gkb9Gw
+
 # Path of the answer file.
 answer_file = {{ satellite.answer_file|default('/root/setup/answers.txt') }}
 
