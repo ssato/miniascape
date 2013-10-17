@@ -18,3 +18,4 @@ rhel-6-4-server-x86_64  -fstype=iso9660,ro,loop :{{ isodatadir|default("/srv/dat
 
 fedora-19-x86_64  -fstype=iso9660,ro,loop :/srv/images/fedora-19-x86_64-dvd.iso
 fedora-20-x86_64  -fstype=iso9660,ro,loop :/srv/images/fedora-20-x86_64-dvd.iso
+

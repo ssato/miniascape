@@ -7,3 +7,4 @@
 # * http://www.mail-archive.com/autofs@linux.kernel.org/msg08623.html
 #
 /srv/content    /etc/auto.isos
+
