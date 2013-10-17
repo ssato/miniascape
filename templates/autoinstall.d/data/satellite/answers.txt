@@ -1,4 +1,4 @@
-# Originally taken from RHN Satellite DVD (install/answers.txt)
+# see also: https://git.fedorahosted.org/cgit/spacewalk.git/tree/spacewalk/setup/answers.txt
 admin-email = {{ satellite.admin.email }}
 {% if rhn.username is defined -%}
 rhn-username = {{ rhn.username }}
