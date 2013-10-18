@@ -2,4 +2,4 @@ hostname: rhevm-1
 interfaces:
 - {mac: '52:54:00:05:00:31', network: service}
 ip: 192.168.155.31
-rhev: {auth_pass: redhat0123, db_local_pass: redhat0123, dc_type: NFS, override_iptables: false}
+rhev: {auth_pass: redhat0123, db_local_pass: redhat0123, dc_type: NFS}
