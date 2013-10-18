@@ -45,10 +45,10 @@ $(WORKDIR)/install.stamp:
 
 $(ANSTXT).first_half: $(WORKDIR)/install.stamp
 	rhevm-setup --gen-answer-file=$@.tmp
-	sed -r  '/^[A-Z_]+=$/d' $@.tmp > $@
+	sed -r  '/^[A-Z_]+=$$/d' $@.tmp > $@
 
 $(ANSTXT): $(ANSTXT).first_half $(ANSTXT).last_half
-	cat $^ > $@
+	cat $^ >> $@
 
 setup: $(WORKDIR)/setup.stamp
 $(WORKDIR)/setup.stamp: $(ANSTXT)
