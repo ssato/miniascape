@@ -36,8 +36,8 @@ def start_setup_session(setup_cmd=_DWH_CMD, password=None):
     child = pexpect.spawn(setup_cmd)
 
     if setup_cmd == _REPORT_CMD:
-        idx = child.expect("Exporting current users....*",
-                           ".*\? \(yes\|no\): ")
+        idx = child.expect(["Exporting current users....*",
+                            ".*\? \(yes\|no\): "])
         if idx == 0:
             logging.info("Setup already done.")
 
