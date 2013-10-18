@@ -20,7 +20,7 @@ storage_pools:
 swap: 512
 templates:
   autoinst: {dst: ks.cfg}
-  virtinst: {dst: vmbuild.sh, src: host/vmbuild.sh}
+  virtinst: {dst: vmbuild.sh, src: guest/vmbuild.sh}
 timezone: {timezone: Asia/Tokyo, utc: true}
 virtinst: {arch: x86_64, basic_options: --check-cpu --hvm --accelerate --noreboot
     --noautoconsole, connect: 'qemu:///system', graphics: vnc, location: 'ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/',

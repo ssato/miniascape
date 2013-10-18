@@ -75,7 +75,7 @@ common:
       #src: autoinstall.d/<name>-ks.cfg
       dst: ks.cfg
     virtinst:
-      src: host/vmbuild.sh
+      src: guest/vmbuild.sh
       dst: vmbuild.sh
 
 networks:
