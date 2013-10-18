@@ -2,7 +2,7 @@
 HOST_FQDN={% if rhev.host_fqdn is defined %}{{ rhev.host_fqdn }}{% else %}{{ fqdn }}{% endif %}
 AUTH_PASS={{ rhev.auth_pass }}
 DB_LOCAL_PASS={{ rhev.db_local_pass }}
-OVERRIDE_IPTABLES={{ rhev.override_iptables|default('yes') }}
+OVERRIDE_IPTABLES={% if rhev.override_iptables is defined and rhev.override_iptables in ("yes", "no") %}{{ rhev.override_iptables }}{% else %}yes{% endif %}
 OVERRIDE_HTTPD_CONFIG={{ rhev.override_httpd_config|default('yes') }}
 ORG_NAME={% if rhev.org_name is defined %}{{ rhev.org_name }}{% else %}{{ domain }}{% endif %}
 DC_TYPE={{ "NFS" if rhev.dc_type is not defined else rhev.dc_type }}
