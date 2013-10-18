@@ -38,6 +38,9 @@ rhevm_dwh_report_setup = rhevm-dwh-setup &&  rhevm-reports-setup
 endif
 
 
+all: install setup
+
+
 install: $(WORKDIR)/install.stamp
 $(WORKDIR)/install.stamp:
 	test -f /etc/sysconfig/rhn/systemid || rhnreg_ks --profilename=$(RHN_PROFILENAME) -v --activationkey=$(RHN_AKEYS) --force
