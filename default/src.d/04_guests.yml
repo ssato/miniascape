@@ -754,7 +754,7 @@ guests:
       - src: data/rhev-manager/Makefile
         dst: Makefile
       - src: data/rhev-manager/answers.txt
-        dst: answers.txt
+        dst: answers.txt.last_half
       - src: data/rhev-manager/rhevm_setup_wrapper.py
         dst: rhevm_setup_wrapper.py
 

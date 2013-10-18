@@ -5,7 +5,7 @@ name: rhevm
 rhn: {activationkeys: REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY}
 setup_data:
 - {dst: Makefile, src: data/rhev-manager/Makefile}
-- {dst: answers.txt, src: data/rhev-manager/answers.txt}
+- {dst: answers.txt.last_half, src: data/rhev-manager/answers.txt}
 - {dst: rhevm_setup_wrapper.py, src: data/rhev-manager/rhevm_setup_wrapper.py}
 templates:
   autoinst: {src: autoinstall.d/rhev-manager-ks.cfg}

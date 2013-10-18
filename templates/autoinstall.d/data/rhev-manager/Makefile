@@ -43,11 +43,12 @@ $(WORKDIR)/install.stamp:
 	$(mk_nfs_storage_domain_0)
 	touch $@
 
+$(ANSTXT).first_half: $(WORKDIR)/install.stamp
+	rhevm-setup --gen-answer-file=$@.tmp
+	sed -r  '/^[A-Z_]+=$/d' $@.tmp > $@
+
 $(ANSTXT): $(ANSTXT).first_half $(ANSTXT).last_half
 	cat $^ > $@
-
-$(ANSTXT).first_half: $(WORKDIR)/install.stamp
-	rhevm-setup --gen-answer-file=$@
 
 setup: $(WORKDIR)/setup.stamp
 $(WORKDIR)/setup.stamp: $(ANSTXT)

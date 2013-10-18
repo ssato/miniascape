@@ -1,5 +1,4 @@
-[general]
-# Must:
+#[general]
 HOST_FQDN={% if rhev.host_fqdn is defined %}{{ rhev.host_fqdn }}{% else %}{{ fqdn }}{% endif %}
 AUTH_PASS={{ rhev.auth_pass }}
 DB_LOCAL_PASS={{ rhev.db_local_pass }}
@@ -24,3 +23,4 @@ HTTPS_PORT={{ rhev.https_port|default('443') }}
 {% if rhev.db_port is defined %}DB_PORT={{ rhev.db_port }}{% endif %}
 {% if rhev.db_admin is defined %}DB_ADMIN={{ rhev.db_admin }}{% endif %}
 {% if rhev.mac_range is defined %}MAC_RANGE={{ rhev.mac_range }}{% endif %}
+
