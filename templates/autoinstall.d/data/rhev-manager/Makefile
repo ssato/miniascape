@@ -31,6 +31,13 @@ mk_nfs_storage_domain_0 = \
   service nfs reload
 
 
+ifeq ($(EXPERIMENTAL),true)
+rhevm_dwh_report_setup = python rhevm_setup_wrapper.py --password {{ rhev.auth_pass }} a
+else
+rhevm_dwh_report_setup = rhevm-dwh-setup &&  rhevm-reports-setup
+endif
+
+
 install: $(WORKDIR)/install.stamp
 $(WORKDIR)/install.stamp:
 	test -f /etc/sysconfig/rhn/systemid || rhnreg_ks --profilename=$(RHN_PROFILENAME) -v --activationkey=$(RHN_AKEYS) --force
@@ -53,7 +60,7 @@ $(ANSTXT): $(ANSTXT).first_half $(ANSTXT).last_half
 setup: $(WORKDIR)/setup.stamp
 $(WORKDIR)/setup.stamp: $(ANSTXT)
 	rhevm-setup --answer-file=$(ANSTXT)
-	python rhevm_setup_wrapper.py --password {{ rhev.auth_pass }}
+	$(rhevm_dwh_report_setup)
 	touch $@
 
 .PHONY: install setup
