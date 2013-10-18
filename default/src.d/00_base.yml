@@ -79,7 +79,7 @@ common:
       dst: vmbuild.sh
     netregist:
       src: guest/net_register.sh
-      src: net_register.sh
+      dst: net_register.sh
 
 networks:
   - name: default  # libvirt's default virtual (NAT) network
