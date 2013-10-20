@@ -19,6 +19,7 @@ storage_pools:
   type: dir
 swap: 512
 templates:
+  Makefile: {dst: Makefile, src: guest/Makefile}
   autoinst: {dst: ks.cfg}
   netregist: {dst: net_register.sh, src: guest/net_register.sh}
   virtinst: {dst: vmbuild.sh, src: guest/vmbuild.sh}

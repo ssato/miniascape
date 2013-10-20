@@ -80,6 +80,9 @@ common:
     netregist:
       src: guest/net_register.sh
       dst: net_register.sh
+    Makefile:
+      src: guest/Makefile
+      dst: Makefile
 
 networks:
   - name: default  # libvirt's default virtual (NAT) network
