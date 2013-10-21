@@ -13,6 +13,19 @@ host:
 
   host_templates:
 
+    # Build/RPM aux files:
+    Makefile_am:
+      src: host/Makefile.am
+
+    configure_ac:
+      src: host/configure.ac
+
+    rpm_mk:
+      src: host/rpm.mk
+
+    rpm_spec:
+      src: host/package.spec
+
     # Autofs configuration to serve kickstart installation trees via http:
     auto_isos_master:
       src: host/etc/auto.master.d/isos.autofs

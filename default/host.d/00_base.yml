@@ -1,14 +1,18 @@
 bridge: virbr5
 host_templates:
+  Makefile_am: {src: host/Makefile.am}
   apache_autoinst_conf: {src: host/etc/httpd/conf.d/miniascape_autoinst.conf}
   auto_isos_map: {src: host/etc/auto.isos}
   auto_isos_master: {src: host/etc/auto.master.d/isos.autofs}
+  configure_ac: {src: host/configure.ac}
   create_lio_iscsi_lun: {src: host/usr/libexec/miniascape/default/create_lio_iscsi_lun.sh}
   enable_nested_kvm: {src: host/etc/modprobe.d/kvm.conf}
   fence_virt: {dst: host/etc/fence_virt.conf, src: host/etc/cluster/fence_virt.conf}
   fixup_software_bridge: {src: host/usr/libexec/miniascape/default/fixup_software_bridge.sh}
   register_guest_dns_and_dhcp_entry_to_virt_network: {src: host/usr/libexec/miniascape/guest_network_register.sh}
   register_libvirt_network: {src: host/usr/libexec/miniascape/register_libvirt_network.sh}
+  rpm_mk: {src: host/rpm.mk}
+  rpm_spec: {src: host/package.spec}
 iscsi:
   targets:
   - {iqn: 'iqn.2003-01.org.linux-iscsi.localhost.x8664:sn.0001', name: iscsi-0, path: /var/lib/libvirt/images/iscsi-0.img,
