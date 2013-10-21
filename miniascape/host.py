@@ -23,8 +23,6 @@ import miniascape.template as T
 import miniascape.utils as U
 
 import anyconfig as A
-import locale
-import datetime
 import optparse
 import os.path
 import os
@@ -45,16 +43,6 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
     '/tmp/a/host/usr/share/miniascape/networks.d'
     """
     return os.path.join(topdir, host_subdir, net_subdir)
-
-
-def timestamp(dtobj=datetime.datetime.now()):
-    """
-    >>> dtobj = datetime.datetime(2013, 10, 20, 12, 11, 59, 345135)
-    >>> timestamp(dtobj)
-    'Sun Oct 20 2013'
-    """
-    locale.setlocale(locale.LC_TIME, "C")
-    return dtobj.strftime("%a %b %_d %Y")
 
 
 def hosts_w_unique_macs(nc):
@@ -135,7 +123,7 @@ def gen_host_files(cf, tmpldirs, workdir, force):
     conf = cf.load_host_confs()
     gen_vnet_files(cf, tmpldirs, workdir, force)
 
-    conf["timestamp"] = timestamp()
+    conf["timestamp"] = U.timestamp()
 
     for k, v in conf.get("host_templates", {}).iteritems():
         src = v.get("src", None)
