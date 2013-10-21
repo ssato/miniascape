@@ -1,0 +1,9 @@
+
+aaa = {{ aaa }}
+bbb = {{ bbb }}
+ccc = {{ ccc|default("missing value") }}
+
+templates:{% for k, v in templates %}
+  target = {{ k }}, src = {{ v.src|default("undef") }}, dst = {{ v.dst|default("undef") }}
+{% endfor %}
+

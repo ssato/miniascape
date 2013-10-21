@@ -1,0 +1,15 @@
+aaa: 000
+bbb: "xyz"
+
+ddd_templates:
+  target_w_src_and_dst:
+    src: 00_sample.tmpl
+    dst: a/b/c/00_sample.out
+
+  target_w_src_only:
+    src: 00_sample.tmpl
+
+  target_wo_src:
+    dst: dummy_out
+
+

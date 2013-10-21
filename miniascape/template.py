@@ -14,7 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from miniascape.globals import LOGGER as logging
 import jinja2_cli.render
+import os.path
 
 try:
     import gevent
@@ -56,5 +58,34 @@ def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
 
 def finish_renderto_threads(threads):
     _joinall(threads)
+
+
+def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
+    """
+
+    :param conf: Config object holding templates info
+    :param tmpldirs: Template paths
+    :param workdir: Working dir
+    :param template_keys: Template keys to search each templates
+    """
+    for k, v in conf.get(templates_key, {}).iteritems():
+        src = v.get("src", None)
+        dst = v.get("dst", src)
+
+        if src is None:
+            logging.warn("%s.%s lacks 'src' parameter")
+            continue
+
+        if os.path.sep in src:
+            srcdirs = [os.path.join(d, os.path.dirname(src)) for d in tmpldirs]
+        else:
+            srcdirs = tmpldirs
+
+        # strip dir part as it will be searched from srcdir.
+        src = os.path.basename(src)
+        dst = os.path.join(workdir, dst)
+
+        logging.info("Generating %s from %s [%s]" % (dst, src, k))
+        renderto(srcdirs + [workdir], conf, src, dst)
 
 # vim:sw=4:ts=4:et:
