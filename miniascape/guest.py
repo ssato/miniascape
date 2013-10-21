@@ -92,23 +92,7 @@ def gen_guest_files(name, conffiles, tmpldirs, workdir,
 
     logging.info("Generating setup data archive to embedded: " + name)
     arrange_setup_data(gtmpldirs, conf, workdir)
-
-    for k, v in conf.get("templates", {}).iteritems():
-        if not v.get("src", False) or not v.get("dst", False):
-            continue
-
-        (src, dst) = (v["src"], v["dst"])
-        if os.path.sep in src:
-            srcdirs = [os.path.join(d, os.path.dirname(src)) for d in tmpldirs]
-        else:
-            srcdirs = tmpldirs
-
-        # strip dir part as it will be searched from srcdir.
-        src = os.path.basename(src)
-        dst = os.path.join(workdir, dst)
-
-        logging.info("Generating %s from %s [%s]" % (dst, src, k))
-        T.renderto(srcdirs + [workdir], conf, src, dst)
+    T.compile_conf_templates(conf, tmpldirs, workdir, "templates")
 
 
 def show_vm_names(conffiles):

@@ -124,25 +124,7 @@ def gen_host_files(cf, tmpldirs, workdir, force):
     gen_vnet_files(cf, tmpldirs, workdir, force)
 
     conf["timestamp"] = U.timestamp()
-
-    for k, v in conf.get("host_templates", {}).iteritems():
-        src = v.get("src", None)
-        dst = v.get("dst", src)
-
-        if src is None:
-            continue
-
-        if os.path.sep in src:
-            srcdirs = [os.path.join(d, os.path.dirname(src)) for d in tmpldirs]
-        else:
-            srcdirs = tmpldirs
-
-        # strip dir part as it will be searched from srcdir.
-        src = os.path.basename(src)
-        dst = os.path.join(workdir, dst)
-
-        logging.info("Generating %s from %s [%s]" % (dst, src, k))
-        T.renderto(srcdirs + [workdir], conf, src, dst)
+    T.compile_conf_templates(conf, tmpldirs, workdir, "host_templates")
 
 
 def option_parser():
