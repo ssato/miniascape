@@ -1,4 +1,4 @@
-EXTRA_DIST = {{ name|default('miniascape-host-data-default') }}.spec rpm.mk
+EXTRA_DIST = package.spec rpm.mk
 include $(abs_top_srcdir)/rpm.mk
 
 pkgdata0dir = /usr/share/miniascape/networks.d
