@@ -39,37 +39,6 @@ def cmd2prog(c):
     return "miniascape " + c
 
 
-def build_vm_cmd(name, workdir):
-    """
-    :param name: VM's name
-    :param workdir: Working dir where vm build scripts exist
-    """
-    bindir = os.path.join(workdir, M_GUESTS_CONF_SUBDIR, name)
-    bin = os.path.join(bindir, "vmbuild.sh")
-    logfile = os.path.join(bindir, "vmbuild.%s.log" % timestamp())
-
-    return "bash -x %s 2>&1 | tee %s" % (bin, logfile)
-
-
-def build_vm(name, workdir, dryrun=True):
-    """
-    :param name: VM's name
-    :param workdir: Working dir where vm build scripts exist
-    :param dryrun: Just return command to run if True
-    """
-    c = build_vm_cmd(name, workdir)
-    logging.info("Build vm: " + c)
-
-    if dryrun:
-        return True
-
-    return subprocess.check_call(c, shell=True)
-
-
-def build_vm_0(nwd):
-    return build_vm(*nwd)
-
-
 def gen_all(argv):
     p = H.option_parser()
     (options, args) = p.parse_args(argv)
@@ -83,29 +52,6 @@ def gen_all(argv):
     G.gen_all(cf, options.tmpldir, options.workdir)
 
 
-def build_all_vms(argv):
-    p = H.option_parser()
-    (options, args) = p.parse_args(argv)
-
-    options = O.tweak_tmpldir(options)
-    set_loglevel(options.verbose)
-
-    cf = C.ConfFiles(options.confdir)
-
-    vms = [os.path.basename(f) for f in
-           glob.glob(os.path.join(options.workdir, M_GUESTS_CONF_SUBDIR, '*'))]
-
-    if not vms:
-        logging.error("No vms found. Aborting...")
-        sys.exit(-1)
-
-    pool = multiprocessing.Pool(multiprocessing.cpu_count() * 2)
-    res = pool.map_async(build_vm_0, [(n, options.workdir, options.dryrun) for
-                                      n in vms])
-    pool.close()
-    pool.join()
-
-
 # TODO: define other commands.
 cmds = [
     #("i", "init", H.main),
@@ -114,7 +60,7 @@ cmds = [
     ("ge", "generate", gen_all,
      "Generate all files to build guests and virt. infra"),
     ("gu", "guest", G.main, "Generate files to build specific guest"),
-    ("b", "build", build_all_vms, "Build all VMs"),
+    #("b", "build", build_all_vms, "Build all VMs"),
 ]
 
 
