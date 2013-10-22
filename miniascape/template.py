@@ -77,6 +77,7 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
             continue
 
         if os.path.sep in src:
+            logging.debug("Adding subdirs of source to template paths: " + src)
             srcdirs = [os.path.join(d, os.path.dirname(src)) for d in tmpldirs]
         else:
             srcdirs = tmpldirs
@@ -84,8 +85,10 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
         # strip dir part as it will be searched from srcdir.
         src = os.path.basename(src)
         dst = os.path.join(workdir, dst)
+        tpaths = srcdirs + [workdir]
 
         logging.info("Generating %s from %s [%s]" % (dst, src, k))
-        renderto(srcdirs + [workdir], conf, src, dst)
+        logging.debug("Template path: " + ", ".join(tpaths))
+        renderto(tpaths, conf, src, dst)
 
 # vim:sw=4:ts=4:et:

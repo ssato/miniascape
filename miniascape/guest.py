@@ -15,13 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from miniascape.globals import M_TMPL_DIR, M_WORK_TOPDIR, \
-    M_GUESTS_CONF_SUBDIR, LOGGER as logging, set_loglevel
+    M_GUESTS_CONF_SUBDIR, M_GUESTS_BUILDDATA_TOPDIR, \
+    LOGGER as logging, set_loglevel
 
 import miniascape.config as C
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
+import itertools
 import optparse
 import os.path
 import os
@@ -40,6 +42,14 @@ def _workdir(topdir, name, subdir=M_GUESTS_CONF_SUBDIR):
     :return: Guest's working (output) directory
     """
     return os.path.join(topdir, subdir, name)
+
+
+def _guests_workdir(topdir, subdir=M_GUESTS_CONF_SUBDIR):
+    """
+    :param topdir: Working top dir
+    :return: Guest's working (output) directory
+    """
+    return os.path.join(topdir, subdir)
 
 
 def arrange_setup_data(gtmpldirs, config, gworkdir):
@@ -103,6 +113,25 @@ def show_vm_names(conffiles):
         ", ".join(conffiles.list_guest_names())
 
 
+_DISTDATA_MAKEFILE_AM_TMPL = """pkgdata%(i)ddir = %(dir)s
+dist_pkgdata%(i)d_DATA = $(shell for f in %(files)s; do test -f $$f && echo $$f; done)
+"""
+
+
+def mk_distdata_g(guests, tmpl=_DISTDATA_MAKEFILE_AM_TMPL,
+                  datadir=M_GUESTS_BUILDDATA_TOPDIR):
+    """
+    Make up distdata snippet in Makefile.am to package files to build guests.
+    """
+    ig = itertools.count()
+    fs = ["ks.cfg", "net_register.sh", "vmbuild.sh"]  # FIXME: Ugly!
+
+    for name in guests:
+        files = ' '.join(os.path.join(name, f) for f in fs)
+        yield tmpl % dict(i=ig.next(), dir=os.path.join(datadir, name),
+                          files=files)
+
+
 def gen_all(cf, tmpldirs, workdir):
     """
     Generate files to build VM for all VMs.
@@ -111,8 +140,19 @@ def gen_all(cf, tmpldirs, workdir):
     :param tmpldirs: Template dirs :: [path]
     :param workdir: Working top dir
     """
-    for name in cf.list_guest_names():
+    guests = cf.list_guest_names()
+
+    for name in guests:
         gen_guest_files(name, cf, tmpldirs, _workdir(workdir, name))
+
+    conf = cf.load_host_confs()
+    conf["guests_build_datadir"] = M_GUESTS_BUILDDATA_TOPDIR
+    conf["timestamp"] = U.timestamp()
+    conf["distdata"] = list(mk_distdata_g(guests))
+
+    logging.info("Generating guests common build aux files...")
+    T.compile_conf_templates(conf, tmpldirs,
+                             _guests_workdir(workdir), "guests_templates")
 
 
 def option_parser():
