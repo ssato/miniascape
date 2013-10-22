@@ -1,11 +1,11 @@
 all: netregist build
 
 netregist: netregist.stamp
-netregist.stamp: net_register.sh
+netregist.stamp: $(CURDIR)/net_register.sh
 	bash -x $< && touch $@
 
 build: netregist.stamp build.stamp
-build.stamp: vmbuild.sh
+build.stamp: $(CURDIR)/vmbuild.sh
 	bash -x $< && touch $@.stmp
 
 .PHONY: netregist build
