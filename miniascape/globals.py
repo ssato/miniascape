@@ -24,8 +24,12 @@ def date():
     return datetime.datetime.now().strftime("%Y%m%d")
 
 
+M_SITE_DEFAULT = "default"
+M_VMBUILD_SH = "vmbuild.sh"
+
 M_CONF_TOPDIR = "/etc/miniascape.d"
 M_TMPL_DIR = "/usr/share/miniascape/templates"
+M_GUESTS_BUILDDATA_TOPDIR = "/usr/share/miniascape/build/guests"
 
 M_SITE_DEFAULT = "default"
 M_CONFDIR_DEFAULT = os.path.join(M_CONF_TOPDIR, M_SITE_DEFAULT)
