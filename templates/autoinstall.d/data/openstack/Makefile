@@ -8,16 +8,16 @@ WORKDIR ?= /root/setup
 
 
 install:
-	yum install -y http://rdo.fedorapeople.org/openstack-grizzly/rdo-release-grizzly.rpm
-	yum -y update
+	yum install -y http://rdo.fedorapeople.org/openstack-havana/rdo-release-havana.rpm
+	yum install -y openstack-packstack
 	reboot
 
 setup:
-	yum install -y openstack-packstack python-netaddr
 	packstack --allinone
-	source /root/keystonerc_demo && \
-	  neutron security-group-rule-create --protocol icmp --direction ingress default && \
-	  neutron security-group-rule-create --protocol tcp --port-range-min 22 --port-range-max 22 --direction ingress default
+
+#source /root/keystonerc_demo && \
+#	  neutron security-group-rule-create --protocol icmp --direction ingress default && \
+#	  neutron security-group-rule-create --protocol tcp --port-range-min 22 --port-range-max 22 --direction ingress default
 
 
 .PHONY: setup
