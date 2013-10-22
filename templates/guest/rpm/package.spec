@@ -1,6 +1,6 @@
 %define guests_builddir {{ guests_build_datadir|default('/usr/share/miniascape/build/guests') }}
 
-Name:           {{ name|default('miniascape-guests-default-devel') }}
+Name:           {{ name|default('miniascape-guests-build-default') }}
 Version:        {{ version|default('0.0.1') }}
 Release:        1%{?dist}
 Summary:        Packaged data of %{name}
@@ -30,5 +30,5 @@ rm -rf $RPM_BUILD_ROOT
 %{guests_builddir}/*/*
 
 %changelog
-* {{ timestamp }} {{ packager|default('miniascape') }} <{{ email|default('miniascape@localhost') }}> - {{ version|default('0.0.1') }}-1
+* {{ timestamp }} {{ user|default('miniascape') }} <{{ builder|default('miniascape@localhost') }}> - {{ version|default('0.0.1') }}-1
 - Initial (static) packaging
