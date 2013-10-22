@@ -1028,6 +1028,7 @@ guests:
             host: openstack-controller-0
             fqdn: openstack-controller-0.os.local
             network: openstack-private
+            nodns: true
 
   - name: openstack-compute
     description: Red Hat OpenStack Compute node
@@ -1060,5 +1061,6 @@ guests:
             host: openstack-compute-0
             fqdn: openstack-compute-0.os.local
             network: openstack-private
+            nodns: true
 
 # vim:sw=2:ts=2:et:
