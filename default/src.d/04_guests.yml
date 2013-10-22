@@ -1013,6 +1013,12 @@ guests:
     virtinst:
       ram: 2048
 
+    yum_repos:
+      # - optional:
+      #   label: rhel-6-optional
+      #   name: "Red Hat Enterprise Linux $releasever - $basearch - Server Optional"
+      #   baseurl: ...
+
     templates:
       autoinst:
         src: autoinstall.d/openstack-controller-ks.cfg

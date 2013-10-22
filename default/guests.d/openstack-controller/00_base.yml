@@ -10,3 +10,4 @@ netmask: 255.255.255.0
 templates:
   autoinst: {src: autoinstall.d/openstack-controller-ks.cfg}
 virtinst: {ram: 2048}
+yum_repos: null
