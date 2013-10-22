@@ -1,0 +1,19 @@
+{% if yum_repos -%}
+fn=extra-yum-repos.repo
+f=/etc/yum.repos.d/$fn
+if test -f $f; then
+    test -f $f.save || cp $f $f.save
+else
+    touch $f.save
+fi
+cat << EOF > $f
+{% for repo in yum_repos -%}
+[{{ repo.label }}]
+name={{ repo.name }}
+baseurl={{ repo.baseurl }}
+enabled=1
+#gpgcheck=1
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+{% endfor %}
+EOF
+{%- endif %}
