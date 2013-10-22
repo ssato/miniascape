@@ -1,8 +1,8 @@
 hostname: openstack-controller-0
 interfaces:
-- {mac: '52:54:00:12:20:10', network: default}
+- {mac: '52:54:00:12:20:10', network: default, nodns: true}
 - {fqdn: openstack-controller-100.example.com, host: openstack-controller-100, ip: 192.168.122.100,
   mac: '52:54:00:12:21:00', network: default, onboot: false}
-- {fqdn: openstack-controller-0.os.local, host: openstack-controller-0, ip: 192.168.160.10,
-  mac: '52:54:00:16:00:10', network: openstack-private, nodns: true}
+- {fqdn: openstack-controller-0.os.local, gateway: 192.168.160.254, host: openstack-controller-0,
+  ip: 192.168.160.10, mac: '52:54:00:16:00:10', network: openstack-private}
 ip: 192.168.122.10

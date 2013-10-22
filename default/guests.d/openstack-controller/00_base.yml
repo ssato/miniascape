@@ -1,7 +1,12 @@
 description: Red Hat OpenStack Controller
 disks:
 - {bus: scsi, format: raw, pool: default, size: 100, sparse: false}
+domain: os.local
+gateway: 192.168.160.254
 name: openstack-controller
+nameservers:
+- {hostname: 192.168.160.254}
+netmask: 255.255.255.0
 templates:
   autoinst: {src: autoinstall.d/openstack-controller-ks.cfg}
 virtinst: {ram: 2048}

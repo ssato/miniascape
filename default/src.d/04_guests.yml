@@ -1004,6 +1004,12 @@ guests:
         format: raw
         sparse: false
 
+    domain: &openstack_domain os.local
+    gateway: &openstack_gateway 192.168.160.254
+    netmask: &openstack_netmask 255.255.255.0
+    nameservers:
+      - hostname: *openstack_gateway
+
     virtinst:
       ram: 2048
 
@@ -1017,6 +1023,7 @@ guests:
         interfaces:
           - mac: "52:54:00:12:20:10"
             network: default
+            nodns: true
           - mac: "52:54:00:12:21:00"
             ip: 192.168.122.100
             host: openstack-controller-100
@@ -1028,7 +1035,7 @@ guests:
             host: openstack-controller-0
             fqdn: openstack-controller-0.os.local
             network: openstack-private
-            nodns: true
+            gateway: *openstack_gateway
 
   - name: openstack-compute
     description: Red Hat OpenStack Compute node
@@ -1050,6 +1057,7 @@ guests:
         interfaces:
           - mac: "52:54:00:12:20:20"
             network: default
+            nodns: true
           - mac: "52:54:00:12:21:20"
             ip: 192.168.122.120
             host: openstack-compute-120
@@ -1061,6 +1069,6 @@ guests:
             host: openstack-compute-0
             fqdn: openstack-compute-0.os.local
             network: openstack-private
-            nodns: true
+            gateway: *openstack_gateway
 
 # vim:sw=2:ts=2:et:
