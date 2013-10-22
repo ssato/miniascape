@@ -5,6 +5,11 @@ disks:
 domain: m2.local
 filesystem: ext4
 gateway: 192.168.155.254
+guests_templates:
+  Makefile_am: {dst: Makefile.am, src: guest/rpm/Makefile.am}
+  configure_ac: {dst: configure.ac, src: guest/rpm/configure.ac}
+  rpmmk: {dst: rpm.mk, src: guest/rpm/rpm.mk}
+  rpmspec: {dst: package.spec, src: guest/rpm/package.spec}
 ks_finish: poweroff
 nameservers:
 - {hostname: 192.168.155.254}

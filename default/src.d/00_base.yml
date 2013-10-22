@@ -84,6 +84,23 @@ common:
       src: guest/Makefile
       dst: Makefile
 
+  guests_templates:
+    Makefile_am:
+      src: guest/rpm/Makefile.am
+      dst: Makefile.am
+
+    configure_ac:
+      src: guest/rpm/configure.ac
+      dst: configure.ac
+
+    rpmspec:
+      src: guest/rpm/package.spec
+      dst: package.spec
+
+    rpmmk:
+      src: guest/rpm/rpm.mk
+      dst: rpm.mk
+
 networks:
   - name: default  # libvirt's default virtual (NAT) network
     mode: nat
@@ -129,5 +146,6 @@ networks:
 
 host:
   bridge: *net_service_bridge
+
 
 # vim:sw=2:ts=2:et:
