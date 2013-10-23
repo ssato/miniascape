@@ -1,0 +1,13 @@
+# found in: /usr/lib/python2.6/site-packages/packstack/plugins/puppet_950.py
+#
+# puppet is available from RDO (puppetlabs) repo, i.e., the following options required::
+# 
+#   repo --name=puppetlabs-products --baseurl=http://yum.puppetlabs.com/el/6/products/x86_64/
+#   repo --name=puppetlabs-deps --baseurl=http://yum.puppetlabs.com/el/6/dependencies/x86_64/
+#
+# All of the rest RPMs are available in normal RHEL 6 repo: 
+#
+puppet
+openssh-clients
+tar
+nc
