@@ -7,4 +7,3 @@ interfaces:
   ip: 192.168.160.11, mac: '52:54:00:16:00:11', network: openstack-private}
 ip: 192.168.122.11
 openstack: {use_rhos: true}
-public_interface: eth2

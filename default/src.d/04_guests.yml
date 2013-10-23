@@ -1010,13 +1010,6 @@ guests:
     nameservers:
       - hostname: *openstack_gateway
 
-    # @see templates/autoinstall.d/data/openstack/required_rpms.txt
-    ks_repos:
-      - name: puppetlabs-products
-        baseurl: "http://yum.puppetlabs.com/el/6/products/x86_64"
-      - name: puppetlabs-deps
-        baseurl: "http://yum.puppetlabs.com/el/6/dependencies/x86_64/"
-
     rhn:
     #  username: foo@m2.local
     #  password: xyzsecret
@@ -1026,17 +1019,14 @@ guests:
     virtinst:
       ram: 2048
 
-    yum_repos:
-      # - optional:
-      #   label: rhel-6-optional
-      #   name: "Red Hat Enterprise Linux $releasever - $basearch - Server Optional"
-      #   baseurl: ...
-
     templates:
       autoinst:
         src: autoinstall.d/openstack-controller-ks.cfg
 
+    public_interface: eth2
+
     guests:
+      # RDO:
       - hostname: openstack-controller-0
         ip: 192.168.122.10
         interfaces:
@@ -1056,6 +1046,7 @@ guests:
             network: openstack-private
             gateway: *openstack_gateway
 
+      # RHOS:
       - hostname: rhos-controller-0
         ip: 192.168.122.11
         interfaces:
@@ -1077,8 +1068,6 @@ guests:
 
         openstack:
           use_rhos: true
-
-        public_interface: eth2
 
   - name: openstack-compute
     description: Red Hat OpenStack Compute node
