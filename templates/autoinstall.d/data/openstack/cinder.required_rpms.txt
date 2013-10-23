@@ -1,2 +1,0 @@
-# Found in: /usr/lib/python2.6/site-packages/packstack/plugins/cinder_250.py
-lvm2
