@@ -1056,7 +1056,7 @@ guests:
             gateway: *openstack_gateway
 
       # RHOS:
-      - hostname: rhos-controller-0
+      - hostname: rhos-controller-1
         ip: 192.168.122.11
         interfaces:
           - mac: "52:54:00:12:20:11"
