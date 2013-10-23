@@ -1050,6 +1050,8 @@ guests:
             network: openstack-private
             gateway: *openstack_gateway
 
+        public_interface: eth2
+
   - name: openstack-compute
     description: Red Hat OpenStack Compute node
     disks:
