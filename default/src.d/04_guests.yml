@@ -1019,6 +1019,9 @@ guests:
     virtinst:
       ram: 2048
 
+    openstack:
+      use_rhos: false
+
     setup_data:
       - src: data/openstack/Makefile
       - src: data/openstack/answers.txt
