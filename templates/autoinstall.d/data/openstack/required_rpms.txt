@@ -1,4 +1,8 @@
-# found in: /usr/lib/python2.6/site-packages/packstack/plugins/puppet_950.py
+# @see RHOS Installation Guide, 2.1. Software Requirements: http://red.ht/Hh7ybT :
+yum-plugin-priorities
+yum-utils
+#
+# Found in: /usr/lib/python2.6/site-packages/packstack/plugins/puppet_950.py
 #
 # puppet is available from RDO (puppetlabs) repo, i.e., the following options required::
 # 
