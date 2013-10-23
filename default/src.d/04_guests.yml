@@ -1019,6 +1019,10 @@ guests:
     virtinst:
       ram: 2048
 
+    setup_data:
+      - src: data/openstack/Makefile
+      - src: data/openstack/answers.txt
+
     templates:
       autoinst:
         src: autoinstall.d/openstack-controller-ks.cfg
