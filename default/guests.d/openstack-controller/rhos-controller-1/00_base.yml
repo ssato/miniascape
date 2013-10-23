@@ -1,4 +1,4 @@
-hostname: rhos-controller-0
+hostname: rhos-controller-1
 interfaces:
 - {mac: '52:54:00:12:20:11', network: default, nodns: true}
 - {fqdn: rhos-controller-101.example.com, host: rhos-controller-101, ip: 192.168.122.101,
