@@ -1,0 +1,36 @@
+#
+# @see RHOS Installation Guide, Chapter 3. Installing the Database Server:
+#       http://red.ht/16suxgg
+#
+mysql-server
+#
+# @see RHOS Installation Guide, Chapter 4. Installing the Message Broker:
+#       http://red.ht/18JNGsJ
+#
+qpid-cpp-server
+qpid-cpp-server-ssl
+#
+# NOTE: The following RPMs are available from RHOS 3 repo which is not
+# accessible during kickstart installation process.
+#
+# @see RHOS Installation Guide, 5.2. Installing the Packages:
+#       http://red.ht/1bVF5mu
+#
+#openstack-keystone
+#openstack-utils
+#openstack-selinux
+#
+# @see RHOS Installation Guide, 6.4. Installing the Object Storage Service
+#       Packages: http://red.ht/18aOh2a
+#
+memcached
+#
+# @see RHOS Installation Guide, 11.2. Installing the Dashboard Packages:
+#       http://red.ht/1cWxAwI
+#
+python-memcached
+#
+# @see RHOS Installation Guide, Chapter 14. Monitoring OpenStack using Nagios:
+#       http://red.ht/1bejogp
+#
+openssl
