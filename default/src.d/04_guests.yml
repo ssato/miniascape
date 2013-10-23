@@ -1017,6 +1017,12 @@ guests:
       - name: puppetlabs-deps
         baseurl: "http://yum.puppetlabs.com/el/6/dependencies/x86_64/"
 
+    rhn:
+    #  username: foo@m2.local
+    #  password: xyzsecret
+       activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+    #  profilename: "REPLACE_THIS"
+
     virtinst:
       ram: 2048
 
