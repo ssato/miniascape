@@ -20,7 +20,7 @@ FULL_UPDATE ?= no
 RHN_AKEYS ?= {{ rhn.activationkeys|default('') }}
 RHN_PROFILENAME ?= {% if rhn.profilename is defined %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_{{ miniascape.builder }}_$(shell date +%Y%m%d_%H%M%S){% endif %}
 
-if ($(RHN_AKEYS),)
+ifeq ($(RHN_AKEYS),)
 rhnreg_ks_OPTIONS ?=
 else
 rhnreg_ks_OPTIONS ?= --activationkey=$(RHN_AKEYS)
