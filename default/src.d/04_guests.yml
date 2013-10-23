@@ -1010,6 +1010,13 @@ guests:
     nameservers:
       - hostname: *openstack_gateway
 
+    # @see templates/autoinstall.d/data/openstack/required_rpms.txt
+    ks_repos:
+      - name: puppetlabs-products
+        baseurl: "http://yum.puppetlabs.com/el/6/products/x86_64"
+      - name: puppetlabs-deps
+        baseurl: "http://yum.puppetlabs.com/el/6/dependencies/x86_64/"
+
     virtinst:
       ram: 2048
 
