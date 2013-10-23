@@ -14,7 +14,6 @@ ks_finish: poweroff
 nameservers:
 - {hostname: 192.168.155.254}
 netmask: 255.255.255.0
-ntpservers: null
 selinux: enforcing
 services:
   disabled: [gpm, ip6tables, lvm2-monitor, lvm2-lvmetad, mdmonitor, netfs]
