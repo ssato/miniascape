@@ -26,9 +26,11 @@ else
 rhnreg_ks_OPTIONS ?= --activationkey=$(RHN_AKEYS)
 endif
 
+pre_install_OPENSTACK_RPMS ?= yum install -y yum-plugin-priorities
 {% if openstack.use_rhos -%}
 make_repos_available ?= test -f /etc/sysconfig/rhn/systemid || rhnreg_ks --profilename=$(RHN_PROFILENAME) -v --force $(rhnreg_ks_OPTIONS)
 install_OPENSTACK_RPMS ?= $(make_repos_available) && yum install -y \
+python-sphinx python-docutils python-jinja2 \
 openstack-keystone openstack-utils openstack-selinux \
 openstack-swift-proxy openstack-swift-object openstack-swift-container openstack-swift-account \
 openstack-glance \
@@ -40,6 +42,7 @@ openstack-nova-conductor openstack-nova-scheduler \
 python-cinderclient \
 openstack-dashboard \
 nrpe nagios-plugins-nrpe nagios-plugins-ping \
+puppet \
 openstack-packstack \
 $(NULL)
 {% else %}
@@ -48,13 +51,15 @@ install_OPENSTACK_RPMS ?= $(make_repos_available) && yum install -y openstack-pa
 {% endif %}
 
 ## TODO: Make the following default for RHOS installation ?
-#packstack_OPTIONS ?= --allinone --os-quantum-install=n
+packstack_OPTIONS ?= --allinone --os-quantum-install=n
 packstack_OPTIONS ?= --allinone
 
 
 all: install
 
 install:
+	$(make_repos_available)
+	$(pre_install_OPENSTACK_RPMS)
 ifeq ($(FULL_UPDATE),yes)
 	yum update -y
 endif
