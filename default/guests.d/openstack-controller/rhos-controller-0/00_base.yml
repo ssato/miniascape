@@ -1,9 +1,9 @@
 hostname: rhos-controller-0
 interfaces:
 - {mac: '52:54:00:12:20:11', network: default, nodns: true}
-- {fqdn: openstack-controller-101.example.com, host: openstack-controller-101, ip: 192.168.122.101,
+- {fqdn: rhos-controller-101.example.com, host: rhos-controller-101, ip: 192.168.122.101,
   mac: '52:54:00:12:21:01', network: default, onboot: false}
-- {fqdn: openstack-controller-1.os.local, gateway: 192.168.160.254, host: openstack-controller-1,
+- {fqdn: rhos-controller-1.os.local, gateway: 192.168.160.254, host: rhos-controller-1,
   ip: 192.168.160.11, mac: '52:54:00:16:00:11', network: openstack-private}
 ip: 192.168.122.11
 openstack: {use_rhos: true}
