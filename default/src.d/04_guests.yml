@@ -1024,7 +1024,9 @@ guests:
 
     setup_data:
       - src: data/openstack/Makefile
+        dst: Makefile
       - src: data/openstack/answers.txt
+        dst: answers.txt
 
     templates:
       autoinst:
