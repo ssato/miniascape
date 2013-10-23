@@ -1056,6 +1056,28 @@ guests:
             network: openstack-private
             gateway: *openstack_gateway
 
+      - hostname: rhos-controller-0
+        ip: 192.168.122.11
+        interfaces:
+          - mac: "52:54:00:12:20:11"
+            network: default
+            nodns: true
+          - mac: "52:54:00:12:21:01"
+            ip: 192.168.122.101
+            host: openstack-controller-101
+            fqdn: openstack-controller-101.example.com
+            network: default
+            onboot: no
+          - mac: "52:54:00:16:00:11"
+            ip: 192.168.160.11
+            host: openstack-controller-1
+            fqdn: openstack-controller-1.os.local
+            network: openstack-private
+            gateway: *openstack_gateway
+
+        openstack:
+          use_rhos: true
+
         public_interface: eth2
 
   - name: openstack-compute

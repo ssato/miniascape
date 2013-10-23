@@ -6,4 +6,3 @@ interfaces:
 - {fqdn: openstack-controller-0.os.local, gateway: 192.168.160.254, host: openstack-controller-0,
   ip: 192.168.160.10, mac: '52:54:00:16:00:10', network: openstack-private}
 ip: 192.168.122.10
-public_interface: eth2
