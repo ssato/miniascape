@@ -36,6 +36,11 @@ common:
     utc: true
     timezone: Asia/Tokyo
 
+  ntpservers:
+    # TODO: set default NTP servers.
+    # - hostname: 0.pool.ntp.org
+    #   options: ...
+
   services:
     #enabled:
     disabled:
