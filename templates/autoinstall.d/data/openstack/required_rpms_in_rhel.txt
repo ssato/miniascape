@@ -9,9 +9,10 @@ yum-utils
 #   repo --name=puppetlabs-products --baseurl=http://yum.puppetlabs.com/el/6/products/x86_64/
 #   repo --name=puppetlabs-deps --baseurl=http://yum.puppetlabs.com/el/6/dependencies/x86_64/
 #
+#puppet
+#
 # All of the rest RPMs are available in normal RHEL 6 repo: 
 #
-puppet
 openssh-clients
 tar
 nc

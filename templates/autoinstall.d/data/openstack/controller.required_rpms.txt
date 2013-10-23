@@ -34,3 +34,32 @@ python-memcached
 #       http://red.ht/1bejogp
 #
 openssl
+#
+# @see RHOS Installation Guide, 15.2. Installing rsyslog Server:
+#       http://red.ht/18aRAX3
+#
+rsyslog
+#
+# NOTE: The following RPMs are available from RHOS 3 repo which is not
+# accessible during kickstart installation process.
+#
+# @see RHOS Installation Guide, 10.2. Installing a Compute VNC Proxy:
+#       http://red.ht/HhbhWV
+#
+#openstack-nova-novncproxy
+#openstack-nova-console
+#
+# @see RHOS Installation Guide, 10.3.3. Installing the Compute Service:
+#       http://red.ht/1idsjRJ
+#
+#openstack-nova-api
+#openstack-nova-compute
+#openstack-nova-conductor
+#openstack-nova-scheduler
+#python-cinderclient
+#
+#
+#
+httpd
+mod_wsgi
+mod_ssl
