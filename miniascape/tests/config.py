@@ -39,9 +39,8 @@ class Test_00_functions(unittest.TestCase):
 
     def test_10_list_net_names(self):
         cf = _create_ConfFiles()
-        self.assertEquals(
-            TT.list_net_names(cf.netdir), ["default", "service"]
-        )
+        self.assertEquals(TT.list_net_names(cf.netdir),
+                          ["default", "openstack-private", "service"])
 
     def test_20_list_group_and_guests_g(self):
         """FIXME: Write 100% inspection test for list_group_and_guests_g

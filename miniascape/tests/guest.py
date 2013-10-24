@@ -30,7 +30,8 @@ class Test_00_pure_functions(unittest.TestCase):
 
         exp = ["pkgdata0dir = /usr/share/miniascape/build/guests/foo-0",
                "dist_pkgdata0_DATA = "
-               "foo-0/ks.cfg foo-0/net_register.sh foo-0/vmbuild.sh\n"]
+               "$(shell for f in foo-0/ks.cfg foo-0/net_register.sh "
+               "foo-0/vmbuild.sh; do test -f $$f && echo $$f; done)\n"]
 
         self.assertEquals(res[0], '\n'.join(exp))
 
