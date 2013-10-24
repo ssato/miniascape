@@ -69,6 +69,7 @@ def getLogger(name="miniascape", format=_LOGGING_FORMAT,
 
 LOGGER = getLogger()
 
+
 def set_loglevel(level):
     assert level in (0, 1, 2), "Invalid log level option was passed: " + level
     lvl = [logging.DEBUG, logging.INFO, logging.WARN][level]

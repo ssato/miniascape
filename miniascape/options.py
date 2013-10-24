@@ -37,7 +37,8 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]",
     p.add_option("-c", "--confdir",
                  help="Top dir to hold site configuration files or "
                       "configuration file [%default]")
-    #p.add_option("-x", "--confext", choices=confext_choices, help=confext_help)
+    #p.add_option("-x", "--confext", choices=confext_choices,
+    #             help=confext_help)
     p.add_option("-w", "--workdir",
                  help="Working dir to output results [%default]")
     p.add_option("-v", "--verbose", action="store_const", const=0,

@@ -75,7 +75,7 @@ Commands:
 
 def main(argv=sys.argv):
     assert not U.is_superuser(), \
-           "Danger! You should NOT run this program as root!"
+        "Danger! You should NOT run this program as root!"
 
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])

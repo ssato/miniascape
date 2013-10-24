@@ -114,7 +114,8 @@ def show_vm_names(conffiles):
 
 
 _DISTDATA_MAKEFILE_AM_TMPL = """pkgdata%(i)ddir = %(dir)s
-dist_pkgdata%(i)d_DATA = $(shell for f in %(files)s; do test -f $$f && echo $$f; done)
+dist_pkgdata%(i)d_DATA = \
+$(shell for f in %(files)s; do test -f $$f && echo $$f; done)
 """
 
 
