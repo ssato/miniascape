@@ -236,10 +236,12 @@ class ConfFiles(dict):
         and return list of host list grouped by each networks.
         """
         gcs = self.load_guests_confs()
-        kf = itemgetter("network")
+        #kf = itemgetter("network")
+        kf = lambda d: d.get("network", False)
         return (
             (k, list(g)) for k, g in groupby(
-                sorted(U.concat(g.get("interfaces", []) for g in gcs), key=kf),
+                sorted(filter(bool, U.concat(g.get("interfaces", []) for g in
+                                             gcs)), key=kf),
                 kf
             )
         )
