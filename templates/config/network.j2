@@ -5,10 +5,12 @@ domain: {{ domain }}
 gateway: {{ gateway }}
 netmask: {{ netmask }}
 network: {{ network }}
+{% if dhcp is defined and dhcp.start is defined -%}
 dhcp:
   start: {{ dhcp.start }}
   end: {{ dhcp.end }}
-  static:
+  {%  if dhcp.static is defined and dhcp.static.start is defined %}static:
     start: {{ dhcp.static.start }}
     end: {{ dhcp.static.end }}
-
+{%-   endif %}
+{%- endif %}
