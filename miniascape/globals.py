@@ -23,6 +23,8 @@ import os.path
 def date():
     return datetime.datetime.now().strftime("%Y%m%d")
 
+PACKAGE = "miniascape"
+VERSION = "0.3.7"
 
 M_SITE_DEFAULT = "default"
 M_VMBUILD_SH = "vmbuild.sh"
@@ -44,9 +46,6 @@ M_NETS_OUT_SUBDIR = "usr/share/miniascape/networks.d"
 
 M_WORK_TOPDIR = "miniascape-workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
-
-PACKAGE = "miniascape"
-VERSION = "0.3.6"
 
 _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 

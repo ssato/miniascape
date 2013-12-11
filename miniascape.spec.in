@@ -95,6 +95,30 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
+- Added --dryrun option
+- Add -f (force) option to generate config files always
+- Added some more templates to make RPMs of generated configuration for hosts
+  and VMs, and build scripts for VMs
+- Fixed a couple of bugs in templates/host/guest_network_register.sh that is a
+  template to register guest IP and FQDN entries
+- Merge virtio-scsi support code in templates/host/vmbuild.sh; now virtio-scsi
+  is used for RHEL 6 guests by default
+- Add runtime dependency to gevent to accomplish async calls
+- Add openstack and satellite 6 related guests and network templates and
+  configuration files
+- Enabled sshd and nfs service by default for RHEV manager guests
+- Make dhcp configuration parameters optional and allow configuration entirely
+  missing dhcp related parameters for fix-IPs only networks
+- Some more fix for PEP8 errors and warnings 
+
+* Thu Mar 14 2013 Satoru SATOH <ssato@redhat.com> - 0.3.6-1
+- Change default location of installation tree
+- Utilize anyconfig.{load,dump} instead of yaml.{load,dump} which brings
+  another runtime dependency to python-anyconfig
+- Fix --confdir behavior and find conf from dir correctly
+- Some refactorings and code cleanups
+
 * Wed Feb 13 2013 Satoru SATOH <ssato@redhat.com> - 0.3.5-1
 - Added a set of JBoss AS 7 guests' config and template files
 - Added RHEV Manager and Hypervisor guests' config and template files
