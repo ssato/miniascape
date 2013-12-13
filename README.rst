@@ -147,6 +147,25 @@ Upstream works
 * more D-Bus APIs for dnsmasq to simplify the control process of dnsmasq and
   make it dynamic [May]
 
+* It seems that virt-install do not create storage volumes on demand [Should]:
+
+  ::
+
+    [root@lp5-4 out]# bash -x ../miniascape/guests.d/rhel-5-cluster-1/vmbuild.sh
+    + set -ex
+    + test 0 -gt 0
+    + ks_path=../miniascape/guests.d/rhel-5-cluster-1/ks.cfg
+    + kscfg=ks.cfg
+    + name=rhel-5-cluster-1
+    + location_opts='--location=http://xxxxx.redhat.com/contents/RHEL/5/10/x86_64/default/ --initrd-inject=../miniascape/guests.d/rhel-5-cluster-1/ks.cfg'
+    + ksdevice=eth0
+    + more_extra_args=
+    + virtio_scsi_controller=
+    + virt-install --check-cpu --hvm --accelerate --noreboot --noautoconsole --name=rhel-5-cluster-1 --connect=qemu:///system --wait=12 --ram=512 --arch=x86_64 --vcpus=1 --graphics vnc --os-type=linux --os-variant=rhel5.4 --location=http://xxxxxx.redhat.com/contents/RHEL/5/10/x86_64/default/ --initrd-inject=../miniascape/guests.d/rhel-5-cluster-1/ks.cfg '--extra-args=ks=file:/ks.cfg ksdevice=eth0 ' --disk pool=default,format=qcow2,cache=none,size=5,bus=virtio --disk vol=default/rhel-5-cluster-data-1.img,format=qcow2,cache=none,size=1,bus=virtio,perms=sh --network network=service,model=virtio,mac=52:54:00:05:01:01 --network network=default,model=virtio,mac=52:54:00:02:01:01
+    ERROR    Error with storage parameters: Couldn't lookup volume object: Storage volume not found: no storage vol with matching name 'rhel-5-cluster-data-1.img'
+    [root@lp5-4 out]#
+
+
 Done:
 
 * python-virtinst (virt-install) fixes and enhancements:
