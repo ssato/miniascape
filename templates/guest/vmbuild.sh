@@ -49,7 +49,15 @@ ksdevice={{ ksdevice|default('eth0') }}
 more_extra_args={{ virtinst.extra_args|default('') }}
 {% endif -%}
 {%- endblock %}
-
+{% block create_vols -%}
+{%   for disk in disks -%}
+{%     if disk.pool is defined and disk.vol is defined -%}
+# Create storage volumes on ahead of virt-install run.
+virsh vol-key {{ disk.vol }} {{ disk.pool }} || \
+    virsh vol-create-as {{ disk.pool }} {{ disk.vol }} {{ disk.size }}GiB --format {{ disk.format|default("qcow2") }}
+{%     endif -%}
+{%   endfor -%}
+{% endblock %}
 # Use virtio-scsi if available and there is a scsi disk:
 virtio_scsi_controller=
 {%- for disk in disks if disk.bus is defined and disk.bus == 'scsi' -%}
