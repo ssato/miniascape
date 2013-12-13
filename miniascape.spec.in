@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 13 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
+- Make storage volumes created on ahead of virt-install run
+
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
 - Add -f (force) option to generate config files always
