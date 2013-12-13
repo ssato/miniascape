@@ -118,9 +118,11 @@ Hardware and base OS
 Tools and libs
 -------------------
 
- * python-jinja2-cli: https://github.com/ssato/python-jinja2-cli
  * libvirt and its python binding
  * python-virtinst
+ * python-gevent
+ * python-anyconfig: https://pypi.python.org/pypi/anyconfig/ or https://github.com/ssato/python-anyconfig
+ * python-jinja2-cli: https://github.com/ssato/python-jinja2-cli
  * qemu-kvm
  * nginx or (apache) httpd [option]
  * etc.
