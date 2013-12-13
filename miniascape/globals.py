@@ -24,7 +24,7 @@ def date():
     return datetime.datetime.now().strftime("%Y%m%d")
 
 PACKAGE = "miniascape"
-VERSION = "0.3.7"
+VERSION = "0.3.7.1"
 
 M_SITE_DEFAULT = "default"
 M_VMBUILD_SH = "vmbuild.sh"
