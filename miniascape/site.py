@@ -49,8 +49,10 @@ def gen_conf_files(conf, tmpldirs, workdir):
 
     logging.info("Generating site config files into %s" % outdir)
 
-    AC.dump(conf.get("common", {}),
-            os.path.join(outdir, "common", "00_base.yml"))
+    common_conf = conf.get("common", {})
+    common_conf["site"] = conf.get("site", "default")
+
+    AC.dump(common_conf, os.path.join(outdir, "common", "00_base.yml"))
 
     AC.dump(conf.get("host", {}),
             os.path.join(outdir, "host.d", "00_base.yml"))
