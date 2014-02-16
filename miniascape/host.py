@@ -119,6 +119,7 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
 
         nc = A.load(netconf)
         nc["hosts"] = hosts_w_unique_ips(nc)
+        nc["hosts_w_unique_macs"] = hosts_w_unique_macs(nc)
 
         logging.debug("Generating network xml: " + netxml)
         T.renderto(tpaths, nc, tmpl, netxml)

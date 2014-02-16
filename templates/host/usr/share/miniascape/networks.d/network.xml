@@ -12,7 +12,7 @@
   <ip address='{{ gateway }}' netmask='{{ netmask|default("255.255.255.0") }}'>
 {% if dhcp is defined %}    <dhcp>
       <range start='{{ dhcp.start }}' end='{{ dhcp.end }}'/>
-{% for h in hosts|sort(attribute="mac") if (h.fqdn is defined or h.host is defined) and h.mac is defined %}      <host mac='{{ h.mac }}' {% if h.fqdn is defined %}name='{{ h.fqdn }}'{% else %}name='{{ h.host }}.{{ domain }}'{% endif %} ip='{{ h.ip }}'/>
+{% for h in hosts_w_unique_macs|sort(attribute="mac") if h.fqdn is defined or h.host is defined %}      <host mac='{{ h.mac }}' {% if h.fqdn is defined %}name='{{ h.fqdn }}'{% else %}name='{{ h.host }}.{{ domain }}'{% endif %} ip='{{ h.ip }}'/>
 {% endfor %}    </dhcp>{% endif %}
   </ip>
 </network>
