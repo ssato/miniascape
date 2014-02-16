@@ -12,7 +12,7 @@ $(NULL)
 $(rpmdirs):
 	$(AM_V_at)$(MKDIR_P) $@
 
-rpm srpm: $(PACKAGE).spec dist $(rpmdirs)
+rpm srpm: package.spec dist $(rpmdirs)
 
 rpm:
 	$(AM_V_GEN)$(rpmbuild) -bb $<

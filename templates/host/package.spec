@@ -1,4 +1,4 @@
-Name:           {{ name|default('miniascape-host-data-default') }}
+Name:           miniascape-host-data-{{ site|default('default') }}
 Version:        {{ version|default('0.0.1') }}
 Release:        1%{?dist}
 Summary:        Packaged data of %{name}
@@ -38,7 +38,7 @@ rm -rf $RPM_BUILD_ROOT
 %make_install
 
 # Avoid to conflict w/ /etc/fence_virt.conf provided by fence-virtd rpm:
-#mv $RPM_BUILD_ROOT/%{_sysconfdir}/fence_virt.conf $RPM_BUILD_ROOT/%{_sysconfdir}/fence_virt.conf.ovrrd
+mv $RPM_BUILD_ROOT/%{_sysconfdir}/fence_virt.conf $RPM_BUILD_ROOT/%{_sysconfdir}/fence_virt.conf.ovrrd
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}
 touch $RPM_BUILD_ROOT/%{_sysconfdir}/fence_virt.conf.ovrrd
 
