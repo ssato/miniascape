@@ -2,13 +2,10 @@ EXTRA_DIST = package.spec rpm.mk
 include $(abs_top_srcdir)/rpm.mk
 
 $(PACKAGE).spec: package.spec
-	$(LN_S) $< $@
+       $(LN_S) $< $@
 
 pkgdata0dir = /usr/share/miniascape/networks.d
-dist_pkgdata0_DATA = \
-usr/share/miniascape/networks.d/default.xml \
-usr/share/miniascape/networks.d/openstack-private.xml \
-usr/share/miniascape/networks.d/service.xml
+dist_pkgdata0_DATA = $(wildcard usr/share/miniascape/networks.d/*.xml)
 
 pkgdata1dir = /usr/libexec/miniascape
 dist_pkgdata1_DATA = \
