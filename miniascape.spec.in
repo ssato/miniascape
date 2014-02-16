@@ -17,40 +17,31 @@ BuildArch:      noarch
 BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.3.4
 Requires:       python-jinja2-cli >= 0.0.4.1
-Requires:       python-gevent
-
 
 %description
 Personal cloud building and management tool for libvirt/KVM.
-
 
 %package        data-default
 Summary:        Default guests and infra data files for %{name}
 Requires:       %{name} = %{version}-%{release}
 
-
 %description    data-default
 Some default guests and infra data files for %{name}.
-
 
 %package        data-default-devel
 Summary:        Source of default guests and infra data files for %{name}
 Requires:       %{name} = %{version}-%{release}
-
 
 %description    data-default-devel
 Some default guests and infra data files for %{name}.
 
 This package contains source files to build data in %{name}-data-default.
 
-
 %prep
 %setup -q
 
-
 %build
 %{__python} setup.py build
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -59,10 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 # Make egg-info not included in this package:
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/*.egg-info
 
-
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %files
 %defattr(-,root,root,-)
@@ -87,17 +76,19 @@ rm -rf $RPM_BUILD_ROOT
 %config %{pkgconfdir}/default/*/*/*/*.yml
 %{pkgconfdir}/default/*/*/*/README
 
-
 %files          data-default-devel
 %defattr(-,root,root,-)
 %doc README.rst
 %config %{pkgconfdir}/default/src.d/*.yml
 
-
 %changelog
-* Fri Dec 13 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
+* Sun Feb 16 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
 - Make storage volumes created on ahead of virt-install run
 - Fix packaging bug in the RPM spec generated for KVM host
+- Switch from gevent to multiprocessing to accomplish async template rendering
+  and remove runtime dependency to gevent
+- Fix miniascape.host.gen_vnet_files and corresponding template to list hosts
+  having unique IPs in generated network xml files
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
