@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012 - 2014 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,16 +16,8 @@
 #
 from miniascape.globals import LOGGER as logging
 import jinja2_cli.render
+import multiprocessing
 import os.path
-
-try:
-    import gevent
-
-    _spawn = gevent.spawn
-    _joinall = gevent.joinall
-except ImportError:
-    _spawn = lambda f, *args: f(*args)
-    _joinall = lambda _: True
 
 
 def _renderto(tpaths, ctx, tmpl, output, ask=False):
@@ -49,15 +41,19 @@ def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
         and it's True.
     """
     if not ask and async:
-        return _spawn(_renderto, tpaths, ctx, tmpl, output, ask)
+        proc = multiprocessing.Process(target=_renderto,
+                                       args=(tpaths, ctx, tmpl, output, ask))
+        proc.start()
+        return proc
     else:
         _renderto(tpaths, ctx, tmpl, output, ask)
 
     return True
 
 
-def finish_renderto_threads(threads):
-    _joinall(threads)
+def finish_renderto_procs(procs):
+    for p in procs:
+        p.join()
 
 
 def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):

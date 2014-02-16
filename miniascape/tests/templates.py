@@ -50,7 +50,7 @@ class Test_00_effectful_functions(unittest.TestCase):
 
         job = TT.renderto(self.tpaths, ctx, tmpl, output, ask=False,
                           async=True)
-        TT.finish_renderto_threads([job])
+        TT.finish_renderto_procs([job])
         self.assertTrue(os.path.exists(output))
 
     def test_30_compile_conf_templates(self):
