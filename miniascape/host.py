@@ -45,6 +45,19 @@ def _netoutdir(topdir, host_subdir=G.M_HOST_OUT_SUBDIR,
     return os.path.join(topdir, host_subdir, net_subdir)
 
 
+def hosts_w_unique_ips(nc):
+    """
+    :return: list of hosts having nics w unique ip addresses assigned.
+
+    >>> nc = dict(hosts=[dict(ip='192.168.122.10', ),
+    ...                  dict(mac="RANDOM", ),
+    ...                  dict(ip='192.168.122.21', )])
+    >>> hosts_w_unique_ips(nc)
+    [{'ip': '192.168.122.10'}, {'ip': '192.168.122.21'}]
+    """
+    return [h for h in nc.get("hosts", []) if "ip" in h]
+
+
 def hosts_w_unique_macs(nc):
     """
     :return: list of hosts having nics w unique mac addresses assigned.
@@ -105,7 +118,7 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
             return
 
         nc = A.load(netconf)
-        nc["hosts"] = hosts_w_unique_macs(nc)
+        nc["hosts"] = hosts_w_unique_ips(nc)
 
         logging.debug("Generating network xml: " + netxml)
         T.renderto(tpaths, nc, tmpl, netxml)
