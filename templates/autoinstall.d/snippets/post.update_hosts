@@ -1,8 +1,16 @@
-f=/etc/hosts
+destdir=$1
+f=${destdir}/etc/hosts
 test -f $f.save || cp $f $f.save
-cat << EOF >> /etc/hosts
-# self:
-{% if ip is defined and fqdn is defined %}{{ ip }} {{ fqdn }}{% if hostname is defined %} {{ hostname }}{% endif %}{% endif %}
-{% for h in hosts %}{% if ip is defined and h.ip != ip %}{{ h.ip }}{% if h.fqdn is defined %}  {{ h.fqdn }}{% endif %}{% if h.host is defined %}  {{ h.host }}{% endif %}{% endif %}
-{% endfor -%}
-EOF
+echo "# Added:" >> $f
+{%  if ip is defined and (fqdn is defined or hostname is defined) -%}
+echo "{{ ip }} {{ fqdn|default('') }} {{ hostname|default('') }}" >> $f
+{%      for h in hosts -%}
+{%          if h.ip is defined and h.ip != ip -%}
+echo "{{ h.ip }} {{ h.fqdn|default('') }} {{ h.host|default('') }}" >> $f
+{%          endif -%}
+{%      endfor -%}
+{%- else -%}
+{%      for h in hosts -%}
+echo "{{ h.ip }} {{ h.fqdn|default('') }} {{ h.host|default('') }}" >> $f
+{%      endfor -%}
+{% endif -%}
