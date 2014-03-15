@@ -58,14 +58,14 @@ fi
 %files
 #%doc
 %{_datadir}/miniascape/networks.d/*.xml
-%{_libexecdir}/miniascape/*.sh
-%{_libexecdir}/miniascape/default/*.sh
 
 %files -n       miniascape-host-data-common
 %{_sysconfdir}/modprobe.d/kvm.conf
 %{_sysconfdir}/httpd/conf.d/miniascape_autoinst.conf
 %{_sysconfdir}/auto.master.d/isos.autofs
 %{_sysconfdir}/auto.isos
+%{_libexecdir}/miniascape/*.sh
+%{_libexecdir}/miniascape/default/*.sh
 
 %files          overrides
 %{_sysconfdir}/fence_virt.conf.ovrrd
