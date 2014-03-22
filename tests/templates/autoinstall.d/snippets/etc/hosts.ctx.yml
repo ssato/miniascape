@@ -1,0 +1,15 @@
+ip: 192.168.100.1
+fqdn: foo.example.com
+hostname: foo
+
+hosts:
+  - ip: 192.168.100.100
+    fqdn: bar.example.com
+    host: bar
+  - ip: 192.168.100.101
+    fqdn: baz.example.com
+  - ip: 192.168.100.102
+    host: hoge
+  - ip: 192.168.100.1
+    host: foo-cname
+  - host: no_ip_host
