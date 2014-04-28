@@ -17,6 +17,7 @@ netmask: 255.255.255.0
 selinux: enforcing
 services:
   disabled: [gpm, ip6tables, lvm2-monitor, lvm2-lvmetad, mdmonitor, netfs]
+site: default
 ssh: {pubkey: ~/.ssh/id_rsa.pub}
 storage_pools:
 - name: default
