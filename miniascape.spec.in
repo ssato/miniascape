@@ -16,7 +16,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.3.4
-Requires:       python-jinja2-cli >= 0.0.4.1
+#Requires:       python-jinja2-cli >= 0.0.4.1
 
 %description
 Personal cloud building and management tool for libvirt/KVM.
@@ -81,13 +81,14 @@ rm -rf $RPM_BUILD_ROOT
 %config %{pkgconfdir}/default/src.d/*.yml
 
 %changelog
-* Sun Feb 16 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
+* Mon Apr 28 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
 - Make storage volumes created on ahead of virt-install run
 - Fix packaging bug in the RPM spec generated for KVM host
 - Switch from gevent to multiprocessing to accomplish async template rendering
   and remove runtime dependency to gevent
 - Fix miniascape.host.gen_vnet_files and corresponding template to list hosts
   having unique IPs in generated network xml files
+- Remove dependency to python-jinja2-cli by copying necessary files from it
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
