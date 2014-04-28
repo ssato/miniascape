@@ -1,0 +1,28 @@
+# package groups and packages
+boost
+boost-graph
+boost-iostreams
+boost-python
+boost-serialization
+boost-signals
+boost-test
+boost-wave
+libpcap
+policycoreutils-python
+python-ldap
+python-setuptools
+qpid-cpp-server-ssl
+# Required to sign built custom RPMs:
+gnupg2
+#
+# Excluded as installed when resolving dependencies:
+#
+# boost-date-time
+# boost-filesystem
+# boost-program-options
+# boost-regex
+# boost-system
+# boost-thread
+# qpid-cpp-client
+# qpid-cpp-client-ssl
+# qpid-cpp-server

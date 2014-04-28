@@ -1,0 +1,8 @@
+# RHN Classic based RHN are not used for RHUI servers nor clients as usual:
+-rhnsd
+-rhnlib
+-yum-rhn-plugin
+# S.M. may be used in RHUI clients in the future.
+#subscription-manager
+# These are not used/needed in general also:
+-dosfstools

@@ -1,6 +1,5 @@
 audit
 curl
-dhclient
 make
 screen
 strace

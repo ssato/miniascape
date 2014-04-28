@@ -1,0 +1,52 @@
+# Generate network configuration files under /etc/sysconfig/ and update network
+# related configuration files:
+#
+# * /etc/sysconfig/network
+# * /etc/sysconfig/network-scripts/ifcfg-eth*
+# * /etc/sysconfig/network-scripts/route-eth*
+# * /etc/modprobe.d/disable_ipv6.conf  (disable IPv6 if wanted)
+# * /etc/sysctl.conf  (disable IPv6 if wanted)
+#
+# NOTE: ifcfg-ethX must NOT be saved as ifcfg-ethX.save to avoid that these are
+# wrongly detected as another network interface configuration files.
+#
+confdir=/etc/sysconfig/network-scripts
+test -d /root/setup/$confdir || mkdir -p /root/setup/$confdir
+{% for ni in interfaces -%}
+{%   if ni.bootproto == 'static' -%}
+f=$confdir/ifcfg-{{ ni.device }}
+bf=/root/setup/$f.save
+test -f $bf || cp $f $bf
+cat << EOF > $f
+DEVICE={{ ni.device }}
+IPADDR={{ ni.ip }} 
+NETMASK={% if ni.netmask is defined %}{{ ni.netmask }}{% else %}{{ netmask|default('255.255.255.0') }}{% endif %}
+ONBOOT={{ ni.onboot|default('yes') }}
+BOOTPROTO=none
+USERCTL=no
+NM_CONTROLLED=no
+PEERDNS={% if ni.nodns is defined %}no{% else %}yes{% endif %}
+EOF
+cp $f /root/setup/$f
+{%     if ni.route is defined -%}
+f=/etc/sysconfig/network-scripts/route-{{ ni.device }}
+bf=/root/setup/$f.save
+test -f $bf || cp $f $bf
+echo "{{ ni.route }}" > $f
+cp $f /root/setup/$f
+{%-    endif %}
+{%   else -%}
+f=$confdir/ifcfg-{{ ni.device }}
+bf=/root/setup/$f.save
+test -f $bf || cp $f $bf
+sed -i -e 's/^\(NM_CONTROLLED=\)/#\1/' \
+       -e 's/^\(DHCP_HOSTNAME=\)/#\1/' \
+       -e 's/^\(UUID=\)/#\1/' \
+       -e 's/^\(HWADDR=\)/#\1/' \
+       {% if noipv6 %}-e 's/^\(IPV6INIT=.*\)/IPV6INIT=no/'{% endif %} $f
+{%-  endif %}
+{% endfor -%}
+{% include "snippets/post.update_sysconfig_network" -%}
+{% if noipv6 is defined and noipv6 -%}
+{%   include "snippets/post.disable_ipv6" -%}
+{% endif %}

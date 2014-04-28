@@ -1,0 +1,454 @@
+# package groups and packages
+acl
+acpid
+anacron
+attr
+audit
+autofs
+bind-utils
+conman
+cpuspeed
+crash
+dhclient
+dhcpv6-client
+dialog
+dos2unix
+dosfstools
+fbset
+finger
+firstboot-tui
+gcc
+grub
+hdparm
+iptstate
+irqbalance
+jwhois
+kernel-headers
+krb5-workstation
+ksh
+liberation-fonts
+libhugetlbfs
+libhugetlbfs
+logwatch
+lslk
+lsof
+man-pages
+mgetty
+mlocate
+mod_authz_ldap
+mod_perl
+mod_python
+mod_ssl
+mtools
+mtr
+mutt
+MySQL-python
+nc
+ncompress
+net-snmp
+nmap
+nss-tools
+openldap-clients
+openssh-clients
+openssh-server
+openswan
+pam_passwdqc
+pam_pkcs11
+pam_smb
+perl-BSD-Resource
+perl-DBI
+perl-URI
+pinfo
+pkinit-nss
+postgresql
+postgresql-jdbc
+postgresql-odbc
+postgresql-python
+prelink
+psgml
+python-setuptools
+quota
+readahead
+redhat-release-notes
+rhel-instnum
+rng-utils
+rootfiles
+rsync
+ruby-rdoc
+samba-client
+screen
+selinux-policy-targeted
+setarch
+setserial
+setuptool
+sos
+stunnel
+sudo
+symlinks
+sysfsutils
+system-config-securitylevel
+tcpdump
+telnet
+tmpwatch
+traceroute
+tree
+tux
+udftools
+unix2dos
+unixODBC
+unzip
+usbutils
+vim-enhanced
+vsftpd
+webalizer
+words
+xinetd
+xterm
+yum-fastestmirror
+yum-security
+yum-updateonboot
+yum-updatesd
+yum-utils
+#
+# Excluded as installed when resolving dependencies:
+#
+# MAKEDEV
+# SysVinit
+# alsa-lib
+# antlr
+# apr
+# apr-util
+# aspell
+# aspell-en
+# at
+# atk
+# audit-libs
+# audit-libs-python
+# authconfig
+# basesystem
+# bash
+# bc
+# beecrypt
+# bind-libs
+# binutils
+# bitstream-vera-fonts
+# bzip2
+# bzip2-libs
+# cairo
+# checkpolicy
+# chkconfig
+# chkfontpath
+# compat-db
+# compat-libstdc++-33
+# coreutils
+# cpio
+# cpp
+# cracklib
+# cracklib-dicts
+# crontabs
+# cryptsetup-luks
+# cups-libs
+# curl
+# cyrus-sasl-gssapi
+# cyrus-sasl-lib
+# cyrus-sasl-md5
+# cyrus-sasl-plain
+# db4
+# dbus
+# dbus-glib
+# dbus-libs
+# dbus-python
+# desktop-file-utils
+# device-mapper
+# device-mapper-event
+# device-mapper-multipath
+# diffutils
+# distcache
+# dmidecode
+# dmraid
+# dmraid-events
+# e2fsprogs
+# e2fsprogs-libs
+# ed
+# elfutils-libelf
+# ethtool
+# exim
+# expat
+# file
+# filesystem
+# findutils
+# fipscheck
+# fipscheck-lib
+# fontconfig
+# freetype
+# gamin
+# gamin-python
+# gawk
+# gd
+# gdbm
+# gettext
+# gjdoc
+# glib2
+# glibc
+# glibc-common
+# glibc-devel
+# glibc-headers
+# gmp
+# gnupg
+# gnutls
+# gpm
+# grep
+# groff
+# gtk2
+# gzip
+# hal
+# hesiod
+# hicolor-icon-theme
+# hmaccalc
+# htmlview
+# httpd
+# hwdata
+# info
+# initscripts
+# iproute
+# iptables
+# iptables-ipv6
+# iputils
+# iscsi-initiator-utils
+# java-1.4.2-gcj-compat
+# jpackage-utils
+# kbd
+# keyutils-libs
+# kpartx
+# krb5-libs
+# kudzu
+# less
+# lftp
+# libFS
+# libICE
+# libSM
+# libX11
+# libXau
+# libXaw
+# libXcursor
+# libXdmcp
+# libXext
+# libXfixes
+# libXfont
+# libXft
+# libXi
+# libXinerama
+# libXmu
+# libXp
+# libXpm
+# libXrandr
+# libXrender
+# libXt
+# libXtst
+# libacl
+# libaio
+# libart_lgpl
+# libattr
+# libcap
+# libfontenc
+# libgcc
+# libgcj
+# libgcrypt
+# libglade2
+# libgomp
+# libgpg-error
+# libicu
+# libidn
+# libjpeg
+# libpng
+# libselinux
+# libselinux-python
+# libselinux-utils
+# libsemanage
+# libsepol
+# libsmbclient
+# libstdc++
+# libsysfs
+# libtermcap
+# libtiff
+# libtool-ltdl
+# libusb
+# libuser
+# libutempter
+# libvolume_id
+# libxml2
+# libxml2-python
+# lm_sensors
+# logrotate
+# lvm2
+# m2crypto
+# m4
+# mailcap
+# mailx
+# make
+# man
+# mcstrans
+# mingetty
+# mkinitrd
+# mktemp
+# module-init-tools
+# mozldap
+# mx
+# mysql
+# mysql-connector-odbc
+# nash
+# ncurses
+# neon
+# net-snmp-libs
+# net-tools
+# newt
+# nscd
+# nspr
+# nss
+# nss_db
+# nss_ldap
+# ntsysv
+# openldap
+# openssh
+# openssl
+# pam
+# pam_ccreds
+# pam_krb5
+# pango
+# parted
+# passwd
+# patch
+# pax
+# pciutils
+# pcre
+# perl
+# perl-String-CRC32
+# pkgconfig
+# pm-utils
+# policycoreutils
+# popt
+# postgresql-libs
+# procps
+# psmisc
+# pyOpenSSL
+# pycairo
+# pygobject2
+# pygtk2
+# pygtk2-libglade
+# python
+# python-dmidecode
+# python-elementtree
+# python-iniparse
+# python-libs
+# python-numeric
+# python-sqlite
+# python-urlgrabber
+# readline
+# redhat-logos
+# redhat-lsb
+# redhat-menus
+# redhat-release
+# rhn-check
+# rhn-client-tools
+# rhn-setup
+# rhnlib
+# rhnsd
+# rhpl
+# rpm
+# rpm-libs
+# rpm-python
+# rsyslog
+# ruby
+# ruby-irb
+# ruby-libs
+# samba-common
+# sed
+# selinux-policy
+# setools
+# setup
+# sgml-common
+# sgpio
+# shadow-utils
+# slang
+# sqlite
+# subversion
+# svrcore
+# system-config-network-tui
+# system-config-securitylevel-tui
+# tar
+# tcl
+# tcp_wrappers
+# tcsh
+# termcap
+# time
+# ttmkfdir
+# tzdata
+# udev
+# usermode
+# util-linux
+# vim-common
+# vim-minimal
+# vixie-cron
+# w3m
+# which
+# wireless-tools
+# xorg-x11-filesystem
+# xorg-x11-font-utils
+# xorg-x11-xfs
+# yum
+# yum-metadata-parser
+# yum-rhn-plugin
+# zip
+# zlib
+#
+# The following (locallized) document packages and no need to install into each
+# guests as same contenst are available from
+# https://access.redhat.com/knowledge/docs/Red_Hat_Enterprise_Linux/ :
+#
+#Deployment_Guide-de-DE
+#Deployment_Guide-en-US
+#Deployment_Guide-es-ES
+#Deployment_Guide-fr-FR
+#Deployment_Guide-it-IT
+#Deployment_Guide-ja-JP
+#Deployment_Guide-ko-KR
+#Deployment_Guide-pt-BR
+#Deployment_Guide-ru-RU
+#Deployment_Guide-zh-CN
+#Deployment_Guide-zh-TW
+#
+# Unnecessary localized spell checking data:
+#aspell-cs
+#aspell-de
+#aspell-es
+#aspell-fr
+#aspell-it
+#aspell-pl
+#aspell-pt
+#aspell-ru
+#
+# Unnecessary localized fonts data:
+#fonts-chinese
+#fonts-KOI8-R-100dpi
+#fonts-KOI8-R
+#fonts-KOI8-R-75dpi
+#fonts-korean
+#
+# The hypervisor is not Xen:
+#kernel-xen
+#kernel-xen-devel
+#
+# Unnecessary localized man pages:
+#man-pages-cs
+#man-pages-de
+#man-pages-es
+#man-pages-fr
+#man-pages-it
+#man-pages-ja
+#man-pages-ko
+#man-pages-pl
+#man-pages-ru
+#
+# Alternatives are installed already:
+#nano (vim*)
+#ftp (lftp, w3m, etc.)
