@@ -1,8 +1,14 @@
 #! /bin/bash
 # see also virt-install(1)
 #
+function genmac () { python -c 'from random import randint as f; print ":".join("%02x" % x for x in (0x52, 0x54, 0x00, f(0x00, 0x7f), f(0x00, 0xff),  f(0x00, 0xff)))'; }
 {% macro net_option(nic) -%}
-network={{ nic.network|default('network') }},model={{ nic.model|default('virtio') }},mac={{ nic.mac|default('RANDOM') }}
+{%     if nic.bridge is defined -%}
+bridge={{ nic.bridge }}
+{%-    else -%}
+network={{ nic.network|default('default') }}
+{%-    endif -%}
+,model={{ nic.model|default('virtio') }},mac={% if nic.mac is defined and nic.mac != 'RANDOM' %}{{ nic.mac }}{% else %}$(genmac){% endif %}
 {%- endmacro -%}
 {% macro disk_option(disk, create=true) -%}
 {%     if disk.pool is defined -%}
@@ -13,11 +19,15 @@ pool={{ disk.pool }}
 {%-        endif -%}
 {%     else -%}
 path={{ disk.path }}
-{%     endif -%}
+{%-    endif -%}
+{%     if disk.format is defined and disk.format != 'none' -%}
 ,format={{ disk.format|default('qcow2') }},cache={{ disk.cache|default('none') }}
+{%-    endif -%}
 {#-    use pre-built volume if not 'create' flag is set. -#}
-{%     if create -%}
-,size={{ disk.size|default('5') }}
+{%     if disk.size is defined and disk.size > 0 -%}
+{%         if create -%}
+,size={{ disk.size }}
+{%-        endif -%}
 {%-    endif -%}
 {%     if disk.bus is defined -%}
 ,bus={{ disk.bus }}
@@ -36,6 +46,7 @@ kscfg=${ks_path##*/}
 {%- endblock %}
 name={% if name_prefix is defined %}{{ name_prefix }}{% endif -%}
 {%  if hostname is defined %}{{ hostname }}{% else %}{{ name }}{% endif %}
+connect=${QEMU_CONNECT:-{{ virtinst.connect }}}
 
 {% block location -%}
 {% if virtinst.cdrom -%}
@@ -45,42 +56,41 @@ name={% if name_prefix is defined %}{{ name_prefix }}{% endif -%}
 location_opts="--cdrom {{ virtinst.cdrom }}"
 {% else -%}
 location_opts="--location={{ virtinst.location }} --initrd-inject=${ks_path}"
-ksdevice={{ ksdevice|default('eth0') }}
-more_extra_args={{ virtinst.extra_args|default('') }}
+more_extra_args="{{ virtinst.extra_args|default('') }}"
+{%     if interfaces|length > 1 -%}
+more_extra_args="$more_extra_args ksdevice={{ ksdevice|default('eth0') }}"
+{%     endif -%}
 {% endif -%}
 {%- endblock %}
-{% block create_vols -%}
-{%   for disk in disks -%}
-{%     if disk.pool is defined and disk.vol is defined -%}
-# Create storage volumes on ahead of virt-install run.
-virsh vol-key {{ disk.vol }} {{ disk.pool }} || \
-    virsh vol-create-as {{ disk.pool }} {{ disk.vol }} {{ disk.size }}GiB --format {{ disk.format|default("qcow2") }}
-{%     endif -%}
-{%   endfor -%}
-{% endblock %}
+
+{% block virtio_scsi_def -%}
 # Use virtio-scsi if available and there is a scsi disk:
 virtio_scsi_controller=
-{%- for disk in disks if disk.bus is defined and disk.bus == 'scsi' -%}
-"--controller type=scsi,model=virtio-scsi"{% else %}""
-{%- endfor %}
+{%-     for disk in disks if disk.bus is defined and disk.bus == 'scsi' -%}
+{%-         if loop.first -%}
+"--controller=scsi,model=virtio-scsi"{% else %}""
+{%-         endif -%}
+{%-     endfor %}
+{%- endblock %}
 
+{% block virt_install -%}
 virt-install \
 {{ virtinst.basic_options }} \
 --name=${name:?} \
---connect={{ virtinst.connect }} \
+--connect=${connect:?} \
 --wait={{ virtinst.waittime }} \
 --ram={{ virtinst.ram }} \
 --arch={{ virtinst.arch }} \
 --vcpus={{ virtinst.vcpus }} {% if virtinst.cpu is defined %}--cpu {{ virtinst.cpu }}{% endif %} \
---graphics {{ virtinst.graphics }} \
+--graphics {{ virtinst.graphics }}{% if keyboard is defined %},keymap={{ keyboard }}{% endif %} \
 --os-type={{ virtinst.os_type }} \
 --os-variant={{ virtinst.os_variant }} \
 ${virtio_scsi_controller} \
-${location_opts} {% if virtinst.cdrom is not defined %}--extra-args="ks=file:/${kscfg} ksdevice=${ksdevice} ${more_extra_args}"{% endif %} \
-{% for disk in disks -%}
+${location_opts} {% if virtinst.cdrom is not defined %}--extra-args="ks=file:/${kscfg} ${more_extra_args}"{% endif %} \
+{%    for disk in disks -%}
 --disk {{ disk_option(disk) }} \
-{% endfor %} \
-{% for nic in interfaces -%}
+{%    endfor %} \
+{%    for nic in interfaces -%}
 --network {{ net_option(nic) }} \
-{% endfor %}
-
+{%    endfor %}
+{%- endblock %}
