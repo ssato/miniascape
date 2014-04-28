@@ -89,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 - Fix miniascape.host.gen_vnet_files and corresponding template to list hosts
   having unique IPs in generated network xml files
 - Remove dependency to python-jinja2-cli by copying necessary files from it
+- Add RHUI related templates again
+- Apply enhancements and fixes to templates and config files from RHUI works
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
