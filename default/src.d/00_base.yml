@@ -7,6 +7,7 @@ common:
   nameservers:
   - hostname: *gateway
     #options:
+  - hostname: 8.8.8.8
 
   storage_pools:
     - type: dir
@@ -35,6 +36,10 @@ common:
   timezone:
     utc: true
     timezone: Asia/Tokyo
+
+  # template cond variables:
+  use_serial_console: true
+  store_cmdline: true
 
   #ntpservers:
     # TODO: set default NTP servers.
