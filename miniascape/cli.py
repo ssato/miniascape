@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012, 2013 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012 - 2014 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 from miniascape.globals import LOGGER as logging, set_loglevel, \
     M_GUESTS_CONF_SUBDIR
 
+import miniascape.bootstrap as B
 import miniascape.config as C
 import miniascape.guest as G
 import miniascape.options as O
@@ -54,13 +55,15 @@ def gen_all(argv):
 
 # TODO: define other commands.
 cmds = [
-    #("i", "init", H.main),
+    # ("i", "init", H.main),
+    ("bo", "bootstrap", B.main,
+     "Bootstrap site config files from ctx src and conf templates"),
     ("c",  "configure", S.main,
      "Generate site configuration from config src"),
     ("ge", "generate", gen_all,
      "Generate all files to build guests and virt. infra"),
     ("gu", "guest", G.main, "Generate files to build specific guest"),
-    #("b", "build", build_all_vms, "Build all VMs"),
+    # ("bu", "build", build_all_vms, "Build all VMs"),
 ]
 
 
