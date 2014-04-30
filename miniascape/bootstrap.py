@@ -68,12 +68,12 @@ def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths):
 
 
 def option_parser():
-    defaults = dict(conf_tmpldir, **O.M_DEFAULTS)
+    defaults = dict(conf_tmpldir=os.path.join(M_TMPL_DIR, "bootstrap"),
+                    **O.M_DEFAULTS)
     defaults["confdir"] = None
 
     p = O.option_parser(defaults, "%prog [OPTION ...]")
-    p.add_option("", "--conf-tmpldir",
-                 help=("Config template dir [%s/bootstrap]" % M_TMPL_DIR))
+    p.add_option("", "--conf-tmpldir", help="Config template dir [%default]")
     return p
 
 
