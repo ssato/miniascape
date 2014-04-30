@@ -81,7 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 %config %{pkgconfdir}/default/src.d/*.yml
 
 %changelog
-* Mon Apr 28 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
+* Wed Apr 30 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
 - Make storage volumes created on ahead of virt-install run
 - Fix packaging bug in the RPM spec generated for KVM host
 - Switch from gevent to multiprocessing to accomplish async template rendering
@@ -91,6 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 - Remove dependency to python-jinja2-cli by copying necessary files from it
 - Add RHUI related templates again
 - Apply enhancements and fixes to templates and config files from RHUI works
+- Add 'bootstrap' command to generate site config files from ctx (conf src) and
+  config template files
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
