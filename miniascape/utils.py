@@ -18,7 +18,6 @@
 from miniascape.globals import LOGGER as logging
 from miniascape.memoize import memoize
 
-import anyconfig.mergeabledict as AM
 import glob
 import itertools
 import locale
@@ -38,6 +37,12 @@ except AttributeError:
                 yield element
 
     chain_from_iterable = _from_iterable
+
+try:
+    from anyconfig.mergeabledict import is_mergeabledict_or_dict
+except ImportError:
+    def is_mergeabledict_or_dict(x):
+        return isinstance(x, dict)
 
 
 def concat(xss):
@@ -166,22 +171,16 @@ def walk_(x, path=None, path_sep='.'):
     :param path: Current 'path'
     :param path_sep: Path separator
     """
-    if AM.is_mergeabledict_or_dict(x):
+    if is_mergeabledict_or_dict(x):
         for k, v in iteritems(x):
             curpath = k if path is None else "%s%s%s" % (path, path_sep, k)
 
-            if AM.is_mergeabledict_or_dict(v):
+            if is_mergeabledict_or_dict(v):
                 for path_child, v_child in walk_(v, curpath):
                     yield (path_child, v_child, v)
             else:
                 yield (curpath, v, x)
     else:
         yield (path, x, None)
-
-
-try:
-    AM.walk
-except AttributeError:
-    walk = walk_
 
 # vim:sw=4:ts=4:et:
