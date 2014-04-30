@@ -18,6 +18,7 @@
 from miniascape.globals import LOGGER as logging
 from miniascape.memoize import memoize
 
+import anyconfig.mergeabledict as AM
 import glob
 import itertools
 import locale
@@ -146,5 +147,41 @@ def timestamp(dtobj=datetime.datetime.now()):
     """
     locale.setlocale(locale.LC_TIME, "C")
     return dtobj.strftime("%a %b %_d %Y")
+
+
+def walk_(x, path=None, path_sep='.'):
+    """
+    Walk through given object (may-be-a-MergeableDict-instance) ``x`` like
+    os.walk. Currently, DFS (depth first search) is used to traverse (walk
+    through) ``x``.
+
+    This fucntion will walk through object tree and yield:
+
+        (curpath, value, dic)
+
+    where curpath is the 'path' to the object key, value is dic[key] and dic is
+    the dict object reference.
+
+    :param x: Object to walk (traverse), may be an instance of MergeableDict
+    :param path: Current 'path'
+    :param path_sep: Path separator
+    """
+    if AM.is_mergeabledict_or_dict(x):
+        for k, v in iteritems(x):
+            curpath = k if path is None else "%s%s%s" % (path, path_sep, k)
+
+            if AM.is_mergeabledict_or_dict(v):
+                for path_child, v_child in walk_(v, curpath):
+                    yield (path_child, v_child, v)
+            else:
+                yield (curpath, v, x)
+    else:
+        yield (path, x, None)
+
+
+try:
+    AM.walk
+except AttributeError:
+    walk = walk_
 
 # vim:sw=4:ts=4:et:
