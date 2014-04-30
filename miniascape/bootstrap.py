@@ -29,17 +29,22 @@ def mk_ctx(input_file):
     """
     :param input_file: Path to input YAML file may have empty parameters
     """
-    ctx = AC.load(input_file)
+    ctx = AC.load(input_file, "yaml")
+    #logging.debug(str(ctx))
 
     for key_path, val, d in U.walk(ctx):
         if val is None:
             val = raw_input("%s: " % key_path)
+            if not val:
+                raise RuntimeError("Invalid value entered: key=%s, val=%s" %
+                                   (key_path, str(val)))
         else:
             val_new = raw_input("%s [%s]: " % (key_path, val))
             if val_new:
                 val = val_new  # update it unless user gave empty value.
 
-        d[key_path.split('.')[-1]] = val
+        key = key_path.split('.')[-1]
+        d[key] = val
 
     return ctx
 
@@ -50,11 +55,15 @@ def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths):
     :param conf_tmpldir: Config templates dir, ex. ~/templates/bootstrap
     :param workdir: Working dir
     """
+    if not os.path.exists(workdir):
+        os.makedirs(workdir)
+
     ctx = mk_ctx(ctx_input_path)
     AC.dump(ctx, os.path.join(workdir, "ctx.yml"))
 
     for dirpath, dirnames, filenames in os.walk(conf_tmpldir):
-        reldir = dirpath.replace(conf_tmpldir + os.path.sep, '')
+        reldir = dirpath.strip(conf_tmpldir + os.path.sep)
+        logging.debug("conf_tmpldir=%s, reldir=%s, dirpath=%s" % (conf_tmpldir, reldir, dirpath))
 
         for fn in filenames:
             fn_base, ext = os.path.splitext(fn)
@@ -68,12 +77,11 @@ def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths):
 
 
 def option_parser():
-    defaults = dict(conf_tmpldir=os.path.join(M_TMPL_DIR, "bootstrap"),
+    defaults = dict(conf_tmpldir=os.path.join(M_TMPL_DIR, "confsrc"),
                     **O.M_DEFAULTS)
-    defaults["confdir"] = None
 
-    p = O.option_parser(defaults, "%prog [OPTION ...]")
-    p.add_option("", "--conf-tmpldir", help="Config template dir [%default]")
+    p = O.option_parser(defaults, "%prog [OPTION ...] CONF_SRC")
+    p.add_option("", "--conf-tmpldir", help="Config templates dir to walk [%default]")
     return p
 
 
@@ -84,13 +92,11 @@ def main(argv):
     set_loglevel(options.verbose)
     options = O.tweak_tmpldir(options)
 
-    if not options.confdir:
-        options.confdir = raw_input("Specify config (ctx) src dir: ")
+    if not args:
+        p.print_usage()
+        sys.exit(1)
 
-    if not options.conf_tmpldir:
-        options.conf_tmpldir = os.path.join(M_TMPL_DIR, "bootstrap")
-
-    bootstrap(ctx_input_path, options.conf_tmpldir, workdir, options.tmpldir)
+    bootstrap(args[0], options.conf_tmpldir, options.workdir, options.tmpldir)
 
 
 if __name__ == '__main__':

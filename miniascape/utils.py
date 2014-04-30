@@ -154,7 +154,11 @@ def timestamp(dtobj=datetime.datetime.now()):
     return dtobj.strftime("%a %b %_d %Y")
 
 
-def walk_(x, path=None, path_sep='.'):
+def noop(*args):
+    return args
+
+
+def walk(x, path=None, path_sep='.', hook=noop):
     """
     Walk through given object (may-be-a-MergeableDict-instance) ``x`` like
     os.walk. Currently, DFS (depth first search) is used to traverse (walk
@@ -172,15 +176,23 @@ def walk_(x, path=None, path_sep='.'):
     :param path_sep: Path separator
     """
     if is_mergeabledict_or_dict(x):
-        for k, v in iteritems(x):
+        for k, v in x.iteritems():
             curpath = k if path is None else "%s%s%s" % (path, path_sep, k)
 
             if is_mergeabledict_or_dict(v):
-                for path_child, v_child in walk_(v, curpath):
-                    yield (path_child, v_child, v)
+                for path_child, v_child, _d in walk(v, curpath):
+                    yield hook(path_child, v_child, v)
+
+            # FIXME: process lists.
+            elif isinstance(v, (list, tuple)):
+                pass
+            #    for i, y in enumerate(v):
+            #        # Encode index into the path ?
+            #        curpath = "%s:%d" % (curpath, i)
+            #       yield hook(curpath, y, v)
             else:
-                yield (curpath, v, x)
+                yield hook(curpath, v, x)
     else:
-        yield (path, x, None)
+        yield hook(path, x, None)
 
 # vim:sw=4:ts=4:et:
