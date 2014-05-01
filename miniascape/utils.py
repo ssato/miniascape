@@ -180,12 +180,13 @@ def walk(x, path=None, path_sep='.', hook=noop):
             curpath = k if path is None else "%s%s%s" % (path, path_sep, k)
 
             if is_mergeabledict_or_dict(v):
-                for path_child, v_child, _d in walk(v, curpath):
+                for path_child, v_child, _d in walk(v, curpath, path_sep,
+                                                    hook):
                     yield hook(path_child, v_child, v)
 
             # FIXME: process lists.
             elif isinstance(v, (list, tuple)):
-                pass
+                continue
             #    for i, y in enumerate(v):
             #        # Encode index into the path ?
             #        curpath = "%s:%d" % (curpath, i)
