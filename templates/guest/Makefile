@@ -11,7 +11,7 @@ build.stamp: $(CURDIR)/vmbuild.sh
 	bash -x $< && touch $@
 
 test-build: netregist.stamp test-build.stamp
-test-build.stamp: $(CURDIR)/vmbuild-test.sh
+test-build.stamp: $(CURDIR)/vmbuild-test.sh $(CURDIR)/test.ks.cfg
 	bash -x $< && touch $@
 
 ## For tests:
