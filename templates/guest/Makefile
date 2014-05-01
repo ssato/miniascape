@@ -8,7 +8,11 @@ netregist.stamp: $(CURDIR)/net_register.sh
 
 build: netregist.stamp build.stamp
 build.stamp: $(CURDIR)/vmbuild.sh
-	bash -x $< && touch $@.stmp
+	bash -x $< && touch $@
+
+test-build: netregist.stamp test-build.stamp
+test-build.stamp: $(CURDIR)/vmbuild-test.sh
+	bash -x $< && touch $@
 
 ## For tests:
 setup: $(CURDIR)/test.ks.cfg $(CURDIR)/vmbuild-test.sh
