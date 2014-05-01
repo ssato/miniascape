@@ -1,8 +1,11 @@
 audit
 curl
+lftp
 make
+ntpdate
 screen
 strace
+sysstat
 tcpdump
 vim-enhanced
 w3m
