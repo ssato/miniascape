@@ -35,5 +35,5 @@ ssl_key: /root/setup/certs/{{ cds.cli_fqdn }}.key
 hostname: {{ cds.fqdn }}
 ssl_cert: /root/setup/certs/{{ cds.fqdn }}.crt
 ssl_key: /root/setup/certs/{{ cds.fqdn }}.key
-{%-    endif -%}
+{%     endif %}
 {% endfor %}

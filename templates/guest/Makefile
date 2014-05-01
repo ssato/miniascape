@@ -6,11 +6,11 @@ netregist: netregist.stamp
 netregist.stamp: $(CURDIR)/net_register.sh
 	bash -x $< && touch $@
 
-build: netregist.stamp build.stamp
+build: build.stamp
 build.stamp: $(CURDIR)/vmbuild.sh
 	bash -x $< && touch $@
 
-test-build: netregist.stamp test-build.stamp
+test-build: test-build.stamp
 test-build.stamp: $(CURDIR)/vmbuild-test.sh $(CURDIR)/test.ks.cfg
 	bash -x $< && touch $@
 
