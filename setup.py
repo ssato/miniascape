@@ -32,7 +32,7 @@ def list_data_files_g(prefix, srcdir):
 
 
 data_files = concat(list_data_files_g(p, d) for p, d in
-                    ((M_CONF_TOPDIR, "default"),           # config files
+                    ((M_CONF_TOPDIR, "conf"),              # config files
                      ("share/%s" % PACKAGE, "templates"),  # template files
                      ("share/%s" % PACKAGE, "tests"),      # test cases
                      ))

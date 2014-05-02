@@ -25,5 +25,5 @@ include tests/templates/expected/*
 recursive-include templates/config *.yaml
 recursive-include templates/config *.j2
 recursive-include tests *.py
-recursive-include default *.yml
+recursive-include conf *.yml
 recursive-include miniascape *.py
