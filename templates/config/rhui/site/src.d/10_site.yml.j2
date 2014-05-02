@@ -13,10 +13,11 @@ rhui:
     hostname: &rhua_hostname {{ rhua.hostname }}
     cds_cluster: &cds_cluster {{ rhua.cds_cluster|default('cds_cluster') }}
 
-{% for cds in cdses %}  cds{{ loop.index }}:
-    ip: &cds{{ loop.index }}_ip {{ cds.ip }}
-    fqdn: &cds{{ loop.index }}_fqdn {{ cds.fqdn }}
-    hostname: &cds{{ loop.index }}_hostname {{ cds.hostname }}
+{% for cds in cdses %}  cds-{{ loop.index }}:
+    ip: &cds_{{ loop.index }}_ip {{ cds.ip }}
+    fqdn: &cds_{{ loop.index }}_fqdn {{ cds.fqdn }}
+    hostname: &cds_{{ loop.index }}_hostname {{ cds.hostname }}
+    cli_fqdn: &cds_{{ loop.index }}_cli_fqdn {{ cds.cli_fqdn }}
 {% endfor %}
 common:
   domain: &domain {{ domain }}
@@ -37,14 +38,24 @@ common:
       hostname: *rhua_hostname
 
     # CDS 1:
-    - ip: *cds1_ip
-      fqdn: *cds1_fqdn
-      hostname: *cds1_hostname
+    - ip: *cds_1_ip
+      fqdn: *cds_1_fqdn
+      hostname: *cds_1_hostname
 
     # CDS 2:
-    - ip: *cds2_ip
-      fqdn: *cds2_fqdn
-      hostname: *cds2_hostname
+    - ip: *cds_2_ip
+      fqdn: *cds_2_fqdn
+      hostname: *cds_2_hostname
+
+    # CDS 1 for clients:
+    - ip: *cds_1_ip
+      fqdn: *cds_1_cli_fqdn
+      hostname: *cds_1_hostname
+
+    # CDS 2 for clients:
+    - ip: *cds_2_ip
+      fqdn: *cds_2_cli_fqdn
+      hostname: *cds_2_hostname
 
   virtinst:
     location: {{ virtinst.location }}
@@ -104,11 +115,11 @@ guests:
       cluster: *cds_cluster
 
     cdsservers:
-      - name: *cds1_hostname
-        fqdn: *cds1_fqdn
+      - name: *cds_1_hostname
+        fqdn: *cds_1_fqdn
         cluster: *cds_cluster
-      - name: *cds2_hostname
-        fqdn: *cds2_fqdn
+      - name: *cds_2_hostname
+        fqdn: *cds_2_fqdn
         cluster: *cds_cluster
 
     guests:
@@ -137,7 +148,7 @@ guests:
 
     guests:
 {% for cds in cdses %}      - hostname: *cds_{{ loop.index }}_hostname
-        name: cds{{ loop.index }}
+        name: cds-{{ loop.index }}
         ip: *cds_{{ loop.index }}_ip
         interfaces:
           - network: *rhui_network_1
