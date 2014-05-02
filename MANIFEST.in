@@ -16,6 +16,8 @@ include templates/host/etc/*
 include templates/host/etc/cluster/*
 include templates/host/etc/httpd/conf.d/*
 include templates/host/etc/auto.master.d/*
+include templates/config/*/*
+include templates/config/*/site/src.d/*
 include tests/*.py
 include tests/templates/*.py
 include tests/templates/contexts.d/*.yml

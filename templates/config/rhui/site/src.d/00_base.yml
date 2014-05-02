@@ -1,0 +1,118 @@
+site:
+
+common:
+  rootpw: "--iscrypted $6$kiSHW.B7qrF1qE6g$rDEHXmb0kFx0O0R.njR4w0mXDywlQjbKcaSqegOmtLtzcrGNzIUboDbv2NtisVX56chSsCdiXNTGUvBRETB7M/"
+  keyboard: us
+
+  virtinst:
+    ram: &memory_size 1024
+    vcpus: 2
+    basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
+    connect: "qemu:///system"
+    waittime: 12
+    arch: x86_64
+    graphics: vnc
+    os_type: linux
+    os_variant: rhel6
+    #extra_args: serial
+
+  ksdevice: eth0
+
+  disks:
+    - pool: default  # see `storage_pools`
+      format: raw
+      cache: none
+      size: 100
+      # NOTE: Unfortunately, libvirt in RHEL 6.5 supports virtio-scsi but
+      # virt-install does not.
+      #bus: scsi
+      bus: virtio
+
+  test:
+    virtinst:
+      ram: *memory_size
+
+    #disks:
+    #  - pool: default
+    #    format: raw
+    #    cache: none
+    #    size: 100
+    #    bus: scsi
+
+  #see also virtinst.ram:
+  swap: *memory_size
+
+  bootloader:
+    options:
+
+  filesystem: ext4
+  auth:
+    options: "--passalgo=sha512"
+
+  selinux: enforcing
+  ks_finish: reboot
+
+  timezone:
+    utc: true
+    timezone: Asia/Tokyo
+
+  ks_users:
+    # example:
+    #- name: rhuiadm
+    #  uid: 1001
+    #  iscrypted: true
+    #  password: "$6$AT2LIrpx/hn6kdZg$PVc4/HdbUpk4JDoDUs.zNUp/qnOJ9juBwV13aQvKwOf5aypPB3xBakSa9gmjAi6RFurjif7gwx3XXWWblH10L/"
+
+  services:
+    enabled:
+      - sshd
+    disabled:
+      - gpm
+      - ip6tables
+      - mdmonitor
+
+  packages:
+    add:
+      - ntpdate
+
+  # template cond variables:
+  use_serial_console: true
+  store_cmdline: true
+  ssh_root_access: true
+
+  gpg:
+    passpharase: secret
+
+  ## Meta:
+  templates:
+    autoinst:
+      #src: autoinstall.d/<name>-ks.cfg
+      dst: ks.cfg
+    virtinst:
+      src: guest/vmbuild.sh
+      dst: vmbuild.sh
+    netregist:
+      src: guest/net_register.sh
+      dst: net_register.sh
+    Makefile:
+      src: guest/Makefile
+      dst: Makefile
+
+  guests_templates:
+    Makefile_am:
+      src: guest/rpm/Makefile.am
+      dst: Makefile.am
+
+    configure_ac:
+      src: guest/rpm/configure.ac
+      dst: configure.ac
+
+    rpmspec:
+      src: guest/rpm/package.spec
+      dst: package.spec
+
+    rpmmk:
+      src: guest/rpm/rpm.mk
+      dst: rpm.mk
+
+# vim:sw=2:ts=2:et:

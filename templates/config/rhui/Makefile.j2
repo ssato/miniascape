@@ -1,0 +1,27 @@
+#TOPDIR = $(CURDIR)
+TOPDIR = .
+SITE ?= {{ site }}
+
+guests ?= rhua cds1 cds2
+miniascape_OPTIONS = -t $(TOPDIR)/templates
+
+
+all:
+	@echo "$(MAKE) TARGET"
+	@echo " "
+	@echo "  where TARGET = configure   generate config files"
+	@echo "               = compile     generate build scripts and ks.cfg"
+
+
+configure:
+	miniascape c -f -c $(TOPDIR)/$(SITE)/src.d -w $(TOPDIR) $(miniascape_OPTIONS)
+
+compile: configure
+	miniascape ge -c $(TOPDIR)/$(SITE) -w $(TOPDIR)/out $(miniascape_OPTIONS)
+
+#for d in $(wildcard $(TOPDIR)/out/guests.d/*); do test -d $$d && make -C $$d/ setup; done
+
+world:
+	for vm in $(guests); do bash -x out/guests.d/$$vm/vmbuild.sh &; done
+
+.PHONY: configure compile world
