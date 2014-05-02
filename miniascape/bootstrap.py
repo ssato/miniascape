@@ -14,7 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+#from __future__ import absolute_import
+from __future__ import print_function
+
 from miniascape.globals import LOGGER as logging, set_loglevel, M_TMPL_DIR
+import miniascape.globals as G
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
@@ -23,6 +27,15 @@ import anyconfig as AC
 import os.path
 import os
 import sys
+
+
+def _ctx_files_pattern(site_pattern, ctx_topdir=G.M_CONF_TOPDIR,
+                       subdir=G.M_BOOTSTRAP_SUBDIR, ctx_pattern=G.M_CONF_PATTERN):
+    """
+    >>> _ctx_files_pattern("foo", "/etc/miniascape.d", "bootstrap", "*.yml")
+    '/etc/miniascape.d/foo/bootstrap/*.yml'
+    """
+    return os.path.join(ctx_topdir, site_pattern, subdir, G.M_CONF_PATTERN)
 
 
 def mk_ctx(input_file, use_default=False):
@@ -55,17 +68,21 @@ def mk_ctx(input_file, use_default=False):
     return ctx
 
 
-def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths,
-              use_default=False):
+def bootstrap(site_pattern, ctx_files, tpaths, workdir, use_default=False):
     """
-    :param ctx_input_path: Context input path, ex. ~/tmp/input/10_site.yml.in
-    :param conf_tmpldir: Config templates dir, ex. ~/templates/bootstrap
-    :param workdir: Working dir
-    :param tpaths: Template search paths
+    Bootstrap the site by generating configuration files from ctx files may
+    lack of some configuration parameters and configuration templates.
+
+    :param site_pattern: Site pattern name, ex. "default".
+    :param ctx_files: Context files pattern or file path,
+        ex. "~/tmp/foo/bootstrap/*.yml", "~/tmp/bar/bootstrap/00.yml".
+    :param tpaths: Template search paths,
+        ex. ["/usr/share/miniascape/templates", '.'].
+    :param workdir: Working dir to save results.
     :param use_default: Use default value and do not ask user if default was
-        given and this parameter is True
+        given and this parameter is True.
     """
-    ctx = mk_ctx(ctx_input_path, use_default)
+    ctx = mk_ctx(ctx_files, use_default)
     site = ctx.get("site", "site")
 
     if not os.path.exists(workdir):
@@ -73,30 +90,45 @@ def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths,
 
     AC.dump(ctx, os.path.join(workdir, "ctx.yml"))
 
-    for dirpath, dirnames, filenames in os.walk(conf_tmpldir):
-        reldir = dirpath.replace(conf_tmpldir, '').replace("site", site)
-        logging.debug("conf_tmpldir=%s, reldir=%s, dirpath=%s" %
-                      (conf_tmpldir, reldir, dirpath))
+    for tmpldir in tpaths:
+        conf_tmpldir = os.path.join(tmpldir, "config", site_pattern)
 
-        for fn in filenames:
-            (fn_base, ext) = os.path.splitext(fn)
+        if not os.path.exists(conf_tmpldir):
+            continue
 
-            if ext == ".j2":
-                logging.debug("Jinja2 template found: " + fn)
-                T.renderto([dirpath] + tpaths, ctx, fn,
-                           os.path.join(workdir, reldir, fn_base))
-            else:
-                T.renderto([dirpath] + tpaths, {}, fn,
-                           os.path.join(workdir, reldir, fn))
+        if not conf_tmpldir.endswith(os.path.sep):
+            conf_tmpldir += os.path.sep
+
+        logging.debug("conf_tmpldir: " + conf_tmpldir)
+
+        for dirpath, dirnames, filenames in os.walk(conf_tmpldir):
+            reldir = dirpath.replace(conf_tmpldir, '').replace("site", site)
+            logging.debug("conf_tmpldir=%s, reldir=%s, dirpath=%s" %
+                          (conf_tmpldir, reldir, dirpath))
+
+            for fn in filenames:
+                (fn_base, ext) = os.path.splitext(fn)
+
+                if ext == ".j2":
+                    logging.debug("Jinja2 template found: " + fn)
+                    T.renderto([dirpath] + tpaths, ctx, fn,
+                               os.path.join(workdir, reldir, fn_base))
+                else:
+                    T.renderto([dirpath] + tpaths, {}, fn,
+                               os.path.join(workdir, reldir, fn))
 
 
 def option_parser():
-    defaults = dict(conf_tmpldir=os.path.join(M_TMPL_DIR, "confsrc"),
-                    use_default=False, **O.M_DEFAULTS)
+    defaults = dict(site_pattern='default', ctx=None, use_default=False,
+                    list_site_patterns=False, **O.M_DEFAULTS)
 
-    p = O.option_parser(defaults, "%prog [OPTION ...] CONF_SRC")
-    p.add_option("", "--conf-tmpldir",
-                 help="Config templates dir to walk [%default]")
+    p = O.option_parser(defaults, "%prog [OPTION ...]")
+    p.add_option("-S", "--site-pattern",
+                 help="Specify the site pattern [%default]")
+    p.add_option("-L", "--list-site-patterns", action="store_true",
+                 help="List available site patterns other than 'default'")
+    p.add_option("-C", "--ctx",
+                 help="Specify the context files pattern or ctx file path")
     p.add_option("-U", "--use-default", action="store_true",
                  help="Just use default value if set w/o asking users")
     return p
@@ -109,12 +141,20 @@ def main(argv):
     set_loglevel(options.verbose)
     options = O.tweak_tmpldir(options)
 
-    if not args:
-        p.print_usage()
-        sys.exit(1)
+    if options.list_site_patterns:
+        sps = [os.path.basename(sp) for sp in
+               U.sglob(os.path.join(options.tmpldir[0], "config", '*'))
+               if os.path.isdir(sp)]
+        print("Site patterns other than 'default': " + ", ".join(sps))
+        sys.exit(0)
 
-    bootstrap(args[0], options.conf_tmpldir, options.workdir, options.tmpldir,
-              options.use_default)
+    if not options.ctx:
+        options.ctx = _ctx_files_pattern(options.site_pattern,
+                                         options.confdir.replace("default",
+                                                                 ''))
+
+    bootstrap(options.site_pattern, options.ctx, options.tmpldir,
+              options.workdir, options.use_default)
 
 
 if __name__ == '__main__':
