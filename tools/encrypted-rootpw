@@ -1,0 +1,23 @@
+#! /usr/bin/python
+#
+# see also: http://fedoraproject.org/wiki/Anaconda/Kickstart#rootpw
+#
+from __future__ import print_function
+
+import crypt
+import getpass
+import random
+import sys
+
+password = getpass.getpass()
+if not password:
+    print("You must enter the password!")
+    sys.exit(-1)
+
+salt_prefix = "$6$"
+salt_len = 7
+salt = getpass.getpass("salt: ")
+salt = salt_prefix + (salt or str(random.random())[2:salt_len + 2])
+
+crypted_password = crypt.crypt(password, salt)
+print(crypted_password)
