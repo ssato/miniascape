@@ -1,0 +1,97 @@
+site:
+
+# optional:
+name_prefix:
+
+# rhui:
+
+# example: 54fb6627dbaa37721048e4549db3224d.pem
+rhui_entitlement_cert:
+
+ssl_cert_subject:
+  country: JP
+  state: Tokyo
+  org:
+
+rhua:
+  ip:
+  fqdn:
+  hostname:
+  # optional
+  cds_cluster:
+
+cds_1: &cds_1
+  ip:
+  fqdn:
+  hostname:
+  cli_fqdn:
+
+cds_2: &cds_2
+  ip:
+  fqdn:
+  hostname:
+  cli_fqdn:
+
+cdses:
+  - *cds_1
+  - *cds_2
+
+# common:
+domain:
+gateway:
+
+# optional:
+netmask:
+
+nameserver_1: &nameserver_1
+  ip:
+
+ntpserver_1: &ntpserver_1
+  hostname:
+
+nameservers:
+  - *nameserver_1
+
+ntpservers:
+  - *ntpserver_1
+
+virtinst:
+  location:
+  location_rhel5:
+
+test:
+  # change DNS server addresses to gateway's one:
+  # ex. mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'"
+  mod_for_test_env:
+
+# optional: name, domain, netmask, dhcp.*[.*]
+network_1: &network_1
+  name:
+  bridge:
+  domain:
+  gateway:
+  netmask:
+  network:
+  dhcp:
+    start:
+    end:
+    static:
+      start:
+      end:
+
+networks:
+  - *network_1
+
+rhel_6_client: &rhel_6_client
+  hostname:
+  ip:
+
+rhel_5_client: &rhel_5_client
+  hostname:
+  ip:
+
+clients:
+  - *rhel_6_client
+  - *rhel_5_client
+
+# vim:sw=2:ts=2:et:ft=django:
