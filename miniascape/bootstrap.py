@@ -31,9 +31,8 @@ def mk_ctx(input_file, ask=True):
     :param ask: Use default value and do not ask user if True
     """
     ctx = AC.load(input_file, "yaml")
-    # logging.debug(str(ctx))
 
-    # Avoid "dictionary changed size during iteration" error.
+    # Workaround for the "dictionary changed size during iteration" error.
     xs = list(U.walk(ctx))
 
     for key_path, val, d in xs:
@@ -63,14 +62,16 @@ def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths, ask=True):
     :param tpaths: Template search paths
     :param ask: Use default value and do not ask user if True
     """
+    ctx = mk_ctx(ctx_input_path, ask)
+    site = ctx.get("site", "site")
+
     if not os.path.exists(workdir):
         os.makedirs(workdir)
 
-    ctx = mk_ctx(ctx_input_path, ask)
     AC.dump(ctx, os.path.join(workdir, "ctx.yml"))
 
     for dirpath, dirnames, filenames in os.walk(conf_tmpldir):
-        reldir = dirpath.replace(conf_tmpldir, '')
+        reldir = dirpath.replace(conf_tmpldir, '').replace("site", site)
         logging.debug("conf_tmpldir=%s, reldir=%s, dirpath=%s" %
                       (conf_tmpldir, reldir, dirpath))
 
@@ -78,6 +79,7 @@ def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths, ask=True):
             (fn_base, ext) = os.path.splitext(fn)
 
             if ext == ".j2":
+                logging.debug("Jinja2 template found: " + fn)
                 T.renderto([dirpath] + tpaths, ctx, fn,
                            os.path.join(workdir, reldir, fn_base))
             else:
