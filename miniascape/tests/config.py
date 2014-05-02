@@ -22,7 +22,7 @@ import os.path
 import unittest
 
 
-CONFDIR = os.path.abspath(os.path.join(C.TOPDIR, "default"))
+CONFDIR = os.path.abspath(os.path.join(C.TOPDIR, "conf", "default"))
 
 
 def _create_ConfFiles(confdir=CONFDIR,
