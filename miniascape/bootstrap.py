@@ -25,10 +25,11 @@ import os
 import sys
 
 
-def mk_ctx(input_file, ask=True):
+def mk_ctx(input_file, use_default=False):
     """
     :param input_file: Path to input YAML file may have empty parameters
-    :param ask: Use default value and do not ask user if True
+    :param use_default: Use default value and do not ask user if default was
+        given and this parameter is True
     """
     ctx = AC.load(input_file, "yaml")
 
@@ -41,12 +42,12 @@ def mk_ctx(input_file, ask=True):
             if not val:
                 raise RuntimeError("Invalid value entered: key=%s, val=%s" %
                                    (key_path, str(val)))
-        elif ask:
+        elif use_default:
+            pass  # Just use the default: val
+        else:
             val_new = raw_input("%s [%s]: " % (key_path, val))
             if val_new:
                 val = val_new  # update it unless user gave empty value.
-        else:
-            pass  # Just use the default: val
 
         key = key_path.split('.')[-1]
         d[key] = val
@@ -54,15 +55,17 @@ def mk_ctx(input_file, ask=True):
     return ctx
 
 
-def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths, ask=True):
+def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths,
+              use_default=False):
     """
     :param ctx_input_path: Context input path, ex. ~/tmp/input/10_site.yml.in
     :param conf_tmpldir: Config templates dir, ex. ~/templates/bootstrap
     :param workdir: Working dir
     :param tpaths: Template search paths
-    :param ask: Use default value and do not ask user if True
+    :param use_default: Use default value and do not ask user if default was
+        given and this parameter is True
     """
-    ctx = mk_ctx(ctx_input_path, ask)
+    ctx = mk_ctx(ctx_input_path, use_default)
     site = ctx.get("site", "site")
 
     if not os.path.exists(workdir):
@@ -89,13 +92,13 @@ def bootstrap(ctx_input_path, conf_tmpldir, workdir, tpaths, ask=True):
 
 def option_parser():
     defaults = dict(conf_tmpldir=os.path.join(M_TMPL_DIR, "confsrc"),
-                    ask=True, **O.M_DEFAULTS)
+                    use_default=False, **O.M_DEFAULTS)
 
     p = O.option_parser(defaults, "%prog [OPTION ...] CONF_SRC")
     p.add_option("", "--conf-tmpldir",
                  help="Config templates dir to walk [%default]")
-    p.add_option("", "--no-ask", action="store_false", dest="ask",
-                 help="Do not ask user and just use default value if set")
+    p.add_option("-U", "--use-default", action="store_true",
+                 help="Just use default value if set w/o asking users")
     return p
 
 
@@ -111,7 +114,7 @@ def main(argv):
         sys.exit(1)
 
     bootstrap(args[0], options.conf_tmpldir, options.workdir, options.tmpldir,
-              options.ask)
+              options.use_default)
 
 
 if __name__ == '__main__':
