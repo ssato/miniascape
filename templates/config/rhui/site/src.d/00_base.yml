@@ -1,7 +1,7 @@
 site:
 
 common:
-  rootpw: "--iscrypted $6$kiSHW.B7qrF1qE6g$rDEHXmb0kFx0O0R.njR4w0mXDywlQjbKcaSqegOmtLtzcrGNzIUboDbv2NtisVX56chSsCdiXNTGUvBRETB7M/"
+  rootpw:
   keyboard: us
 
   virtinst:
