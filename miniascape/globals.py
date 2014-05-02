@@ -35,6 +35,8 @@ M_GUESTS_BUILDDATA_TOPDIR = "/usr/share/miniascape/build/guests"
 
 M_SITE_DEFAULT = "default"
 M_CONFDIR_DEFAULT = os.path.join(M_CONF_TOPDIR, M_SITE_DEFAULT)
+
+M_BOOTSTRAP_SUBDIR = "bootstrap"
 M_COMMON_CONF_SUBDIR = "common"
 M_GUESTS_CONF_SUBDIR = "guests.d"
 M_NETS_CONF_SUBDIR = "networks.d"
