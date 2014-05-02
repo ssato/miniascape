@@ -21,19 +21,26 @@ def list_files(tdir):
     return [f for f in glob(os.path.join(tdir, '*')) if os.path.isfile(f)]
 
 
-def list_data_files_g(prefix, srcdir):
+def list_data_files_g(prefix, srcdir, offset=None):
     for root, dirs, _files in os.walk(srcdir):
         for d in dirs:
             reldir = os.path.join(root, d)
-            instdir = os.path.join(prefix, reldir)
             files = list_files(reldir)
-            if files:
-                yield (instdir, files)
+
+            if not files:
+                continue
+
+            if offset is not None:
+                if offset in reldir:
+                    reldir = reldir.replace(offset, '')
+
+            instdir = os.path.join(prefix, reldir)
+            yield (instdir, files)
 
 
-data_files = concat(list_data_files_g(p, d) for p, d in
-                    ((M_CONF_TOPDIR, "conf"),              # config files
-                     ("share/%s" % PACKAGE, "templates"),  # template files
+data_files = list(list_data_files_g(M_CONF_TOPDIR, "conf", "conf/")) + \
+             concat(list_data_files_g(p, d) for p, d in
+                    (("share/%s" % PACKAGE, "templates"),  # template files
                      ("share/%s" % PACKAGE, "tests"),      # test cases
                      ))
 
