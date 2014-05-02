@@ -81,7 +81,7 @@ common:
   ssh_root_access: true
 
   gpg:
-    passpharase: secret
+    passpharase:
 
   ## Meta:
   templates:
