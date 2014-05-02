@@ -16,7 +16,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.3.4
-#Requires:       python-jinja2-cli >= 0.0.4.1
 
 %description
 Personal cloud building and management tool for libvirt/KVM.
@@ -37,6 +36,14 @@ Some default guests and infra data files for %{name}.
 
 This package contains source files to build data in %{name}-data-default.
 
+%package        bootstrap-data
+Summary:        Bootstrap files for various site patterns
+Requires:       %{name} = %{version}-%{release}
+
+%description    bootstrap-data
+Context files and config templates to bootstrap various site patterns by
+generating configuration files from them.
+
 %prep
 %setup -q
 
@@ -47,22 +54,26 @@ This package contains source files to build data in %{name}-data-default.
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
-# Make egg-info not included in this package:
+# Some cleanups:
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/*.egg-info
+
+# Generate some file lists:
+find $RPM_BUILD_ROOT%{_datadir}/%{name}/templates -type f | \
+    sed "s,$RPM_BUILD_ROOT,,g" > templates.list
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f templates.list
 %defattr(-,root,root,-)
 %doc README.rst
 %{_bindir}/*
-%{_datadir}/%{name}/templates
-%{_datadir}/%{name}/templates/autoinstall.d/*-ks.cfg
-%{_datadir}/%{name}/templates/autoinstall.d/*/*
-%{_datadir}/%{name}/templates/guest/*
-%{_datadir}/%{name}/templates/host/*
-%{_datadir}/%{name}/templates/config/*
+#%{_datadir}/%{name}/templates
+#%{_datadir}/%{name}/templates/autoinstall.d/*-ks.cfg
+#%{_datadir}/%{name}/templates/autoinstall.d/*/*
+#%{_datadir}/%{name}/templates/guest/*
+#%{_datadir}/%{name}/templates/host/*
+#%{_datadir}/%{name}/templates/config/*
 %{_datadir}/%{name}/tests
 %{python_sitelib}/*
 
@@ -80,8 +91,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rst
 %config %{pkgconfdir}/default/src.d/*.yml
 
+%files          bootstrap-data
+%defattr(-,root,root,-)
+%doc README.rst
+%config %{pkgconfdir}/*/bootstrap/*.yml
+
 %changelog
-* Wed Apr 30 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
+* Fri May  2 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
 - Make storage volumes created on ahead of virt-install run
 - Fix packaging bug in the RPM spec generated for KVM host
 - Switch from gevent to multiprocessing to accomplish async template rendering
@@ -93,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 - Apply enhancements and fixes to templates and config files from RHUI works
 - Add 'bootstrap' command to generate site config files from ctx (conf src) and
   config template files
+- Add bootstrap-data sub package to provide bootstrap files for various site
+  patterns in the future
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
