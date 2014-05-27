@@ -1,0 +1,3 @@
+hostname: fedora-20-1
+interfaces:
+- {network: service}
