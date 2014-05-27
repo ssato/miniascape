@@ -6,6 +6,6 @@ openais: {bindnetaddr: 192.168.155.0}
 services:
   enabled: [openais, qpidd]
 setup_data:
-- {dst: qpidd_cluster_check.py, src: data/mrg-m/qpidd_cluster_check.py}
+- {dst: qpidd_cluster_check.py, src: data/mrg-m/qpidd_cluster_check.py.txt}
 templates:
   autoinst: {src: autoinstall.d/rhel-6-mrg-m-ks.cfg}

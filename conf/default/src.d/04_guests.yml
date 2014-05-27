@@ -1112,4 +1112,20 @@ guests:
             network: openstack-private
             gateway: *openstack_gateway
 
+  - name: fedora
+    description: Fedora stable
+
+    templates:
+      autoinst:
+        src: autoinstall.d/fedora-min-ks.cfg
+
+    #setup_data:
+    #  - src: data/.../setup.sh
+    #    dst: setup.sh
+
+    guests:
+      - hostname: fedora-20-1
+        interfaces:
+          - network: service
+
 # vim:sw=2:ts=2:et:
