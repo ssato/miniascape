@@ -1,0 +1,131 @@
+site: openstack
+
+common:
+  domain: &domain example.com
+  gateway: &gateway 192.168.200.254
+  netmask: &netmask 255.255.255.0
+  nameservers:
+  - hostname: *gateway
+  - hostname: 8.8.8.8
+
+  disks:
+    - pool: default
+      format: qcow2
+      cache: none
+      size: 6
+      bus: scsi
+
+  swap: 512  # [MB]
+  filesystem: ext4
+  auth:
+    options: "--passalgo=sha512"
+
+  selinux: enforcing
+  ks_finish: reboot
+
+  timezone:
+    utc: true
+    timezone: Asia/Tokyo
+
+  # template cond variables:
+  use_serial_console: true
+  store_cmdline: true
+
+  #ntpservers:
+    # TODO: set default NTP servers.
+    # - hostname: 0.pool.ntp.org
+    #   options: ...
+
+  services:
+    enabled:
+      - sshd
+
+    disabled:
+      - ip6tables
+      - lvm2-monitor
+      - lvm2-lvmetad
+      - mdmonitor
+
+  ssh:
+    pubkey: ~/.ssh/id_rsa.pub
+
+  virtinst:
+    ram: 1024
+    vcpus: 1
+    basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
+    connect: "qemu:///system"
+    waittime: 12
+    arch: x86_64
+    graphics: vnc
+    os_type: linux
+    os_variant: rhel6
+    # FIXME: Is there generic URL which will be automatically redirected to
+    # suitable mirrors to perform kickstart installation, available for CentOS ?
+    #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.4/os/x86_64/"
+    #location: "ftp://ftp.riken.jp/Linux/centos/6.4/os/x86_64/"
+    location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
+
+  ## Meta:
+  templates:
+    autoinst:
+      #src: autoinstall.d/<name>-ks.cfg
+      dst: ks.cfg
+    virtinst:
+      src: guest/vmbuild.sh
+      dst: vmbuild.sh
+    netregist:
+      src: guest/net_register.sh
+      dst: net_register.sh
+    Makefile:
+      src: guest/Makefile
+      dst: Makefile
+
+  guests_templates:
+    Makefile_am:
+      src: guest/rpm/Makefile.am
+      dst: Makefile.am
+
+    configure_ac:
+      src: guest/rpm/configure.ac
+      dst: configure.ac
+
+    rpmspec:
+      src: guest/rpm/package.spec
+      dst: package.spec
+
+    rpmmk:
+      src: guest/rpm/rpm.mk
+      dst: rpm.mk
+
+networks:
+  - name: openstack-public
+    mode: nat
+    bridge: virbr200
+    domain: *domain
+    gateway: *gateway
+    netmask: *netmask
+    network: 192.168.200.0
+    dhcp:
+      start: 192.168.200.200
+      end: 192.168.200.250
+      static:
+        start: 192.168.200.10
+        end: 192.168.200.199
+
+  - name: openstack-private
+    mode: nat
+    bridge: &net_service_bridge virbr32
+    gateway: 192.168.32.254
+    netmask: *netmask
+    network: 192.168.32.0
+    dhcp:
+      start: 192.168.32.200
+      end: 192.168.32.250
+      static:
+        start: 192.168.32.10
+        end: 192.168.32.199
+
+host:
+  bridge: *net_service_bridge
+
+# vim:sw=2:ts=2:et:

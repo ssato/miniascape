@@ -1,0 +1,80 @@
+site: openstack
+
+# optional:
+name_prefix:
+
+# openstack nodes: ------------------------------------
+
+# openstack all-in-one:
+openstack-allinone-0: &openstack_allinone_0
+  ip: 192.168.0.10
+  fqdn: openstack-allinone-0.example.com
+  hostname: openstack-allinone-0
+
+openstack-allinone-1: &openstack_allinone_1
+  ip: 192.168.0.11
+  fqdn: openstack-allinone-1.example.com
+  hostname: openstack-allinone-1
+
+# openstack controller + compute nodes (enakai model):
+openstack-controller-0: &openstack_controller_0
+  ip: 192.168.0.20
+  fqdn: openstack-controller-0.example.com
+  hostname: openstack-controller-0
+
+openstack-controller-1: &openstack_controller_1
+  ip: 192.168.0.21
+  fqdn: openstack-controller-1.example.com
+  hostname: openstack-controller-1
+
+openstack-compute-1: &openstack_compute_1
+  ip: 192.168.0.21
+  fqdn: openstack-compute-1.example.com
+  hostname: openstack-compute-1
+
+# common:
+rootpw: secret
+
+domain: example.com
+gateway: 192.168.0.254
+netmask: 255.255.255.0
+
+nameserver_1: &nameserver_1
+  ip: *gateway
+
+ntpserver_1: &ntpserver_1
+  hostname: 0.fedora.pool.ntp.org
+
+nameservers:
+  - *nameserver_1
+
+ntpservers:
+  - *ntpserver_1
+
+virtinst:
+  location:
+
+test:
+  # change DNS server addresses to gateway's one:
+  # ex. mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'"
+  mod_for_test_env:
+
+# optional: name, domain, netmask, dhcp.*[.*]
+network_1: &network_1
+  name:
+  bridge:
+  domain:
+  gateway:
+  netmask:
+  network:
+  dhcp:
+    start:
+    end:
+    static:
+      start:
+      end:
+
+networks:
+  - *network_1
+
+# vim:sw=2:ts=2:et:
