@@ -59,11 +59,7 @@ common:
     graphics: vnc
     os_type: linux
     os_variant: rhel6
-    # FIXME: Is there generic URL which will be automatically redirected to
-    # suitable mirrors to perform kickstart installation, available for CentOS ?
-    #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.4/os/x86_64/"
-    #location: "ftp://ftp.riken.jp/Linux/centos/6.4/os/x86_64/"
-    location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
+    location: "http://192.168.200.254/contents/rhel-6.5-x86_64/"
 
   ## Meta:
   templates:
@@ -114,16 +110,16 @@ networks:
 
   - name: openstack-private
     mode: nat
-    bridge: &net_service_bridge virbr32
-    gateway: 192.168.32.254
+    bridge: &net_service_bridge virbr132
+    gateway: 192.168.132.254
     netmask: *netmask
-    network: 192.168.32.0
+    network: 192.168.132.0
     dhcp:
-      start: 192.168.32.200
-      end: 192.168.32.250
+      start: 192.168.132.200
+      end: 192.168.132.250
       static:
-        start: 192.168.32.10
-        end: 192.168.32.199
+        start: 192.168.132.10
+        end: 192.168.132.199
 
 host:
   bridge: *net_service_bridge
