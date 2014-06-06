@@ -35,9 +35,11 @@
  References: http://jinja.pocoo.org,
     especially http://jinja.pocoo.org/docs/api/#basics
 """
-from jinja2.exceptions import TemplateNotFound
+from __future__ import absolute_import
 
-import miniascape.contrib.utils as U
+from jinja2.exceptions import TemplateNotFound
+from . import utils as U
+
 import codecs
 import jinja2
 import logging
