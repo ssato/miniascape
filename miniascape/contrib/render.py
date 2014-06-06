@@ -37,7 +37,7 @@
 """
 from jinja2.exceptions import TemplateNotFound
 
-import jinja2_cli.utils as U
+import miniascape.contrib.utils as U
 import codecs
 import jinja2
 import logging
