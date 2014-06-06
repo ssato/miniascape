@@ -17,6 +17,8 @@ guests:
     ram: 2048
     cpu: host  # To enable nested KVM feature.
 
+  use_serial_console: true
+
   - name: openstack-allinone
     description: OpenStack All-in-One node
 
