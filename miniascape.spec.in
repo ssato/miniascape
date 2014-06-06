@@ -20,22 +20,6 @@ Requires:       python-anyconfig >= 0.0.3.4
 %description
 Personal cloud building and management tool for libvirt/KVM.
 
-%package        data-default
-Summary:        Default guests and infra data files for %{name}
-Requires:       %{name} = %{version}-%{release}
-
-%description    data-default
-Some default guests and infra data files for %{name}.
-
-%package        data-default-devel
-Summary:        Source of default guests and infra data files for %{name}
-Requires:       %{name} = %{version}-%{release}
-
-%description    data-default-devel
-Some default guests and infra data files for %{name}.
-
-This package contains source files to build data in %{name}-data-default.
-
 %package        bootstrap-data
 Summary:        Bootstrap files for various site patterns
 Requires:       %{name} = %{version}-%{release}
@@ -43,6 +27,20 @@ Requires:       %{name} = %{version}-%{release}
 %description    bootstrap-data
 Context files and config templates to bootstrap various site patterns by
 generating configuration files from them.
+
+%package        data-default
+Summary:        Default guests and infra data files for %{name}
+Requires:       %{name} = %{version}-%{release}
+
+%description    data-default
+Some default guests and infra data files for %{name}.
+
+%package        data-openstack
+Summary:        OpenStack guests and infra data files for %{name}
+Requires:       %{name} = %{version}-%{release}
+
+%description    data-openstack
+Some OpenStack guests and infra data files for %{name}.
 
 %prep
 %setup -q
@@ -61,6 +59,11 @@ rm -f $RPM_BUILD_ROOT%{python_sitelib}/*.egg-info
 find $RPM_BUILD_ROOT%{_datadir}/%{name}/templates -type f | \
     sed "s,$RPM_BUILD_ROOT,,g" > templates.list
 
+sites="default openstack"
+for site in $sites; do \
+    find $RPM_BUILD_ROOT%{pkgconfdir}/${site} -type f | \
+        sed "s,$RPM_BUILD_ROOT,,g" > ${site}.conf.list; done
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -71,27 +74,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/tests
 %{python_sitelib}/*
 
-%files          data-default
-%defattr(-,root,root,-)
-%doc README.rst
-%config %{pkgconfdir}/default/common/*.yml
-%config %{pkgconfdir}/default/host.d/*.yml
-%config %{pkgconfdir}/default/*/*/*.yml
-%config %{pkgconfdir}/default/*/*/*/*.yml
-%{pkgconfdir}/default/*/*/*/README
-
-%files          data-default-devel
-%defattr(-,root,root,-)
-%doc README.rst
-%config %{pkgconfdir}/default/src.d/*.yml
-
+# Ideally, only needed configuration files are the followings.
 %files          bootstrap-data
 %defattr(-,root,root,-)
 %doc README.rst
 %config %{pkgconfdir}/*/bootstrap/*.yml
 
+# ... but not all of bootstrap configs are there and ready yet, so that keep
+# the configs generated from the bootstrap configs.
+%files -f default.conf.list data-default
+%files -f openstack.conf.list data-openstack
+
 %changelog
-* Fri May  2 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
+* Fri Jun  6 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
 - Make storage volumes created on ahead of virt-install run
 - Fix packaging bug in the RPM spec generated for KVM host
 - Switch from gevent to multiprocessing to accomplish async template rendering
@@ -105,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
   config template files
 - Add bootstrap-data sub package to provide bootstrap files for various site
   patterns in the future
+- Reorgnize the sub packages; removed data-default-devel as it's meaning-less
+  and will be replaced w/ bootstrap data, etc.
+- Add data-openstack sub package
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
