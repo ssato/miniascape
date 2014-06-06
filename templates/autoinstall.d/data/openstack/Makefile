@@ -27,7 +27,7 @@ rhnreg_ks_OPTIONS ?= --activationkey=$(RHN_AKEYS)
 endif
 
 pre_install_OPENSTACK_RPMS ?= yum install -y yum-plugin-priorities
-{% if openstack.use_rhos -%}
+{% if openstack.use_rhosp -%}
 make_repos_available ?= test -f /etc/sysconfig/rhn/systemid || rhnreg_ks --profilename=$(RHN_PROFILENAME) -v --force $(rhnreg_ks_OPTIONS)
 install_OPENSTACK_RPMS ?= $(make_repos_available) && yum install -y \
 python-sphinx python-docutils python-jinja2 \

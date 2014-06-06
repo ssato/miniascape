@@ -2,6 +2,6 @@ description: OpenStack controller node
 name: openstack-controller
 setup_data:
 - {dst: Makefile, src: data/openstack/Makefile}
-- {dst: answers.txt, src: data/openstack/controller-answers.txt}
+- {dst: answers.txt, src: data/openstack/controller_answers.txt}
 templates:
   autoinst: {src: autoinstall.d/openstack-controller-ks.cfg}

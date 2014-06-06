@@ -1,4 +1,4 @@
-mod_for_test_env ?= {{ test.mod_for_test_env }}
+mod_for_test_env ?= {% if test is defined %}{{ test.mod_for_test_env }}{% endif %}
 
 all: netregist build
 

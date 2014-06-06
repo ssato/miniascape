@@ -5,3 +5,7 @@ interfaces:
 - {ip: 192.168.0.11, mac: '52:54:00:16:80:11', network: openstack-public}
 - {ip: 192.168.132.10, mac: '52:54:00:68:32:10', network: openstack-private}
 ip: 192.168.0.10
+openstack_compute_nodes: [192.168.0.21]
+packstack:
+  compute_ips: [192.168.0.21]
+  controller_ip: 192.168.0.10
