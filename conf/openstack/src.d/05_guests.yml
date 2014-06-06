@@ -1,5 +1,4 @@
-guests:
-
+common:
   disks:
     - pool: default
       format: qcow2
@@ -19,6 +18,7 @@ guests:
 
   use_serial_console: true
 
+guests:
   - name: openstack-allinone
     description: OpenStack All-in-One node
 
