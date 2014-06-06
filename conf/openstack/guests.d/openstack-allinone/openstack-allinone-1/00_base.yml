@@ -1,0 +1,6 @@
+fqdn: openstack-allinone-1.example.com
+hostname: openstack-allinone-1
+interfaces:
+- {ip: 192.168.0.1, mac: '52:54:00:16:80:01', network: openstack-public}
+- {mac: '52:54:00:16:80:02', network: openstack-public}
+ip: 192.168.0.1

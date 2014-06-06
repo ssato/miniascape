@@ -1,0 +1,4 @@
+description: OpenStack Compute node
+name: openstack-compute
+templates:
+  autoinst: {src: autoinstall.d/openstack-compute-ks.cfg}

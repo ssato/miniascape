@@ -1,0 +1,7 @@
+fqdn: openstack-controller-0.example.com
+hostname: openstack-controller-0
+interfaces:
+- {ip: 192.168.0.10, mac: '52:54:00:16:80:10', network: openstack-public}
+- {ip: 192.168.0.11, mac: '52:54:00:16:80:11', network: openstack-public}
+- {ip: 192.168.32.10, mac: '52:54:00:68:32:10', network: openstack-private}
+ip: 192.168.0.10

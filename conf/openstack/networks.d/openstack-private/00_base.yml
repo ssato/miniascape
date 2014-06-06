@@ -1,0 +1,13 @@
+name: openstack-private
+mode: nat
+bridge: virbr32
+domain: 
+gateway: 192.168.32.254
+netmask: 255.255.255.0
+network: 192.168.32.0
+dhcp:
+  start: 192.168.32.200
+  end: 192.168.32.250
+  static:
+    start: 192.168.32.10
+    end: 192.168.32.199

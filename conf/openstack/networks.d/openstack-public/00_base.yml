@@ -1,0 +1,13 @@
+name: openstack-public
+mode: nat
+bridge: virbr200
+domain: example.com
+gateway: 192.168.200.254
+netmask: 255.255.255.0
+network: 192.168.200.0
+dhcp:
+  start: 192.168.200.200
+  end: 192.168.200.250
+  static:
+    start: 192.168.200.10
+    end: 192.168.200.199
