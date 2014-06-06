@@ -2,5 +2,5 @@ fqdn: openstack-compute-1.example.com
 hostname: openstack-compute-1
 interfaces:
 - {ip: 192.168.0.21, mac: '52:54:00:16:80:21', network: openstack-public}
-- {ip: 192.168.32.21, mac: '52:54:00:68:32:21', network: openstack-private}
+- {ip: 192.168.132.21, mac: '52:54:00:68:32:21', network: openstack-private}
 ip: 192.168.0.21

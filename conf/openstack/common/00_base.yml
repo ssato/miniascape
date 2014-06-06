@@ -14,6 +14,9 @@ nameservers:
 - {hostname: 192.168.200.254}
 - {hostname: 8.8.8.8}
 netmask: 255.255.255.0
+packstack: {ceilometer: null, demo: null, heat: null, keystone: null, mysql: null,
+  nagios: null, neutron: null, nova: null, qpid: null, rhn_activationkey: REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY,
+  swift: null}
 rhn: {activationkeys: REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY}
 selinux: enforcing
 services:
@@ -31,5 +34,5 @@ templates:
 timezone: {timezone: Asia/Tokyo, utc: true}
 use_serial_console: true
 virtinst: {arch: x86_64, basic_options: --check-cpu --hvm --accelerate --noreboot
-    --noautoconsole, connect: 'qemu:///system', cpu: host, graphics: vnc, location: 'ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/',
+    --noautoconsole, connect: 'qemu:///system', cpu: host, graphics: vnc, location: 'http://192.168.200.254/contents/rhel-6.5-x86_64/',
   os_type: linux, os_variant: rhel6, ram: 2048, vcpus: 1, waittime: 12}

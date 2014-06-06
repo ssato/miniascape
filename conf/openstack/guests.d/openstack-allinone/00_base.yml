@@ -1,4 +1,6 @@
 description: OpenStack All-in-One node
+disks:
+- {bus: scsi, cache: none, format: qcow2, pool: default, size: 70}
 name: openstack-allinone
 setup_data:
 - {dst: Makefile, src: data/openstack/Makefile}

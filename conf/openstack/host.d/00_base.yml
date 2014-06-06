@@ -1,4 +1,4 @@
-bridge: virbr32
+bridge: virbr132
 host_templates:
   Makefile_am: {src: host/Makefile.am}
   apache_autoinst_conf: {src: host/etc/httpd/conf.d/miniascape_autoinst.conf}
