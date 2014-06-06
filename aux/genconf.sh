@@ -3,4 +3,6 @@ curdir=${0%/*}
 topdir=${curdir}/../
 
 (cd ${topdir} && \
- PYTHONPATH=. python tools/miniascape c -f -t ./templates -w ./conf -c ./conf/default/src.d)
+for d in ./conf/*/src.d; do \
+  PYTHONPATH=. python tools/miniascape c -f -t ./templates -w ./conf -c $d; \
+done)
