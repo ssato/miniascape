@@ -12,7 +12,7 @@ cp $f /root/setup/$f
 # TODO: This only works for sysctl (sysvinit/systemd) in RHEL 6+.
 sysctldir=/etc/sysctl.d
 test -d $sysctldir || mkdir -p $sysctldir
-f=$sysctldir/10_ipv6.conf
+f=$sysctldir/90_ipv6.conf
 if test -f $f; then
   :
 else
