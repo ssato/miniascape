@@ -37,8 +37,8 @@ class Test_functions(unittest.TestCase):
         # It seems that optpare holds option values permanently so value of
         # options.tmpldir will be same even if p and options (returned from
         # p.parse_args) are re-newed:
-        #options = O.tweak_tmpldir(options)
-        #self.assertEquals(options.tmpldir, [G.M_TMPL_DIR])
+        # options = O.tweak_tmpldir(options)
+        # self.assertEquals(options.tmpldir, [G.M_TMPL_DIR])
 
         (options, args) = p.parse_args(["--tmpldir", "/tmp"])
 

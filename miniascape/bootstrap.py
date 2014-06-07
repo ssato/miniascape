@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-#from __future__ import absolute_import
+# from __future__ import absolute_import
 from __future__ import print_function
 
 from miniascape.globals import LOGGER as logging, set_loglevel, M_TMPL_DIR
@@ -30,7 +30,8 @@ import sys
 
 
 def _ctx_files_pattern(site_pattern, ctx_topdir=G.M_CONF_TOPDIR,
-                       subdir=G.M_BOOTSTRAP_SUBDIR, ctx_pattern=G.M_CONF_PATTERN):
+                       subdir=G.M_BOOTSTRAP_SUBDIR,
+                       ctx_pattern=G.M_CONF_PATTERN):
     """
     >>> _ctx_files_pattern("foo", "/etc/miniascape.d", "bootstrap", "*.yml")
     '/etc/miniascape.d/foo/bootstrap/*.yml'
