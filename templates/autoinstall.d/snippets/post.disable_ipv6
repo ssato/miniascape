@@ -9,7 +9,7 @@ options ipv6 disable=1
 EOF
 cp $f /root/setup/$f
 # sysctl
-# TODO: This only works for sysctl/sysvinit in RHEL 6+.
+# TODO: This only works for sysctl (sysvinit/systemd) in RHEL 6+.
 sysctldir=/etc/sysctl.d
 test -d $sysctldir || mkdir -p $sysctldir
 f=$sysctldir/10_ipv6.conf
@@ -20,3 +20,4 @@ else
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
 EOF
+fi
