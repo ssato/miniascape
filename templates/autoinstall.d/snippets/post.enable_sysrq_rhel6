@@ -1,0 +1,5 @@
+# TODO: This only works for sysctl (sysvinit/systemd) in RHEL 6+.
+sysctldir=/etc/sysctl.d
+test -d $sysctldir || mkdir -p $sysctldir
+f=$sysctldir/90_sysrq.conf
+test -f $f || echo "kernel.sysrq = 1" > $f
