@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012, 2013 Satoru SATOH <ssato at redhat.com>
+# Copyright (C) 2012 - 2014 Satoru SATOH <ssato at redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -101,7 +101,7 @@ def _guest_add_missings(conf):
             conf["fqdn"] = "%(hostname)s.%(domain)s" % conf
 
     # TODO: Automatic (static) dhcp address assignment:
-    #if conf.get("ip", None) == "auto":
+    # if conf.get("ip", None) == "auto":
     #    ...
 
     nics = conf.get("interfaces", [])
@@ -236,7 +236,7 @@ class ConfFiles(dict):
         and return list of host list grouped by each networks.
         """
         gcs = self.load_guests_confs()
-        #kf = itemgetter("network")
+        # kf = itemgetter("network")
         kf = lambda d: d.get("network", False)
         return (
             (k, list(g)) for k, g in groupby(
@@ -264,6 +264,5 @@ class ConfFiles(dict):
             nets[name] = netctx
 
         return nets
-
 
 # vim:sw=4:ts=4:et:
