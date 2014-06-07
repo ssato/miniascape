@@ -4,6 +4,7 @@ lftp
 make
 ntpdate
 screen
+sos
 strace
 sysstat
 tcpdump
