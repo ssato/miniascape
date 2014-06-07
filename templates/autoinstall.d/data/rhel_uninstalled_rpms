@@ -39,6 +39,7 @@
 -rp-pppoe
 -setuptool
 -sgpio
+-smartmontools
 -system-config-firewall-base
 -system-config-*
 -systemtap-runtime
