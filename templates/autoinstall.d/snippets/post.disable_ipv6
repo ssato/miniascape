@@ -1,6 +1,22 @@
 # https://access.redhat.com/knowledge/solutions/8709:
-f=/etc/modprobe.d/disable_ipv6.conf
-test -f $f.save || touch $f.save
+# modprobe:
+confdir=/etc/modprobe.d
+test -d /root/setup/$confdir || mkdir -p /root/setup/$confdir
+f=/etc/modprobe.d/ipv6.conf
+test -f $f && cp -f $f /root/setup/$f.save || touch /root/setup/$f.save
 cat << EOF > $f
 options ipv6 disable=1
+EOF
+cp $f /root/setup/$f
+# sysctl
+# TODO: This only works for sysctl/sysvinit in RHEL 6+.
+sysctldir=/etc/sysctl.d
+test -d $sysctldir || mkdir -p $sysctldir
+f=$sysctldir/10_ipv6.conf
+if test -f $f; then
+  :
+else
+  cat << EOF > $f
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
 EOF
