@@ -43,6 +43,8 @@ M_NETS_CONF_SUBDIR = "networks.d"
 M_HOST_CONF_SUBDIR = "host.d"
 M_CONF_PATTERN = "*.yml"
 
+M_CTXS_DEFAULT = os.path.join(M_CONFDIR_DEFAULT, "src.d", M_CONF_PATTERN)
+
 M_HOST_OUT_SUBDIR = "host"
 M_NETS_OUT_SUBDIR = "usr/share/miniascape/networks.d"
 
