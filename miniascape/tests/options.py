@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012 - 2014 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,39 +14,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import miniascape.options as O
+import miniascape.options as TT
 import miniascape.globals as G
 
-import optparse
 import unittest
 
 
-class Test_functions(unittest.TestCase):
+class Test_00_functions(unittest.TestCase):
 
-    def test_option_parser__00_wo_args(self):
-        p = O.option_parser()
-        self.assertTrue(isinstance(p, optparse.OptionParser))
-        self.assertEquals(p.defaults, O.M_DEFAULTS)
+    def test_00__option_parser__wo_args(self):
+        p = TT.option_parser()
+        self.assertTrue(isinstance(p, TT.optparse.OptionParser))
+        self.assertEquals(p.defaults, TT.M_DEFAULTS)
 
-    def test_tweak_tmpldir__10(self):
-        p = O.option_parser()
-        (options, args) = p.parse_args([])
+    def test_10__tweak_tmpldir_and_options(self):
+        p = TT.option_parser()
+        (options, _) = p.parse_args([])
 
         self.assertEquals(options.tmpldir, [])
 
         # It seems that optpare holds option values permanently so value of
         # options.tmpldir will be same even if p and options (returned from
         # p.parse_args) are re-newed:
-        # options = O.tweak_tmpldir(options)
+        # options = TT.tweak_tmpldir(options)
         # self.assertEquals(options.tmpldir, [G.M_TMPL_DIR])
 
-        (options, args) = p.parse_args(["--tmpldir", "/tmp"])
+        (options, _) = p.parse_args(["--tmpldir", "/tmp"])
 
         self.assertNotEquals(options.tmpldir, [])
         self.assertEquals(options.tmpldir, ["/tmp"])
 
-        options = O.tweak_tmpldir(options)
-        self.assertEquals(options.tmpldir, ["/tmp", G.M_TMPL_DIR])
+        defaults = TT.M_DEFAULTS_POST
 
+        options = TT.tweak_tmpldir(options)
+        self.assertEquals(options.tmpldir, ["/tmp", defaults["tmpldir"]])
+
+        options = TT.tweak_options(options)
+
+        self.assertEquals(options.tmpldir[-1], defaults["tmpldir"])
+        self.assertEquals(options.ctxs, [defaults["ctxs"]])
 
 # vim:sw=4:ts=4:et:

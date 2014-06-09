@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012 - 2014 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,27 +18,31 @@ import miniascape.globals as G
 import optparse
 
 
-M_DEFAULTS = dict(tmpldir=[], confdir=G.M_CONFDIR_DEFAULT, confext="yml",
+M_DEFAULTS = dict(tmpldir=[], confdir=G.M_CONFDIR_DEFAULT, ctxs=[],
                   workdir=G.M_WORK_TOPDIR, verbose=1)
 
-_CONFEXT_CHOICES = ["yml", "yaml", "json", "jsn"]
+M_DEFAULTS_POST = dict(tmpldir=G.M_TMPL_DIR, ctxs=G.M_CTXS_DEFAULT)
 
 
-def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]",
-                  confext_choices=_CONFEXT_CHOICES):
+def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
+    """
+    :param defaults: Default option values :: dict
+    :param usage: Usage text
+    """
     p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
-
-    confext_help = "Choose supported configuration file extension from " + \
-                   ", ".join(confext_choices) + " [%default]"
 
     p.add_option("-t", "--tmpldir", action="append",
                  help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
     p.add_option("-c", "--confdir",
                  help="Top dir to hold site configuration files or "
                       "configuration file [%default]")
-    # p.add_option("-x", "--confext", choices=confext_choices,
-    #             help=confext_help)
+    p.add_option("-C", "--c", dest="ctxs", action="append",
+                 help="Specify context (conf) file[s] or path glob "
+                      "pattern or dir (*.yml will be searched). It can be "
+                      "given multiple times to specify multiple ones, ex. "
+                      "-C /a/b/c.yml -C '/a/d/*.yml' -C /a/e/ "
+                      "[%s]" % G.M_CTXS_DEFAULT)
     p.add_option("-w", "--workdir",
                  help="Working dir to output results [%default]")
     p.add_option("-v", "--verbose", action="store_const", const=0,
@@ -58,5 +62,26 @@ def tweak_tmpldir(options):
 
     return options
 
+
+def tweak_options(options, defaults=M_DEFAULTS_POST):
+    """
+    This function will be called after options and args parsed, and tweak
+    options as needed such like:
+
+    - ensure system template path is always included or appended at the tail of
+      template search list
+    - ensure default context file is always included at least or at the top of
+      contexts list
+    """
+    if G.M_TMPL_DIR not in options.tmpldir:
+        options.tmpldir.append(defaults["tmpldir"])
+
+    if options.ctxs:
+        # NOTE: We have to give lowest priority to the default ctxs.
+        options.ctxs.insert(0, defaults[ctxs])
+    else:
+        options.ctxs = [defaults["ctxs"]]
+
+    return options
 
 # vim:sw=4:ts=4:et:
