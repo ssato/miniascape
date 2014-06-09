@@ -34,7 +34,6 @@ M_TMPL_DIR = "/usr/share/miniascape/templates"
 M_GUESTS_BUILDDATA_TOPDIR = "/usr/share/miniascape/build/guests"
 
 M_SITE_DEFAULT = "default"
-M_CONFDIR_DEFAULT = os.path.join(M_CONF_TOPDIR, M_SITE_DEFAULT)
 
 M_BOOTSTRAP_SUBDIR = "bootstrap"
 M_COMMON_CONF_SUBDIR = "common"
@@ -43,13 +42,23 @@ M_NETS_CONF_SUBDIR = "networks.d"
 M_HOST_CONF_SUBDIR = "host.d"
 M_CONF_PATTERN = "*.yml"
 
-M_CTXS_DEFAULT = os.path.join(M_CONFDIR_DEFAULT, "src.d", M_CONF_PATTERN)
-
 M_HOST_OUT_SUBDIR = "host"
 M_NETS_OUT_SUBDIR = "usr/share/miniascape/networks.d"
 
 M_WORK_TOPDIR = "miniascape-workdir-" + date()
 M_ENCODING = locale.getdefaultlocale()[1]
+
+
+def site_confdir(site=M_SITE_DEFAULT, topdir=M_CONF_TOPDIR):
+    return os.path.join(topdir, site)
+
+
+def site_src_ctxs(site=M_SITE_DEFAULT, topdir=M_CONF_TOPDIR):
+    return os.path.join(site_confdir(site, topdir), "src.d", M_CONF_PATTERN)
+
+
+M_CONFDIR_DEFAULT = os.path.join(M_CONF_TOPDIR, M_SITE_DEFAULT)
+M_CTXS_DEFAULT = os.path.join(M_CONFDIR_DEFAULT, "src.d", M_CONF_PATTERN)
 
 _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 
