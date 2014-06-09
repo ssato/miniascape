@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2013, 2014 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
 
-import anyconfig as AC
+import anyconfig
 import os.path
 import os
 import sys
@@ -52,9 +52,9 @@ def gen_conf_files(conf, tmpldirs, workdir):
     common_conf = conf.get("common", {})
     common_conf["site"] = conf.get("site", "default")
 
-    AC.dump(common_conf, os.path.join(outdir, "common", "00_base.yml"))
+    anyconfig.dump(common_conf, os.path.join(outdir, "common", "00_base.yml"))
 
-    AC.dump(conf.get("host", {}),
+    anyconfig.dump(conf.get("host", {}),
             os.path.join(outdir, "host.d", "00_base.yml"))
 
     for net in conf.get("networks"):
@@ -76,7 +76,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
             if k != guests_key:
                 ggroup_conf[k] = v
 
-        AC.dump(ggroup_conf, os.path.join(ggoutdir, "00_base.yml"))
+        anyconfig.dump(ggroup_conf, os.path.join(ggoutdir, "00_base.yml"))
 
         for guest in ggroup["guests"]:
             name = guest.get("name", guest.get("hostname", guest.get("fqdn")))
@@ -84,7 +84,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
             if not os.path.exists(goutdir):
                 os.makedirs(goutdir)
 
-            AC.dump(guest, os.path.join(goutdir, "00_base.yml"))
+            anyconfig.dump(guest, os.path.join(goutdir, "00_base.yml"))
 
 
 def option_parser():
