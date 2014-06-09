@@ -52,6 +52,6 @@ class Test_00_functions(unittest.TestCase):
         options = TT.tweak_options(options)
 
         self.assertEquals(options.tmpldir[-1], defaults["tmpldir"])
-        self.assertEquals(options.ctxs, [defaults["ctxs"]])
+        self.assertEquals(options.ctxs, [G.site_src_ctxs()])
 
 # vim:sw=4:ts=4:et:
