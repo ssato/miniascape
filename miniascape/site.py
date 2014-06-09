@@ -55,7 +55,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
     anyconfig.dump(common_conf, os.path.join(outdir, "common", "00_base.yml"))
 
     anyconfig.dump(conf.get("host", {}),
-            os.path.join(outdir, "host.d", "00_base.yml"))
+                   os.path.join(outdir, "host.d", "00_base.yml"))
 
     for net in conf.get("networks"):
         netoutdir = os.path.join(outdir, "networks.d", net["name"])
