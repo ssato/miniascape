@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import LOGGER as logging, set_loglevel
+from miniascape.globals import LOGGER as logging, set_loglevel, M_CONF_PATTERN
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
@@ -88,11 +88,10 @@ def gen_conf_files(conf, tmpldirs, workdir):
 
 
 def option_parser():
-    defaults = dict(force=False, yes=False, **O.M_DEFAULTS)
-    defaults["confdir"] = None
+    defaults = dict(force=False, yes=False, site="default", **O.M_DEFAULTS)
 
     p = O.option_parser(defaults, "%prog [OPTION ...]")
-
+    p.add_option("-S", "--site", help="Specify a site to choose [%default]")
     p.add_option("-f", "--force", action="store_true",
                  help="Force outputs even if these exist")
     return p
@@ -103,10 +102,7 @@ def main(argv):
     (options, args) = p.parse_args(argv[1:])
 
     set_loglevel(options.verbose)
-    options = O.tweak_tmpldir(options)
-
-    if not options.confdir:
-        options.confdir = raw_input("Specify config src dir: ")
+    options = O.tweak_options(options)
 
     if os.path.exists(options.workdir) and not options.force:
         yesno = raw_input(
@@ -117,13 +113,14 @@ def main(argv):
             print >> "Cancel re-generation of configs..."
             sys.exit(0)
 
-    if os.path.isdir(options.confdir):
-        confsrc = os.path.join(options.confdir, "*.yml")
-    else:
-        confsrc = options.confdir
+    for ctxpath in options.ctxs:
+        if os.path.isdir(ctxpath):
+            confsrc = os.path.join(ctxpath, M_CONF_PATTERN)
+        else:
+            confsrc = ctxpath
 
-    conf = AC.load(confsrc)
-    assert conf is not None, "No config loaded from: " + options.confdir
+        conf = anyconfig.load(confsrc)
+        assert conf is not None, "No config loaded from: " + confsrc
 
     gen_conf_files(conf, options.tmpldir, options.workdir)
 
