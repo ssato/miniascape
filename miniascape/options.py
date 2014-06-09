@@ -19,9 +19,10 @@ import optparse
 
 
 M_DEFAULTS = dict(tmpldir=[], confdir=G.M_CONFDIR_DEFAULT, ctxs=[],
-                  workdir=G.M_WORK_TOPDIR, verbose=1)
+                  site=G.M_SITE_DEFAULT, workdir=G.M_WORK_TOPDIR,
+                  verbose=1)
 
-M_DEFAULTS_POST = dict(tmpldir=G.M_TMPL_DIR, ctxs=G.M_CTXS_DEFAULT)
+M_DEFAULTS_POST = dict(tmpldir=G.M_TMPL_DIR, )
 
 
 def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
@@ -32,18 +33,21 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
 
+    ctxs_0 = G.site_src_ctxs().replace(G.M_SITE_DEFAULT, "<site>")
+
     p.add_option("-t", "--tmpldir", action="append",
                  help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
     p.add_option("-c", "--confdir",
                  help="Top dir to hold site configuration files or "
                       "configuration file [%default]")
+    p.add_option("-s", "--site", help="Choose site [%default]")
     p.add_option("-C", "--c", dest="ctxs", action="append",
                  help="Specify context (conf) file[s] or path glob "
                       "pattern or dir (*.yml will be searched). It can be "
                       "given multiple times to specify multiple ones, ex. "
                       "-C /a/b/c.yml -C '/a/d/*.yml' -C /a/e/ "
                       "[%s]. This option is only supported in some sub "
-                      "commands, configure and bootstrap." % G.M_CTXS_DEFAULT)
+                      "commands, configure and bootstrap." % ctxs_0)
     p.add_option("-w", "--workdir",
                  help="Working dir to output results [%default]")
     p.add_option("-v", "--verbose", action="store_const", const=0,
@@ -74,14 +78,18 @@ def tweak_options(options, defaults=M_DEFAULTS_POST):
     - ensure default context file is always included at least or at the top of
       contexts list
     """
-    if G.M_TMPL_DIR not in options.tmpldir:
-        options.tmpldir.append(defaults["tmpldir"])
+    default_tmpldir = defaults["tmpldir"]
+
+    if default_tmpldir not in options.tmpldir:
+        options.tmpldir.append(default_tmpldir)
+
+    default_ctxs = G.site_src_ctxs(options.site)
 
     if options.ctxs:
         # NOTE: We have to give lowest priority to the default ctxs.
-        options.ctxs.insert(0, defaults[ctxs])
+        options.ctxs.insert(0, default_ctxs)
     else:
-        options.ctxs = [defaults["ctxs"]]
+        options.ctxs = [default_ctxs]
 
     return options
 
