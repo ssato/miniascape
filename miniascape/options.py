@@ -42,7 +42,8 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
                       "pattern or dir (*.yml will be searched). It can be "
                       "given multiple times to specify multiple ones, ex. "
                       "-C /a/b/c.yml -C '/a/d/*.yml' -C /a/e/ "
-                      "[%s]" % G.M_CTXS_DEFAULT)
+                      "[%s]. This option is only supported in some sub "
+                      "commands, configure and bootstrap." % G.M_CTXS_DEFAULT)
     p.add_option("-w", "--workdir",
                  help="Working dir to output results [%default]")
     p.add_option("-v", "--verbose", action="store_const", const=0,
