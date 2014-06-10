@@ -88,10 +88,9 @@ def gen_conf_files(conf, tmpldirs, workdir):
 
 
 def option_parser():
-    defaults = dict(force=False, yes=False, site="default", **O.M_DEFAULTS)
+    defaults = dict(force=False, **O.M_DEFAULTS)
 
     p = O.option_parser(defaults, "%prog [OPTION ...]")
-    p.add_option("-S", "--site", help="Specify a site to choose [%default]")
     p.add_option("-f", "--force", action="store_true",
                  help="Force outputs even if these exist")
     return p
