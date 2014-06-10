@@ -40,7 +40,7 @@ def load_site_ctxs(ctxs):
     Load context (conf) files from ``ctxs``. ``ctxs`` may be a config file,
     glob pattern of config files or dir.
 
-    :param ctxs: context file[s], glob pattern or dir :: [str]
+    :param ctxs: List of context file[s], glob pattern or dir :: [str]
     """
     conf = None
     for ctxpath in ctxs:
@@ -55,7 +55,8 @@ def load_site_ctxs(ctxs):
             diff = anyconfig.load(confsrc)
             conf.update(diff)
 
-        assert diff is not None, "No config loaded from: " + confsrc
+        if not diff:
+            logging.warn("No config loaded from: " + confsrc)
 
     if conf is None:
         raise EmptyConfigError("No config loaded from ctxs: " + ctxs)
@@ -138,30 +139,12 @@ def configure(ctxs, tmpldirs, workdir):
     gen_site_conf_files(conf, tmpldirs, workdir)
 
 
-def option_parser():
-    defaults = dict(force=False, **O.M_DEFAULTS)
-
-    p = O.option_parser(defaults, "%prog [OPTION ...]")
-    p.add_option("-f", "--force", action="store_true",
-                 help="Force outputs even if these exist")
-    return p
-
-
 def main(argv):
-    p = option_parser()
+    p = O.option_parser()
     (options, args) = p.parse_args(argv[1:])
 
     G.set_loglevel(options.verbose)
     options = O.tweak_options(options)
-
-    if os.path.exists(options.workdir) and not options.force:
-        yesno = raw_input(
-            "Are you sure to re-generate configs in %s ? [y/n]: " %
-            options.workdir
-        )
-        if not yesno.strip().lower().startswith('y'):
-            print >> "Cancel re-generation of configs..."
-            sys.exit(0)
 
     configure(options.ctxs, options.tmpldir, options.workdir)
 
