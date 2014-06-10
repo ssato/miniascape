@@ -82,7 +82,7 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     logging.info("Generating site config files into %s" % outdir)
     baseyml = "00_base.yml"  # Config file loaded first.
     common_conf = conf.get("common", {})
-    common_conf["site"] = conf.get("site", "default")
+    common_conf["site"] = conf.get("site", G.M_SITE_DEFAULT)
 
     for (cnf, subdir) in ((common_conf, "common"),
                           (conf.get("host", {}), "host.d")):
