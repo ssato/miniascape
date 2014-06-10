@@ -44,19 +44,23 @@ class Test_00_effectful_functions(unittest.TestCase):
         conf = anyconfig.load(CTXS)
         tmpldirs = [TMPLDIR]
 
-        TT.gen_site_conf_files(conf, tmpldirs, self.workdir)
+        confdir = TT.gen_site_conf_files(conf, tmpldirs, self.workdir)
 
         dirs = ["common", "guests.d", "host.d", "networks.d"]
         for d in dirs:
             d = os.path.join(self.workdir, "default", d)
             self.assertTrue(os.path.exists(d), "dir=" + d)
+
+        self.assertEquals(confdir, os.path.join(self.workdir, "default"))
 
     def test_20_configure(self):
-        TT.configure(CTXS, [TMPLDIR], self.workdir)
+        confdir = TT.configure(CTXS, [TMPLDIR], self.workdir)
 
         dirs = ["common", "guests.d", "host.d", "networks.d"]
         for d in dirs:
             d = os.path.join(self.workdir, "default", d)
             self.assertTrue(os.path.exists(d), "dir=" + d)
+
+        self.assertEquals(confdir, os.path.join(self.workdir, "default"))
 
 # vim:sw=4:ts=4:et:

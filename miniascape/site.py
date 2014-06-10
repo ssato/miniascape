@@ -74,8 +74,9 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     :param conf: Object holding config parameters
     :param tmpldirs: Template path list
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121
+    :return: Configuration topdir where generated config files under
     """
-    outdir = os.path.join(workdir, conf.get("site", G.M_CONFDIR_DEFAULT))
+    outdir = os.path.join(workdir, conf.get("site", G.M_SITE_DEFAULT))
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
@@ -122,6 +123,8 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
 
             anyconfig.dump(guest, os.path.join(goutdir, baseyml))
 
+    return outdir
+
 
 def configure(ctxs, tmpldirs, workdir):
     """
@@ -134,9 +137,10 @@ def configure(ctxs, tmpldirs, workdir):
         (config) file[s] or dir to hold context (config) file[s] :: [str]
     :param tmpldirs: Template path list :: [str]
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121 :: str
+    :return: Configuration topdir where generated config files under
     """
     conf = load_site_ctxs(ctxs)
-    gen_site_conf_files(conf, tmpldirs, workdir)
+    return gen_site_conf_files(conf, tmpldirs, workdir)
 
 
 def main(argv):
