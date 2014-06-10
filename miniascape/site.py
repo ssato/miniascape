@@ -40,7 +40,7 @@ def load_site_ctxs(ctxs):
     Load context (conf) files from ``ctxs``. ``ctxs`` may be a config file,
     glob pattern of config files or dir.
 
-    :param ctxs: context file[s], glob pattern or dir :: str
+    :param ctxs: context file[s], glob pattern or dir :: [str]
     """
     conf = None
     for ctxpath in ctxs:
@@ -122,6 +122,22 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
             anyconfig.dump(guest, os.path.join(goutdir, baseyml))
 
 
+def configure(ctxs, tmpldirs, workdir):
+    """
+    Generate site specific config files for host, networks and guests from a
+    config file or some config files:
+
+        .../src.d/[*.yml] -> .../{common,host,networks.d,guests}/**/*.yml
+
+    :param ctxs: List of context (config) file[s], glob pattern of context
+        (config) file[s] or dir to hold context (config) file[s] :: [str]
+    :param tmpldirs: Template path list :: [str]
+    :param workdir: Working top dir, e.g. miniascape-workdir-201303121 :: str
+    """
+    conf = load_site_ctxs(ctxs)
+    gen_site_conf_files(conf, tmpldirs, workdir)
+
+
 def option_parser():
     defaults = dict(force=False, **O.M_DEFAULTS)
 
@@ -147,8 +163,7 @@ def main(argv):
             print >> "Cancel re-generation of configs..."
             sys.exit(0)
 
-    conf = load_site_ctxs(options.ctxs)
-    gen_site_conf_files(conf, options.tmpldir, options.workdir)
+    configure(options.ctxs, options.tmpldir, options.workdir)
 
 
 if __name__ == '__main__':
