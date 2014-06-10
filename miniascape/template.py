@@ -40,6 +40,10 @@ def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
     :param async: Run template rendering function asynchronously if possible
         and it's True.
     """
+    d = os.path.dirname(output)
+    if not os.path.exists(d):
+        os.makedirs(d)
+
     if not ask and async:
         proc = multiprocessing.Process(target=_renderto,
                                        args=(tpaths, ctx, tmpl, output, ask))
