@@ -49,17 +49,18 @@ def gen_conf_files(conf, tmpldirs, workdir):
     common_conf = conf.get("common", {})
     common_conf["site"] = conf.get("site", "default")
 
-    anyconfig.dump(common_conf, os.path.join(outdir, "common", "00_base.yml"))
+    baseyml = "00_base.yml"  # Config file loaded first.
+
+    anyconfig.dump(common_conf, os.path.join(outdir, "common", baseyml))
     anyconfig.dump(conf.get("host", {}),
-                   os.path.join(outdir, "host.d", "00_base.yml"))
+                   os.path.join(outdir, "host.d", baseyml))
 
     for net in conf.get("networks"):
         netoutdir = os.path.join(outdir, "networks.d", net["name"])
         if not os.path.exists(netoutdir):
             os.makedirs(netoutdir)
 
-        T.renderto(tpaths, net, "network.j2",
-                   os.path.join(netoutdir, "00_base.yml"))
+        T.renderto(tpaths, net, "network.j2", os.path.join(netoutdir, baseyml))
 
     guests_key = "guests"
     for ggroup in conf.get("guests"):
@@ -72,7 +73,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
             if k != guests_key:
                 ggroup_conf[k] = v
 
-        anyconfig.dump(ggroup_conf, os.path.join(ggoutdir, "00_base.yml"))
+        anyconfig.dump(ggroup_conf, os.path.join(ggoutdir, baseyml))
 
         for guest in ggroup["guests"]:
             name = guest.get("name", guest.get("hostname", guest.get("fqdn")))
@@ -80,7 +81,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
             if not os.path.exists(goutdir):
                 os.makedirs(goutdir)
 
-            anyconfig.dump(guest, os.path.join(goutdir, "00_base.yml"))
+            anyconfig.dump(guest, os.path.join(goutdir, baseyml))
 
 
 def option_parser():
