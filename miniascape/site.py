@@ -14,7 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import LOGGER as logging, set_loglevel, M_CONF_PATTERN
+from miniascape.globals import LOGGER as logging
+
+import miniascape.globals as G
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
@@ -27,6 +29,11 @@ import sys
 
 def gen_conf_files(conf, tmpldirs, workdir):
     """
+    Generate site specific config files for host, networks and guests from a
+    config file or some config files:
+
+        .../src.d/[*.yml] -> .../{common,host,...}/**/*.yml
+
     :param conf: Object holding config parameters
     :param tmpldirs: Template path list
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121
@@ -43,7 +50,6 @@ def gen_conf_files(conf, tmpldirs, workdir):
     common_conf["site"] = conf.get("site", "default")
 
     anyconfig.dump(common_conf, os.path.join(outdir, "common", "00_base.yml"))
-
     anyconfig.dump(conf.get("host", {}),
                    os.path.join(outdir, "host.d", "00_base.yml"))
 
@@ -90,7 +96,7 @@ def main(argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
-    set_loglevel(options.verbose)
+    G.set_loglevel(options.verbose)
     options = O.tweak_options(options)
 
     if os.path.exists(options.workdir) and not options.force:
@@ -104,7 +110,7 @@ def main(argv):
 
     for ctxpath in options.ctxs:
         if os.path.isdir(ctxpath):
-            confsrc = os.path.join(ctxpath, M_CONF_PATTERN)
+            confsrc = os.path.join(ctxpath, G.M_CONF_PATTERN)
         else:
             confsrc = ctxpath
 
