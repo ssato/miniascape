@@ -42,29 +42,24 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     :param tmpldirs: Template path list
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121
     """
-    tpaths = [os.path.join(d, "config") for d in tmpldirs]
     outdir = os.path.join(workdir, conf.get("site", G.M_CONFDIR_DEFAULT))
-
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
     logging.info("Generating site config files into %s" % outdir)
-
+    baseyml = "00_base.yml"  # Config file loaded first.
     common_conf = conf.get("common", {})
     common_conf["site"] = conf.get("site", "default")
 
-    baseyml = "00_base.yml"  # Config file loaded first.
+    for (cnf, subdir) in ((common_conf, "common"),
+                          (conf.get("host", {}), "host.d")):
+        anyconfig.dump(cnf, os.path.join(outdir, subdir, baseyml))
 
-    anyconfig.dump(common_conf, os.path.join(outdir, "common", baseyml))
-    anyconfig.dump(conf.get("host", {}),
-                   os.path.join(outdir, "host.d", baseyml))
-
+    # ex. /usr/share/miniascape/templates/config/
+    tpaths = [os.path.join(d, "config") for d in tmpldirs]
     for net in conf.get("networks", []):
-        netoutdir = os.path.join(outdir, "networks.d", net["name"])
-        if not os.path.exists(netoutdir):
-            os.makedirs(netoutdir)
-
-        T.renderto(tpaths, net, "network.j2", os.path.join(netoutdir, baseyml))
+        noutdir = os.path.join(outdir, "networks.d", net["name"])
+        T.renderto(tpaths, net, "network.j2", os.path.join(noutdir, baseyml))
 
     guests_key = "guests"
     for ggroup in conf.get("guests", []):
