@@ -27,8 +27,40 @@ import os
 import sys
 
 
+class EmptyConfigError(RuntimeError):
+    pass
+
+
 class NoNameGuestError(RuntimeError):
     pass
+
+
+def load_site_ctxs(ctxs):
+    """
+    Load context (conf) files from ``ctxs``. ``ctxs`` may be a config file,
+    glob pattern of config files or dir.
+
+    :param ctxs: context file[s], glob pattern or dir :: str
+    """
+    conf = None
+    for ctxpath in ctxs:
+        if os.path.isdir(ctxpath):
+            confsrc = os.path.join(ctxpath, G.M_CONF_PATTERN)
+        else:
+            confsrc = ctxpath
+
+        if conf is None:
+            conf = diff = anyconfig.load(confsrc)
+        else:
+            diff = anyconfig.load(confsrc)
+            conf.update(diff)
+
+        assert diff is not None, "No config loaded from: " + confsrc
+
+    if conf is None:
+        raise EmptyConfigError("No config loaded from ctxs: " + ctxs)
+
+    return conf
 
 
 def gen_site_conf_files(conf, tmpldirs, workdir):
@@ -115,15 +147,7 @@ def main(argv):
             print >> "Cancel re-generation of configs..."
             sys.exit(0)
 
-    for ctxpath in options.ctxs:
-        if os.path.isdir(ctxpath):
-            confsrc = os.path.join(ctxpath, G.M_CONF_PATTERN)
-        else:
-            confsrc = ctxpath
-
-        conf = anyconfig.load(confsrc)
-        assert conf is not None, "No config loaded from: " + confsrc
-
+    conf = load_site_ctxs(options.ctxs)
     gen_site_conf_files(conf, options.tmpldir, options.workdir)
 
 
