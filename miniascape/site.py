@@ -27,19 +27,23 @@ import os
 import sys
 
 
+class NoNameGuestError(RuntimeError):
+    pass
+
+
 def gen_conf_files(conf, tmpldirs, workdir):
     """
     Generate site specific config files for host, networks and guests from a
     config file or some config files:
 
-        .../src.d/[*.yml] -> .../{common,host,...}/**/*.yml
+        .../src.d/[*.yml] -> .../{common,host,networks.d,guests}/**/*.yml
 
     :param conf: Object holding config parameters
     :param tmpldirs: Template path list
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121
     """
     tpaths = [os.path.join(d, "config") for d in tmpldirs]
-    outdir = os.path.join(workdir, conf.get("site", None))
+    outdir = os.path.join(workdir, conf.get("site", G.M_CONFDIR_DEFAULT))
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -55,7 +59,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
     anyconfig.dump(conf.get("host", {}),
                    os.path.join(outdir, "host.d", baseyml))
 
-    for net in conf.get("networks"):
+    for net in conf.get("networks", []):
         netoutdir = os.path.join(outdir, "networks.d", net["name"])
         if not os.path.exists(netoutdir):
             os.makedirs(netoutdir)
@@ -63,7 +67,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
         T.renderto(tpaths, net, "network.j2", os.path.join(netoutdir, baseyml))
 
     guests_key = "guests"
-    for ggroup in conf.get("guests"):
+    for ggroup in conf.get("guests", []):
         ggoutdir = os.path.join(outdir, "guests.d", ggroup["name"])
         if not os.path.exists(ggoutdir):
             os.makedirs(ggoutdir)
@@ -76,7 +80,14 @@ def gen_conf_files(conf, tmpldirs, workdir):
         anyconfig.dump(ggroup_conf, os.path.join(ggoutdir, baseyml))
 
         for guest in ggroup["guests"]:
-            name = guest.get("name", guest.get("hostname", guest.get("fqdn")))
+            for k in ("name", "hostname", "fqdn"):
+                name = guest.get(k, None)
+                if name is not None:
+                    break
+            else:
+                raise NoNameGuestError("Guest must have a name or hostname or "
+                                       "fqdn: guest=" + str(guest))
+
             goutdir = os.path.join(ggoutdir, name)
             if not os.path.exists(goutdir):
                 os.makedirs(goutdir)
