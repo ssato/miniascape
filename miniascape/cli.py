@@ -37,33 +37,26 @@ def cmd2prog(c):
     return "miniascape " + c
 
 
-def gen_all(argv):
-    p = H.option_parser()
-    (options, args) = p.parse_args(argv)
-
-    options = O.tweak_tmpldir(options)
-    set_loglevel(options.verbose)
-
-    cf = C.ConfFiles(options.confdir)
-
-    H.gen_host_files(cf, options.tmpldir, options.workdir, options.force)
-    G.gen_all(cf, options.tmpldir, options.workdir)
-
-
-def configure_and_build(argv):
-    defaults = dict(build=True, **O.M_DEFAULTS)
+def build(argv):
+    """
+    Configure and build files.
+    """
+    defaults = dict(build=True, genconf=True, **O.M_DEFAULTS)
 
     p = O.option_parser(defaults)
     p.add_option("--no-build", action="store_false", dest="build",
-                 help="Build (generate ks.cfg, vm build scripts, etc.) also")
+                 help="Do not build, generate ks.cfg, vm build scripts, etc.")
+    p.add_option("--no-genconf", action="store_false", dest="genconf",
+                 help="Do not generate config from context files")
     (options, args) = p.parse_args(argv)
 
     options = O.tweak_options(options)
     set_loglevel(options.verbose)
 
     # configure
-    conf = S.load_site_ctxs(options.ctxs)
-    S.gen_site_conf_files(conf, options.tmpldir, options.workdir)
+    if options.genconf:
+        conf = S.load_site_ctxs(options.ctxs)
+        S.gen_site_conf_files(conf, options.tmpldir, options.workdir)
 
     if not options.build:
         return
@@ -80,12 +73,9 @@ cmds = [
     # ("i", "init", H.main),
     ("bo", "bootstrap", B.main,
      "Bootstrap site config files from ctx src and conf templates"),
-    ("c",  "configure", configure_and_build,
-     "Generate site configuration from config src and build (generate all)"),
-    ("b",  "build", configure_and_build, "Same as the above"),
-    ("ge", "generate", gen_all,
-     "Generate all files to build guests and virt. infra"),
-    ("gu", "guest", G.main, "Generate files to build specific guest"),
+    ("b",  "build", build,
+     "build (generate) outputs from tempaltes and context files"),
+    ("c",  "configure", build, "Same as the above ('build')"),
 ]
 
 
