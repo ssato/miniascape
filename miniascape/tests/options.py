@@ -27,7 +27,7 @@ class Test_00_functions(unittest.TestCase):
         self.assertTrue(isinstance(p, TT.optparse.OptionParser))
         self.assertEquals(p.defaults, TT.M_DEFAULTS)
 
-    def test_10__tweak_tmpldir_and_options(self):
+    def test_10__tweak_options(self):
         p = TT.option_parser()
         (options, _) = p.parse_args([])
 
@@ -36,7 +36,7 @@ class Test_00_functions(unittest.TestCase):
         # It seems that optpare holds option values permanently so value of
         # options.tmpldir will be same even if p and options (returned from
         # p.parse_args) are re-newed:
-        # options = TT.tweak_tmpldir(options)
+        # options = TT.tweak_options(options)
         # self.assertEquals(options.tmpldir, [G.M_TMPL_DIR])
 
         (options, _) = p.parse_args(["--tmpldir", "/tmp"])
@@ -45,13 +45,9 @@ class Test_00_functions(unittest.TestCase):
         self.assertEquals(options.tmpldir, ["/tmp"])
 
         defaults = TT.M_DEFAULTS_POST
-
-        options = TT.tweak_tmpldir(options)
-        self.assertEquals(options.tmpldir, ["/tmp", defaults["tmpldir"]])
-
         options = TT.tweak_options(options)
 
-        self.assertEquals(options.tmpldir[-1], defaults["tmpldir"])
+        self.assertEquals(options.tmpldir, ["/tmp", defaults["tmpldir"]])
         self.assertEquals(options.ctxs, [G.site_src_ctxs()])
 
 # vim:sw=4:ts=4:et:

@@ -140,7 +140,7 @@ def main(argv):
     (options, args) = p.parse_args(argv[1:])
 
     set_loglevel(options.verbose)
-    options = O.tweak_tmpldir(options)
+    options = O.tweak_options(options)
 
     if options.list_site_patterns:
         sps = [os.path.basename(sp) for sp in

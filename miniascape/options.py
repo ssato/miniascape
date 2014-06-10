@@ -18,9 +18,8 @@ import miniascape.globals as G
 import optparse
 
 
-M_DEFAULTS = dict(tmpldir=[], confdir=G.M_CONFDIR_DEFAULT, ctxs=[],
-                  site=G.M_SITE_DEFAULT, workdir=G.M_WORK_TOPDIR,
-                  verbose=1)
+M_DEFAULTS = dict(tmpldir=[], ctxs=[], site=G.M_SITE_DEFAULT,
+                  workdir=G.M_WORK_TOPDIR, verbose=1)
 
 M_DEFAULTS_POST = dict(tmpldir=G.M_TMPL_DIR, )
 
@@ -37,9 +36,6 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
 
     p.add_option("-t", "--tmpldir", action="append",
                  help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
-    p.add_option("-c", "--confdir",
-                 help="Top dir to hold site configuration files or "
-                      "configuration file [%default]")
     p.add_option("-s", "--site", help="Choose site [%default]")
     p.add_option("-C", "--c", dest="ctxs", action="append",
                  help="Specify context (conf) file[s] or path glob "
@@ -55,17 +51,6 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     p.add_option("-q", "--quiet", action="store_const", const=2,
                  dest="verbose", help="Quiet mode")
     return p
-
-
-def tweak_tmpldir(options):
-    """
-    This function will be called after options and args parsed, and ensure
-    system template path is always appended to the tail of search list.
-    """
-    if G.M_TMPL_DIR not in options.tmpldir:
-        options.tmpldir.append(G.M_TMPL_DIR)
-
-    return options
 
 
 def tweak_options(options, defaults=M_DEFAULTS_POST):
