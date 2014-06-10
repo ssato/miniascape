@@ -55,13 +55,13 @@ def build(argv):
 
     # configure
     if options.genconf:
-        S.configure(options.ctxs, options.tmpldir, options.workdir)
+        confdir = S.configure(options.ctxs, options.tmpldir, options.workdir)
 
     if not options.build:
         return
 
     # ... and build (generate all).
-    cf = C.ConfFiles(options.confdir)
+    cf = C.ConfFiles(confdir)
 
     H.gen_host_files(cf, options.tmpldir, options.workdir, True)
     G.gen_all(cf, options.tmpldir, options.workdir)

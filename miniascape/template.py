@@ -73,7 +73,7 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
         dst = v.get("dst", src)
 
         if src is None:
-            logging.warn("%s.%s lacks 'src' parameter")
+            logging.warn("%s lacks 'src' parameter" % k)
             continue
 
         if os.path.sep in src:

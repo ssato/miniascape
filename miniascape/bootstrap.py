@@ -121,7 +121,8 @@ def bootstrap(site_pattern, ctx_files, tpaths, workdir, use_default=False):
 
 def option_parser():
     defaults = dict(site_pattern='default', ctx=None, use_default=False,
-                    list_site_patterns=False, **O.M_DEFAULTS)
+                    list_site_patterns=False, confdir=G.site_confdir(),
+                    **O.M_DEFAULTS)
 
     p = O.option_parser(defaults, "%prog [OPTION ...]")
     p.add_option("-S", "--site-pattern",
@@ -132,6 +133,9 @@ def option_parser():
                  help="Specify the context files pattern or ctx file path")
     p.add_option("-U", "--use-default", action="store_true",
                  help="Just use default value if set w/o asking users")
+    p.add_option("-c", "--confdir",
+                 help="Top dir to hold site configuration files or "
+                      "configuration file [%default]")
     return p
 
 

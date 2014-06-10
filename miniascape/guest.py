@@ -157,11 +157,14 @@ def gen_all(cf, tmpldirs, workdir):
 
 
 def option_parser():
-    defaults = dict(genall=False, **O.M_DEFAULTS)
-    p = O.option_parser(defaults, "%prog [OPTION ...] [GUEST_NAME]")
+    defaults = dict(genall=False, confdir=G.site_confdir(), **O.M_DEFAULTS)
 
+    p = O.option_parser(defaults, "%prog [OPTION ...] [GUEST_NAME]")
     p.add_option("-A", "--genall", action="store_true",
                  help="Generate configs for all guests")
+    p.add_option("-c", "--confdir",
+                 help="Top dir to hold site configuration files or "
+                      "configuration file [%default]")
     return p
 
 
