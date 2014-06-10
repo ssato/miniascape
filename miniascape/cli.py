@@ -55,8 +55,7 @@ def build(argv):
 
     # configure
     if options.genconf:
-        conf = S.load_site_ctxs(options.ctxs)
-        S.gen_site_conf_files(conf, options.tmpldir, options.workdir)
+        S.configure(options.ctxs, options.tmpldir, options.workdir)
 
     if not options.build:
         return
