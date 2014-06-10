@@ -67,13 +67,14 @@ def load_site_ctxs(ctxs):
 def gen_site_conf_files(conf, tmpldirs, workdir):
     """
     Generate site specific config files for host, networks and guests from a
-    config file or some config files:
+    config dict.
 
-        .../src.d/[*.yml] -> .../{common,host,networks.d,guests}/**/*.yml
+        conf :: dict -> .../{common,host,networks.d,guests}/**/*.yml
 
     :param conf: Object holding config parameters
     :param tmpldirs: Template path list
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121
+
     :return: Configuration topdir where generated config files under
     """
     outdir = os.path.join(workdir, conf.get("site", G.M_SITE_DEFAULT))
@@ -137,6 +138,7 @@ def configure(ctxs, tmpldirs, workdir):
         (config) file[s] or dir to hold context (config) file[s] :: [str]
     :param tmpldirs: Template path list :: [str]
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121 :: str
+
     :return: Configuration topdir where generated config files under
     """
     conf = load_site_ctxs(ctxs)
