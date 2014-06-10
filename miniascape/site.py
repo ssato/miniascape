@@ -25,16 +25,6 @@ import os
 import sys
 
 
-def _outdir(topdir, name):
-    """
-    :param topdir: Working top dir
-    :param name: Site's name
-
-    :return: Output top dir, e.g. $workdir/$site_name
-    """
-    return os.path.join(topdir, name)
-
-
 def gen_conf_files(conf, tmpldirs, workdir):
     """
     :param conf: Object holding config parameters
@@ -42,7 +32,7 @@ def gen_conf_files(conf, tmpldirs, workdir):
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121
     """
     tpaths = [os.path.join(d, "config") for d in tmpldirs]
-    outdir = _outdir(workdir, conf.get("site", None))
+    outdir = os.path.join(workdir, conf.get("site", None))
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
