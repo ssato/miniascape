@@ -68,9 +68,8 @@ def build(argv):
     G.gen_all(cf, options.tmpldir, options.workdir)
 
 
-# TODO: define other commands.
 cmds = [
-    # ("i", "init", H.main),
+    # (<abbrev>, <command>, <function_to_call>),
     ("bo", "bootstrap", B.main,
      "Bootstrap site config files from ctx src and conf templates"),
     ("b",  "build", build,
