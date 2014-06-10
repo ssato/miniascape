@@ -40,11 +40,11 @@ class Test_00_effectful_functions(unittest.TestCase):
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
-    def test_10_gen_conf_files(self):
+    def test_10_gen_site_conf_files(self):
         conf = anyconfig.load(CTXS)
         tmpldirs = [TMPLDIR]
 
-        TT.gen_conf_files(conf, tmpldirs, self.workdir)
+        TT.gen_site_conf_files(conf, tmpldirs, self.workdir)
 
         dirs = ["common", "guests.d", "host.d", "networks.d"]
         for d in dirs:

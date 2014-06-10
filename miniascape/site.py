@@ -31,7 +31,7 @@ class NoNameGuestError(RuntimeError):
     pass
 
 
-def gen_conf_files(conf, tmpldirs, workdir):
+def gen_site_conf_files(conf, tmpldirs, workdir):
     """
     Generate site specific config files for host, networks and guests from a
     config file or some config files:
@@ -129,7 +129,7 @@ def main(argv):
         conf = anyconfig.load(confsrc)
         assert conf is not None, "No config loaded from: " + confsrc
 
-    gen_conf_files(conf, options.tmpldir, options.workdir)
+    gen_site_conf_files(conf, options.tmpldir, options.workdir)
 
 
 if __name__ == '__main__':
