@@ -24,7 +24,7 @@ import unittest
 
 
 PKGDIR = os.path.join(C.selfdir(), "..", "..")
-CTXS = os.path.join(PKGDIR, "conf/default/src.d", "*.yml")
+CTXS = [os.path.join(PKGDIR, "conf/default/src.d", "*.yml")]
 TMPLDIR = os.path.join(PKGDIR, "templates")
 
 
@@ -45,6 +45,14 @@ class Test_00_effectful_functions(unittest.TestCase):
         tmpldirs = [TMPLDIR]
 
         TT.gen_site_conf_files(conf, tmpldirs, self.workdir)
+
+        dirs = ["common", "guests.d", "host.d", "networks.d"]
+        for d in dirs:
+            d = os.path.join(self.workdir, "default", d)
+            self.assertTrue(os.path.exists(d), "dir=" + d)
+
+    def test_20_configure(self):
+        TT.configure(CTXS, [TMPLDIR], self.workdir)
 
         dirs = ["common", "guests.d", "host.d", "networks.d"]
         for d in dirs:
