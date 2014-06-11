@@ -62,7 +62,7 @@ def load_site_ctxs(ctxs):
             logging.warn("No config loaded from: " + confsrc)
 
     if conf is None:
-        raise EmptyConfigError("No config loaded from ctxs: " + ctxs)
+        raise EmptyConfigError("No config available from: " + ','.join(ctxs))
 
     return conf
 
