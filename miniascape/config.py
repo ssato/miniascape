@@ -73,7 +73,7 @@ def _add_special_confs(conf):
     diff = dict(build=dict(user=U.get_username(),
                            host=U.get_hostname(fqdn=False),
                            time=G.timestamp("%Y%m%d_%H%M%S")))
-    diff["builder"] = "%(user)s@%(host)s" % diff["build"]
+    diff["builder"] = "{user}s@{host}".format(**diff["build"])
     conf["miniascape"] = diff
 
     return conf
@@ -88,7 +88,7 @@ def _guest_add_missings(conf):
 
     if "domain" in conf:
         if "fqdn" not in conf:
-            conf["fqdn"] = "%(hostname)s.%(domain)s" % conf
+            conf["fqdn"] = "{hostname}.{domain}".format(**conf)
 
     # TODO: Automatic (static) dhcp address assignment:
     # if conf.get("ip", None) == "auto":
@@ -117,7 +117,7 @@ def _guest_add_missings(conf):
                 conf["interfaces"][i]["mac"] = "RANDOM"
 
             if "device" not in nics[i]:
-                conf["interfaces"][i]["device"] = "eth%d" % i
+                conf["interfaces"][i]["device"] = "eth{}".format(i)
 
     return conf
 
@@ -136,10 +136,9 @@ def _check_dups_by_ip_or_mac(nis):
         if _ignorable_kv_pair(k, v):
             continue
 
-        logging.warn(
-            "Duplicated entries: key=%s, v=%s, hosts=%s" %
-            (k, v, ", ".join(n.get("host", str(n)) for n in ns))
-        )
+        m = "Duplicated entries: key={}, v={}, hosts={}"
+        logging.warn(m.format(k, v, ", ".join(n.get("host", str(n)) for n
+                                              in ns)))
 
 
 class ConfFiles(dict):
