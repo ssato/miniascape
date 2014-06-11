@@ -697,9 +697,9 @@ guests:
       # Installation: http://red.ht/1apjAJg
       extra_args: install storage_init=/dev/sda BOOTIF=eth0 adminpw=redhat management_server=rhevm-1 rhevm_admin_password=redhat ...
 
-    templates:
-      autoinstall:
-        dst: false
+    #templates:
+      #autoinstall:
+        #dst: false
 
     disks:
       - pool: default
@@ -994,123 +994,6 @@ guests:
         interfaces:
           - mac: "52:54:00:05:00:16"
             network: service
-
-  - name: openstack-controller
-    description: Red Hat OpenStack Controller
-    disks:
-      - pool: default
-        size: 100
-        bus: scsi
-        format: raw
-        sparse: false
-
-    domain: &openstack_domain os.local
-    gateway: &openstack_gateway 192.168.160.254
-    netmask: &openstack_netmask 255.255.255.0
-    nameservers:
-      - hostname: *openstack_gateway
-
-    rhn:
-    #  username: foo@m2.local
-    #  password: xyzsecret
-       activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
-    #  profilename: "REPLACE_THIS"
-
-    virtinst:
-      ram: 2048
-
-    openstack:
-      use_rhos: false
-
-    setup_data:
-      - src: data/openstack/Makefile
-        dst: Makefile
-      - src: data/openstack/answers.txt
-        dst: answers.txt
-
-    templates:
-      autoinst:
-        src: autoinstall.d/openstack-controller-ks.cfg
-
-    public_interface: eth2
-
-    guests:
-      # RDO:
-      - hostname: openstack-controller-0
-        ip: 192.168.122.10
-        interfaces:
-          - mac: "52:54:00:12:20:10"
-            network: default
-            nodns: true
-          - mac: "52:54:00:12:21:00"
-            ip: 192.168.122.100
-            host: openstack-controller-100
-            fqdn: openstack-controller-100.example.com
-            network: default
-            onboot: no
-          - mac: "52:54:00:16:00:10"
-            ip: 192.168.160.10
-            host: openstack-controller-0
-            fqdn: openstack-controller-0.os.local
-            network: openstack-private
-            gateway: *openstack_gateway
-
-      # RHOS:
-      - hostname: rhos-controller-1
-        ip: 192.168.122.11
-        interfaces:
-          - mac: "52:54:00:12:20:11"
-            network: default
-            nodns: true
-          - mac: "52:54:00:12:21:01"
-            ip: 192.168.122.101
-            host: rhos-controller-101
-            fqdn: rhos-controller-101.example.com
-            network: default
-            onboot: no
-          - mac: "52:54:00:16:00:11"
-            ip: 192.168.160.11
-            host: rhos-controller-1
-            fqdn: rhos-controller-1.os.local
-            network: openstack-private
-            gateway: *openstack_gateway
-
-        openstack:
-          use_rhos: true
-
-  - name: openstack-compute
-    description: Red Hat OpenStack Compute node
-    disks:
-      - pool: default
-        size: 50
-        bus: scsi
-
-    virtinst:
-      ram: 2048
-
-    templates:
-      autoinst:
-        src: autoinstall.d/openstack-compute-ks.cfg
-
-    guests:
-      - hostname: openstack-compute-0
-        ip: 192.168.122.20
-        interfaces:
-          - mac: "52:54:00:12:20:20"
-            network: default
-            nodns: true
-          - mac: "52:54:00:12:21:20"
-            ip: 192.168.122.120
-            host: openstack-compute-120
-            fqdn: openstack-compute-120.example.com
-            network: default
-            onboot: no
-          - mac: "52:54:00:16:00:20"
-            ip: 192.168.160.20
-            host: openstack-compute-0
-            fqdn: openstack-compute-0.os.local
-            network: openstack-private
-            gateway: *openstack_gateway
 
   - name: fedora
     description: Fedora stable

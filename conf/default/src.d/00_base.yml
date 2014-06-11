@@ -81,9 +81,9 @@ common:
 
   ## Meta:
   templates:
-    autoinst:
+    #autoinst:
       #src: autoinstall.d/<name>-ks.cfg
-      dst: ks.cfg
+      #dst: ks.cfg
     virtinst:
       src: guest/vmbuild.sh
       dst: vmbuild.sh
