@@ -14,21 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import M_CONFDIR_DEFAULT, M_COMMON_CONF_SUBDIR, \
-    M_COMMON_CONF_SUBDIR, M_GUESTS_CONF_SUBDIR, M_NETS_CONF_SUBDIR, \
-    M_HOST_CONF_SUBDIR, M_CONF_PATTERN, LOGGER as logging
-from itertools import groupby
-from operator import itemgetter
+from miniascape.globals import LOGGER as logging
 
 import miniascape.globals as G
-import miniascape.memoize as M
-import miniascape.template as T
+import miniascape.memoize
 import miniascape.utils as U
-import anyconfig as AC
 
+import anyconfig
+import itertools
 import os.path
-import os
-import re
 
 
 def list_net_names(netdir):
@@ -60,7 +54,7 @@ def _find_group_of_guest(name, guestdir):
     return None
 
 
-find_group_of_guest = M.memoize(_find_group_of_guest)
+find_group_of_guest = miniascape.memoize.memoize(_find_group_of_guest)
 
 
 def _add_special_confs(conf):
@@ -150,12 +144,12 @@ def _check_dups_by_ip_or_mac(nis):
 
 class ConfFiles(dict):
 
-    def __init__(self, confdir=M_CONFDIR_DEFAULT,
-                 common_subdir=M_COMMON_CONF_SUBDIR,
-                 guest_subdir=M_GUESTS_CONF_SUBDIR,
-                 net_subdir=M_NETS_CONF_SUBDIR,
-                 host_subdir=M_HOST_CONF_SUBDIR,
-                 pattern=M_CONF_PATTERN):
+    def __init__(self, confdir=G.M_CONFDIR_DEFAULT,
+                 common_subdir=G.M_COMMON_CONF_SUBDIR,
+                 guest_subdir=G.M_GUESTS_CONF_SUBDIR,
+                 net_subdir=G.M_NETS_CONF_SUBDIR,
+                 host_subdir=G.M_HOST_CONF_SUBDIR,
+                 pattern=G.M_CONF_PATTERN):
         """
         :param confdir: Site config top dir, e.g. /etc/miniascape.d/default
         """
@@ -200,7 +194,7 @@ class ConfFiles(dict):
         confs = self.list_host_confs()
 
         logging.info("Loading host config files")
-        return AC.load(confs, merge=AC.MS_DICTS)
+        return anyconfig.load(confs)
 
     def load_guest_confs(self, name, group=None):
         """
@@ -211,7 +205,7 @@ class ConfFiles(dict):
 
         logging.info("Loading guest config files: " + name)
         logging.debug("Configs: " + str(confs))
-        c = AC.load(confs, merge=AC.MS_DICTS)
+        c = anyconfig.load(confs)
 
         return _add_special_confs(_guest_add_missings(c))
 
@@ -232,10 +226,9 @@ class ConfFiles(dict):
         and return list of host list grouped by each networks.
         """
         gcs = self.load_guests_confs()
-        # kf = itemgetter("network")
         kf = lambda d: d.get("network", False)
         return (
-            (k, list(g)) for k, g in groupby(
+            (k, list(g)) for k, g in itertools.groupby(
                 sorted(filter(bool, U.concat(g.get("interfaces", []) for g in
                                              gcs)), key=kf),
                 kf
@@ -249,7 +242,7 @@ class ConfFiles(dict):
         nis = dict(self._aggregate_guest_net_interfaces_g())
 
         for ncs in ncss:
-            netctx = AC.load(ncs, merge=AC.MS_DICTS)
+            netctx = anyconfig.load(ncs)
             name = netctx["name"]
 
             ns = nis.get(name, [])
