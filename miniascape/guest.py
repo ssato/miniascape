@@ -1,5 +1,7 @@
 #
-# Copyright (C) 2012 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012 Satoru SATOH <ssato redhat.com>
+# Copyright (C) 2014 Red Hat, Inc.
+# Red Hat Author(s): Satoru SATOH <ssato redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,21 +17,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from __future__ import print_function
-from miniascape.globals import M_TMPL_DIR, M_WORK_TOPDIR, \
-    M_GUESTS_CONF_SUBDIR, M_GUESTS_BUILDDATA_TOPDIR, \
-    LOGGER as logging, set_loglevel
+from miniascape.globals import LOGGER as logging
 
-import miniascape.config as C
+import miniascape.config
 import miniascape.globals as G
-import miniascape.options as O
+import miniascape.options
 import miniascape.template as T
-import miniascape.utils as U
 
 import itertools
-import optparse
 import os.path
 import os
-import re
 import subprocess
 import sys
 
@@ -37,7 +34,7 @@ import sys
 _AUTOINST_SUBDIR = "autoinstall.d"
 
 
-def _workdir(topdir, name, subdir=M_GUESTS_CONF_SUBDIR):
+def _workdir(topdir, name, subdir=G.M_GUESTS_CONF_SUBDIR):
     """
     :param topdir: Working top dir
     :param name: Guest's name
@@ -46,7 +43,7 @@ def _workdir(topdir, name, subdir=M_GUESTS_CONF_SUBDIR):
     return os.path.join(topdir, subdir, name)
 
 
-def _guests_workdir(topdir, subdir=M_GUESTS_CONF_SUBDIR):
+def _guests_workdir(topdir, subdir=G.M_GUESTS_CONF_SUBDIR):
     """
     :param topdir: Working top dir
     :return: Guest's working (output) directory
@@ -121,7 +118,7 @@ $(shell for f in %(files)s; do test -f $$f && echo $$f; done)
 
 
 def mk_distdata_g(guests, tmpl=_DISTDATA_MAKEFILE_AM_TMPL,
-                  datadir=M_GUESTS_BUILDDATA_TOPDIR):
+                  datadir=G.M_GUESTS_BUILDDATA_TOPDIR):
     """
     Make up distdata snippet in Makefile.am to package files to build guests.
     """
@@ -148,7 +145,7 @@ def gen_all(cf, tmpldirs, workdir):
         gen_guest_files(name, cf, tmpldirs, _workdir(workdir, name))
 
     conf = cf.load_host_confs()
-    conf["guests_build_datadir"] = M_GUESTS_BUILDDATA_TOPDIR
+    conf["guests_build_datadir"] = G.M_GUESTS_BUILDDATA_TOPDIR
     conf["timestamp"] = G.timestamp()
     conf["distdata"] = list(mk_distdata_g(guests))
 
@@ -158,9 +155,11 @@ def gen_all(cf, tmpldirs, workdir):
 
 
 def option_parser():
-    defaults = dict(genall=False, confdir=G.site_confdir(), **O.M_DEFAULTS)
+    defaults = dict(genall=False, confdir=G.site_confdir(),
+                    **miniascape.options.M_DEFAULTS)
 
-    p = O.option_parser(defaults, "%prog [OPTION ...] [GUEST_NAME]")
+    p = miniascape.options.option_parser(defaults,
+                                         "%prog [OPTION ...] [GUEST_NAME]")
     p.add_option("-A", "--genall", action="store_true",
                  help="Generate configs for all guests")
     p.add_option("-c", "--confdir",
@@ -173,10 +172,10 @@ def main(argv=sys.argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
-    set_loglevel(options.verbose)
-    options = O.tweak_options(options)
+    G.set_loglevel(options.verbose)
+    options = miniascape.options.tweak_options(options)
 
-    cf = C.ConfFiles(options.confdir)
+    cf = miniascape.config.ConfFiles(options.confdir)
 
     if not args and not options.genall:
         p.print_help()
