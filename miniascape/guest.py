@@ -186,9 +186,8 @@ def main(argv=sys.argv):
         gen_all(cf, options.tmpldir, options.workdir)
     else:
         name = args[0]
-        gen_guest_files(
-            name, cf, options.tmpldir, _workdir(options.workdir, name)
-        )
+        gen_guest_files(name, cf, options.tmpldir,
+                        _workdir(options.workdir, name))
 
 
 if __name__ == '__main__':
