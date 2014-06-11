@@ -35,6 +35,8 @@ common:
     utc: true
     timezone: Asia/Tokyo
 
+  ksdevice: eth0
+
   # template cond variables:
   use_serial_console: true
   store_cmdline: true
