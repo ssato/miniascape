@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function
+
 import miniascape.bootstrap
 import miniascape.config
 import miniascape.globals
@@ -65,21 +67,24 @@ def build(argv):
     miniascape.guest.gen_all(cf, options.tmpldir, options.workdir)
 
 
-# format: (<abbrev>, <command>, <function_to_call>)
-CMDS = [("bo", "bootstrap", miniascape.bootstrap.main,
-         "Bootstrap site config files from ctx src and conf templates"),
-        ("b",  "build", build,
-         "build (generate) outputs from tempaltes and context files"),
-        ("c",  "configure", build, "Same as the above ('build')")]
+# format: (<alias>, <command>, <function_to_call>)
+_CMDS = [("bo", "bootstrap", miniascape.bootstrap.main,
+          "Bootstrap site config files from ctx src and conf templates"),
+         ("b",  "build", build,
+          "build (generate) outputs from tempaltes and context files"),
+         ("c",  "configure", build, "Same as the above ('build')")]
 
 
-def usage(prog, cmds=CMDS):
-    cs = "\n".join("\t%s (abbrev: %s)\t%s" % (c, a, h) for a, c, _f, h in cmds)
-    print """Usage: %s COMMAND_OR_COMMAND_ABBREV [Options] [Arg ...]
+_USAGE = """Usage: %s COMMAND_OR_COMMAND_ALIAS [Options] [Arg ...]
 
 Commands:
   %s
-""" % (prog, cs)
+"""
+
+
+def usage(prog, cmds=_CMDS, usage=_USAGE):
+    cs = ("\t%s (alias: %s)\t%s" % (c, a, h) for a, c, _f, h in cmds)
+    print(usage % (prog, '\n'.join(cs)))
 
 
 def main(argv=sys.argv):
