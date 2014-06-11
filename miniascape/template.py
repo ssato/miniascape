@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from miniascape.globals import LOGGER as logging
-import miniascape.contrib.render as R
+import miniascape.contrib.render
 import multiprocessing
 import os.path
 
@@ -24,7 +24,7 @@ def _renderto(tpaths, ctx, tmpl, output, ask=False):
     """
     NOTE: Take care of arguments' order.
     """
-    R.renderto(tmpl, ctx, tpaths, output, ask=ask)
+    miniascape.contrib.render.renderto(tmpl, ctx, tpaths, output, ask=ask)
 
 
 def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
