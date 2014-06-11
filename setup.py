@@ -13,8 +13,8 @@ from miniascape.utils import concat
 
 # For daily snapshot versioning mode:
 if os.environ.get("_SNAPSHOT_BUILD", None) is not None:
-    import datetime
-    VERSION = VERSION + datetime.datetime.now().strftime(".%Y%m%d")
+    from miniascape.globals import timestamp
+    VERSION = VERSION + timestamp(".%Y%m%d")
 
 
 def list_files(tdir):
