@@ -20,13 +20,6 @@ Requires:       python-anyconfig >= 0.0.3.4
 %description
 Personal cloud building tool for libvirt/KVM.
 
-%package        data-openstack
-Summary:        OpenStack guests and infra data files for %{name}
-Requires:       %{name} = %{version}-%{release}
-
-%description    data-openstack
-Some OpenStack guests and infra data files for %{name}.
-
 %prep
 %setup -q
 
@@ -49,20 +42,20 @@ for site in $sites; do \
     find $RPM_BUILD_ROOT%{pkgconfdir}/${site} -type f | \
         sed "s,$RPM_BUILD_ROOT,,g" > ${site}.conf.list; done
 
-rm -f default.list && cat templates.list default.conf.list >> default.list
+rm -f default.list && \
+  cat templates.list *.conf.list >> files.list
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f default.list
+%files -f files.list
 %defattr(-,root,root,-)
 %doc README.rst
 %{_bindir}/*
 %{_datadir}/%{name}/tests
+%config %{pkgconfdir}/*/*.yml
 %config %{pkgconfdir}/*/bootstrap/*.yml
 %{python_sitelib}/*
-
-%files -f openstack.conf.list data-openstack
 
 %changelog
 * Fri Jun  6 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
