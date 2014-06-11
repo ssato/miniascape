@@ -14,8 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import LOGGER as logging, set_loglevel, \
-    M_GUESTS_CONF_SUBDIR
+from miniascape.globals import LOGGER as logging, set_loglevel
 
 import miniascape.bootstrap as B
 import miniascape.config as C
