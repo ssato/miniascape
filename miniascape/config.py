@@ -20,19 +20,15 @@ from miniascape.globals import M_CONFDIR_DEFAULT, M_COMMON_CONF_SUBDIR, \
 from itertools import groupby
 from operator import itemgetter
 
+import miniascape.globals as G
 import miniascape.memoize as M
 import miniascape.template as T
 import miniascape.utils as U
 import anyconfig as AC
 
-import datetime
 import os.path
 import os
 import re
-
-
-def _timestamp():
-    return datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
 def list_net_names(netdir):
@@ -82,7 +78,7 @@ def _add_special_confs(conf):
     """
     diff = dict(build=dict(user=U.get_username(),
                            host=U.get_hostname(fqdn=False),
-                           time=_timestamp()))
+                           time=G.timestamp("%Y%m%d_%H%M%S")))
     diff["builder"] = "%(user)s@%(host)s" % diff["build"]
     conf["miniascape"] = diff
 
