@@ -14,14 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import LOGGER as logging, set_loglevel
-
-import miniascape.bootstrap as B
-import miniascape.config as C
-import miniascape.guest as G
-import miniascape.options as O
-import miniascape.host as H
-import miniascape.site as S
+import miniascape.bootstrap
+import miniascape.config
+import miniascape.globals
+import miniascape.guest
+import miniascape.options as MO
+import miniascape.host
+import miniascape.site
 
 import os
 import sys
@@ -39,34 +38,35 @@ def build(argv):
     """
     Configure and build files.
     """
-    defaults = dict(build=True, genconf=True, **O.M_DEFAULTS)
+    defaults = dict(build=True, genconf=True, **MO.M_DEFAULTS)
 
-    p = O.option_parser(defaults)
+    p = MO.option_parser(defaults)
     p.add_option("--no-build", action="store_false", dest="build",
                  help="Do not build, generate ks.cfg, vm build scripts, etc.")
     p.add_option("--no-genconf", action="store_false", dest="genconf",
                  help="Do not generate config from context files")
     (options, args) = p.parse_args(argv)
 
-    options = O.tweak_options(options)
-    set_loglevel(options.verbose)
+    options = MO.tweak_options(options)
+    miniascape.globals.set_loglevel(options.verbose)
 
     # configure
     if options.genconf:
-        confdir = S.configure(options.ctxs, options.tmpldir, options.workdir)
+        confdir = miniascape.site.configure(options.ctxs, options.tmpldir,
+                                            options.workdir)
 
     if not options.build:
         return
 
     # ... and build (generate all).
-    cf = C.ConfFiles(confdir)
+    cf = miniascape.config.ConfFiles(confdir)
 
-    H.gen_host_files(cf, options.tmpldir, options.workdir, True)
-    G.gen_all(cf, options.tmpldir, options.workdir)
+    miniascape.host.gen_host_files(cf, options.tmpldir, options.workdir, True)
+    miniascape.guest.gen_all(cf, options.tmpldir, options.workdir)
 
 
 # format: (<abbrev>, <command>, <function_to_call>)
-CMDS = [("bo", "bootstrap", B.main,
+CMDS = [("bo", "bootstrap", miniascape.bootstrap.main,
          "Bootstrap site config files from ctx src and conf templates"),
         ("b",  "build", build,
          "build (generate) outputs from tempaltes and context files"),
