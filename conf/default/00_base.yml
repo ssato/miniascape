@@ -52,7 +52,6 @@ common:
       - lvm2-monitor
       - lvm2-lvmetad
       - mdmonitor
-      - netfs
 
   ssh:
     pubkey: ~/.ssh/id_rsa.pub
