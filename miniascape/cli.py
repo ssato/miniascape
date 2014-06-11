@@ -25,12 +25,7 @@ import miniascape.utils as U
 import miniascape.host as H
 import miniascape.site as S
 
-import datetime
 import sys
-
-
-def timestamp():
-    return datetime.datetime.now().strftime("%F_%T")
 
 
 def cmd2prog(c):
