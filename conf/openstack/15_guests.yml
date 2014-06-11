@@ -1,76 +1,3 @@
-common:
-  disks:
-    - pool: default
-      format: qcow2
-      cache: none
-      size: 100
-      bus: scsi
-
-  rhn:
-  #  username: foo@m2.local
-  #  password: xyzsecret
-     activationkeys: &rhn_activationkey "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
-  #  profilename: "REPLACE_THIS"
-
-  virtinst:
-    ram: 2048
-    cpu: host  # To enable nested KVM feature.
-
-  use_serial_console: true
-
-  openstack:
-    use_rhosp: true
-
-  packstack:
-    rhn_activationkey: *rhn_activationkey
-    nova:
-      pub_if: eth0
-      private_if: eth1
-      network:
-        fixedrange: 192.168.132.0/24   # openstack-private network
-        floatrange: 172.24.0.0/24
-
-    demo:
-      #floatrange: ...
-
-    #pwd: &packstack_pw 06b5ae7b81e04874a2361
-
-    mysql:
-      #pw: *packstack_pw
-    qpid:
-      #pw: *packstack_pw
-    keystone:
-      #db_pw: *packstack_pw
-      #admin_token: *packstack_pw
-      #admin_pw: *packstack_pw
-      #demo_pw: *packstack_pw
-    nova:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-      network:
-        #fixedrange: ...
-    neutron:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-      #metadata_pw: *packstack_pw
-    swift:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-    heat:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-    ceilometer:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-    glance:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-    cinder:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-    nagios:
-      #pw: *packstack_pw
-
 guests:
   - name: openstack-allinone
     description: OpenStack All-in-One node
@@ -92,10 +19,13 @@ guests:
         size: 70  # 50G (data) + 20 G (system)
         bus: scsi
 
+    virtinst:
+      cpu: host  # To enable nested KVM feature
+
     guests:
       - hostname: openstack-allinone-1
         fqdn: openstack-allinone-1.example.com
-        ip: &openstack_allinone_1_ip_0 192.168.0.1
+        ip: &openstack_allinone_1_ip_0 192.168.200.1
         interfaces:
           # access from/to public network:
           - mac: "52:54:00:16:80:01"
@@ -127,7 +57,7 @@ guests:
     guests:
       - hostname: openstack-controller-0
         fqdn: openstack-controller-0.example.com
-        ip: &openstack_controller_0_ip_0 192.168.0.10
+        ip: &openstack_controller_0_ip_0 192.168.200.10
         interfaces:
           # access from/to public network:
           - mac: "52:54:00:16:80:10"
@@ -137,7 +67,7 @@ guests:
           # access to public network from vms via bridge devices (public):
           - mac: "52:54:00:16:80:11"
             network: openstack-public
-            ip: 192.168.0.11
+            ip: 192.168.200.11
 
           # access to public network from vms via bridge devices (private):
           - mac: "52:54:00:68:32:10"
@@ -145,7 +75,7 @@ guests:
             ip: 192.168.132.10
 
         openstack_compute_nodes:
-          - &openstack_compute_1_ip_0 192.168.0.21
+          - &openstack_compute_1_ip_0 192.168.200.21
 
         packstack:
           controller_ip: *openstack_controller_0_ip_0

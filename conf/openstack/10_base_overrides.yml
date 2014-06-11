@@ -1,0 +1,72 @@
+common:
+  disks:
+    - pool: default
+      format: qcow2
+      cache: none
+      size: 100
+      bus: scsi
+
+  rhn:
+  #  username: foo@m2.local
+  #  password: xyzsecret
+     activationkeys: &rhn_activationkey "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+  #  profilename: "REPLACE_THIS"
+
+  virtinst:
+    ram: 2048
+    cpu: host  # To enable nested KVM feature.
+
+  openstack:
+    use_rhosp: true
+
+  packstack:
+    rhn_activationkey: *rhn_activationkey
+    nova:
+      pub_if: eth0
+      private_if: eth1
+      network:
+        fixedrange: 192.168.132.0/24   # openstack-private network
+        floatrange: 172.24.0.0/24
+
+    demo:
+      #floatrange: ...
+
+    #pwd: &packstack_pw 06b5ae7b81e04874a2361
+
+    mysql:
+      #pw: *packstack_pw
+    qpid:
+      #pw: *packstack_pw
+    keystone:
+      #db_pw: *packstack_pw
+      #admin_token: *packstack_pw
+      #admin_pw: *packstack_pw
+      #demo_pw: *packstack_pw
+    nova:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+      network:
+        #fixedrange: ...
+    neutron:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+      #metadata_pw: *packstack_pw
+    swift:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+    heat:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+    ceilometer:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+    glance:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+    cinder:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+    nagios:
+      #pw: *packstack_pw
+
+# vim:sw=2:ts=2:et:
