@@ -7,7 +7,7 @@
 Name:           miniascape
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        Personal cloud building and management tool
+Summary:        Personal cloud building tool
 Group:          Development/Tools
 License:        GPLv3+
 URL:            https://github.com/ssato/miniascape
@@ -18,22 +18,7 @@ BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.3.4
 
 %description
-Personal cloud building and management tool for libvirt/KVM.
-
-%package        bootstrap-data
-Summary:        Bootstrap files for various site patterns
-Requires:       %{name} = %{version}-%{release}
-
-%description    bootstrap-data
-Context files and config templates to bootstrap various site patterns by
-generating configuration files from them.
-
-%package        data-default
-Summary:        Default guests and infra data files for %{name}
-Requires:       %{name} = %{version}-%{release}
-
-%description    data-default
-Some default guests and infra data files for %{name}.
+Personal cloud building tool for libvirt/KVM.
 
 %package        data-openstack
 Summary:        OpenStack guests and infra data files for %{name}
@@ -64,25 +49,19 @@ for site in $sites; do \
     find $RPM_BUILD_ROOT%{pkgconfdir}/${site} -type f | \
         sed "s,$RPM_BUILD_ROOT,,g" > ${site}.conf.list; done
 
+rm -f default.list && cat templates.list default.conf.list >> default.list
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f templates.list
+%files -f default.list
 %defattr(-,root,root,-)
 %doc README.rst
 %{_bindir}/*
 %{_datadir}/%{name}/tests
+%config %{pkgconfdir}/*/bootstrap/*.yml
 %{python_sitelib}/*
 
-# Ideally, only needed configuration files are the followings.
-%files          bootstrap-data
-%defattr(-,root,root,-)
-%doc README.rst
-%config %{pkgconfdir}/*/bootstrap/*.yml
-
-# ... but not all of bootstrap configs are there and ready yet, so that keep
-# the configs generated from the bootstrap configs.
-%files -f default.conf.list data-default
 %files -f openstack.conf.list data-openstack
 
 %changelog
@@ -98,11 +77,12 @@ rm -rf $RPM_BUILD_ROOT
 - Apply enhancements and fixes to templates and config files from RHUI works
 - Add 'bootstrap' command to generate site config files from ctx (conf src) and
   config template files
-- Add bootstrap-data sub package to provide bootstrap files for various site
-  patterns in the future
-- Reorgnize the sub packages; removed data-default-devel as it's meaning-less
-  and will be replaced w/ bootstrap data, etc.
 - Add data-openstack sub package
+- Refactor and re-organize sub commands; now there is only two sub commands
+  (bootstrap and configure == build)
+- Removed intermediate config files after 'configure' (w/o build) run as these
+  are no more necessary
+- Removed sub packages contain intermediate config files, etc.
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
