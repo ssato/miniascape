@@ -21,12 +21,10 @@ from miniascape.memoize import memoize
 import anyconfig
 import glob
 import itertools
-import locale
 import os.path
 import os
 import pwd
 import socket
-import datetime
 
 try:
     chain_from_iterable = itertools.chain.from_iterable
@@ -137,16 +135,6 @@ def find_dups_in_dicts_list_g(ds, keys):
         for v, dups in seens[k].iteritems():
             if len(dups) > 1:  # duplicated entries
                 yield (k, v, dups)
-
-
-def timestamp(dtobj=datetime.datetime.now(), fmt="%a %b %_d %Y"):
-    """
-    >>> dtobj = datetime.datetime(2013, 10, 20, 12, 11, 59, 345135)
-    >>> timestamp(dtobj)
-    'Sun Oct 20 2013'
-    """
-    locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
-    return dtobj.strftime(fmt)
 
 
 def noop(*args):

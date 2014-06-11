@@ -20,8 +20,18 @@ import logging
 import os.path
 
 
-def date():
-    return datetime.datetime.now().strftime("%Y%m%d")
+_DTOBJ = datetime.datetime.now()
+
+
+def timestamp(fmt="%a %b %_d %Y", dtobj=_DTOBJ):
+    """
+    >>> dtobj = datetime.datetime(2013, 10, 20, 12, 11, 59, 345135)
+    >>> timestamp(dtobj=dtobj)
+    'Sun Oct 20 2013'
+    """
+    locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    return dtobj.strftime(fmt)
+
 
 PACKAGE = "miniascape"
 VERSION = "0.3.7.1"
@@ -45,7 +55,7 @@ M_CONF_PATTERN = "*.yml"
 M_HOST_OUT_SUBDIR = "host"
 M_NETS_OUT_SUBDIR = "usr/share/miniascape/networks.d"
 
-M_WORK_TOPDIR = "miniascape-workdir-" + date()
+M_WORK_TOPDIR = "miniascape-workdir-" + timestamp("%Y%m%d")
 M_ENCODING = locale.getdefaultlocale()[1]
 
 
