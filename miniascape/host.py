@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function
 from miniascape.globals import LOGGER as logging, set_loglevel
 
 import miniascape.config as C
@@ -171,7 +172,7 @@ def main(argv):
             options.workdir
         )
         if not yesno.strip().lower().startswith('y'):
-            print >> "Cancel creation of networks..."
+            print("Cancel creation of networks...")
             sys.exit(0)
 
         options.force = True

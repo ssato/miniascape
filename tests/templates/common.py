@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function
+
 import anyconfig
 import difflib
 import jinja2_cli.render as R
@@ -46,7 +48,7 @@ def render(tfile, ctxfile=None, ctx={}, curdir=_CURDIR):
         tfile = os.path.basename(tfile)
         tpaths = [os.path.join(tpaths[0], subdir)] + tpaths
 
-    #print >> sys.stderr, "tfile=%s, tpaths=%s" % (tfile, str(tpaths))
+    # print("tfile=%s, tpaths=%s" % (tfile, str(tpaths)), file=sys.stderr)
 
     if ctxfile is not None:
         ctx = load_context_from_file(ctxfile, curdir)

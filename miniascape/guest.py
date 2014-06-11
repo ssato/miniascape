@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function
 from miniascape.globals import M_TMPL_DIR, M_WORK_TOPDIR, \
     M_GUESTS_CONF_SUBDIR, M_GUESTS_BUILDDATA_TOPDIR, \
     LOGGER as logging, set_loglevel
@@ -110,8 +111,7 @@ def show_vm_names(conffiles):
     """
     :param conffiles: config.ConfFiles object
     """
-    print >> sys.stderr, "\nAvailable VMs: " + \
-        ", ".join(conffiles.list_guest_names())
+    print("\nAvailable VMs: " + ", ".join(conffiles.list_guest_names()))
 
 
 _DISTDATA_MAKEFILE_AM_TMPL = """pkgdata%(i)ddir = %(dir)s
