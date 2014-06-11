@@ -18,6 +18,7 @@
 from miniascape.globals import LOGGER as logging
 from miniascape.memoize import memoize
 
+import anyconfig
 import glob
 import itertools
 import locale
@@ -37,12 +38,6 @@ except AttributeError:
                 yield element
 
     chain_from_iterable = _from_iterable
-
-try:
-    from anyconfig.mergeabledict import is_mergeabledict_or_dict
-except ImportError:
-    def is_mergeabledict_or_dict(x):
-        return isinstance(x, dict)
 
 
 def concat(xss):
@@ -175,11 +170,11 @@ def walk(x, path=None, path_sep='.', hook=noop):
     :param path: Current 'path'
     :param path_sep: Path separator
     """
-    if is_mergeabledict_or_dict(x):
+    if anyconfig.is_mergeabledict_or_dict(x):
         for k, v in x.iteritems():
             curpath = k if path is None else "%s%s%s" % (path, path_sep, k)
 
-            if is_mergeabledict_or_dict(v):
+            if anyconfig.is_mergeabledict_or_dict(v):
                 for path_child, v_child, _d in walk(v, curpath, path_sep,
                                                     hook):
                     yield hook(path_child, v_child, v)
