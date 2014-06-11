@@ -1,40 +1,30 @@
-rhn:
-  account: YOUR_RHN_ACCOUNT
-
-gpg:
-  passpharase: secret
-
-test:
-  # change DNS server addresses to gateway's one:
-  #mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'
-
-rhui:
-  # example: 54fb6627dbaa37721048e4549db3224d.pem
-  rhui_entitlement_cert: &rhui_entitlement_cert YOUR_RHUI_ENTITLEMNET_CERT_0
-
-  ssl_cert_subject: &ssl_cert_subject "/C=JP/ST=Tokyo/O=Example, Inc./CN="
-
-  rhua:
-    ip: &rhua_ip 192.168.20.11
-    fqdn: &rhua_fqdn rhua-1.example.com
-    hostname: &rhua_hostname rhua-1
-    cds_cluster: &cds_cluster cds_cluster_1
-
-  cds-1:
-    ip: &cds_1_ip 192.168.20.21
-    fqdn: &cds_1_fqdn cds-1.example.com
-    cli_fqdn: *cds_1_fqdn
-    hostname: &cds_1_hostname cds-1
-
-  cds-2:
-    ip: &cds_2_ip 192.168.20.22
-    fqdn: &cds_2_fqdn cds-2.example.com
-    cli_fqdn: *cds_2_fqdn
-    hostname: &cds_2_hostname cds-2
-
 common:
   autopart: true
   rhui_network_1: &rhui_network_1 192.168.20.0  # see 10_networks.yml
+
+  rhui:
+    # example: 54fb6627dbaa37721048e4549db3224d.pem
+    rhui_entitlement_cert: &rhui_entitlement_cert YOUR_RHUI_ENTITLEMNET_CERT_0
+
+    ssl_cert_subject: &ssl_cert_subject "/C=JP/ST=Tokyo/O=Example, Inc./CN="
+
+    rhua:
+      ip: &rhua_ip 192.168.20.11
+      fqdn: &rhua_fqdn rhua-1.example.com
+      hostname: &rhua_hostname rhua-1
+      cds_cluster: &cds_cluster cds_cluster_1
+
+    cds-1:
+      ip: &cds_1_ip 192.168.20.21
+      fqdn: &cds_1_fqdn cds-1.example.com
+      cli_fqdn: *cds_1_fqdn
+      hostname: &cds_1_hostname cds-1
+
+    cds-2:
+      ip: &cds_2_ip 192.168.20.22
+      fqdn: &cds_2_fqdn cds-2.example.com
+      cli_fqdn: *cds_2_fqdn
+      hostname: &cds_2_hostname cds-2
 
   hosts: &hosts
     # RHUA:
@@ -51,6 +41,16 @@ common:
     - ip: *cds_2_ip
       fqdn: *cds_2_fqdn
       hostname: *cds_2_hostname
+
+  rhn:
+    account: YOUR_RHN_ACCOUNT
+
+  gpg:
+    passpharase: secret
+
+  test:
+    # change DNS server addresses to gateway's one:
+    #mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'
 
 guests:
   - name: rhua
