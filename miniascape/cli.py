@@ -75,26 +75,26 @@ _CMDS = [("bo", "bootstrap", miniascape.bootstrap.main,
          ("c",  "configure", build, "Same as the above ('build')")]
 
 
-_USAGE = """Usage: %s COMMAND_OR_COMMAND_ALIAS [Options] [Arg ...]
+_USAGE = """Usage: {} COMMAND_OR_COMMAND_ALIAS [Options] [Arg ...]
 
 Commands:
-  %s
+  {}
 """
 
 
 def usage(prog, cmds=_CMDS, usage=_USAGE):
-    cs = ("\t%s (alias: %s)\t%s" % (c, a, h) for a, c, _f, h in cmds)
-    print(usage % (prog, '\n'.join(cs)))
+    cs = ("\t{} (alias: {})\t{}".format(c, a, h) for a, c, _f, h in cmds)
+    print(usage.format(prog, '\n'.join(cs)))
 
 
-def main(argv=sys.argv):
+def main(argv=sys.argv, cmds=_CMDS):
     assert not is_superuser(), "Danger! Do NOT run this program as root!"
 
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])
     else:
-        cfs = [(c, f) for abbrev, c, f, _h in cmds
-               if argv[1].startswith(abbrev)]
+        cfs = [(c, f) for alias, c, f, _h in cmds
+               if argv[1].startswith(alias)]
         if cfs:
             (c, f) = cfs[0]
             f([cmd2prog(c)] + argv[2:])
