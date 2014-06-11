@@ -62,17 +62,15 @@ def build(argv):
     G.gen_all(cf, options.tmpldir, options.workdir)
 
 
-cmds = [
-    # (<abbrev>, <command>, <function_to_call>),
-    ("bo", "bootstrap", B.main,
-     "Bootstrap site config files from ctx src and conf templates"),
-    ("b",  "build", build,
-     "build (generate) outputs from tempaltes and context files"),
-    ("c",  "configure", build, "Same as the above ('build')"),
-]
+# format: (<abbrev>, <command>, <function_to_call>)
+CMDS = [("bo", "bootstrap", B.main,
+         "Bootstrap site config files from ctx src and conf templates"),
+        ("b",  "build", build,
+         "build (generate) outputs from tempaltes and context files"),
+        ("c",  "configure", build, "Same as the above ('build')")]
 
 
-def usage(prog, cmds=cmds):
+def usage(prog, cmds=CMDS):
     cs = "\n".join("\t%s (abbrev: %s)\t%s" % (c, a, h) for a, c, _f, h in cmds)
     print """Usage: %s COMMAND_OR_COMMAND_ABBREV [Options] [Arg ...]
 
@@ -88,9 +86,8 @@ def main(argv=sys.argv):
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])
     else:
-        cfs = [
-            (c, f) for abbrev, c, f, _h in cmds if argv[1].startswith(abbrev)
-        ]
+        cfs = [(c, f) for abbrev, c, f, _h in cmds
+               if argv[1].startswith(abbrev)]
         if cfs:
             (c, f) = cfs[0]
             f([cmd2prog(c)] + argv[2:])
