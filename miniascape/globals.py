@@ -64,11 +64,11 @@ def site_confdir(site=M_SITE_DEFAULT, topdir=M_CONF_TOPDIR):
 
 
 def site_src_ctxs(site=M_SITE_DEFAULT, topdir=M_CONF_TOPDIR):
-    return os.path.join(site_confdir(site, topdir), "src.d", M_CONF_PATTERN)
+    return os.path.join(site_confdir(site, topdir), M_CONF_PATTERN)
 
 
 M_CONFDIR_DEFAULT = os.path.join(M_CONF_TOPDIR, M_SITE_DEFAULT)
-M_CTXS_DEFAULT = os.path.join(M_CONFDIR_DEFAULT, "src.d", M_CONF_PATTERN)
+M_CTXS_DEFAULT = os.path.join(M_CONFDIR_DEFAULT, M_CONF_PATTERN)
 
 _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 

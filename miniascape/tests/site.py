@@ -24,7 +24,7 @@ import unittest
 
 
 PKGDIR = os.path.join(C.selfdir(), "..", "..")
-CTXS = [os.path.join(PKGDIR, "conf/default/src.d", "*.yml")]
+CTXS = [os.path.join(PKGDIR, "conf/default", "*.yml")]
 TMPLDIR = os.path.join(PKGDIR, "templates")
 
 

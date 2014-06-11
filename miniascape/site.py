@@ -132,7 +132,7 @@ def configure(ctxs, tmpldirs, workdir):
     Generate site specific config files for host, networks and guests from a
     config file or some config files:
 
-        .../src.d/[*.yml] -> .../{common,host,networks.d,guests}/**/*.yml
+        .../[*.yml] -> .../{common,host,networks.d,guests}/**/*.yml
 
     :param ctxs: List of context (config) file[s], glob pattern of context
         (config) file[s] or dir to hold context (config) file[s] :: [str]
