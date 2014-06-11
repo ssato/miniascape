@@ -1,17 +1,13 @@
+# Do not edit this and override some defaults w/ your wanted ones in your
+# custom conf starts w/ 'x0_' (x = 2..9) instead.
+
 site: default
 
 common:
-  domain: &domain m2.local
-  gateway: &gateway 192.168.155.254
-  netmask: &netmask 255.255.255.0
-  nameservers:
-  - hostname: *gateway
-    #options:
-  - hostname: 8.8.8.8
-
   storage_pools:
     - type: dir
       name: default
+      create: false
       target:
         path: /var/lib/libvirt/images
 
@@ -21,9 +17,9 @@ common:
       cache: none
       size: 6
       bus: scsi
-    #- path: /var/lib/libvirt/images/<vm>-disk-0.raw
-    #  format: raw
-    #  size: 10  # [GB]
+      # path: /var/lib/libvirt/images/<vm>-disk-0.raw
+      # format: raw
+      # size: 10  # [GB]
 
   swap: 512  # [MB]
   filesystem: ext4
@@ -31,7 +27,7 @@ common:
     options: "--passalgo=sha512"
 
   selinux: enforcing
-  ks_finish: poweroff
+  ks_finish: reboot
 
   timezone:
     utc: true
@@ -47,9 +43,9 @@ common:
     #   options: ...
 
   services:
-    #enabled:
+    enabled:
+      - sshd
     disabled:
-      - gpm
       - ip6tables
       - lvm2-monitor
       - lvm2-lvmetad
@@ -65,7 +61,7 @@ common:
 
   virtinst:
     ram: 512
-    vcpus: 1
+    vcpus: 2
     basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
     connect: "qemu:///system"
     waittime: 12
@@ -110,52 +106,5 @@ common:
     rpmmk:
       src: guest/rpm/rpm.mk
       dst: rpm.mk
-
-networks:
-  - name: default  # libvirt's default virtual (NAT) network
-    mode: nat
-    bridge: virbr0
-    domain: example.com
-    gateway: 192.168.122.1
-    netmask: 255.255.255.0
-    network: 192.168.122.0
-    dhcp:
-      start: 192.168.122.200
-      end: 192.168.122.254
-      static:
-        start: 192.168.122.10
-        end: 192.168.122.199
-
-  - name: service
-    mode: nat
-    bridge: &net_service_bridge virbr5
-    domain: *domain
-    gateway: *gateway
-    netmask: *netmask
-    network: 192.168.155.0
-    dhcp:
-      start: 192.168.155.200
-      end: 192.168.155.250
-      static:
-        start: 192.168.155.10
-        end: 192.168.155.199
-
-  - name: openstack-private
-    mode: nat
-    bridge: virbr100
-    domain: os.local
-    gateway: 192.168.160.254
-    netmask: 255.255.255.0
-    network: 192.168.160.0
-    dhcp:
-      start: 192.168.160.200
-      end: 192.168.160.250
-      static:
-        start: 192.168.160.2
-        end: 192.168.160.100
-
-host:
-  bridge: *net_service_bridge
-
 
 # vim:sw=2:ts=2:et:

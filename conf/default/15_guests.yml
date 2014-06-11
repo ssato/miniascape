@@ -1,3 +1,8 @@
+# Guest definitions.
+#
+# These should depened on site use, so copy this and edit optimized for your
+# purpose as needed.
+
 guests:
   - name: ipa
     description: Red Hat IPA Server
@@ -324,10 +329,10 @@ guests:
     ks_repos:
       - name: "RHEL 6 x86_64 - Cluster"
         #baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
-        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
       - name: "RHEL 6 x86_64 - GFS"
         #baseurl: "http://ks/kstree/rhel/6/3/x86_64/ResilientStorage"
-        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
 
     disks:
       - pool: default
@@ -441,7 +446,7 @@ guests:
     ks_repos:
       - name: "RHEL 6 x86_64 - Cluster"
         #baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
-        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
 
     disks:
       - pool: default
@@ -573,7 +578,7 @@ guests:
     ks_repos:
       - name: "RHEL 6 x86_64 - LoadBalancer"
         #baseurl: "http://ks/kstree/rhel/6/3/x86_64/LoadBalancer/"
-        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
 
     hosts:
       - ip: 192.168.122.171
@@ -779,7 +784,7 @@ guests:
     ks_repos:
       - name: "RHEL 6 x86_64 - ScalableFileSystem"
         #baseurl: "http://ks/kstree/rhel/6/3/x86_64/ScalableFileSystem"
-        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.4/os/x86_64/"
+        baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
 
     rhs:
       nodes:
