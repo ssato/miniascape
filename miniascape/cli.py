@@ -20,11 +20,15 @@ import miniascape.bootstrap as B
 import miniascape.config as C
 import miniascape.guest as G
 import miniascape.options as O
-import miniascape.utils as U
 import miniascape.host as H
 import miniascape.site as S
 
+import os
 import sys
+
+
+def is_superuser():
+    return os.getuid() == 0
 
 
 def cmd2prog(c):
@@ -79,8 +83,7 @@ Commands:
 
 
 def main(argv=sys.argv):
-    assert not U.is_superuser(), \
-        "Danger! You should NOT run this program as root!"
+    assert not is_superuser(), "Danger! Do NOT run this program as root!"
 
     if len(argv) == 1 or argv[1] in ("-h", "--help"):
         usage(argv[0])

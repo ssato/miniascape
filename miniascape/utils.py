@@ -70,10 +70,6 @@ def list_dirnames(tdir):
             sglob(os.path.join(tdir, "*")) if os.path.isdir(x)]
 
 
-def is_superuser_():
-    return os.getuid() == 0
-
-
 def get_username_():
     return pwd.getpwuid(os.getuid()).pw_name
 
@@ -100,7 +96,6 @@ def get_hostname_(h=None, fqdn=True):
 
 
 # Memoized versions:
-is_superuser = memoize(is_superuser_)
 get_username = memoize(get_username_)
 get_hostname = memoize(get_hostname_)
 
