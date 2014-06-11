@@ -46,6 +46,10 @@ def load_site_ctxs(ctxs):
         if os.path.isdir(ctxpath):
             confsrc = os.path.join(ctxpath, G.M_CONF_PATTERN)
         else:
+            if not os.path.exists(ctxpath):
+                logging.info("Not exists and skipped: " + ctxpath)
+                continue
+
             confsrc = ctxpath
 
         if conf is None:
