@@ -17,4 +17,4 @@ build:
 world:
 	for vm in $(guests); do bash -x out/guests.d/$$vm/vmbuild.sh &; done
 
-.PHONY: configure compile world
+.PHONY: build world
