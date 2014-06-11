@@ -1,8 +1,0 @@
-name: rhel-6-proxy
-setup_data:
-- {dst: squid.conf, src: data/proxy/squid.conf}
-squid:
-  allowed_network: 192.168.155.0/24
-  auth: {password: secret, username: foo}
-templates:
-  autoinst: {src: autoinstall.d/rhel-6-proxy-ks.cfg}

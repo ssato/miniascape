@@ -1,4 +1,0 @@
-hostname: rhds-1
-interfaces:
-- {mac: '52:54:00:05:00:18', network: service}
-ip: 192.168.155.18

@@ -1,9 +1,0 @@
-description: OpenStack All-in-One node
-disks:
-- {bus: scsi, cache: none, format: qcow2, pool: default, size: 70}
-name: openstack-allinone
-setup_data:
-- {dst: Makefile, src: data/openstack/Makefile}
-- {dst: answers.txt, src: data/openstack/allinone_answers.txt}
-templates:
-  autoinst: {src: autoinstall.d/openstack-allinone-ks.cfg}

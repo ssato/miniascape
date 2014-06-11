@@ -1,4 +1,0 @@
-hostname: rhevh-2
-interfaces:
-- {mac: '52:54:00:05:00:34', network: service}
-ip: 192.168.155.34

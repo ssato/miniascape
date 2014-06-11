@@ -1,7 +1,0 @@
-hostname: jboss-3
-interfaces:
-- {mac: '52:54:00:05:00:43', network: service}
-ip: 192.168.155.43
-jboss:
-  servers:
-  - {group: group2, name: jboss-3}

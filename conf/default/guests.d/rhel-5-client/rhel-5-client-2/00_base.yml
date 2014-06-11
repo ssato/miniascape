@@ -1,4 +1,0 @@
-hostname: rhel-5-client-2
-interfaces:
-- {mac: '52:54:00:05:01:52', network: service}
-ip: 192.158.155.152

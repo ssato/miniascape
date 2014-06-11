@@ -1,9 +1,0 @@
-description: Versatile RHEL 5 client systems
-disks:
-- {bus: virtio, cache: none, format: qcow2, pool: default, size: 6}
-filesystem: ext3
-name: rhel-5-client
-templates:
-  autoinst: {src: autoinstall.d/rhel-5-min-ks.cfg}
-virtinst: {location: 'ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/',
-  os_variant: rhel5.4}

@@ -1,4 +1,0 @@
-description: Fedora stable
-name: fedora
-templates:
-  autoinst: {src: autoinstall.d/fedora-min-ks.cfg}

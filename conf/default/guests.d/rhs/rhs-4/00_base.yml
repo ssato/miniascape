@@ -1,7 +1,0 @@
-disks:
-- {bus: scsi, pool: default, size: 5}
-- {bus: scsi, pool: default, size: 1, vol: rhs-4-data-1}
-hostname: rhs-4
-interfaces:
-- {mac: '52:54:00:05:00:54', network: service}
-ip: 192.168.155.54
