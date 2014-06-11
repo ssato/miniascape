@@ -214,10 +214,8 @@ class ConfFiles(dict):
 
         :return: [guest_conf :: dict]
         """
-        return [
-            self.load_guest_confs(n, g) for g, n in
-            list_group_and_guests_g(self.guestdir)
-        ]
+        return [self.load_guest_confs(n, g) for g, n in
+                list_group_and_guests_g(self.guestdir)]
 
     def _aggregate_guest_net_interfaces_g(self):
         """
@@ -226,13 +224,12 @@ class ConfFiles(dict):
         """
         gcs = self.load_guests_confs()
         kf = lambda d: d.get("network", False)
-        return (
-            (k, list(g)) for k, g in itertools.groupby(
-                sorted(filter(bool, U.concat(g.get("interfaces", []) for g in
-                                             gcs)), key=kf),
-                kf
-            )
-        )
+        return ((k, list(g)) for k, g in
+                itertools.groupby(sorted(filter(bool,
+                                                U.concat(g.get("interfaces",
+                                                               []) for g
+                                                         in gcs)),
+                                         key=kf), kf))
 
     def load_nets_confs(self):
         nets = dict()
