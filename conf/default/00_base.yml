@@ -13,6 +13,8 @@ common:
       target:
         path: /var/lib/libvirt/images
 
+  partition: |
+    autopart
   disks:
     - pool: default  # see `storage_pools`
       format: qcow2
