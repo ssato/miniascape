@@ -137,7 +137,7 @@ def gen_host_files(cf, tmpldirs, workdir, force):
     conf = cf.load_host_confs()
     gen_vnet_files(cf, tmpldirs, workdir, force)
 
-    conf["timestamp"] = U.timestamp()
+    conf["timestamp"] = G.timestamp()
     T.compile_conf_templates(conf, tmpldirs, workdir, "host_templates")
 
 

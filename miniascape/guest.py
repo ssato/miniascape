@@ -19,6 +19,7 @@ from miniascape.globals import M_TMPL_DIR, M_WORK_TOPDIR, \
     LOGGER as logging, set_loglevel
 
 import miniascape.config as C
+import miniascape.globals as G
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
@@ -148,7 +149,7 @@ def gen_all(cf, tmpldirs, workdir):
 
     conf = cf.load_host_confs()
     conf["guests_build_datadir"] = M_GUESTS_BUILDDATA_TOPDIR
-    conf["timestamp"] = U.timestamp()
+    conf["timestamp"] = G.timestamp()
     conf["distdata"] = list(mk_distdata_g(guests))
 
     logging.info("Generating guests common build aux files...")
