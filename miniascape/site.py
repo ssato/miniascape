@@ -93,7 +93,7 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     tpaths = [os.path.join(d, "config") for d in tmpldirs]
     for net in conf.get("networks", []):
         noutdir = os.path.join(outdir, "networks.d", net["name"])
-        miniascape.templates.renderto(tpaths, net, "network.j2",
+        miniascape.template.renderto(tpaths, net, "network.j2",
                                       os.path.join(noutdir, baseyml))
 
     guests_key = "guests"
