@@ -17,9 +17,8 @@
 from miniascape.globals import LOGGER as logging
 
 import miniascape.globals as G
-import miniascape.options as O
-import miniascape.template as T
-import miniascape.utils as U
+import miniascape.options
+import miniascape.template
 
 import anyconfig
 import os.path
@@ -94,7 +93,8 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     tpaths = [os.path.join(d, "config") for d in tmpldirs]
     for net in conf.get("networks", []):
         noutdir = os.path.join(outdir, "networks.d", net["name"])
-        T.renderto(tpaths, net, "network.j2", os.path.join(noutdir, baseyml))
+        miniascape.templates.renderto(tpaths, net, "network.j2",
+                                      os.path.join(noutdir, baseyml))
 
     guests_key = "guests"
     for ggroup in conf.get("guests", []):
@@ -146,11 +146,11 @@ def configure(ctxs, tmpldirs, workdir):
 
 
 def main(argv):
-    p = O.option_parser()
+    p = miniascape.options.option_parser()
     (options, args) = p.parse_args(argv[1:])
 
     G.set_loglevel(options.verbose)
-    options = O.tweak_options(options)
+    options = miniascape.options.tweak_options(options)
 
     configure(options.ctxs, options.tmpldir, options.workdir)
 
