@@ -15,16 +15,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 from __future__ import print_function
-from miniascape.globals import LOGGER as logging, set_loglevel
+from miniascape.globals import LOGGER as logging
 
-import miniascape.config as C
+import miniascape.config
 import miniascape.globals as G
 import miniascape.options as O
 import miniascape.template as T
-import miniascape.utils as U
 
-import anyconfig as A
-import optparse
+import anyconfig
 import os.path
 import os
 import sys
@@ -111,14 +109,14 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
             return
 
         logging.debug("Dump conf for the net: " + name)
-        A.dump(nets[name], netconf)
+        anyconfig.dump(nets[name], netconf)
 
         netxml = os.path.join(outdir, "%s.xml" % name)
         if os.path.exists(netxml) and not force:
             logging.warn("Net xml already exists: " + netxml)
             return
 
-        nc = A.load(netconf)
+        nc = anyconfig.load(netconf)
         nc["hosts"] = hosts_w_unique_ips(nc)
         nc["hosts_w_unique_macs"] = hosts_w_unique_macs(nc)
 
@@ -160,10 +158,10 @@ def main(argv):
     p = option_parser()
     (options, args) = p.parse_args(argv[1:])
 
-    set_loglevel(options.verbose)
+    G.set_loglevel(options.verbose)
     options = O.tweak_options(options)
 
-    cf = C.ConfFiles(options.confdir)
+    cf = miniascape.config.ConfFiles(options.confdir)
 
     houtdir = os.path.join(options.workdir, G.M_HOST_CONF_SUBDIR)
     if os.path.exists(houtdir) and not options.force:
