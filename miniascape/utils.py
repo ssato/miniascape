@@ -144,14 +144,14 @@ def find_dups_in_dicts_list_g(ds, keys):
                 yield (k, v, dups)
 
 
-def timestamp(dtobj=datetime.datetime.now()):
+def timestamp(dtobj=datetime.datetime.now(), fmt="%a %b %_d %Y"):
     """
     >>> dtobj = datetime.datetime(2013, 10, 20, 12, 11, 59, 345135)
     >>> timestamp(dtobj)
     'Sun Oct 20 2013'
     """
-    locale.setlocale(locale.LC_TIME, "C")
-    return dtobj.strftime("%a %b %_d %Y")
+    locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    return dtobj.strftime(fmt)
 
 
 def noop(*args):
