@@ -4,6 +4,8 @@
 site: default
 
 common:
+  name_prefix: default_
+
   storage_pools:
     - type: dir
       name: default
