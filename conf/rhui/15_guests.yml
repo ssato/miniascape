@@ -18,7 +18,7 @@ rhui:
     ip: &rhua_ip 192.168.20.11
     fqdn: &rhua_fqdn rhua-1.example.com
     hostname: &rhua_hostname rhua-1
-    cds_cluster: &cds_cluster rhua-1
+    cds_cluster: &cds_cluster cds_cluster_1
 
   cds-1:
     ip: &cds_1_ip 192.168.20.21
