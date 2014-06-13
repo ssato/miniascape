@@ -1,5 +1,9 @@
+# network aliases (see conf/openstack/10_networks.yml):
+public_network: &public_network openstack-public
+private_network: &private_network openstack-private
+
 guests:
-  - name: openstack-allinone
+  - name: allinone
     description: OpenStack All-in-One node
 
     setup_data:
@@ -20,28 +24,29 @@ guests:
         bus: scsi
 
     virtinst:
-      cpu: host  # To enable nested KVM feature
+      cpu: host  # Needed to enable nested KVM feature
 
     guests:
-      - hostname: openstack-allinone-1
-        fqdn: openstack-allinone-1.example.com
-        ip: &openstack_allinone_1_ip_0 192.168.200.1
+      - hostname: allinone-0
+        fqdn: allinone-0.openstack.example.com
+        ip: &openstack_allinone_0_ip_0 192.168.200.10
         interfaces:
-          # access from/to public network:
-          - mac: "52:54:00:16:80:01"
-            ip: *openstack_allinone_1_ip_0
-            network: openstack-public
+          # eth0: access from/to public network
+          - mac: "52:54:00:16:82:10"
+            ip: *openstack_allinone_0_ip_0
+            network: *public_network
 
-          # acccess from/to vms inside this node via bridges:
-          - mac: "52:54:00:16:80:02"
-            network: openstack-public
+          # eth1: acccess from/to vms inside this node via bridges
+          - mac: "52:54:00:16:82:11"
+            ip: 192.168.200.11
+            network: *public_network
 
         packstack:
-          controller_ip: *openstack_allinone_1_ip_0
+          controller_ip: *openstack_allinone_0_ip_0
           compute_ips:
-            - *openstack_allinone_1_ip_0
+            - *openstack_allinone_0_ip_0
 
-  - name: openstack-controller
+  - name: controller
     description: OpenStack controller node
 
     setup_data:
@@ -55,34 +60,34 @@ guests:
         src: autoinstall.d/openstack-controller-ks.cfg
 
     guests:
-      - hostname: openstack-controller-0
-        fqdn: openstack-controller-0.example.com
-        ip: &openstack_controller_0_ip_0 192.168.200.10
+      - hostname: controller-0
+        fqdn: controller-0.openstack.example.com
+        ip: &openstack_controller_0_ip_0 192.168.200.20
         interfaces:
-          # access from/to public network:
-          - mac: "52:54:00:16:80:10"
+          # eth0: access from/to public network for this openstack node:
+          - mac: "52:54:00:16:82:20"
             ip: *openstack_controller_0_ip_0
-            network: openstack-public
+            network: *public_network
 
-          # access to public network from vms via bridge devices (public):
-          - mac: "52:54:00:16:80:11"
-            network: openstack-public
-            ip: 192.168.200.11
+          # eth1: guests access to public network via this (public side)
+          - mac: "52:54:00:16:82:21"
+            ip: 192.168.200.21
+            network: *public_network
 
-          # access to public network from vms via bridge devices (private):
-          - mac: "52:54:00:68:32:10"
-            network: openstack-private
-            ip: 192.168.132.10
+          # eth2: guests access to public network via this (private side)
+          - mac: "52:54:00:68:32:20"
+            ip: 192.168.32.20
+            network: *private_network
 
         openstack_compute_nodes:
-          - &openstack_compute_1_ip_0 192.168.200.21
+          - &openstack_compute_0_ip_0 192.168.200.31
 
         packstack:
           controller_ip: *openstack_controller_0_ip_0
           compute_ips:
-            - *openstack_compute_1_ip_0
+            - *openstack_compute_0_ip_0
 
-  - name: openstack-compute
+  - name: compute
     description: OpenStack Compute node
 
     templates:
@@ -93,18 +98,18 @@ guests:
       cpu: host
 
     guests:
-      - hostname: openstack-compute-1
-        fqdn: openstack-compute-1.example.com
-        ip: *openstack_compute_1_ip_0
+      - hostname: compute-0
+        fqdn: compute-0.openstack.example.com
+        ip: *openstack_compute_0_ip_0
         interfaces:
-          # access from/to public network:
-          - mac: "52:54:00:16:80:21"
-            ip: *openstack_compute_1_ip_0
-            network: openstack-public
+          # eth0: access from/to public network for this openstack node:
+          - mac: "52:54:00:16:82:30"
+            ip: *openstack_compute_0_ip_0
+            network: *public_network
 
-          # access to private network from vms:
-          - mac: "52:54:00:68:32:21"
-            network: openstack-private
-            ip: 192.168.132.21
+          # eth1: guests access to public network via this (private side)
+          - mac: "52:54:00:68:32:30"
+            ip: 192.168.32.30
+            network: *private_network
 
 # vim:sw=2:ts=2:et:

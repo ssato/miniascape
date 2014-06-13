@@ -1,3 +1,11 @@
+# References:
+# * http://openstack.redhat.com/NeutronLibvirtMultinodeDevEnvironment
+# * http://openstack.redhat.com/Difference_between_Floating_IP_and_private_IP
+# * http://openstack.redhat.com/Neutron_with_OVS_and_VLANs
+# * http://openstack.redhat.com/Using_VXLAN_Tenant_Networks
+# * etc
+
+
 common:
   disks:
     - pool: default
@@ -21,11 +29,22 @@ common:
   packstack:
     rhn_activationkey: *rhn_activationkey
     nova:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
       pub_if: eth0
       private_if: eth1
       network:
-        fixedrange: 192.168.132.0/24   # openstack-private network
-        floatrange: 172.24.0.0/24
+        fixedrange: 192.168.32.0/24  # openstack-private network
+        floatrange: 10.3.4.0/22      # Not used w/ neutron-based (default)
+                                     # network in actual.
+
+    neutron:
+      #db_pw: *packstack_pw
+      #ks_pw: *packstack_pw
+      #metadata_pw: *packstack_pw
+      network:
+        # see http://openstack.redhat.com/Floating_IP_range
+        floatrange: 192.168.200.56/29  # 192.168.200.56-63 (57-62)
 
     demo:
       #floatrange: ...
@@ -41,15 +60,6 @@ common:
       #admin_token: *packstack_pw
       #admin_pw: *packstack_pw
       #demo_pw: *packstack_pw
-    nova:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-      network:
-        #fixedrange: ...
-    neutron:
-      #db_pw: *packstack_pw
-      #ks_pw: *packstack_pw
-      #metadata_pw: *packstack_pw
     swift:
       #db_pw: *packstack_pw
       #ks_pw: *packstack_pw

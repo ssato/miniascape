@@ -4,7 +4,7 @@
 # purpose as needed.
 
 common:
-  domain: &domain m2-os.local
+  domain: &domain openstack.example.com
   gateway: &gateway 192.168.200.254
   netmask: &netmask 255.255.255.0
 
@@ -12,6 +12,11 @@ common:
     - hostname: *gateway
 
 networks:
+  # public and inter-openstack-nodes communication network.
+  #
+  # subnet for floating ips assigned for guests managed with openstack:
+  # 192.168.200.56/29, 192.168.200.56-63 (57-62)
+  #
   - name: openstack-public
     mode: nat
     bridge: virbr200
@@ -19,24 +24,27 @@ networks:
     gateway: *gateway
     netmask: *netmask
     network: 192.168.200.0
+
     dhcp:
       start: 192.168.200.200
       end: 192.168.200.250
       static:
         start: 192.168.200.10
-        end: 192.168.200.199
+        end: 192.168.200.50
 
+  # Network for guests managed with openstack
+  # (address is taken from CL210 default)
   - name: openstack-private
     mode: nat
-    bridge: virbr132
-    gateway: 192.168.132.254
+    bridge: virbr32
+    gateway: 192.168.32.254
     netmask: *netmask
-    network: 192.168.132.0
+    network: 192.168.32.0
     dhcp:
-      start: 192.168.132.200
-      end: 192.168.132.250
+      start: 192.168.32.200
+      end: 192.168.32.250
       static:
-        start: 192.168.132.10
-        end: 192.168.132.199
+        start: 192.168.32.10
+        end: 192.168.32.50
 
 # vim:sw=2:ts=2:et:
