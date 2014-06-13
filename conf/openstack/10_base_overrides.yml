@@ -5,6 +5,7 @@
 # * http://openstack.redhat.com/Using_VXLAN_Tenant_Networks
 # * etc
 
+site: openstack
 
 common:
   disks:
