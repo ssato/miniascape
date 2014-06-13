@@ -89,6 +89,9 @@ guests:
       autoinst:
         src: autoinstall.d/openstack-compute-ks.cfg
 
+    virtinst:
+      cpu: host
+
     guests:
       - hostname: openstack-compute-1
         fqdn: openstack-compute-1.example.com

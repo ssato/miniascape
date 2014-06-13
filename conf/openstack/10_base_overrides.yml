@@ -14,7 +14,6 @@ common:
 
   virtinst:
     ram: 2048
-    cpu: host  # To enable nested KVM feature.
 
   openstack:
     use_rhosp: true
