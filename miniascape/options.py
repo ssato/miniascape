@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from miniascape.globals import LOGGER as logging
+
 import miniascape.globals as G
 import optparse
 
@@ -69,6 +71,8 @@ def tweak_options(options, defaults=M_DEFAULTS_POST):
         options.tmpldir.append(default_tmpldir)
 
     default_ctxs = G.site_src_ctxs(options.site)
+    logging.info("Use ctxs: site={}, default={}".format(options.site,
+                                                        default_ctxs))
 
     if options.ctxs:
         # NOTE: We have to give lowest priority to the default ctxs.
