@@ -87,7 +87,7 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
         dst = os.path.join(workdir, dst)
         tpaths = srcdirs + [workdir]
 
-        logging.info("Generating %s from %s [%s]" % (dst, src, k))
+        logging.debug("Generating %s from %s [%s]" % (dst, src, k))
         logging.debug("Template path: " + ", ".join(tpaths))
         renderto(tpaths, conf, src, dst)
 
