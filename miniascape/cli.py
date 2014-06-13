@@ -54,8 +54,9 @@ def build(argv):
     options = MO.tweak_options(options)
     miniascape.globals.set_loglevel(options.verbose)
 
-    # suppress logs from anyconfig if --verbose not given.
-    if options.verbose > 0:
+    # suppress logs from anyconfig unless the environment variable
+    # 'ANYCONFIG_DEBUG' is set to 1.
+    if os.environ.get("ANYCONFIG_DEBUG", None) != '1':
         anyconfig.set_loglevel(logging.WARN)
 
     # configure
