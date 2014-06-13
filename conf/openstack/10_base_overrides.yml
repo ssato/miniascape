@@ -16,7 +16,7 @@ common:
     ram: 2048
 
   openstack:
-    use_rhosp: true
+    use_rdo: false
 
   packstack:
     rhn_activationkey: *rhn_activationkey
