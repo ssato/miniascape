@@ -24,6 +24,8 @@ import miniascape.options as MO
 import miniascape.host
 import miniascape.site
 
+import anyconfig
+import logging
 import os
 import sys
 
@@ -51,6 +53,10 @@ def build(argv):
 
     options = MO.tweak_options(options)
     miniascape.globals.set_loglevel(options.verbose)
+
+    # suppress logs from anyconfig if --verbose not given.
+    if options.verbose > 0:
+        anyconfig.set_loglevel(logging.WARN)
 
     # configure
     if options.genconf:
