@@ -45,6 +45,10 @@ for site in $sites; do \
 rm -f default.list && \
   cat templates.list *.conf.list >> files.list
 
+# Remove tests; it's useless maybe.
+rm -rf $RPM_BUILD_ROOT%{_datadir}/%{name}/tests \
+       $RPM_BUILD_ROOT%{python_sitelib}/%{name}/tests
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -52,7 +56,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.rst
 %{_bindir}/*
-%{_datadir}/%{name}/tests
 %config %{pkgconfdir}/*/*.yml
 %config %{pkgconfdir}/*/bootstrap/*.yml
 %{python_sitelib}/*
