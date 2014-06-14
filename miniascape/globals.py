@@ -63,7 +63,7 @@ def site_confdir(site=M_SITE_DEFAULT, topdir=M_CONF_TOPDIR):
     return os.path.join(topdir, site)
 
 
-def site_src_ctxs(site=M_SITE_DEFAULT, topdir=M_CONF_TOPDIR):
+def site_src_ctx(site=M_SITE_DEFAULT, topdir=M_CONF_TOPDIR):
     # return os.path.join(site_confdir(site, topdir), M_CONF_PATTERN)
     return site_confdir(site)
 
