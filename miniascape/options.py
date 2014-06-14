@@ -39,7 +39,7 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     p.add_option("-t", "--tmpldir", action="append",
                  help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
     p.add_option("-s", "--site", help="Choose site [%default]")
-    p.add_option("-C", "--ctxs", dest="ctxs", action="append",
+    p.add_option("-C", "--ctx", dest="ctxs", action="append",
                  help="Specify context (conf) file[s] or path glob "
                       "pattern or dir (*.yml will be searched). It can be "
                       "given multiple times to specify multiple ones, ex. "
