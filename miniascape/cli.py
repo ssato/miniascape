@@ -51,8 +51,8 @@ def build(argv):
                  help="Do not generate config from context files")
     (options, args) = p.parse_args(argv)
 
-    options = MO.tweak_options(options)
     miniascape.globals.set_loglevel(options.verbose)
+    options = MO.tweak_options(options)
 
     # suppress logs from anyconfig unless the environment variable
     # 'ANYCONFIG_DEBUG' is set to 1.
