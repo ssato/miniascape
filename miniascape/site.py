@@ -35,37 +35,48 @@ class NoNameGuestError(RuntimeError):
     pass
 
 
+def load_site_ctx(ctxpath):
+    """
+    Load context (conf) file from ``ctxpath``. ``ctxpath`` may be a path to
+    context file, glob pattern of context files or a dir.
+
+    :param ctxpath: A ctx file, glob pattern of ctx files or dir :: str
+    """
+    if os.path.isdir(ctxpath):
+        ctxpath = os.path.join(ctxpath, G.M_CONF_PATTERN)
+    else:
+        if '*' in ctxpath and not miniascape.utils.sglob(ctxpath):
+            return None
+
+        elif not os.path.exists(ctxpath):
+            logging.info("Not exist and skipped: " + ctxpath)
+            return None
+
+    ctx = anyconfig.load(ctxpath)
+
+    if not ctx:
+        logging.warn("No config loaded from: " + ctxpath)
+
+    return ctx
+
+
 def load_site_ctxs(ctxs):
     """
-    Load context (conf) files from ``ctxs``. ``ctxs`` may be a config file,
-    glob pattern of config files or dir.
+    Load context (conf) files from ``ctxs``.
 
-    :param ctxs: List of context file[s], glob pattern or dir :: [str]
+    :param ctxs: List of context file[s], glob patterns of context files
+        or dirs :: [str]
     """
-    conf = None
+    conf = anyconfig.container()
     for ctxpath in ctxs:
-        if os.path.isdir(ctxpath):
-            confsrc = os.path.join(ctxpath, G.M_CONF_PATTERN)
-        else:
-            if '*' in ctxpath and not miniascape.utils.sglob(ctxpath):
-                continue
+        diff = load_site_ctx(ctxpath)
 
-            elif not os.path.exists(ctxpath):
-                logging.info("Not exist and skipped: " + ctxpath)
-                continue
-
-            confsrc = ctxpath
-
-        if conf is None:
-            conf = diff = anyconfig.load(confsrc)
-        else:
-            diff = anyconfig.load(confsrc)
+        if diff:
             conf.update(diff)
+        else:
+            logging.warn("No config loaded from: " + ctxpath)
 
-        if not diff:
-            logging.warn("No config loaded from: " + confsrc)
-
-    if conf is None:
+    if not conf:
         raise EmptyConfigError("No config available from: " + ','.join(ctxs))
 
     return conf
