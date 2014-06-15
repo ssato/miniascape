@@ -245,7 +245,7 @@ EXAMPLE Session
                           Template top dir[s]
                           [[/usr/share/miniascape/templates]]
     -s SITE, --site=SITE  Choose site [default]
-    -C CTXS, --c=CTXS     Specify context (conf) file[s] or path glob pattern or
+    -C CTX, --ctx=CTX     Specify context (conf) file[s] or path glob pattern or
                           dir (*.yml will be searched). It can be given multiple
                           times to specify multiple ones, ex. -C /a/b/c.yml -C
                           '/a/d/*.yml' -C /a/e/ [/etc/miniascape.d/<site>]. This
