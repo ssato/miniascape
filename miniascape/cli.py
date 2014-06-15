@@ -62,7 +62,7 @@ def build(argv):
     # configure
     if options.genconf:
         confdir = miniascape.site.configure(options.ctxs, options.tmpldir,
-                                            options.workdir)
+                                            options.workdir, options.site)
 
     if not options.build:
         return

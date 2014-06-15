@@ -146,7 +146,7 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     return outdir
 
 
-def configure(ctxs, tmpldirs, workdir):
+def configure(ctxs, tmpldirs, workdir, site=None):
     """
     Generate site specific config files for host, networks and guests from a
     config file or some config files:
@@ -157,10 +157,17 @@ def configure(ctxs, tmpldirs, workdir):
         (config) file[s] or dir to hold context (config) file[s] :: [str]
     :param tmpldirs: Template path list :: [str]
     :param workdir: Working top dir, e.g. miniascape-workdir-201303121 :: str
+    :param site: Site name (:: str) or None
 
     :return: Configuration topdir where generated config files under
     """
     conf = load_site_ctxs(ctxs)
+    if site:
+        conf["site"] = site
+    else:
+        if "site" not in conf:
+            conf["site"] = G.M_SITE_DEFAULT
+
     return gen_site_conf_files(conf, tmpldirs, workdir)
 
 
