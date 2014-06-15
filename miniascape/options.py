@@ -20,10 +20,10 @@ import miniascape.globals as G
 import optparse
 
 
-M_DEFAULTS = dict(tmpldir=[], ctxs=[], site=G.M_SITE_DEFAULT,
-                  workdir=G.M_WORK_TOPDIR, verbose=1)
+M_DEFAULTS = dict(tmpldir=[], ctxs=[], site=None, workdir=G.M_WORK_TOPDIR,
+                  verbose=1)
 
-M_DEFAULTS_POST = dict(tmpldir=G.M_TMPL_DIR, )
+M_DEFAULTS_POST = dict(tmpldir=G.M_TMPL_DIR, site=G.M_SITE_DEFAULT)
 
 
 def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
@@ -34,7 +34,7 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
 
-    ctxs_0 = G.site_src_ctxs().replace(G.M_SITE_DEFAULT, "<site>")
+    ctxs_0 = G.site_src_ctx().replace(G.M_SITE_DEFAULT, "<site>")
 
     p.add_option("-t", "--tmpldir", action="append",
                  help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
@@ -55,7 +55,13 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     return p
 
 
-def tweak_options(options, defaults=M_DEFAULTS_POST):
+def _default_ctxs(site):
+    dctxs = G.site_src_ctx(site)
+    logging.info("Site default ctxs: site={}, default={}".format(site, dctxs))
+    return dctxs
+
+
+def tweak_options(options, defaults_post=M_DEFAULTS_POST):
     """
     This function will be called after options and args parsed, and tweak
     options as needed such like:
@@ -64,21 +70,30 @@ def tweak_options(options, defaults=M_DEFAULTS_POST):
       template search list
     - ensure default context file is always included at least or at the top of
       contexts list
-    """
-    default_tmpldir = defaults["tmpldir"]
 
+    :param options: An instance of optparse.Values holding option values
+    """
+    default_tmpldir = defaults_post["tmpldir"]
+
+    # Default template path is always included in the list of template paths as
+    # the lowest priority path.
     if default_tmpldir not in options.tmpldir:
         options.tmpldir.append(default_tmpldir)
 
-    default_ctxs = G.site_src_ctxs(options.site)
-    logging.info("Use ctxs: site={}, default={}".format(options.site,
-                                                        default_ctxs))
-
     if options.ctxs:
-        # NOTE: We have to give lowest priority to the default ctxs.
-        options.ctxs.insert(0, default_ctxs)
+        if options.site:
+            # Insert the default ctxs path at the head of ctxs list (the lowest
+            # priority) only if options.site is set.
+            options.ctxs.insert(0, _default_ctxs(options.site))
+
+        # NOTE: Maybe it's better to untouch it and to be set from ctx.
+        # else:
+        #    options.site = defaults_post["site"]
     else:
-        options.ctxs = [default_ctxs]
+        if options.site is None:
+            options.site = defaults_post["site"]
+
+        options.ctxs = [_default_ctxs(options.site)]
 
     return options
 
