@@ -71,7 +71,7 @@ class Test_00_functions(unittest.TestCase):
         defaults = TT.M_DEFAULTS_POST
 
         options = TT.tweak_options(options)
-        self.assertEquals(options.site, defaults["site"])
+        self.assertEquals(options.site, None)
         self.assertEquals(options.ctxs, ["/tmp/foo"])
 
 # vim:sw=4:ts=4:et:
