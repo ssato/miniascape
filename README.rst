@@ -49,7 +49,7 @@ Usage
 2. Arrange configuration files as needed. For example,
 
    - Just use default config files provided in this dist by specifying the path
-     selected from /etc/miniascape.d/{default,openstack,rhui} with -C/--ctxs
+     selected from /etc/miniascape.d/{default,openstack,rhui} with -C/--ctx
      option later on build.
 
    - Use default (select from /etc/miniascape.d/{default,openstack,rhui} ) and
@@ -61,7 +61,7 @@ Usage
    script and vm build scripts. For examples,
 
    - miniascape -C /etc/miniascape.d/default b -w /tmp/workdir
-   - miniascape -C /etc/miniascape.d/default -C myconf.d/\*.yml b -w /tmp/workdir
+   - miniascape -C /etc/miniascape.d/default -C myconf.d/ b -w /tmp/workdir
    - miniascape -C myconf.d/\*.yml b -w /tmp/workdir
 
    see the outoutpu of 'miniascape b --help' for more about its options.
@@ -77,7 +77,7 @@ scripts around virt-install and configurations installed into the libvirt host
 in current implementation.
 
 * Inputs: multiple YAML configuration files and template files specified in
-  config (context) files with -C/--ctxs options
+  config (context) files with -C/--ctx options
 
 * Outputs: libvirt network XML, kickstart files and VM build scripts, etc.
 * Template engine used: Jinja2: http://jinja.pocoo.org
@@ -86,11 +86,13 @@ Configurations
 ----------------
 
 Configurations and parameters are in YAML configuration files (default:
-/etc/miniascape.d/default/\*.yml).
+/etc/miniascape.d/default/\*.yml) or any other formats anyconfig module can
+load (you have to specify glob patterns in this case, e.g. -C
+/path/to/conf/\*.json).
 
 Miniascape will load these config files, merge configurations in these files
-and dump multiple intermediate configuration files (this is the 'configure'
-step) in working dir specified with -w/--workdir option.
+and dump multiple intermediate configuration files ('configure' process) in
+working dir specified with -w/--workdir option.
 
 Intermediate config files are:
 
@@ -192,20 +194,18 @@ Done:
 
 * libvirt fixes and enhancements:
 
-  * Implemented dnsmasq backend for libvirt: My patch was merged.
+  * Implement dnsmasq backend for libvirt: My patch was merged.
 
 miniascape itself
 -------------------
 
 * Some more guest configurations and templates
 * Refine and enhance bootstrap process
-
+* Implement a kind of template test framework and add some more tests around them
 * Write unit tests for template files including snippets
 * Added some more host-configuration stuff, like autofs, www (apache or nginx),
   nfs, iscsi, pxe boot, etc.
 * Documents
-* site-designer: tool or sub command to generate config files from default or
-  user-defined parameters and config templates
 
 Done:
 
