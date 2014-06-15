@@ -27,13 +27,13 @@ class Test_00_functions(unittest.TestCase):
         self.assertTrue(isinstance(p, TT.optparse.OptionParser))
         self.assertEquals(p.defaults, TT.M_DEFAULTS)
 
-    def test_10__tweak_options(self):
+    def test_10__tweak_options__tmpldir(self):
         p = TT.option_parser()
         (options, _) = p.parse_args([])
 
         self.assertEquals(options.tmpldir, [])
 
-        # It seems that optpare holds option values permanently so value of
+        # It seems that optparse holds option values permanently so value of
         # options.tmpldir will be same even if p and options (returned from
         # p.parse_args) are re-newed:
         # options = TT.tweak_options(options)
@@ -48,6 +48,30 @@ class Test_00_functions(unittest.TestCase):
         options = TT.tweak_options(options)
 
         self.assertEquals(options.tmpldir, ["/tmp", defaults["tmpldir"]])
-        self.assertEquals(options.ctxs, [G.site_src_ctxs()])
+        self.assertEquals(options.ctxs, [G.site_src_ctx()])
+
+    def test_12__tweak_options__site(self):
+        p = TT.option_parser()
+        (options, _) = p.parse_args([])
+
+        defaults = TT.M_DEFAULTS_POST
+
+        self.assertEquals(options.site, None)
+        options = TT.tweak_options(options)
+        self.assertEquals(options.site, defaults["site"])
+
+        (options, _) = p.parse_args(["--site", "foo"])
+        options = TT.tweak_options(options)
+        self.assertEquals(options.site, "foo")
+
+    def test_14__tweak_options__ctx(self):
+        p = TT.option_parser()
+        (options, _) = p.parse_args(["--ctx", "/tmp/foo"])
+
+        defaults = TT.M_DEFAULTS_POST
+
+        options = TT.tweak_options(options)
+        self.assertEquals(options.site, defaults["site"])
+        self.assertEquals(options.ctxs, ["/tmp/foo"])
 
 # vim:sw=4:ts=4:et:
