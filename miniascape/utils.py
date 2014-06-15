@@ -141,7 +141,7 @@ def noop(*args):
     return args
 
 
-def walk(x, path=None, path_sep='.', hook=noop):
+def walk(x, path=None, sep='.', hook=noop):
     """
     Walk through given object (may-be-a-MergeableDict-instance) ``x`` like
     os.walk. Currently, DFS (depth first search) is used to traverse (walk
@@ -156,14 +156,14 @@ def walk(x, path=None, path_sep='.', hook=noop):
 
     :param x: Object to walk (traverse), may be an instance of MergeableDict
     :param path: Current 'path'
-    :param path_sep: Path separator
+    :param sep: Path separator
     """
     if is_mergeabledict_or_dict(x):
         for k, v in x.iteritems():
-            curpath = k if path is None else "%s%s%s" % (path, path_sep, k)
+            curpath = k if path is None else "{}{}{}".format(path, sep, k)
 
             if is_mergeabledict_or_dict(v):
-                for path_child, v_child, _d in walk(v, curpath, path_sep,
+                for path_child, v_child, _d in walk(v, curpath, sep,
                                                     hook):
                     yield hook(path_child, v_child, v)
 
@@ -172,7 +172,7 @@ def walk(x, path=None, path_sep='.', hook=noop):
                 continue
             #    for i, y in enumerate(v):
             #        # Encode index into the path ?
-            #        curpath = "%s:%d" % (curpath, i)
+            #        curpath = "{}:{}".format(curpath, i)
             #       yield hook(curpath, y, v)
             else:
                 yield hook(curpath, v, x)

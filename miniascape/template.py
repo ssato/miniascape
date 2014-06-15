@@ -73,7 +73,7 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
         dst = v.get("dst", src)
 
         if src is None:
-            logging.warn("%s lacks 'src' parameter" % k)
+            logging.warn("{} lacks 'src' parameter".format(k))
             continue
 
         if os.path.sep in src:
@@ -87,7 +87,7 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
         dst = os.path.join(workdir, dst)
         tpaths = srcdirs + [workdir]
 
-        logging.debug("Generating %s from %s [%s]" % (dst, src, k))
+        logging.debug("Generating {} from {} [{}]".format(dst, src, k))
         logging.debug("Template path: " + ", ".join(tpaths))
         renderto(tpaths, conf, src, dst)
 

@@ -52,14 +52,14 @@ def mk_ctx(input_file, use_default=False):
 
     for key_path, val, d in xs:
         if val is None:
-            val = raw_input("%s: " % key_path)
+            val = raw_input("{}: ".format(key_path))
             if not val:
-                raise RuntimeError("Invalid value entered: key=%s, val=%s" %
-                                   (key_path, str(val)))
+                raise RuntimeError("Invalid value entered: key={}, "
+                                   "val={}".format(key_path, str(val)))
         elif use_default:
             pass  # Just use the default: val
         else:
-            val_new = raw_input("%s [%s]: " % (key_path, val))
+            val_new = raw_input("{} [{}]: ".format(key_path, val))
             if val_new:
                 val = val_new  # update it unless user gave empty value.
 
@@ -104,8 +104,8 @@ def bootstrap(site_pattern, ctx_files, tpaths, workdir, use_default=False):
 
         for dirpath, dirnames, filenames in os.walk(conf_tmpldir):
             reldir = dirpath.replace(conf_tmpldir, '').replace("site", site)
-            logging.debug("conf_tmpldir=%s, reldir=%s, dirpath=%s" %
-                          (conf_tmpldir, reldir, dirpath))
+            logging.debug("conf_tmpldir={}, reldir={}, "
+                          "dirpath={}".format(conf_tmpldir, reldir, dirpath))
 
             for fn in filenames:
                 (fn_base, ext) = os.path.splitext(fn)

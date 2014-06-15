@@ -78,9 +78,9 @@ def _find_template(tmpldirs, template):
         if os.path.exists(tmpl):
             return tmpl
 
-    logging.warn("Could not find template %s in paths: %s" %
-                 (template, str(tmpldirs)))
-    return template  # Could not find in tmpldirs
+    logging.warn("Template {} not found in paths: "
+                 "{}".format(template, ', '.join(tmpldirs)))
+    return template
 
 
 def gen_vnet_files(cf, tmpldirs, workdir, force):
@@ -97,13 +97,13 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
     tmpl = _find_template(tmpldirs, _netxml_path())
     tpaths = [os.path.dirname(tmpl)]
 
-    logging.debug("Network XML params: tpaths=%s, tmpl=%s" % (tpaths, tmpl))
+    logging.debug("Network XML: tpaths={}, tmpl={}".format(tpaths, tmpl))
 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
     for name in nets:
-        netconf = os.path.join(outdir, "%s.yml" % name)
+        netconf = os.path.join(outdir, "{}.yml".format(name))
         if os.path.exists(netconf) and not force:
             logging.warn("Net conf already exists: " + netconf)
             return
@@ -111,7 +111,7 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
         logging.debug("Dump conf for the net: " + name)
         anyconfig.dump(nets[name], netconf)
 
-        netxml = os.path.join(outdir, "%s.xml" % name)
+        netxml = os.path.join(outdir, "{}.xml".format(name))
         if os.path.exists(netxml) and not force:
             logging.warn("Net xml already exists: " + netxml)
             return
@@ -165,10 +165,8 @@ def main(argv):
 
     houtdir = os.path.join(options.workdir, G.M_HOST_CONF_SUBDIR)
     if os.path.exists(houtdir) and not options.force:
-        yesno = raw_input(
-            "Are you sure to generate networks in %s ? [y/n]: " %
-            options.workdir
-        )
+        yesno = raw_input("Are you sure to generate networks in {} ? "
+                          "[y/n]: ".format(options.workdir))
         if not yesno.strip().lower().startswith('y'):
             print("Cancel creation of networks...")
             sys.exit(0)

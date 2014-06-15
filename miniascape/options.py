@@ -37,15 +37,15 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     ctxs_0 = G.site_src_ctx().replace(G.M_SITE_DEFAULT, "<site>")
 
     p.add_option("-t", "--tmpldir", action="append",
-                 help="Template top dir[s] [[%s]]" % G.M_TMPL_DIR)
+                 help="Template top dir[s] [[{}]]".format(G.M_TMPL_DIR))
     p.add_option("-s", "--site", help="Choose site [%default]")
     p.add_option("-C", "--ctx", dest="ctxs", action="append",
                  help="Specify context (conf) file[s] or path glob "
                       "pattern or dir (*.yml will be searched). It can be "
                       "given multiple times to specify multiple ones, ex. "
                       "-C /a/b/c.yml -C '/a/d/*.yml' -C /a/e/ "
-                      "[%s]. This option is only supported in some sub "
-                      "commands, configure and bootstrap." % ctxs_0)
+                      "[{}]. This option is only supported in some sub "
+                      "commands, configure and bootstrap.".format(ctxs_0))
     p.add_option("-w", "--workdir",
                  help="Working dir to output results [%default]")
     p.add_option("-v", "--verbose", action="store_const", const=0,

@@ -73,7 +73,7 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
             [os.path.join(d, os.path.dirname(src)) for d in gtmpldirs] + \
             [os.path.dirname(out)]
 
-        logging.debug("Generating %s from %s" % (out, src))
+        logging.debug("Generating {} from {}".format(out, src))
         T.renderto(tpaths, config, src, out, ask=True)
 
     return subprocess.check_output(
