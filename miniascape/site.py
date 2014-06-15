@@ -19,7 +19,6 @@ from miniascape.globals import LOGGER as logging
 import miniascape.globals as G
 import miniascape.options
 import miniascape.template
-import miniascape.utils
 
 import anyconfig
 import os.path
@@ -45,10 +44,7 @@ def load_site_ctx(ctxpath):
     if os.path.isdir(ctxpath):
         ctxpath = os.path.join(ctxpath, G.M_CONF_PATTERN)
     else:
-        if '*' in ctxpath and not miniascape.utils.sglob(ctxpath):
-            return None
-
-        elif not os.path.exists(ctxpath):
+        if '*' not in ctxpath and not os.path.exists(ctxpath):
             logging.info("Not exist and skipped: " + ctxpath)
             return None
 
