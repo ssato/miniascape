@@ -129,7 +129,7 @@ def option_parser():
                  help="Specify the site pattern [%default]")
     p.add_option("-L", "--list-site-patterns", action="store_true",
                  help="List available site patterns other than 'default'")
-    p.add_option("-C", "--ctx",
+    p.add_option("", "--cnf",
                  help="Specify the context files pattern or ctx file path")
     p.add_option("-U", "--use-default", action="store_true",
                  help="Just use default value if set w/o asking users")
@@ -153,12 +153,12 @@ def main(argv):
         print("Site patterns other than 'default': " + ", ".join(sps))
         sys.exit(0)
 
-    if not options.ctx:
-        options.ctx = _ctx_files_pattern(options.site_pattern,
+    if not options.cnf:
+        options.cnf = _ctx_files_pattern(options.site_pattern,
                                          options.confdir.replace("default",
                                                                  ''))
 
-    bootstrap(options.site_pattern, options.ctx, options.tmpldir,
+    bootstrap(options.site_pattern, options.cnf, options.tmpldir,
               options.workdir, options.use_default)
 
 
