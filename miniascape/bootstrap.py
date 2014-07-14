@@ -77,7 +77,7 @@ def option_parser():
     defaults = dict(site_template=G.M_SITE_DEFAULT, **O.M_DEFAULTS)
 
     p = O.option_parser(defaults, "%prog [OPTION ...]")
-    p.add_option("", "--site-template",
+    p.add_option("-S", "--site-template",
                  help="Site template name, e.g. default, rhui. [%default]")
     return p
 
