@@ -29,83 +29,37 @@ import os
 import sys
 
 
-def _ctx_files_pattern(site_pattern, ctx_topdir=G.M_CONF_TOPDIR,
-                       subdir=G.M_BOOTSTRAP_SUBDIR,
-                       ctx_pattern=G.M_CONF_PATTERN):
+def bootstrap(site, workdir, site_template=G.M_SITE_DEFAULT,
+              site_ctxdir=G.M_CONF_TOPDIR, tpaths=[]):
     """
-    >>> _ctx_files_pattern("foo", "/etc/miniascape.d", "bootstrap", "*.yml")
-    '/etc/miniascape.d/foo/bootstrap/*.yml'
-    """
-    return os.path.join(ctx_topdir, site_pattern, subdir, G.M_CONF_PATTERN)
+    Bootstrap the site by arranging default configuration files.
 
-
-def mk_ctx(input_file, use_default=False):
-    """
-    :param input_file: Path to input YAML file may have empty parameters
-    :param use_default: Use default value and do not ask user if default was
-        given and this parameter is True
-    """
-    ctx = AC.load(input_file, "yaml")
-
-    # Workaround for the "dictionary changed size during iteration" error.
-    xs = list(U.walk(ctx))
-
-    for key_path, val, d in xs:
-        if val is None:
-            val = raw_input("{}: ".format(key_path))
-            if not val:
-                raise RuntimeError("Invalid value entered: key={}, "
-                                   "val={}".format(key_path, str(val)))
-        elif use_default:
-            pass  # Just use the default: val
-        else:
-            val_new = raw_input("{} [{}]: ".format(key_path, val))
-            if val_new:
-                val = val_new  # update it unless user gave empty value.
-
-        key = key_path.split('.')[-1]
-        d[key] = val
-
-    return ctx
-
-
-def bootstrap(site_pattern, ctx_files, tpaths, workdir, use_default=False):
-    """
-    Bootstrap the site by generating configuration files from ctx files may
-    lack of some configuration parameters and configuration templates.
-
-    :param site_pattern: Site pattern name, ex. "default".
-    :param ctx_files: Context files pattern or file path,
-        ex. "~/tmp/foo/bootstrap/*.yml", "~/tmp/bar/bootstrap/00.yml".
-    :param tpaths: Template search paths,
-        ex. ["/usr/share/miniascape/templates", '.'].
+    :param site: Site name, ex. "default".
     :param workdir: Working dir to save results.
-    :param use_default: Use default value and do not ask user if default was
-        given and this parameter is True.
+    :param site_template: Site template name, ex. "default".
+    :param site_ctxdir: Top dir to hold sites' template configuration files
+    :param tpaths: Templates path list
     """
-    ctx = mk_ctx(ctx_files, use_default)
-    site = ctx.get("site", "site")
+    ctx = dict(site=site, workdir=workdir, site_template=site_template)
+    ctx_outdir = os.path.join(workdir, site)
 
-    if not os.path.exists(workdir):
-        os.makedirs(workdir)
+    if not os.path.exists(ctx_outdir):
+        logging.info("Creating site ctx dir: " + ctx_outdir)
+        os.makedirs(ctx_outdir)
 
-    AC.dump(ctx, os.path.join(workdir, "ctx.yml"))
+    for conf in U.sglob(os.path.join(site_ctxdir, site_template, "*.yml")):
+        os.symlink(os.path.abspath(conf),
+                   os.path.join(ctx_outdir, os.path.basename(conf)))
 
-    for tmpldir in tpaths:
-        conf_tmpldir = os.path.join(tmpldir, "config", site_pattern)
+    for tmpldir in (os.path.join(d, "bootstrap", site_template) for d
+                    in tpaths):
+        if not tmpldir.endswith(os.path.sep):
+            tmpldir += os.path.sep
 
-        if not os.path.exists(conf_tmpldir):
-            continue
-
-        if not conf_tmpldir.endswith(os.path.sep):
-            conf_tmpldir += os.path.sep
-
-        logging.debug("conf_tmpldir: " + conf_tmpldir)
-
-        for dirpath, dirnames, filenames in os.walk(conf_tmpldir):
-            reldir = dirpath.replace(conf_tmpldir, '').replace("site", site)
-            logging.debug("conf_tmpldir={}, reldir={}, "
-                          "dirpath={}".format(conf_tmpldir, reldir, dirpath))
+        for dirpath, dirnames, filenames in os.walk(tmpldir):
+            reldir = dirpath.replace(tmpldir, '')
+            logging.debug("tmpldir={}, reldir={}, "
+                          "dirpath={}".format(tmpldir, reldir, dirpath))
 
             for fn in filenames:
                 (fn_base, ext) = os.path.splitext(fn)
@@ -120,22 +74,11 @@ def bootstrap(site_pattern, ctx_files, tpaths, workdir, use_default=False):
 
 
 def option_parser():
-    defaults = dict(site_pattern='default', ctx=None, use_default=False,
-                    list_site_patterns=False, confdir=G.site_confdir(),
-                    **O.M_DEFAULTS)
+    defaults = dict(site_template=G.M_SITE_DEFAULT, **O.M_DEFAULTS)
 
     p = O.option_parser(defaults, "%prog [OPTION ...]")
-    p.add_option("-S", "--site-pattern",
-                 help="Specify the site pattern [%default]")
-    p.add_option("-L", "--list-site-patterns", action="store_true",
-                 help="List available site patterns other than 'default'")
-    p.add_option("-C", "--ctx",
-                 help="Specify the context files pattern or ctx file path")
-    p.add_option("-U", "--use-default", action="store_true",
-                 help="Just use default value if set w/o asking users")
-    p.add_option("-c", "--confdir",
-                 help="Top dir to hold site configuration files or "
-                      "configuration file [%default]")
+    p.add_option("-S", "--site-template",
+                 help="Site template name, e.g. default, rhui. [%default]")
     return p
 
 
@@ -146,21 +89,8 @@ def main(argv):
     set_loglevel(options.verbose)
     options = O.tweak_options(options)
 
-    if options.list_site_patterns:
-        sps = [os.path.basename(sp) for sp in
-               U.sglob(os.path.join(options.tmpldir[0], "config", '*'))
-               if os.path.isdir(sp)]
-        print("Site patterns other than 'default': " + ", ".join(sps))
-        sys.exit(0)
-
-    if not options.ctx:
-        options.ctx = _ctx_files_pattern(options.site_pattern,
-                                         options.confdir.replace("default",
-                                                                 ''))
-
-    bootstrap(options.site_pattern, options.ctx, options.tmpldir,
-              options.workdir, options.use_default)
-
+    bootstrap(options.site, options.workdir, options.site_template,
+              tpaths=options.tmpldir)
 
 if __name__ == '__main__':
     main(sys.argv)
