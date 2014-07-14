@@ -61,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 
 %changelog
-* Fri Jun  6 2014 Satoru SATOH <ssato@redhat.com> - 0.3.7.999-1
+* Mon Jul 14 2014 Satoru SATOH <ssato@redhat.com> - 0.3.8-1
 - Make storage volumes created on ahead of virt-install run
 - Fix packaging bug in the RPM spec generated for KVM host
 - Switch from gevent to multiprocessing to accomplish async template rendering
@@ -70,15 +70,17 @@ rm -rf $RPM_BUILD_ROOT
   having unique IPs in generated network xml files
 - Remove dependency to python-jinja2-cli by copying necessary files from it
 - Add RHUI related templates again
-- Apply enhancements and fixes to templates and config files from RHUI works
-- Add 'bootstrap' command to generate site config files from ctx (conf src) and
-  config template files
 - Add data-openstack sub package
 - Refactor and re-organize sub commands; now there is only two sub commands
   (bootstrap and configure == build)
 - Removed intermediate config files after 'configure' (w/o build) run as these
   are no more necessary
 - Removed sub packages contain intermediate config files, etc.
+- [templates] Apply enhancements and fixes for RHUI
+- [templates] Add templates for 'bootstrap' sub command
+- [templates] Add some more module options of kvm for nested kvm support
+- Enhanced the test driver script to run flake8 and pylint tests
+- Some more fixes and enhancements
 
 * Wed Dec 11 2013 Satoru SATOH <ssato@redhat.com> - 0.3.7-1
 - Added --dryrun option
