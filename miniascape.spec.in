@@ -16,6 +16,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.3.4
+Obsoletes:      miniascape-data-default <= 0.3.7
+Obsoletes:      miniascape-data-default-devel <= 0.3.7
 
 %description
 Personal cloud building tool for libvirt/KVM.
@@ -61,6 +63,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 
 %changelog
+* Wed Jul 23 2014 Satoru SATOH <ssato@redhat.com> - 0.3.9-1
+- Make some packages removed (-data-default-*) marked as obsoleted
+- Do not add --activate option for the anaconda option 'network' if number of
+  nics are one
+- Basically, it's just a maintainance release
+
 * Mon Jul 14 2014 Satoru SATOH <ssato@redhat.com> - 0.3.8-1
 - Make storage volumes created on ahead of virt-install run
 - Fix packaging bug in the RPM spec generated for KVM host
