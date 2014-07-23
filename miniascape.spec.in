@@ -63,6 +63,11 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 
 %changelog
+* Wed Jul 23 2014 Satoru SATOH <ssato@redhat.com> - 0.3.10-1
+- Add basic application tests runner script
+- Add application test cases of the site, default, openstack and rhui
+- Fix a syntax error in a template, templates/autoinstall.d/rhel-min-ks.cfg
+
 * Wed Jul 23 2014 Satoru SATOH <ssato@redhat.com> - 0.3.9-1
 - Make some packages removed (-data-default-*) marked as obsoleted
 - Do not add --activate option for the anaconda option 'network' if number of
