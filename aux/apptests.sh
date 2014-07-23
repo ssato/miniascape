@@ -1,11 +1,13 @@
 #! /bin/bash
-set -e
+set -ex
 
 curdir=${0%/*}
 topdir=${curdir}/../
 
-PYTHONPATH=${topdir} python miniascape/cli.py b \
-  -t ${topdir}/templates -s default \
-  -C 'conf/default/*.yml' -w /tmp/w -v
+for site in default openstack rhui; do
+  PYTHONPATH=${topdir} python miniascape/cli.py b \
+    -t ${topdir}/templates -s ${site} \
+    -C "conf/${site}/\*.yml" -w /tmp/w
+done
 
 # vim:sw=2:ts=2:et:
