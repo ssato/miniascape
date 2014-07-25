@@ -401,6 +401,7 @@ guests:
             host: *rhel_6_cluster_gfs_1_hostname
             fqdn: *rhel_6_cluster_gfs_1_fqdn
             network: service
+            activate: true
           - bootproto: static
             mac: "52:54:00:02:01:13"
             ip: 192.168.122.113
@@ -419,6 +420,7 @@ guests:
             host: *rhel_6_cluster_gfs_2_hostname
             fqdn: *rhel_6_cluster_gfs_2_fqdn
             network: service
+            activate: true
           - bootproto: static
             mac: "52:54:00:02:01:14"
             ip: 192.168.122.114
@@ -435,6 +437,7 @@ guests:
             host: *rhel_6_cluster_gfs_3_hostname
             fqdn: *rhel_6_cluster_gfs_3_fqdn
             network: service
+            activate: true
           - bootproto: static
             mac: "52:54:00:02:01:15"
             ip: 192.168.122.115
@@ -491,6 +494,7 @@ guests:
             host: *rhel_6_cluster_1_hostname
             fqdn: *rhel_6_cluster_1_fqdn
             network: service
+            activate: true
           - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:11"
             ip: 192.168.122.111
@@ -507,6 +511,7 @@ guests:
             host: *rhel_6_cluster_2_hostname
             fqdn: *rhel_6_cluster_2_fqdn
             network: service
+            activate: true
           - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:12"
             ip: 192.168.122.112
@@ -545,6 +550,7 @@ guests:
             host: *rhel_6_lvs_rs_1_hostname
             fqdn: *rhel_6_lvs_rs_1_fqdn
             network: service
+            activate: true
           - bootproto: static
             ip: 192.168.122.181
             host: rhel-6-lvs-rs-default-1
@@ -564,6 +570,7 @@ guests:
             host: *rhel_6_lvs_rs_2_hostname
             fqdn: *rhel_6_lvs_rs_2_fqdn
             network: service
+            activate: true
           - bootproto: static
             ip: 192.168.122.182
             host: rhel-6-lvs-rs-default-2
@@ -634,6 +641,7 @@ guests:
             host: *rhel_6_lvs_1_hostname
             fqdn: *rhel_6_lvs_1_fqdn
             network: service
+            activate: true
           - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:71"
             ip: 192.168.122.171
@@ -650,6 +658,7 @@ guests:
             host: *rhel_6_lvs_2_hostname
             fqdn: *rhel_6_lvs_2_fqdn
             network: service
+            activate: true
           - bootproto: static  # for heartbeat
             mac: "52:54:00:02:01:72"
             ip: 192.168.122.172
@@ -682,6 +691,7 @@ guests:
             host: *rhel_6_proxy_1_hostname
             fqdn: *rhel_6_proxy_1_fqdn
             network: service
+            activate: true
           - bootproto: static
             mac: "52:54:00:02:01:91"
             ip: 192.168.122.191
