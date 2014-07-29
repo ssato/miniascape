@@ -67,7 +67,7 @@ $(WORKDIR)/install-rhua.stamp: $(RHUI_ISO)
 
 certs: $(CERTSDIR)/certs.stamp
 $(CERTSDIR)/certs.stamp:
-	test -f $@ || make -C $(CERTSDIR) certs
+	test -f $@ || make -C $(CERTSDIR)
 
 genconf: $(WORKDIR)/genconf.stamp
 $(WORKDIR)/genconf.stamp: $(CERTSDIR)/certs.stamp $(WORKDIR)/answers.txt
