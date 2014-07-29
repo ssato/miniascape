@@ -4,7 +4,7 @@ set -ex
 curdir=${0%/*}
 topdir=${curdir}/../
 
-workdir=$(mktemp -d)
+workdir=$(mktemp -d /tmp/m2.XXXXXXXXXX)
 cleanup () { rm -rf ${workdir}; }
 
 trap cleanup INT TERM
