@@ -25,7 +25,7 @@ common:
       # format: raw
       # size: 10  # [GB]
 
-  swap: 512  # [MB]
+  swap: 1024  # [MB]
   filesystem: ext4
   auth:
     options: "--passalgo=sha512"
@@ -65,7 +65,7 @@ common:
     bridge: virbr0
 
   virtinst:
-    ram: 512
+    ram: 1024
     vcpus: 2
     basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
     connect: "qemu:///system"
