@@ -169,7 +169,10 @@ guests:
       # suitable mirrors to perform kickstart installation, available for CentOS ?
       #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/5.9/os/x86_64/"
       #location: "ftp://ftp.riken.jp/Linux/centos/5.9/os/x86_64/"
-      location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
+      #location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
+      #
+      # Download this iso image from https://access.redhat.com here.
+      location: &rhel-5-iso-image-path /var/lib/libvirt/images/rhel-server-5.10-x86_64-dvd.iso
       os_variant: rhel5.4
 
     disks:
@@ -200,7 +203,7 @@ guests:
     description: RHEL 5 Cluster (RHCS) nodes
     filesystem: ext3
     virtinst:
-      location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/5.9/os/x86_64/"
+      location: *rhel-5-iso-image-path
       os_variant: rhel5.4
 
     ks_repos:
