@@ -675,6 +675,19 @@ guests:
             network: default
             nodns: true
 
+  - name: rhel-7-client
+    description: Versatile RHEL 7 client systems
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-7-min-ks.cfg
+
+    guests:
+      - hostname: rhel-7-client-1
+        ip: 192.168.155.175
+        interfaces:
+          - network: service
+            mac: "52:54:00:05:01:75"
+
   - name: rhel-6-proxy
     squid:
       allowed_network: 192.168.155.0/24
