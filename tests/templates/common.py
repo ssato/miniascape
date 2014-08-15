@@ -21,7 +21,6 @@ import anyconfig
 import difflib
 import jinja2_cli.render as R
 import os.path
-import sys
 
 
 # = $topdir/test_templates/

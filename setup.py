@@ -38,11 +38,11 @@ def list_data_files_g(prefix, srcdir, offset=None):
             yield (instdir, files)
 
 
-data_files = list(list_data_files_g(M_CONF_TOPDIR, "conf", "conf/")) + \
-             concat(list_data_files_g(p, d) for p, d in
-                    (("share/%s" % PACKAGE, "templates"),  # template files
-                     ("share/%s" % PACKAGE, "tests"),      # test cases
-                     ))
+data_files = list(list_data_files_g(M_CONF_TOPDIR, "conf", "conf/"))
+data_files += concat(list_data_files_g(p, d) for p, d in
+                     (("share/%s" % PACKAGE, "templates"),  # template files
+                      ("share/%s" % PACKAGE, "tests"),      # test cases
+                      ))
 
 
 class SrpmCommand(Command):

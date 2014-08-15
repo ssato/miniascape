@@ -68,7 +68,7 @@ class Test_00_functions(unittest.TestCase):
         p = TT.option_parser()
         (options, _) = p.parse_args(["--ctx", "/tmp/foo"])
 
-        defaults = TT.M_DEFAULTS_POST
+        # defaults = TT.M_DEFAULTS_POST
 
         options = TT.tweak_options(options)
         self.assertEquals(options.site, None)

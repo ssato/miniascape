@@ -17,13 +17,11 @@
 # from __future__ import absolute_import
 from __future__ import print_function
 
-from miniascape.globals import LOGGER as logging, set_loglevel, M_TMPL_DIR
+from miniascape.globals import LOGGER as logging, set_loglevel
 import miniascape.globals as G
 import miniascape.options as O
 import miniascape.template as T
 import miniascape.utils as U
-
-import anyconfig as AC
 import os.path
 import os
 import sys

@@ -3,7 +3,6 @@
 # License: GPLv3+
 #
 import miniascape.bootstrap as TT
-import miniascape.globals as G
 import miniascape.utils as U
 import miniascape.tests.common as C
 

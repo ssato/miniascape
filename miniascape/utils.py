@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from miniascape.globals import LOGGER as logging
 from miniascape.memoize import memoize
 
 import glob
@@ -37,7 +36,9 @@ except AttributeError:
     chain_from_iterable = _from_iterable
 
 try:
+    # pylint: disable=no-name-in-module
     from anyconfig import is_mergeabledict_or_dict
+    # pylint: enable=no-name-in-module
 except ImportError:
     def is_mergeabledict_or_dict(x):
         return isinstance(x, dict)
