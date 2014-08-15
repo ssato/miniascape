@@ -11,8 +11,7 @@ trap cleanup INT TERM
 
 for site in default openstack rhui; do
   PYTHONPATH=${topdir} python miniascape/cli.py b \
-    -t ${topdir}/templates -s ${site} \
-    -C "conf/${site}/\*.yml" -w ${workdir}
+    -t ${topdir}/templates -C conf/${site}/ -w ${workdir}
 done
 
 # check w/ ksvalidator:
