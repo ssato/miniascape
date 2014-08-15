@@ -55,7 +55,8 @@ guests:
 
     templates:
       autoinst:
-        src: autoinstall.d/rhel-6-jboss-ks.cfg
+        # src: autoinstall.d/rhel-6-jboss-ks.cfg
+        src: autoinstall.d/rhel-7-jboss-ks.cfg
 
     setup_data:
       - src: data/jboss/Makefile
