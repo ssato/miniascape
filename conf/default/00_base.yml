@@ -31,13 +31,11 @@ common:
     options: "--passalgo=sha512"
 
   selinux: enforcing
-  ks_finish: reboot
+  ksdevice: &ksdevice eth0
 
   timezone:
     utc: true
     timezone: Asia/Tokyo
-
-  ksdevice: eth0
 
   # template cond variables:
   use_serial_console: true
@@ -63,6 +61,12 @@ common:
   cluster:
     # software bridge for inter cluster nodes communication:
     bridge: virbr0
+
+  kickstart:
+    install: cdrom
+    finish: reboot
+    repos: []
+    users: []
 
   virtinst:
     ram: 1024

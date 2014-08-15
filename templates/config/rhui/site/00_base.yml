@@ -16,8 +16,6 @@ common:
     os_variant: rhel6
     #extra_args: serial
 
-  ksdevice: eth0
-
   disks:
     - pool: default  # see `storage_pools`
       format: raw
@@ -51,17 +49,23 @@ common:
 
   selinux: enforcing
   ks_finish: reboot
+  ksdevice: eth0
 
   timezone:
     utc: true
     timezone: Asia/Tokyo
 
-  ks_users:
+  ks_users: &ks_users
     # example:
     #- name: rhuiadm
     #  uid: 1001
     #  iscrypted: true
     #  password: "$6$AT2LIrpx/hn6kdZg$PVc4/HdbUpk4JDoDUs.zNUp/qnOJ9juBwV13aQvKwOf5aypPB3xBakSa9gmjAi6RFurjif7gwx3XXWWblH10L/"
+
+  kickstart:
+    finish: reboot
+    ksdevice: eth0
+    users: *ks_users
 
   services:
     enabled:
