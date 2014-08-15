@@ -67,6 +67,7 @@ common:
     finish: reboot
     repos: []
     users: []
+    packages_options: "--ignoremissing"
 
   virtinst:
     ram: 1024
