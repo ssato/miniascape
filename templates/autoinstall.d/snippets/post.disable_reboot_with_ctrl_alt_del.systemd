@@ -1,0 +1,1 @@
+ln -sf /dev/null /usr/lib/systemd/system/ctrl-alt-del.target
