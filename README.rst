@@ -183,6 +183,9 @@ Upstream works
     ERROR    Error with storage parameters: Couldn't lookup volume object: Storage volume not found: no storage vol with matching name 'rhel-5-cluster-data-1.img'
     [root@lp5-4 out]#
 
+* It seems that virt-install defines nic's macaddr twice (install, boot and after installation) or once after installation.
+
+  * https://bugzilla.redhat.com/show_bug.cgi?id=1130449
 
 Done:
 
