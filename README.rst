@@ -183,10 +183,6 @@ Upstream works
     ERROR    Error with storage parameters: Couldn't lookup volume object: Storage volume not found: no storage vol with matching name 'rhel-5-cluster-data-1.img'
     [root@lp5-4 out]#
 
-* It seems that virt-install defines nic's macaddr twice (install, boot and after installation) or once after installation.
-
-  * https://bugzilla.redhat.com/show_bug.cgi?id=1130449
-
 Done:
 
 * python-virtinst (virt-install) fixes and enhancements:
@@ -198,6 +194,11 @@ Done:
 * libvirt fixes and enhancements:
 
   * Implement dnsmasq backend for libvirt: My patch was merged.
+
+* It seems that virt-install defines nic's macaddr twice (install, boot and after installation) or once after installation.
+
+  * https://bugzilla.redhat.com/show_bug.cgi?id=1130449: My patch was wrong and upstream author fixed the issue
+  * The fix: https://git.fedorahosted.org/cgit/virt-manager.git/commit/?id=d1f46a75e70e99eb4bf16e99300556689008eaf6
 
 miniascape itself
 -------------------
