@@ -15,7 +15,7 @@ check:
 
 install: check
 	test -f $(SATELLITE_ISO) || curl -O $(SATELLITE_ISO_URL)
-	trap "umount /mnt" INT TERM && mount -o ro,loop $(SATELLITE_ISO) /mnt && cd /mnt && ./install_packages.sh && cd - && umount /mnt
+	trap "umount /mnt" INT TERM && mount -o ro,loop $(SATELLITE_ISO) /mnt && cd /mnt && ./install_packages && cd - && umount /mnt
 
 install-online: check
 	test -n "$(SUBSCRIPTION_POOL_ID)" && subscription-manager subscribe --pool=$(SUBSCRIPTION_POOL_ID)
