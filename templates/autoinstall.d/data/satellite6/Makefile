@@ -26,6 +26,7 @@ install-online: check
 	yum install -y katello
 
 setup:
-	katello-configure $(CONFIGURE_OPTS)
+	sed -i.save -e 's,:answer_file: /etc/katello-installer/answers.katello-installer.yaml,:answer_file: /root/setup/answers.txt,g' /etc/katello-installer/katello-installer.yaml
+	katello-installer
 
 .PHONY: check install install-online setup

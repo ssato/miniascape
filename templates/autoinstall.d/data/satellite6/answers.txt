@@ -1,177 +1,41 @@
-# Originally taken from
-# https://git.fedorahosted.org/cgit/katello.git/tree/katello-configure/default-answer-file
-#
-# see also: http://red.ht/1gkb9Gw
+---
+certs:
+  generate: true
+  deploy: true
+  group: foreman
+katello: true
+foreman:
+  organizations_enabled: true
+  locations_enabled: true
+  custom_repo: true
+  configure_epel_repo: false
+  configure_scl_repo: false
+  ssl: true
+  server_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
+  server_ssl_key: /etc/pki/katello/private/katello-apache.key
+  server_ssl_ca: /etc/pki/katello/certs/katello-ca.crt
+  server_ssl_chain: /etc/pki/katello/certs/katello-ca.crt
+capsule:
+  register_in_foreman: true
+  puppet: true
+  puppetca: true
 
-# Path of the answer file.
-answer_file = {{ satellite.answer_file|default('/root/setup/answers.txt') }}
+foreman::plugin::bootdisk: true
+foreman::plugin::discovery: true
+foreman::plugin::hooks: true
+foreman::plugin::chef: false
+foreman::plugin::default_hostgroup: false
+foreman::plugin::puppetdb: false
+foreman::plugin::setup: false
+foreman::plugin::templates: false
 
-# Katello administrative user (default: admin)
-user_name = {{ satellite.admin.name|default('admin') }}
-
-# Katello user's password
-user_pass = {{ satellite.admin.password|default('secret') }}
-
-# Katello user's email (default: root@localhost)
-user_email = {{ satellite.admin.email|default('root@localhost') }}
-
-# Katello initial Organization (default: ACME_Corporation)
-org_name = {{ satellite.admin.org_name|default('ACME_Corporation') }}
-
-# HTTP Proxy URL (example: http://172.31.1.1)
-proxy_url = {{ proxy.url|default('NONE') }}
-
-# HTTP Proxy port (default: 3128)
-proxy_port = {{ proxy.port|default('NONE') }}
-
-# HTTP Proxy user (proxy username, if auth is required)
-proxy_user = {{ proxy.user|default('NONE') }}
-
-# HTTP Proxy pass (proxy password, if auth is required)
-proxy_pass = {{ proxy.password|default('NONE') }}
-
-# Katello database name.
-# PostgreSQL database name used to store the Katello database
-# objects.
-db_name = katelloschema
-
-# Katello database user.
-db_user = katellouser
-
-# Katello database password.
-db_password = katellopw
-
-# Candlepin database user
-candlepin_db_user = candlepin
-
-# Candlepin databse password
-candlepin_db_password = candlepin
-
-# Candlepin database name
-candlepin_db_name = candlepin
-
-# Deployment type (one of "katello", "headpin", "sam")
-deployment = katello
-
-# Non-interactive installer mode
-non_interactive = true
-
-# SSL CA password
-ssl_ca_password = katellocapw
-
-# SSL CA country
-ssl_ca_country = {{ satellite.ssl.country|default('JP') }}
-
-# SSL CA state
-ssl_ca_state = {{ satellite.ssl.state|default('Shibuya-ku') }}
-
-# SSL CA city
-ssl_ca_city = {{ satellite.ssl.city|default('Tokyo') }}
-
-# SSL CA organization
-ssl_ca_org = {{ satellite.ssl.org }}
-
-# SSL CA organization unit
-ssl_ca_org_unit = {{ satellite.ssl.unit }}
-
-# SSL CA common name
-ssl_ca_cn = {{ satellite.ssl.cn|default('Katello machine') }}
-
-# SSL CA e-mail address
-ssl_ca_email = root@localhost
-
-# SSL certificate expiration (in days)
-ssl_cert_expiration = {{ satellite.ssl.expires|default('365') }}
-
-# SSL CA password file path
-ssl_ca_password_file = /etc/katello/ssl_ca_password-file
-
-# Candlepin CA password file path
-candlepin_ca_password_file = /etc/katello/candlepin_ca_password-file
-
-# Keystore password file path for Candlepin
-keystore_password_file = /etc/katello/keystore_password-file
-
-# NSS db password file path
-nss_db_password_file = /etc/katello/nss_db_password-file
-
-# NSS database path
-nss_db_dir = /etc/pki/katello/nssdb
-
-# PKCS12 password file path
-ssl_pk12_password_file = /etc/katello/pk12_password-file
-
-# Authentication method (database, ldap)
-auth_method = database
-
-# LDAP server hostname
-ldap_server = localhost
-
-# LDAP server hostname
-ldap_port = 389
-
-# LDAP server type (:posix, :active_directory, :free_ipa)
-ldap_server_type = :posix
-
-# Encryption method used in communication with LDAP server (<empty>, start_tls)
-ldap_encryption =
-
-# Base DN for users accounts
-ldap_users_basedn = ou=People,dc=company,dc=com
-
-# Base DN for users groups
-ldap_groups_basedn = ou=Groups,dc=company,dc=com
-
-# Use LDAP for roles membership definition (true, false)
-ldap_roles = false
-
-# Allow anonymous queries (true, false) for AD or FreeIPA
-ldap_anon_queries = false
-
-# Service username for non-anon queries (IPA, AD)
-ldap_service_user =
-
-# Service password for non-anon queries (IPA, AD)
-ldap_service_pass =
-
-# Domain for AD LDAP queries
-ldap_ad_domain =
-
-# Turn on LDAP username and group validation
-validate_ldap = true
-
-# ElasticSearch ES_MIN_MEM java heap setting
-es_min_mem = 256m
-
-# ElasticSearch ES_MAX_MEM java heap setting
-es_max_mem = 256m
-
-# PostgreSQL superuser password (NONE for no password)
-psql_password_file = NONE
-
-# OAuth token file
-oauth_token_file = /etc/katello/oauth_token-file
-
-# Pulp user password file
-pulp_user_password_file = /etc/katello/pulp_user_password-file
-
-# Set to 'YES' to erase all databases.
-# WARNING: This is dangerous option! Only value of 'YES' (uppercase)
-# triggers the action. (This value is not remembered in
-# katello-configure.conf).
-reset_data = NONE
-
-# Set to 'YES' to erase RPM packages from Pulp.
-# Erases downloaded RPM packages from /var/lib/pulp/packages.
-# Only value of 'YES' (uppercase) triggers the action. (This value
-# is not remembered in katello-configure.conf).
-reset_cache = NONE
-
-# Background job workers (default 1)
-job_workers = 1
-
-# Katello thin workers (the default is computed from system resources)
-katello_web_workers = NONE
-
-# Foreman thin workers (the default is computed from system resources)
-foreman_web_workers = NONE
+# Issue #4244 - Commenting these out due to the seg fault
+# caused on Ruby 1.8.7, the Katello RPM ensures these
+# are installed instead
+#foreman::compute::ec2: true
+#foreman::compute::gce: true
+#foreman::compute::libvirt: true
+#foreman::compute::openstack: false
+#foreman::compute::ovirt: true
+#foreman::compute::rackspace: false
+#foreman::compute::vmware: true
