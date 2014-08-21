@@ -1009,7 +1009,9 @@ guests:
 
     services:
       enabled:
+        - sshd
         - ntpd
+        - ntpdate
 
     rhn:
     #  username: foo@m2.local
