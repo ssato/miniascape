@@ -677,6 +677,10 @@ guests:
 
   - name: rhel-7-client
     description: Versatile RHEL 7 client systems
+
+    virtinst:
+      os_variant: rhel7
+
     templates:
       autoinst:
         src: autoinstall.d/rhel-7-min-ks.cfg
