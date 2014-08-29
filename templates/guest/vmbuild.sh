@@ -85,6 +85,9 @@ virt-install \
 --graphics {{ virtinst.graphics }}{% if keyboard is defined %},keymap={{ keyboard }}{% endif %} \
 --os-type={{ virtinst.os_type }} \
 --os-variant={{ virtinst.os_variant }} \
+{%	if virtinst.os_variant == 'rhel7' -%}
+--console pty,target_type=serial \
+{%	endif -%}
 ${virtio_scsi_controller} \
 ${location_opts} {% if virtinst.cdrom is not defined %}--extra-args="ks=file:/${kscfg} ${more_extra_args}"{% endif %} \
 {%    for disk in disks -%}

@@ -679,7 +679,9 @@ guests:
     description: Versatile RHEL 7 client systems
 
     virtinst:
+      location: /var/lib/libvirt/images/rhel-server-7.0-x86_64-dvd.iso
       os_variant: rhel7
+      extra_args: console=tty0 console=ttyS0,115200 net.ifnames=0 video=640x480
 
     templates:
       autoinst:
