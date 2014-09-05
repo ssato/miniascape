@@ -33,7 +33,7 @@ common:
       #db_pw: *packstack_pw
       #ks_pw: *packstack_pw
       pub_if: eth0
-      private_if: eth1
+      priv_if: eth1
       network:
         fixedrange: 192.168.32.0/24  # openstack-private network
         floatrange: 10.3.4.0/22      # Not used w/ neutron-based (default)

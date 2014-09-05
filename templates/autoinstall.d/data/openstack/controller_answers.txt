@@ -207,7 +207,7 @@ CONFIG_NOVA_NETWORK_MANAGER=nova.network.manager.FlatDHCPManager
 CONFIG_NOVA_NETWORK_PUBIF={{ packstack.nova.pub_if|default('eth0') }}
 
 # Private interface for network manager on the Nova network server
-CONFIG_NOVA_NETWORK_PRIVIF={{ packstack.nova.pub_if|default('eth1') }}
+CONFIG_NOVA_NETWORK_PRIVIF={{ packstack.nova.priv_if|default('eth1') }}
 
 # IP Range for network manager
 CONFIG_NOVA_NETWORK_FIXEDRANGE={{ packstack.nova.network.fixedrange|default('192.168.32.0/22') }}
