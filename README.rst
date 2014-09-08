@@ -5,9 +5,9 @@ miniascape
 Disclaimer
 -----------
 
-WARNING: miniascape is in pre-alpha state and will heavily udpate day by day,
-so it may not work in your environment or might cause trouble. TRY IT IN YOUR
-OWN RISK, PLEASE.
+WARNING: miniascape is in alpha state and will heavily udpate day by day, so it
+may not work in your environment or might cause trouble. TRY IT IN YOUR OWN
+RISK, PLEASE.
 
 About
 -------
