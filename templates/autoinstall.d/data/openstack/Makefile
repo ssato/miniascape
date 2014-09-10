@@ -6,52 +6,42 @@
 # 
 WORKDIR ?= /root/setup
 FULL_UPDATE ?= no
-
 #
 # Required software channels:
 #
 #   * RDO:
-#     - RHEL 6 x86_64 Optional
+#     - RDO repository (sudo yum install -y https://rdo.fedorapeople.org/rdo-release.rpm)
+#     - EPEL 6/7 x86_64
+#     - RHEL 6/7 x86_64 Optional
 #
-#   * Red Hat OpenStack (supported version):
-#     - RHEL 6 x86_64 Optional
-#     - Red Hat OpenStack 3.0 (rhel-x86_64-server-6-ost-3) (Havana not in RHOS yet)
+#   * RHEL OSP (supported version):
+#     - Red Hat Enterprise Linux 7 Server (RPMS): rhel-7-server-rpms [must]
+#     - Red Hat OpenStack 5.0 for Server 7 (RPMS): rhel-7-server-openstack-5.0-rpms [must])
+#     - Red Hat Common for RHEL Server (RPMS): rhel-7-server-rh-common-rpms [optional; RHEL guest images]
 #
-RHN_AKEYS ?= {{ rhn.activationkeys|default('') }}
-RHN_PROFILENAME ?= {% if rhn.profilename is defined %}{{ rhn.profilename }}{% else %}$(shell hostname -f)_{{ miniascape.builder }}_$(shell date +%Y%m%d_%H%M%S){% endif %}
+# See also:
+#   * RHEL-OSP 5 Deploying OpenStack: Proof-of-Concept Environments (PackStack),
+#     2.1.2.3.1. Content Delivery Network (CDN) Channels: http://red.ht/1rVMdLv
+#   * RDO Repositories: https://openstack.redhat.com/Repositories
+#
+{% if openstack.use_rdo -%}
+make_repos_available ?= yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
+{% else %}
+RH_SUBSCRIPTION_POOL ?= {{ redhat.subscription.pool|default('') }}
 
-ifeq ($(RHN_AKEYS),)
-rhnreg_ks_OPTIONS ?=
+ifeq ($(RH_SUBSCRIPTION_POOL),)
+SM_ATTACH_OPTIONS = --auto
 else
-rhnreg_ks_OPTIONS ?= --activationkey=$(RHN_AKEYS)
+SM_ATTACH_OPTIONS = --pool=$(RH_SUBSCRIPTION_POOL)
 endif
 
-pre_install_OPENSTACK_RPMS ?= yum install -y yum-plugin-priorities
-{% if not openstack.use_rdo -%}
-make_repos_available ?= test -f /etc/sysconfig/rhn/systemid || rhnreg_ks --profilename=$(RHN_PROFILENAME) -v --force $(rhnreg_ks_OPTIONS)
-install_OPENSTACK_RPMS ?= $(make_repos_available) && yum install -y \
-python-sphinx python-docutils python-jinja2 \
-openstack-keystone openstack-utils openstack-selinux \
-openstack-swift-proxy openstack-swift-object openstack-swift-container openstack-swift-account \
-openstack-glance \
-openstack-cinder \
-openstack-quantum openstack-quantum-openvswitch openstack-quantum-linuxbridge \
-openstack-nova-novncproxy openstack-nova-console \
-openstack-nova-api openstack-nova-compute \
-openstack-nova-conductor openstack-nova-scheduler \
-python-cinderclient \
-openstack-dashboard \
-nrpe nagios-plugins-nrpe nagios-plugins-ping \
-puppet \
-openstack-packstack \
-$(NULL)
-{% else %}
-make_repos_available ?= yum install -y http://rdo.fedorapeople.org/openstack-havana/rdo-release-havana.rpm
-install_OPENSTACK_RPMS ?= $(make_repos_available) && yum install -y openstack-packstack
+define make_repos_available ?=
+subscription-manager register
+subscription-manager attach $(SM_ATTACH_OPTIONS)
+subscription-manager repos --disable='*'{% for repo in openstack.repos %} --enable={{ repo }}{% endfor %}
+endef
 {% endif %}
-
-## TODO: Make the following default for RHOS installation ?
-packstack_OPTIONS ?= --allinone --os-quantum-install=n
+install_OPENSTACK_RPMS ?= yum install -y openstack-packstack
 packstack_OPTIONS ?= --allinone
 
 
@@ -59,7 +49,6 @@ all: install
 
 install:
 	$(make_repos_available)
-	$(pre_install_OPENSTACK_RPMS)
 ifeq ($(FULL_UPDATE),yes)
 	yum update -y
 endif
