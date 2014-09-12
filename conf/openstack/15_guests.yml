@@ -3,6 +3,10 @@ public_network: &public_network openstack-public
 private_network: &private_network openstack-private
 
 common:
+  redhat:
+    subscription:
+      pool:
+
   virtinst:
     os_variant: rhel7
     location: /var/lib/libvirt/images/rhel-server-7.0-x86_64-dvd.iso
