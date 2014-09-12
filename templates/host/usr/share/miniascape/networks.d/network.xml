@@ -1,8 +1,8 @@
 <network>
   <name>{{ name }}</name>
-  {% if mode in ('nat', 'bridge') %}<forward mode='{{ mode }}'/>{% endif %}
-  {% if bridge is defined %}<bridge name='{{ bridge }}'/>{% endif -%}
-  {% if domain is defined %}<domain name='{{ domain }}'/>{% endif %}
+  {{ "<forward mode='%s'/>" % mode if mode in ('nat', 'bridge') }}
+  {{ "<bridge name='%s'/>" % bridge if bridge is defined and bridge }}
+  {{ "<domain name='%s'/>" % domain if domain is defined and domain }}
   <dns>
     <!-- Libvirt host aliases: -->
     <host ip='{{ gateway }}'><hostname>gw.{{ domain }}</hostname></host>
