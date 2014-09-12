@@ -7,9 +7,9 @@
   <dns>
     <!-- Libvirt host aliases: -->
     <host ip='{{ gateway }}'><hostname>gw.{{ domain }}</hostname></host>
-    {%   for h in hosts|sort(attribute="ip") if h.fqdn is defined or h.host is defined -%}
+    {%   for h in hosts|sort(attribute="ip") if h.fqdn is defined or h.host is defined %}
     <host ip='{{ h.ip }}'><hostname>{{ h.fqdn if h.fqdn is defined else '%s.%s' % (h.host, domain) }}</hostname></host>
-{%-      endfor %}
+{%       endfor %}
   </dns>
 {%- endif %}
   <ip address='{{ gateway }}' netmask='{{ netmask|default("255.255.255.0") }}'>
