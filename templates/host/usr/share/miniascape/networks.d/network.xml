@@ -3,16 +3,23 @@
   {{ "<forward mode='%s'/>" % mode if mode in ('nat', 'bridge') }}
   {{ "<bridge name='%s'/>" % bridge if bridge is defined and bridge }}
   {{ "<domain name='%s'/>" % domain if domain is defined and domain }}
+{% if mode == 'nat' -%}
   <dns>
     <!-- Libvirt host aliases: -->
     <host ip='{{ gateway }}'><hostname>gw.{{ domain }}</hostname></host>
-    <host ip='{{ gateway }}'><hostname>ks.{{ domain }}</hostname></host>
-{% for h in hosts|sort(attribute="ip") if h.fqdn is defined or h.host is defined %}    <host ip='{{ h.ip }}'><hostname>{% if h.fqdn is defined %}{{ h.fqdn }}{% else %}{{ h.host }}.{{ domain }}{% endif %}</hostname></host>
-{% endfor %}  </dns>
+    {%   for h in hosts|sort(attribute="ip") if h.fqdn is defined or h.host is defined -%}
+    <host ip='{{ h.ip }}'><hostname>{{ h.fqdn if h.fqdn is defined else '%s.%s' % (h.host, domain) }}</hostname></host>
+{%-      endfor %}
+  </dns>
+{%- endif %}
   <ip address='{{ gateway }}' netmask='{{ netmask|default("255.255.255.0") }}'>
-{% if dhcp is defined %}    <dhcp>
+    {% if dhcp is defined -%}
+    <dhcp>
       <range start='{{ dhcp.start }}' end='{{ dhcp.end }}'/>
-{% for h in hosts_w_unique_macs|sort(attribute="mac") if h.fqdn is defined or h.host is defined %}      <host mac='{{ h.mac }}' {% if h.fqdn is defined %}name='{{ h.fqdn }}'{% else %}name='{{ h.host }}.{{ domain }}'{% endif %} ip='{{ h.ip }}'/>
-{% endfor %}    </dhcp>{% endif %}
+      {% for h in hosts_w_unique_macs|sort(attribute="mac") if h.fqdn is defined or h.host is defined -%}
+      <host mac='{{ h.mac }}' {{ "name=%s" % h.fqdn if h.fqdn is defined else "name='%s.%s'" % (h.host, domain ) }} ip='{{ h.ip }}'/>
+{%       endfor %}
+    </dhcp>
+{%-    endif %}
   </ip>
 </network>
