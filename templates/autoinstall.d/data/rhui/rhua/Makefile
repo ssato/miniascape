@@ -38,16 +38,28 @@ endif
 
 CDS_CLUSTER ?= {{ cds.clusters }}
 
+SUBSCRIPTION_MANAGER_OPTIONS ?=
+SUBSCRIPTION_MANAGER_LOGIN_OPTIONS	?= \
+	{{ "--username=%s" % rhn.username if rhn.username }} \
+	{{ "--password=%s" % rhn.password if rhn.password }}
+
+
 all:
 	@echo "Usage: make [VAR_OVERRIDES ...]"
 	@echo ""
 	@echo "ex. make RHUI_URL=http://example.com/rhui.iso fetch_RHUI_ISO='curl ' fetch"
 	@echo "ex. make install-rhua"
 	@echo ""
-	@echo "  Targets for RHUA: check fetch install-rhua certs genconf genkey"
+	@echo "  Targets for RHUA: check register fetch install-rhua certs genconf genkey"
 	@echo ""
 
 # common:
+register:
+	subscription-manager unregister $(SUBSCRIPTION_MANAGER_OPTIONS) $(SUBSCRIPTION_MANAGER_LOGIN_OPTIONS) || :
+	subscription-manager clean $(SUBSCRIPTION_MANAGER_OPTIONS) || :
+	subscription-manager register --type=rhui $(SUBSCRIPTION_MANAGER_OPTIONS) $(SUBSCRIPTION_MANAGER_LOGIN_OPTIONS)
+	@echo "Now you ready to generate RHUI entitlement cert on: https://access.redhat.com/management/consumers/ "
+
 fetch: $(RHUI_ISO)
 $(RHUI_ISO):
 	$(fetch_RHUI_ISO) $(RHUI_URL)
