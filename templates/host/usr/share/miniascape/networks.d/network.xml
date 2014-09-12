@@ -1,7 +1,7 @@
 <network>
   <name>{{ name }}</name>
   {% if mode in ('nat', 'bridge') %}<forward mode='{{ mode }}'/>{% endif %}
-  <bridge name='{{ bridge|default("virbr10") }}' stp='on' delay='0' />
+  {% if bridge is defined %}<bridge name='{{ bridge }}'/>{% endif -%}
   {% if domain is defined %}<domain name='{{ domain }}'/>{% endif %}
   <dns>
     <!-- Libvirt host aliases: -->
