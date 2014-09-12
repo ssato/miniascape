@@ -39,18 +39,16 @@ endif
 CDS_CLUSTER ?= {{ cds.clusters }}
 
 SUBSCRIPTION_MANAGER_OPTIONS ?=
-SUBSCRIPTION_MANAGER_LOGIN_OPTIONS	?= \
-	{{ "--username=%s" % rhn.username if rhn.username }} \
-	{{ "--password=%s" % rhn.password if rhn.password }}
+SUBSCRIPTION_MANAGER_LOGIN_OPTIONS	?= {{ "--username=%s" % rhn.username if rhn.username }} {{ "--password=%s" % rhn.password if rhn.password }}
 
 
 all:
 	@echo "Usage: make [VAR_OVERRIDES ...]"
 	@echo ""
 	@echo "ex. make RHUI_URL=http://example.com/rhui.iso fetch_RHUI_ISO='curl ' fetch"
-	@echo "ex. make install-rhua"
+	@echo "ex. make install"
 	@echo ""
-	@echo "  Targets for RHUA: check register fetch install-rhua certs genconf genkey"
+	@echo "  Targets for RHUA: register check fetch install certs genconf genkey"
 	@echo ""
 
 # common:
@@ -60,19 +58,18 @@ register:
 	subscription-manager register --type=rhui $(SUBSCRIPTION_MANAGER_OPTIONS) $(SUBSCRIPTION_MANAGER_LOGIN_OPTIONS)
 	@echo "Now you ready to generate RHUI entitlement cert on: https://access.redhat.com/management/consumers/ "
 
-fetch: $(RHUI_ISO)
-$(RHUI_ISO):
-	$(fetch_RHUI_ISO) $(RHUI_URL)
-
 check: $(WORKDIR)/check.stamp
 $(WORKDIR)/check.stamp:
 	date
 	fqdn=`hostname -f`; test "x$$fqdn" = 'x{{ fqdn }}'
 	touch $@
 
-# On RHUA
-install-rhua: $(WORKDIR)/install-rhua.stamp
-$(WORKDIR)/install-rhua.stamp: $(RHUI_ISO)
+fetch: $(RHUI_ISO)
+$(RHUI_ISO):
+	$(fetch_RHUI_ISO) $(RHUI_URL)
+
+install: $(WORKDIR)/install.stamp
+$(WORKDIR)/install.stamp: $(RHUI_ISO)
 	mount -o ro,loop $(RHUI_ISO) /mnt
 	cd /mnt && ./install_RHUA.sh && cd - && umount /mnt
 	touch $@
@@ -89,5 +86,5 @@ genkey: $(WORKDIR)/genkey.stamp
 $(WORKDIR)/genkey.stamp: $(WORKDIR)/gen_rpm_gpgkey.sh
 	bash -x $< 2>&1 | tee $<.log
 
-.PHONY: check fetch install-rhua certs genconf genkey
+.PHONY: register check fetch install certs genconf genkey
 
