@@ -40,6 +40,7 @@ common:
   # template cond variables:
   use_serial_console: true
   store_cmdline: true
+  setup_screen: true
 
   #ntpservers:
     # TODO: set default NTP servers.
