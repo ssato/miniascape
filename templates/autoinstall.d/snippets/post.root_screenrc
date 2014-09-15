@@ -1,1 +1,8 @@
-echo "escape ^t^t" > /root/dot.screenrc && cd /root && ln -s dot.screenrc .screenrc
+mkdir -p /root/setup/screen/logs
+cat << 'EOF' > /root/setup/screen/rc
+escape ^t^t
+defscrollback 3000
+deflog on
+logfile $HOME/.screen/logs/screen-%Y%m%d-%n.log
+EOF
+cd /root && ln -s setup/screen .screen && ln -s .screen/rc .screenrc
