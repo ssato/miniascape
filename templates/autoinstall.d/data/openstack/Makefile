@@ -35,10 +35,12 @@ else
 SM_ATTACH_OPTIONS = --pool=$(RH_SUBSCRIPTION_POOL)
 endif
 
+# https://access.redhat.com/products/red-hat-enterprise-linux-openstack-platform/get-started
 define make_repos_available ?=
 subscription-manager register
 subscription-manager attach $(SM_ATTACH_OPTIONS)
 subscription-manager repos --disable='*'{% for repo in openstack.repos %} --enable={{ repo }}{% endfor %}
+yum-config-manager --setopt=”rhel-7-server-openstack-5.0-rpms.priority=1” --enable rhel-7-server-openstack-5.0-rpms
 endef
 {% endif %}
 install_OPENSTACK_RPMS ?= yum install -y openstack-packstack
