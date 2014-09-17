@@ -1,5 +1,4 @@
-# Required by openstack-packstack but it's in RHEL 6 *Optional* repo:
-#yum-plugin-priorities
+yum-plugin-priorities
 #
 # Likewise:
 #python-sphinx
