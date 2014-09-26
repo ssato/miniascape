@@ -29,7 +29,7 @@ rhui-ca.srl:
 # Generate the RHUI CA private key, certificate signing request (csr) and
 # certificate at once:
 rhui-ca.crt rhui-ca.key:
-	openssl req -new -x509 -extensions v3_ca -days $(DAYS) -nodes -keyout rhui-ca.key -subj "$(SUBJ_BASE)$(RHUA_FQDN) CA" -out $@
+	openssl req -new -x509 -extensions v3_ca -days $(DAYS) -nodes -keyout rhui-ca.key -subj "$(SUBJ_BASE)RHUI CA" -out $@
 
 # Generate the private key for RHUA:
 $(RHUA_FQDN).key:
