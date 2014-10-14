@@ -39,7 +39,8 @@ endif
 define make_repos_available ?=
 subscription-manager register
 subscription-manager attach $(SM_ATTACH_OPTIONS)
-subscription-manager repos --disable='*'{% for repo in openstack.repos %} --enable={{ repo }}{% endfor %}
+subscription-manager repos --disable='*'
+subscription-manager repos {% for repo in openstack.repos %} --enable={{ repo }}{% endfor %}
 yum-config-manager --setopt=”rhel-7-server-openstack-5.0-rpms.priority=1” --enable rhel-7-server-openstack-5.0-rpms
 endef
 {% endif %}

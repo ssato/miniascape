@@ -4,7 +4,7 @@ outdir={{ outdir }}
 datadir=${outdir}/setup
 test -d ${outdir} || mkdir -p ${outdir}
 chown -R root.root ${outdir}
-chmod -R -m 700 ${outdir}
+chmod -R -m 700 ${outdir} || chmod -R 700 ${outdir}
 cat << 'EOF' > ${outdir}/setup.tar.xz.base64
 {%         include 'setup.tar.xz.base64' %}
 EOF
@@ -15,7 +15,7 @@ cd ${outdir} && base64 -i -d setup.tar.xz.base64 > setup.tar.xz && xz -d setup.t
 {%-        endif %}
 {%-        for data in setup_data if data.install is defined -%}
 install -m{{ data.install.mode|default('644') }} --suffix=.save --backup ${datadir}/{{ data.dst }} {{ data.install.dst }}
-{%-        else %}#  ... there is no data to install.
+{%-        else %}  #  ... there is no data to install.
 {%         endfor %}
 {%-    endif %}
 {% endmacro %}
