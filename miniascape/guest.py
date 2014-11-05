@@ -65,16 +65,28 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
 
     for t in tmpls:
         src = t.get("src", None)
-        assert src is not None, "Lacks 'src'"
+        content = t.get("content", None)
 
-        dst = t.get("dst", src)
-        out = os.path.join(gworkdir, "setup", dst)
-        tpaths = gtmpldirs + \
-            [os.path.join(d, os.path.dirname(src)) for d in gtmpldirs] + \
-            [os.path.dirname(out)]
+        if content is None:
+            assert src is not None, "'src' must not be empty if content isn't!"
 
-        logging.debug("Generating {} from {}".format(out, src))
-        T.renderto(tpaths, config, src, out, ask=True)
+            dst = t.get("dst", src)
+            out = os.path.join(gworkdir, "setup", dst)
+            tpaths = gtmpldirs + \
+                [os.path.join(d, os.path.dirname(src)) for d in gtmpldirs] + \
+                [os.path.dirname(out)]
+
+            logging.debug("Generating {} from {}".format(out, src))
+            T.renderto(tpaths, config, src, out, ask=True)
+        else:
+            dst = t.get("dst", None)
+            assert dst is not None, "'dst' must be given if content is set!"
+
+            out = os.path.join(gworkdir, "setup", dst)
+            tpaths = gtmpldirs + [os.path.dirname(out)]
+
+            logging.debug("Generating {} from given content".format(out))
+            T.render_s(tpaths, config, content, out)
 
     return subprocess.check_output(
         "tar --xz -c setup | base64 > setup.tar.xz.base64",

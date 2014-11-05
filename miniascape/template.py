@@ -27,6 +27,23 @@ def _renderto(tpaths, ctx, tmpl, output, ask=False):
     miniascape.contrib.render.renderto(tmpl, ctx, tpaths, output, ask=ask)
 
 
+def render_s(tpaths, ctx, tmpl_s, output):
+    """
+    NOTE: Take care not to forget stop (join) threads run from this function
+    if ask = False and async = True.
+
+    :param ctx: Context (dict like obj) to instantiate templates
+    :param tmpl_s: Template string
+    :param output: Output file path
+    """
+    d = os.path.dirname(output)
+    if not os.path.exists(d):
+        os.makedirs(d)
+
+    content = miniascape.contrib.render.render_s(tmpl_s, ctx, tpaths)
+    miniascape.contrib.render.open(output, 'w', 'UTF-8').write(content)
+
+
 def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
     """
     NOTE: Take care not to forget stop (join) threads run from this function
