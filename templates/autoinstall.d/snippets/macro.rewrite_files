@@ -1,0 +1,15 @@
+{% macro rewrite_files(rewrite_data, save=true, saveext=".save", sed_sep=",") -%}
+{%     if rewrite_data is defined -%}
+{%         for data in rewrite_data if data.file is defined and data.file and data.rewrites is defined and data.rewrites -%}
+f={{ data.file }}
+if test -f $f; then
+    {%         if save %}test -f $f.{{ saveext }} || cp $f $f.{{ saveext }}{% endif %}
+    sed -i -r '
+{%             for rewrite in data.rewrites if rewrite.match and rewrite.result -%}
+s{{ sed_sep }}{{ rewrite.match }}{{ sed_sep }}{{ rewrite.result }}{{ sed_sep }}g
+{%             endfor %}
+' $f
+{%         endfor %}
+endif
+{%-    endif %}
+{% endmacro %}
