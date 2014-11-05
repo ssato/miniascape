@@ -46,7 +46,7 @@ sed -i -e 's/^\(NM_CONTROLLED=\)/#\1/' \
        {% if noipv6 %}-e 's/^\(IPV6INIT=.*\)/IPV6INIT=no/'{% endif %} $f
 {%-  endif %}
 {% endfor -%}
-{% include "snippets/post.update_sysconfig_network" -%}
+{% include "snippets/post.update_sysconfig_network" %}
 {% if noipv6 is defined and noipv6 -%}
 {%   include "snippets/post.disable_ipv6" -%}
 {% endif %}
