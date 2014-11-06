@@ -10,6 +10,6 @@ s{{ sed_sep }}{{ rewrite.match }}{{ sed_sep }}{{ rewrite.result }}{{ sed_sep }}g
 {%             endfor %}
 ' $f
 {%         endfor %}
-endif
+fi
 {%-    endif %}
 {% endmacro %}
