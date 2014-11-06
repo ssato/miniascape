@@ -19,13 +19,19 @@ bf=/root/setup/$f.save
 test -f $bf || cp $f $bf
 cat << EOF > $f
 DEVICE={{ ni.device }}
+TYPE={{ ni.type|default('Ethernet') }}
 IPADDR={{ ni.ip }} 
 NETMASK={% if ni.netmask is defined %}{{ ni.netmask }}{% else %}{{ netmask|default('255.255.255.0') }}{% endif %}
 ONBOOT={{ ni.onboot|default('yes') }}
-BOOTPROTO=none
-USERCTL=no
-NM_CONTROLLED=no
+BOOTPROTO={{ ni.bootproto|default('static') }}
+USERCTL={{ ni.userctl|default('no') }}
+NM_CONTROLLED={{ ni.nm_controlled|default('no') }}
 PEERDNS={% if ni.nodns is defined %}no{% else %}yes{% endif %}
+{% if ni.extra_options -%}
+{%     for eopt in ni.extra_options -%}
+{{ eopt }}
+{%     endfor %}
+{% endif -%}
 EOF
 cp $f /root/setup/$f
 {%     if ni.route is defined -%}
