@@ -9,7 +9,7 @@ if test -f $f; then
 s{{ sed_sep }}{{ rewrite.match }}{{ sed_sep }}{{ rewrite.result }}{{ sed_sep }}g
 {%             endfor %}
 ' $f
-{%         endfor %}
 fi
+{%         endfor %}
 {%-    endif %}
 {% endmacro %}
