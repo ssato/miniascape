@@ -4,7 +4,7 @@ common:
 
   rhui:
     # example: 54fb6627dbaa37721048e4549db3224d.pem
-    rhui_entitlement_cert: &rhui_entitlement_cert YOUR_RHUI_ENTITLEMNET_CERT_0
+    rhui_entitlement_cert: &rhui_entitlement_cert rhui_entitlement_cert_0.pem
 
     ssl_cert_subject: &ssl_cert_subject "/C=JP/ST=Tokyo/O=Example, Inc./CN="
 
