@@ -6,7 +6,7 @@
 {% if mode == 'nat' -%}
   <dns>
     <!-- Libvirt host aliases: -->
-    <host ip='{{ gateway }}'><hostname>gw.{{ domain }}</hostname></host>
+    <host ip='{{ gateway }}'><hostname>gw{{ domain if domain is defined and domain }}</hostname></host>
     {%   for h in hosts|sort(attribute="ip") if h.fqdn is defined or h.host is defined %}
     <host ip='{{ h.ip }}'><hostname>{{ h.fqdn if h.fqdn is defined else '%s.%s' % (h.host, domain) }}</hostname></host>
 {%       endfor %}
