@@ -3,6 +3,7 @@ curl
 lftp
 make
 ntpdate
+system-config-firewall-base
 screen
 sos
 strace
