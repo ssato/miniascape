@@ -85,7 +85,7 @@ $(WORKDIR)/genconf.stamp: $(CERTSDIR)/certs.stamp $(WORKDIR)/answers.txt
 genkey: $(WORKDIR)/genkey.stamp
 $(WORKDIR)/genkey.stamp: $(WORKDIR)/gen_rpm_gpgkey.sh
 	bash -x $< 2>&1 | tee $<.log
-	install -m 644 setup/RPM-GPG-KEY-rhui-custom /etc/pki/rpm-gpg/
+	install -m 644 $(WORKDIR)/RPM-GPG-KEY-rhui-custom /etc/pki/rpm-gpg/
 
 .PHONY: register check fetch install certs genconf genkey
 
