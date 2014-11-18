@@ -1,0 +1,41 @@
+# References:
+# * https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/2/html/Deployment_Guide/
+#
+site: openshift
+
+common:
+  disks:
+    - pool: default
+      format: qcow2
+      cache: none
+      size: 20
+      bus: scsi
+
+  rhn:
+  #  username: foo@m2.local
+  #  password: xyzsecret
+  #  activationkeys: &rhn_activationkey "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+  #  profilename: "REPLACE_THIS"
+
+  virtinst:
+    ram: 2048
+
+  setup_data:
+    - src: data/openshift/Makefile
+      dst: Makefile
+    - src: data/openshift/oo-install-cfg.yml
+      install:
+        dst: "~/.openshift/oo-install-cfg.yml"
+
+  openshift:
+    ooinstall: "https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh"
+    install_components: []
+    install_method: rhsm
+    config_file: ~/.openshift/oo-install-cfg.yml
+    subscription:
+      type: rhsm
+      username:
+      password:
+      options:
+
+# vim:sw=2:ts=2:et:
