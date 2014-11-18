@@ -42,6 +42,9 @@ guests:
         - named
         - activemq
         - datastore
+      named_entries:
+        - ose-broker-1: *openshift_broker_1_ip
+        - ose-node-1: &openshift_node_1_ip
 
     guests:
       - hostname: ose-broker-1
@@ -60,6 +63,10 @@ guests:
     openshift:
       install_components:
         - broker
+      cartridges:
+        - php
+        - ruby
+        - haproxy
 
     guests:
       - hostname: ose-node-1
