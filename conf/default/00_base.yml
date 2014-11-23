@@ -47,6 +47,9 @@ common:
     # - hostname: 0.pool.ntp.org
     #   options: ...
 
+  firewall:
+    rules: []
+
   services:
     enabled:
       - sshd
