@@ -23,11 +23,20 @@ common:
   virtinst:
     location: /var/lib/libvirt/images/rhel-server-6.6-x86_64-dvd.iso
 
-  # TODO:
+  # see: OSE Deployment Guide, 2.3. Red Hat Subscription Requirements:
+  # http://red.ht/1ExJoRz
   repos:
-    - rhel-7-server-rpms
-    - rhel-7-server-openshift-5.0-rpms
-    - rhel-7-server-rh-common-rpms
+    - rhel-6-server-rpms                      # Red Hat Enterprise Linux 6
+    - rhel-server-rhscl-6-rpms                # Red Hat Software Collections (1)
+    - rhel-6-server-ose-2.2-infra-rpms        # Red Hat OpenShift Enterprise Infrastructure
+    - rhel-6-server-ose-2.2-node-rpms         # Red Hat OpenShift Enterprise Application Node
+    - rhel-6-server-ose-2.2-rhc-rpms          # Red Hat OpenShift Enterprise Client Tools
+    - rhel-6-server-ose-2.2-jbosseap-rpms     # Red Hat OpenShift Enterprise JBoss EAP add-on
+    - jb-ews-2-for-rhel-6-server-rpms         # JBoss Enterprise Web Server 2
+    - jb-eap-6-for-rhel-6-server-rpms         # JBoss Enterprise Application Platform 6
+    # These are optional?:
+    #- rhel-6-server-ose-2.2-jbossamq-rpms     # Red Hat OpenShift Enterprise 2.2 JBoss A-MQ add-on
+    #- rhel-6-server-ose-2.2-jbossfuse-rpms    # Red Hat OpenShift Enterprise 2.2 JBoss FUSE add-on
 
 guests:
   - name: ose-broker
@@ -35,6 +44,16 @@ guests:
     templates:
       autoinst:
         src: autoinstall.d/openshift-broker-ks.cfg
+
+    firewall:
+      rules:
+        - http
+        - "port=443:tcp"
+        - "port=27017:tcp"
+        - "port=61613:tcp"
+        - "port=61616:tcp"
+        - "port=53:tcp"
+        - "port=53:udp"
 
     openshift:
       install_components:
@@ -59,6 +78,16 @@ guests:
     templates:
       autoinst:
         src: autoinstall.d/openshift-node-ks.cfg
+
+    firewall:
+      rules:
+        - http
+        - "port=443:tcp"
+        - "port=8000:tcp"
+        - "port=8443:tcp"
+      input_rules:
+        - "-A INPUT -m state --state NEW -m tcp -p tcp --dport 2303:2308 -j ACCEPT"
+        - "-A INPUT -m state --state NEW -m tcp -p tcp --dport 35531:65535 -j ACCEPT"
 
     openshift:
       install_components:

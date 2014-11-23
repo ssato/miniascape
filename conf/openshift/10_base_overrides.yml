@@ -2,8 +2,12 @@
 # * https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/2/html/Deployment_Guide/
 #
 site: openshift
-
 common:
+  name_prefix: openshift_
+
+  virtinst:
+    ram: 2048
+
   disks:
     - pool: default
       format: qcow2
@@ -11,14 +15,23 @@ common:
       size: 20
       bus: scsi
 
+  partition: |
+    part /boot --size=200
+    part pv.10001 --size=1 --grow
+    volgroup vg_0 pv.10001
+    logvol /    --name=lv_root --vgname=vg_0 --size=1 --grow
+    logvol swap --name=lv_swap --vgname=vg_0 --size=1024
+
   rhn:
   #  username: foo@m2.local
   #  password: xyzsecret
   #  activationkeys: &rhn_activationkey "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
   #  profilename: "REPLACE_THIS"
 
-  virtinst:
-    ram: 2048
+  packages:
+    add:
+      - ntp
+      - ntpdate
 
   setup_data:
     - src: data/openshift/Makefile
