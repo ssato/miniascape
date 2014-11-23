@@ -5,6 +5,9 @@ site: openshift
 common:
   name_prefix: openshift_
 
+  ntpservers:
+    - hostname: clock.redhat.com
+
   virtinst:
     ram: 2048
 
