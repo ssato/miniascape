@@ -39,7 +39,7 @@ rm -f $RPM_BUILD_ROOT%{python_sitelib}/*.egg-info
 find $RPM_BUILD_ROOT%{_datadir}/%{name}/templates -type f | \
     sed "s,$RPM_BUILD_ROOT,,g" > templates.list
 
-sites="default openstack"
+sites="default openshift openstack rhui"
 for site in $sites; do \
     find $RPM_BUILD_ROOT%{pkgconfdir}/${site} -type f | \
         sed "s,$RPM_BUILD_ROOT,,g" > ${site}.conf.list; done
