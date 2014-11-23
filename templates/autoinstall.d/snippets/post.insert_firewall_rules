@@ -1,0 +1,6 @@
+{% if firewall.input_rules is defined and firewall.input_rules is defined -%}
+f=/etc/sysconfig/iptables
+test -f $f.save || cp $f $f.save
+sed -i -e '/^-A INPUT -j REJECT/i \
+{%     for rule in firewall.input_rules %}{{ rule }}\n{% endfor %}' $f
+{%- endif %}
