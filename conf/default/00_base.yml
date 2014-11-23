@@ -95,7 +95,6 @@ common:
     password: # ex. xyzsecret
     activationkeys:
     profilename:
-    profilename:
     subscription:
       pool:  # pool ID.
 
