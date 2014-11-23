@@ -86,9 +86,6 @@ guests:
         - named
         - activemq
         - datastore
-      named_entries:
-        - ose-broker-1: *broker_1_ip
-        - ose-node-1: &ose_node_1_ip
 
     guests:
       - hostname: *broker_1_hostname
