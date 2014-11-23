@@ -41,8 +41,8 @@ common:
     - rhel-6-server-ose-2.2-jbossfuse-rpms    # Red Hat OpenShift Enterprise 2.2 JBoss FUSE add-on
 
   openshift:
-    domain: *domain
-    hosts_domain: apps.openshift.example.com
+    domain: apps.openshift.example.com
+    hosts_domain: *domain
     broker_hostname: &broker_1_hostname ose-broker-1
     broker_ip: *broker_1_ip
     activemq_ip: *broker_1_ip
@@ -94,6 +94,9 @@ guests:
         interfaces:
           - mac: "52:54:00:21:00:11"
             network: *openshift_network_0
+            bootproto: static
+        nameservers:
+          - hostname: 127.0.0.1
 
   - name: ose-node
     description: OpenShift Enterprise node
@@ -126,6 +129,7 @@ guests:
         interfaces:
           - mac: "52:54:00:21:00:21"
             network: *openshift_network_0
+            bootproto: static
 
         openshift:
           node_hostname: *ose_node_1_hostname
@@ -136,6 +140,7 @@ guests:
         interfaces:
           - mac: "52:54:00:21:00:22"
             network: *openshift_network_0
+            bootproto: static
 
         openshift:
           node_hostname: *ose_node_2_hostname

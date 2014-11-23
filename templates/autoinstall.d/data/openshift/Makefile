@@ -5,8 +5,8 @@
 #
 WORKDIR ?= /root/setup
 
-RHN_USERNAME ?= {{ rhn.username|default('') }}
-RHN_PASSWORD ?= {{ rhn.password|default('') }}
+RHN_USERNAME ?= {{ rhn.username if rhn.username else ' # Not set' }}
+RHN_PASSWORD ?= {{ rhn.password if rhn.password else ' # Not set' }}
 
 OPENSHIFT_SH_URL ?= {{ openshift.openshift_sh_url|default('https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh') }}
 OPENSHIFT_SH_LOG ?= $(WORKDIR)/log/openshift.sh.log
