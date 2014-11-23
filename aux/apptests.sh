@@ -9,7 +9,7 @@ cleanup () { rm -rf ${workdir}; }
 
 trap cleanup INT TERM
 
-for site in default openstack rhui; do
+for site in default openshift openstack rhui; do
   PYTHONPATH=${topdir} python miniascape/cli.py b \
     -t ${topdir}/templates -C conf/${site}/ -w ${workdir}
 done
