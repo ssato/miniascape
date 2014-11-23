@@ -30,6 +30,8 @@ common:
   #  password: xyzsecret
   #  activationkeys: &rhn_activationkey "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
   #  profilename: "REPLACE_THIS"
+    subscription:
+      pool:
 
   packages:
     add:
@@ -39,19 +41,28 @@ common:
   setup_data:
     - src: data/openshift/Makefile
       dst: Makefile
-    - src: data/openshift/oo-install-cfg.yml
-      install:
-        dst: "~/.openshift/oo-install-cfg.yml"
+    #- src: data/openshift/oo-install-cfg.yml
+    #  install:
+    #    dst: "~/.openshift/oo-install-cfg.yml"
 
   openshift:
-    ooinstall: "https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh"
+    config_file: ~/.openshift/oo-install-cfg.yml
+    openshift_sh_url: "https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh"
     install_components: []
     install_method: rhsm
-    config_file: ~/.openshift/oo-install-cfg.yml
-    subscription:
-      type: rhsm
-      username:
-      password:
-      options:
+    domain:
+    hosts_domain:
+    broker_hostname:
+    node_hostname:
+    broker_ip:
+    activemq_ip:
+    nodes: []  # [ {hostname: , ip: }]
+    valid_gear_sizes:
+    default_gear_size:
+    default_gear_capabilities:
+    mcollective_password:
+    mongodb_broker_password:
+    openshift_password1:
+    cartridges:
 
 # vim:sw=2:ts=2:et:

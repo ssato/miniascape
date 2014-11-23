@@ -14,7 +14,9 @@ common:
   netmask: *netmask
 
   nameservers:
-    - hostname: &openshift_broker_1_ip 192.168.210.11
+    - hostname: &broker_1_ip 192.168.210.11
+
+  store_cmdline: false
 
   redhat:
     subscription:
@@ -35,8 +37,29 @@ common:
     - jb-ews-2-for-rhel-6-server-rpms         # JBoss Enterprise Web Server 2
     - jb-eap-6-for-rhel-6-server-rpms         # JBoss Enterprise Application Platform 6
     # These are optional?:
-    #- rhel-6-server-ose-2.2-jbossamq-rpms     # Red Hat OpenShift Enterprise 2.2 JBoss A-MQ add-on
-    #- rhel-6-server-ose-2.2-jbossfuse-rpms    # Red Hat OpenShift Enterprise 2.2 JBoss FUSE add-on
+    - rhel-6-server-ose-2.2-jbossamq-rpms     # Red Hat OpenShift Enterprise 2.2 JBoss A-MQ add-on
+    - rhel-6-server-ose-2.2-jbossfuse-rpms    # Red Hat OpenShift Enterprise 2.2 JBoss FUSE add-on
+
+  openshift:
+    domain: *domain
+    hosts_domain: apps.openshift.example.com
+    broker_hostname: &broker_1_hostname ose-broker-1
+    broker_ip: *broker_1_ip
+    activemq_ip: *broker_1_ip
+    nodes:
+      - hostname: &ose_node_1_hostname ose-node-1
+        ip: &ose_node_1_ip 192.168.210.21
+
+      - hostname: &ose_node_2_hostname ose-node-2
+        ip: &ose_node_2_ip 192.168.210.22
+
+    # valid_gear_sizes: small
+    # default_gear_size: small
+    # default_gear_capabilities: small
+    # mcollective_password:
+    # mongodb_broker_password:
+    # openshift_password1:
+
 
 guests:
   - name: ose-broker
@@ -44,6 +67,8 @@ guests:
     templates:
       autoinst:
         src: autoinstall.d/openshift-broker-ks.cfg
+
+    setup_screen: true
 
     firewall:
       rules:
@@ -62,13 +87,13 @@ guests:
         - activemq
         - datastore
       named_entries:
-        - ose-broker-1: *openshift_broker_1_ip
-        - ose-node-1: &openshift_node_1_ip
+        - ose-broker-1: *broker_1_ip
+        - ose-node-1: &ose_node_1_ip
 
     guests:
-      - hostname: ose-broker-1
+      - hostname: *broker_1_hostname
         fqdn: ose-broker-1.openshift.example.com
-        ip: *openshift_broker_1_ip
+        ip: *broker_1_ip
         interfaces:
           - mac: "52:54:00:21:00:11"
             network: *openshift_network_0
@@ -91,25 +116,31 @@ guests:
 
     openshift:
       install_components:
-        - broker
+        - node
       cartridges:
         - php
         - ruby
         - haproxy
 
     guests:
-      - hostname: ose-node-1
+      - hostname: *ose_node_1_hostname
+        ip: *ose_node_1_ip
         fqdn: ose-node-1.openshift.example.com
-        ip: &openshift_node_1_ip 192.168.210.21
         interfaces:
           - mac: "52:54:00:21:00:21"
             network: *openshift_network_0
 
-      - hostname: ose-node-2
+        openshift:
+          node_hostname: *ose_node_1_hostname
+
+      - hostname: *ose_node_2_hostname
+        ip: *ose_node_2_ip
         fqdn: ose-node-2.openshift.example.com
-        ip: &openshift_node_2_ip 192.168.210.22
         interfaces:
           - mac: "52:54:00:21:00:22"
             network: *openshift_network_0
+
+        openshift:
+          node_hostname: *ose_node_2_hostname
 
 # vim:sw=2:ts=2:et:
