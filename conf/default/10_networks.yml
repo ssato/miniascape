@@ -9,9 +9,9 @@ common:
   netmask: &netmask 255.255.255.0
 
   nameservers:
-  - hostname: *gateway
-    #options:
-  #- hostname: 8.8.8.8
+    - ip: 8.8.8.8
+    - ip: *gateway
+      #options:
 
 # Libvirt's default virtual (NAT) network, used as management network.
 default_network: &default_network
