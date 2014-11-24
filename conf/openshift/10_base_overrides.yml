@@ -36,7 +36,6 @@ common:
   packages:
     add:
       - ntp
-      - ntpdate
 
   setup_data:
     - src: data/openshift/Makefile

@@ -25,6 +25,19 @@ common:
   virtinst:
     location: /var/lib/libvirt/images/rhel-server-6.6-x86_64-dvd.iso
 
+  hosts:
+    - ip: *broker_1_ip
+      hostname: &broker_1_hostname ose-broker-1
+      fqdn: &broker_1_fqdn ose-broker-1.openshift.example.com
+
+    - ip: &ose_node_1_ip 192.168.210.21
+      hostname: &ose_node_1_hostname ose-node-1
+      fqdn: &ose_node_1_fqdn ose-node-1.openshift.example.com
+
+    - ip: &ose_node_2_ip 192.168.210.22
+      hostname: &ose_node_2_hostname ose-node-2
+      fqdn: &ose_node_2_fqdn ose-node-2.openshift.example.com
+
   # see: OSE Deployment Guide, 2.3. Red Hat Subscription Requirements:
   # http://red.ht/1ExJoRz
   repos:
@@ -43,15 +56,15 @@ common:
   openshift:
     domain: apps.openshift.example.com
     hosts_domain: *domain
-    broker_hostname: &broker_1_hostname ose-broker-1
+    broker_hostname: *broker_1_hostname
     broker_ip: *broker_1_ip
     activemq_ip: *broker_1_ip
     nodes:
-      - hostname: &ose_node_1_hostname ose-node-1
-        ip: &ose_node_1_ip 192.168.210.21
+      - hostname: *ose_node_1_hostname
+        ip: *ose_node_1_ip
 
-      - hostname: &ose_node_2_hostname ose-node-2
-        ip: &ose_node_2_ip 192.168.210.22
+      - hostname: *ose_node_2_hostname
+        ip: *ose_node_2_ip
 
     # valid_gear_sizes: small
     # default_gear_size: small
@@ -67,6 +80,21 @@ guests:
     templates:
       autoinst:
         src: autoinstall.d/openshift-broker-ks.cfg
+
+    packages:
+      add:
+        - ntp
+        - bind
+        - boost-filesystem
+        - boost-iostreams
+        - boost-program-options
+        - boost-system
+        - git
+        - httpd
+        - java-1.6.0-openjdk
+        - libicu
+        - perl-Git
+        - policycoreutils-python
 
     setup_screen: true
 
@@ -89,7 +117,7 @@ guests:
 
     guests:
       - hostname: *broker_1_hostname
-        fqdn: ose-broker-1.openshift.example.com
+        fqdn: *broker_1_fqdn
         ip: *broker_1_ip
         interfaces:
           - mac: "52:54:00:21:00:11"
