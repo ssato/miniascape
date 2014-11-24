@@ -1,0 +1,34 @@
+# Makefile to setup OpenShift Enterprise clients
+# Requirements: subscription-manager
+# Author: Satoru SATOH <ssato@redhat.com>
+# License: MIT
+# References:
+#   - Red Hat OpenShift Enterprise 2 Client Tools Installation Guide:
+#     http://red.ht/1xU18rD
+#
+RHN_USERNAME ?= {{ rhn.username if rhn.username else 'undef' }}
+RHN_PASSWORD ?= {{ rhn.password if rhn.password else 'undef' }}
+RHSM_SUBSCRIPTION_POOL ?= {{ rhn.subscription.pool if rhn.subscription and rhn.subscription.pool else 'undef' }}
+
+RHSM_REGISTER_OPTIONS ?= \
+  {{ "--username=$(RHN_USERNAME)" if '$(RHN_USERNAME)' != 'undef' }} \
+  {{ "--password=$(RHN_PASSWORD)" if '$(RHN_PASSWORD)' != 'undef' }} \
+$(NULL)
+
+RHSM_SUBSCRIBE_OPTIONS ?= {{ "--pool=$(RHSM_SUBSCRIPTION_POOL)" if '$(RHSM_SUBSCRIPTION_POOL)' != 'undef' }}
+RHSM_REPOS_OPTIONS ?= \
+  --enable=rhel-6-server-rpms \
+  --enable={{ 'rhel-server-ose-2.0-rhc-6-rpms' if openshift.is_server is defined and openshift.is_server else 'rhel-6-server-optional-rpms' }} \
+$(NULL)
+
+
+all: setup
+
+setup:
+	subscription-manager register $(RHSM_REGISTER_OPTIONS)
+	subscription-manager subscribe $(RHSM_SUBSCRIBE_OPTIONS)
+	subscription-manager remove --all
+	subscription-manager repos $(RHSM_REPOS_OPTIONS)
+	yum install -y rhc
+
+.PHONY: setup
