@@ -96,7 +96,7 @@ guests:
             network: *openshift_network_0
             bootproto: static
         nameservers:
-          - hostname: 127.0.0.1
+          - ip: 127.0.0.1
 
   - name: ose-node
     description: OpenShift Enterprise node
