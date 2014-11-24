@@ -7,6 +7,7 @@ WORKDIR ?= /root/setup
 
 RHN_USERNAME ?= {{ rhn.username if rhn.username else ' # Not set' }}
 RHN_PASSWORD ?= {{ rhn.password if rhn.password else ' # Not set' }}
+RH_SM_SUBSCRIPTION_POOL ?= {{ rhn.subscription.pool if rhn.subscription and rhn.subscription.pool else 'undef' }}
 
 OPENSHIFT_SH_URL ?= {{ openshift.openshift_sh_url|default('https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh') }}
 OPENSHIFT_SH_LOG ?= $(WORKDIR)/log/openshift.sh.log
@@ -17,7 +18,7 @@ OPENSHIFT_SH_OPTIONS ?= \
  hosts_domain={{ openshift.hosts_domain|default('openshift.example.com') }} \
  broker_hostname={{ openshift.broker_hostname }} \
  rhn_user=$(RHN_USERNAME) rhn_pass=$(RHN_PASSWORD) \
- {{ "sm_reg_pool=%s" % rhn.subscription.pool if rhn.subscription.pool }} \
+ {{ "sm_reg_pool=$(RH_SM_SUBSCRIPTION_POOL)" if '$(RH_SM_SUBSCRIPTION_POOL)' != 'undef' }} \
 {% if "named" in openshift.install_components -%}
  named_entries=broker:{{ openshift.broker_ip }},activemq:{{ openshift.activemq_ip }}{% if openshift.nodes %},{% for node in openshift.nodes if node.hostname and node.ip %}{{ node.hostname }}:{{ node.ip }}{{ ',' if not loop.last }}{% endfor %}{% endif %} \
 {% endif -%}
