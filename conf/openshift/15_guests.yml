@@ -98,6 +98,11 @@ guests:
 
     setup_screen: true
 
+    kickstart:
+      users:
+        - name: developer
+          uid: 1001
+
     firewall:
       rules:
         - http
