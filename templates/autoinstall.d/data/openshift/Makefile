@@ -39,7 +39,7 @@ OPENSHIFT_SH_OPTIONS ?= \
 $(NULL)
 
 
-all:
+all: setup
 
 openshift.sh:
 	curl -O $(OPENSHIFT_SH_URL)
