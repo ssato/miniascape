@@ -44,6 +44,8 @@ common:
     #  install:
     #    dst: "~/.openshift/oo-install-cfg.yml"
 
+  generate_hosts: true
+
   openshift:
     config_file: ~/.openshift/oo-install-cfg.yml
     openshift_sh_url: "https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh"
