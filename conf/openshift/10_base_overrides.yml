@@ -15,7 +15,7 @@ common:
     - pool: default
       format: qcow2
       cache: none
-      size: 15
+      size: 20
       bus: scsi
 
   partition: |
