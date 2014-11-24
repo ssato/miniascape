@@ -128,8 +128,6 @@ guests:
           - mac: "52:54:00:21:00:11"
             network: *openshift_network_0
             bootproto: static
-        nameservers:
-          - ip: 127.0.0.1
 
   - name: ose-node
     description: OpenShift Enterprise node
