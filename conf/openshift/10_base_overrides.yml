@@ -58,9 +58,13 @@ common:
     broker_ip:
     activemq_ip:
     nodes: []  # [ {hostname: , ip: }]
-    valid_gear_sizes:
-    default_gear_size:
-    default_gear_capabilities:
+
+    # see: 'Important' note in OSE 2 Deployment Guide, 9.12. Configuring Gear
+    # Profiles (Sizes): http://red.ht/1vMoMWr
+    valid_gear_sizes: small
+    default_gear_size: small
+    default_gear_capabilities: small
+
     mcollective_password:
     mongodb_broker_password:
     openshift_password1:
