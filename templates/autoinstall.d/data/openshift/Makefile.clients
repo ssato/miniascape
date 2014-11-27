@@ -9,10 +9,13 @@
 RHN_USERNAME ?= {{ rhn.username if rhn.username else 'undef' }}
 RHN_PASSWORD ?= {{ rhn.password if rhn.password else 'undef' }}
 RHSM_SUBSCRIPTION_POOL ?= {{ rhn.subscription.pool if rhn.subscription and rhn.subscription.pool else 'undef' }}
+RHSM_ACTIVATIONKEY ?= {{ rhn.activationkey if rhn.activationkey else 'undef' }}
+RHSM_ORGKEY ?= {{ rhn.orgkey if rhn.orgkey else 'undef' }}
 
 RHSM_REGISTER_OPTIONS ?= \
   {{ "--username=$(RHN_USERNAME)" if '$(RHN_USERNAME)' != 'undef' }} \
   {{ "--password=$(RHN_PASSWORD)" if '$(RHN_PASSWORD)' != 'undef' }} \
+  {{ "--activationkey=$(RHSM_ACTIVATIONKEY) --org=$(RHSM_ORGKEY)" if '$(RHSM_ACTIVATIONKEY)' != 'undef' and '$(RHSM_ORGKEY)' != 'undef' }} \
 $(NULL)
 
 RHSM_SUBSCRIBE_OPTIONS ?= {{ "--pool=$(RHSM_SUBSCRIPTION_POOL)" if '$(RHSM_SUBSCRIPTION_POOL)' != 'undef' }}
@@ -27,7 +30,7 @@ all: setup
 setup:
 	subscription-manager register $(RHSM_REGISTER_OPTIONS)
 	subscription-manager subscribe $(RHSM_SUBSCRIBE_OPTIONS)
-	subscription-manager remove --all
+	subscription-manager repos --disable='*'
 	subscription-manager repos $(RHSM_REPOS_OPTIONS)
 	yum install -y rhc
 
