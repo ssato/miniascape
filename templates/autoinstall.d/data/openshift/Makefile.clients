@@ -13,6 +13,7 @@ RHSM_ACTIVATIONKEY ?= {{ rhn.activationkey if rhn.activationkey else 'undef' }}
 RHSM_ORGKEY ?= {{ rhn.orgkey if rhn.orgkey else 'undef' }}
 
 RHSM_REGISTER_OPTIONS ?= \
+  --force \
   {{ "--username=$(RHN_USERNAME)" if '$(RHN_USERNAME)' != 'undef' }} \
   {{ "--password=$(RHN_PASSWORD)" if '$(RHN_PASSWORD)' != 'undef' }} \
   {{ "--activationkey=$(RHSM_ACTIVATIONKEY) --org=$(RHSM_ORGKEY)" if '$(RHSM_ACTIVATIONKEY)' != 'undef' and '$(RHSM_ORGKEY)' != 'undef' }} \
