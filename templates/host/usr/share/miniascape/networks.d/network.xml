@@ -3,10 +3,10 @@
   {{ "<forward mode='%s'/>" % mode if mode in ('nat', 'bridge') }}
   {{ "<bridge name='%s'/>" % bridge if bridge is defined and bridge }}
   {{ "<domain name='%s'/>" % domain if domain is defined and domain }}
-{% if mode == 'nat' -%}
+{%- if mode == 'nat' %}
   <dns>
     <!-- Libvirt host aliases: -->
-    <host ip='{{ gateway }}'><hostname>gw{{ domain if domain is defined and domain }}</hostname></host>
+    <host ip='{{ gateway }}'><hostname>gw{{ '.%s' % domain if domain is defined and domain }}</hostname></host>
     {%   for h in hosts|sort(attribute="ip") if h.fqdn is defined or h.host is defined -%}
     <host ip='{{ h.ip }}'><hostname>{{ h.fqdn if h.fqdn is defined else '%s.%s' % (h.host, domain) }}</hostname></host>
 {%       endfor %}
