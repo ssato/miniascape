@@ -71,7 +71,6 @@ common:
     # valid_gear_sizes: small
     # default_gear_size: small
     # default_gear_capabilities: small
-    # mcollective_password:
     # mongodb_broker_password:
     # openshift_password1:
 

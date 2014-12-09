@@ -38,7 +38,6 @@ OPENSHIFT_SH_OPTIONS ?= \
  domain={{ openshift.domain|default('apps.openshift.example.com') }} \
  hosts_domain={{ openshift.hosts_domain|default('openshift.example.com') }} \
  broker_hostname={{ openshift.broker_hostname }} \
- named_hostname={{ openshift.broker_hostname }} \
  activemq_hostname={{ openshift.broker_hostname }} \
  datastore_hostname={{ openshift.broker_hostname }} \
 {% if "named" in openshift.install_components -%}
@@ -49,7 +48,7 @@ OPENSHIFT_SH_OPTIONS ?= \
  {{ "default_gear_size=%s" % openshift.default_gear_size if openshift.default_gear_size }} \
  {{ "default_gear_capabilities=%s" % openshift.default_gear_capabilities if openshift.default_gear_capabilities }} \
 {% endif -%}
- {{ "mcollective_password=%s" % openshift.mcollective_password if openshift.mcollective_password }} \
+ {{ openshift.mcollective_password|default('rhosesecret') }} \
  {{ "mongodb_broker_password=%s" % openshift.mongodb_broker_password if openshift.mongodb_broker_password }} \
  {{ "openshift_password1=%s" % openshift.openshift_password1 if openshift.openshift_password1 }} \
 {% if "node" in openshift.install_components -%}

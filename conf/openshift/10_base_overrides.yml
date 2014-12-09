@@ -65,9 +65,10 @@ common:
     default_gear_size: small
     default_gear_capabilities: small
 
-    mcollective_password:
+    mcollective_password: rhosesecret
+
     mongodb_broker_password:
     openshift_password1:
-    cartridges:
+    cartridges: standard
 
 # vim:sw=2:ts=2:et:
