@@ -14,6 +14,7 @@ baseurl={{ repo.baseurl }}
 enabled=1
 #gpgcheck=1
 #gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
 {% endfor %}
 EOF
 {%- endif %}
