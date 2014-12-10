@@ -7,9 +7,9 @@ else
     touch $f.save
 fi
 cat << EOF > $f
-{% for repo in yum_repos -%}
-[{{ repo.label }}]
-name={{ repo.name }}
+{% for repo in yum_repos if repo.id and repo.baseurl -%}
+[{{ repo.id }}]
+name={{ repo.name or repo.id }}
 baseurl={{ repo.baseurl }}
 enabled=1
 #gpgcheck=1
