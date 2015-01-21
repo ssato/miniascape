@@ -2,7 +2,7 @@ include MANIFEST.in
 include README.rst
 include miniascape.spec.in
 include setup.py
-include aux/*
+include pkg/*
 include tools/*
 include templates/autoinstall.d/*-ks.cfg
 include templates/autoinstall.d/data/*
