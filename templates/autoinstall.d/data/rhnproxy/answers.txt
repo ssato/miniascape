@@ -1,0 +1,14 @@
+# see also: https://access.redhat.com/documentation/en-US/Red_Hat_Satellite/5.7/html/Proxy_Installation_Guide/sect-Red_Hat_Satellite-Proxy_Installation_Guide-Installing_Red_Hat_Satellite_Proxy-Automating_Satellite_Proxy_Server_Installation.html
+VERSION={{ rhnproxy.version|default('5.7') }}
+RHN_PARENT={{ rhnproxy.parent }}
+TRACEBACK_EMAIL={{ rhnproxy.admin.email|default('root@localhost') }}
+USE_SSL=1
+SSL_ORG="{{ rhnproxy.ssl.org }}"
+SSL_ORGUNIT="{{ rhnproxy.ssl.unit }}"
+SSL_CITY={{ rhnproxy.ssl.city }}
+SSL_STATE={{ rhnproxy.ssl.state }}
+SSL_COUNTRY={{ rhnproxy.ssl.country }}
+INSTALL_MONITORING={{ rhnproxy.install_monitoring|default('N') }}
+ENABLE_SCOUT={{ rhnproxy.enable_scout|default('N') }}
+CA_CHAIN=/usr/share/rhn/RHN-ORG-TRUSTED-SSL-CERT
+POPULATE_CONFIG_CHANNEL={{ rhnproxy.populate_config_channel|default('Y') }}
