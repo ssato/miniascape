@@ -6,6 +6,8 @@
 # Packages from RHEL distribution which we need to be installed
 # on top of the @base group
 #
+OpenIPMI
+OpenIPMI-libs
 PyPAM
 alsa-lib
 antlr
@@ -33,6 +35,7 @@ genisoimage
 gettext
 httpd
 httpd-tools
+ipmitool
 jakarta-commons-codec
 jakarta-commons-collections
 jakarta-commons-daemon
@@ -60,6 +63,7 @@ libselinux-python
 libsemanage
 libsemanage-python
 libxslt
+lm_sensors-libs
 log4j
 m4
 mailcap
@@ -69,6 +73,7 @@ mod_ssl
 mod_wsgi
 mtools
 mx4j
+net-snmp-libs
 objectweb-asm
 patch
 pax
@@ -82,6 +87,7 @@ perl-DBI
 perl-Date-Manip
 perl-DateTime
 perl-Digest-HMAC
+perl-Digest-SHA
 perl-Digest-SHA1
 perl-Error
 perl-ExtUtils-MakeMaker
