@@ -4,7 +4,8 @@
 #
 WORKDIR ?= /root/setup
 
-SATELLITE_ISO ?= $(WORKDIR)/satellite-5.6.0-20130927-rhel-6-x86_64.iso
+# Make a symlink to the actual ISO images in advance.
+SATELLITE_ISO ?= $(WORKDIR)/satellite.iso
 ANSTXT ?= $(WORKDIR)/answers.txt
 
 EXTRA_INSTALLER_OPTS ?= --disconnected
