@@ -21,6 +21,7 @@ $(WORKDIR)/check.stamp:
 
 install: $(WORKDIR)/install.stamp
 $(WORKDIR)/install.stamp: $(SATELLITE_ISO)
+	rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 	mount -o ro,loop $(SATELLITE_ISO) /mnt
 	cd /mnt && ./install.pl --answer-file=$(ANSTXT) $(EXTRA_INSTALLER_OPTS) && cd - && umount /mnt
 	touch $@
