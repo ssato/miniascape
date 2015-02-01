@@ -1,12 +1,12 @@
 # see also: https://git.fedorahosted.org/cgit/spacewalk.git/tree/spacewalk/setup/answers.txt
 admin-email = {{ satellite.admin.email }}
-{% if rhn.username is defined -%}
-rhn-username = {{ rhn.username }}
-rhn-password = {{ rhn.password }}{% endif %}
-{% if proxy is defined and proxy.fqdn is defined -%}
+rhn-username = {{ rhn.username|default('') }}
+rhn-password = {{ rhn.password|default('') }}
+{%   if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
 rhn-http-proxy = {{ proxy.fqdn }}
-rhn-http-proxy-username = {{ proxy.username }}
-rhn-http-proxy-password = {{ proxy.password }}{% endif %}
+rhn-http-proxy-username = {{ proxy.username|default('') }}
+rhn-http-proxy-password = {{ proxy.password|default('') }}
+{%-  endif %}
 ssl-set-org = {{ satellite.ssl.org }}
 ssl-set-org-unit = {{ satellite.ssl.unit }}
 ssl-set-city = {{ satellite.ssl.city }}
