@@ -198,3 +198,6 @@ postgresql-contrib
 postgresql-jdbc
 postgresql-libs
 uuid
+#
+# Some additional RPMs required since satellite 5.7:
+libyaml
