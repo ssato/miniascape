@@ -11,7 +11,7 @@ ANSTXT ?= $(WORKDIR)/answers.txt
 EXTRA_INSTALLER_OPTS ?= --disconnected
 
 
-all: check install
+all: check install genkey
 
 check: $(WORKDIR)/check.stamp
 $(WORKDIR)/check.stamp:
@@ -26,5 +26,10 @@ $(WORKDIR)/install.stamp: $(SATELLITE_ISO)
 	cd /mnt && ./install.pl --answer-file=$(ANSTXT) $(EXTRA_INSTALLER_OPTS) && cd - && umount /mnt
 	touch $@
 
-.PHONY: check install
+genkey: $(WORKDIR)/genkey.stamp
+$(WORKDIR)/genkey.stamp: $(WORKDIR)/gen_rpm_gpgkey.sh
+	bash -x $< 2>&1 | tee $<.log
 
+#	install -m 644 $(WORKDIR)/RPM-GPG-KEY-satellite-custom /etc/pki/rpm-gpg/
+
+.PHONY: check install
