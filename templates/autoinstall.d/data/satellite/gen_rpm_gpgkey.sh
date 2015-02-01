@@ -13,7 +13,7 @@ Key-Usage: sign
 Expire-Date: 0
 Name-Real: Satellite Admin
 Name-Comment: GPG key for custom RPMs from Satellite
-Passphrase: {{ gpg.passpharase }}
+Passphrase: {{ gpg.passpharase|default('secret') }}
 %no-protection
 %transient-key
 %commit
