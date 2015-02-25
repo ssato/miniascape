@@ -21,7 +21,6 @@ $(if $(RHSM_SUBSCRIPTION_POOL),--pool=$(RHSM_SUBSCRIPTION_POOL),--auto)
 
 RHSM_ACTIVATE_REPOS ?= \
 subscription-manager repos \
---disable='*' \
 {% for r in repos -%}
 --enable={{ r }} \
 {% endfor %}
@@ -48,6 +47,7 @@ named_entries="{{ hostname }}:{{ openshift.broker_ip }},broker:{{ openshift.brok
 {{ "default_gear_size=%s" % openshift.default_gear_size if openshift.default_gear_size }} \
 {{ "default_gear_capabilities=%s" % openshift.default_gear_capabilities if openshift.default_gear_capabilities }} \
 {%   if openshift.district_mappings -%}
+default_districts=false
 district_mappings="
 {%-    for district, nodes in openshift.district_mappings.iteritems() -%}
 {{ district }}:{{ nodes|join(',') }}{{ ';' if not loop.last }}
@@ -71,6 +71,7 @@ all: setup.stamp
 
 rhsm:
 	subscription-manager identity || ($(RHSM_REGISTER) && $(RHSM_SUBSCRIBE))
+	subscription-manager repos --disable='*'
 	$(RHSM_ACTIVATE_REPOS)
 	yum update -y
 
