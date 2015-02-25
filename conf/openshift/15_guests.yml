@@ -169,10 +169,10 @@ guests:
     openshift:
       install_components:
         - node
-      cartridges:
-        - php
-        - ruby
-        - haproxy
+      #cartridges:
+        #- php
+        #- ruby
+        #- haproxy
 
     guests:
       - hostname: *ose_node_1_hostname
