@@ -36,7 +36,26 @@ subscription-manager repos --enable rhel-7-server-rpms \
 yum install -y katello
 endef
 
-KATELLO_INSTALLER_OPTIONS	?=
+KATELLO_INSTALLER_OPTIONS	?= \
+{%- if proxy.fqdn is defined and proxy.fqdn -%}
+{{-     "--katello-proxy-url=http://%s" % proxy.fqdn }} \
+--katello-proxy-port={{ proxy.port|8080 }} \
+{{ "--katello-proxy-username=%s" % proxy.username if proxy.username }} \
+{{ "--katello-proxy-password=%s" % proxy.password if proxy.password }} \
+{%- endif -%}
+$(NULL)
+
+define setup-firewall =
+firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner foreman -j ACCEPT
+firewall-cmd --permanent --direct --add-rule ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner foreman -j ACCEPT
+firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner katello -j ACCEPT
+firewall-cmd --permanent --direct --add-rule ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner katello -j ACCEPT
+firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner root -j ACCEPT
+firewall-cmd --permanent --direct --add-rule ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner root -j ACCEPT
+firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT 1 -o lo -p tcp -m tcp --dport 9200 -j DROP
+firewall-cmd --permanent --direct --add-rule ipv6 filter OUTPUT 1 -o lo -p tcp -m tcp --dport 9200 -j DROP
+endef
+
 
 
 all: check
@@ -52,5 +71,6 @@ else
 	$(install-offline)
 endif
 	katello-installer $(KATELLO_INSTALLER_OPTIONS)
+	$(setup-firewall)
 
 .PHONY: check install
