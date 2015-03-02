@@ -1,0 +1,5 @@
+# These are merely necessary for servers:
+-avahi*
+-iw*-firmware
+-libertas-*-firmware
+-Red_Hat_Enterprise_Linux-Release_Notes-7-*
