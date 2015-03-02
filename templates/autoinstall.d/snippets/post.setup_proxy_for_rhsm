@@ -1,16 +1,18 @@
-{% if proxy.fqdn is defined and proxy.fqdn -%}
+{% if proxy is defined -%}
+{%     if proxy.fqdn is defined and proxy.fqdn -%}
 f=/etc/rhsm/rhsm.conf
 if test -f $f; then
     test -f $f.save || cp $f $f.save
     sed -i -e '
 s/^proxy_hostname =.*/proxy_hostname = {{ proxy.fqdn }}/
 s/^proxy_port =.*/proxy_port = {{ proxy.port|default('8080') }}/
-{%     if proxy.username is defined and proxy.username -%}
+{%         if proxy.username is defined and proxy.username -%}
 s/^proxy_user =.*/proxy_user = {{ proxy.username }}/
-{%-    endif %}
-{%     if proxy.password is defined and proxy.password -%}
+{%-        endif %}
+{%         if proxy.password is defined and proxy.password -%}
 s/^proxy_password =.*/proxy_password = {{ proxy.password }}/
-{%-    endif %}
-'
+{%-        endif %}
+' $f
 fi
-{%- endif %}
+{%-     endif -%}
+{% endif %}

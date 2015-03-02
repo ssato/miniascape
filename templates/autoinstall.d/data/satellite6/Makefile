@@ -39,7 +39,7 @@ endef
 KATELLO_INSTALLER_OPTIONS	?= \
 {%- if proxy.fqdn is defined and proxy.fqdn -%}
 {{-     "--katello-proxy-url=http://%s" % proxy.fqdn }} \
---katello-proxy-port={{ proxy.port|8080 }} \
+--katello-proxy-port={{ proxy.port|default('8080') }} \
 {{ "--katello-proxy-username=%s" % proxy.username if proxy.username }} \
 {{ "--katello-proxy-password=%s" % proxy.password if proxy.password }} \
 {%- endif -%}
