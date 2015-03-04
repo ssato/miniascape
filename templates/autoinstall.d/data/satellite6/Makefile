@@ -37,12 +37,19 @@ yum install -y katello
 endef
 
 KATELLO_INSTALLER_OPTIONS	?= \
+{% if satellite.admin is defined -%}
+--foreman-admin-username={{ satellite.admin.name|default('admin') }} \
+{{ "--foreman-admin-password=%s" % satellite.admin.password if satellite.admin.password }} \
+{{ "--foreman-admin-email=%s" % satellite.admin.email if satellite.admin.email }} \
+{{ "--foreman-admin-first-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
+{{ "--foreman-admin-last-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
+{% endif -%}
 {%- if proxy.fqdn is defined and proxy.fqdn -%}
 {{-     "--katello-proxy-url=http://%s" % proxy.fqdn }} \
 --katello-proxy-port={{ proxy.port|default('8080') }} \
 {{ "--katello-proxy-username=%s" % proxy.username if proxy.username }} \
 {{ "--katello-proxy-password=%s" % proxy.password if proxy.password }} \
-{%- endif -%}
+{% endif -%}
 $(NULL)
 
 define setup-firewall =
@@ -56,6 +63,20 @@ firewall-cmd --permanent --direct --add-rule ipv4 filter OUTPUT 1 -o lo -p tcp -
 firewall-cmd --permanent --direct --add-rule ipv6 filter OUTPUT 1 -o lo -p tcp -m tcp --dport 9200 -j DROP
 endef
 
+KATELLO_REINDEX = \
+katello-service stop && \
+systemctl start mongod && \
+sudo -u apache pulp-manage-db && \
+katello-service start && \
+foreman-rake katello:reindex
+
+# see: https://access.redhat.com/solutions/1325953
+define update-to-the-latest =
+subscription-manager identity || $(RHSM_SUBSCRIBE)
+subscription-manager repos --enable rhel-7-server-satellite-6.0-rpms
+yum update -y
+$(KATELLO_REINDEX)
+endef
 
 
 all: check
@@ -70,7 +91,11 @@ ifeq ($(TO_INSTALL_ONLINE),yes)
 else
 	$(install-offline)
 endif
-	katello-installer $(KATELLO_INSTALLER_OPTIONS)
+	katello-installer $(KATELLO_INSTALLER_OPTIONS) 2>&1 | tee katello-installer.log
 	$(setup-firewall)
 
-.PHONY: check install
+update:
+	$(update-to-the-latest)
+
+
+.PHONY: check install update
