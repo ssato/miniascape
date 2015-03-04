@@ -983,6 +983,8 @@ guests:
     virtinst:
       ram: 2048
       vcpus: 2
+      location: &rhel-7-iso-image-path /var/lib/libvirt/images/rhel-server-7.0-x86_64-dvd.iso
+      os_variant: rhel7
 
     # see also: templates/autoinstall.d/data/satellite6/answers.txt
     satellite:
