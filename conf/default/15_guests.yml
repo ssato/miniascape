@@ -1018,8 +1018,7 @@ guests:
     services:
       enabled:
         - sshd
-        - ntpd
-        - ntpdate
+        - chronyd
 
     rhn:
     #  username: foo@m2.local
