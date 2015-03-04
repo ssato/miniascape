@@ -35,6 +35,8 @@ guests:
     virtinst:
       ram: 1024
       vcpus: 2
+      location: &rhel-7-iso-image-path /var/lib/libvirt/images/rhel-server-7.0-x86_64-dvd.iso
+      os_variant: rhel7
 
     rhn:
     #  username: foo@m2.local
@@ -679,7 +681,7 @@ guests:
     description: Versatile RHEL 7 client systems
 
     virtinst:
-      location: /var/lib/libvirt/images/rhel-server-7.0-x86_64-dvd.iso
+      location: *rhel-7-iso-image-path
       os_variant: rhel7
       extra_args: console=tty0 console=ttyS0,115200 net.ifnames=0 video=640x480
 
@@ -975,7 +977,7 @@ guests:
     description: Red Hat Satellite 6 server
     disks:
       - pool: default
-        size: 70
+        size: 90
         bus: scsi
         format: raw
         sparse: false
@@ -983,37 +985,32 @@ guests:
     virtinst:
       ram: 2048
       vcpus: 2
-      location: &rhel-7-iso-image-path /var/lib/libvirt/images/rhel-server-7.0-x86_64-dvd.iso
+      location: *rhel-7-iso-image-path
       os_variant: rhel7
 
-    # see also: templates/autoinstall.d/data/satellite6/answers.txt
     satellite:
-      #answer_file: /root/setup/answers.txt
       admin:
         #name: admin
         #password: secret
         #email: root@localhost
-        org_name: M2_Example_Inc
 
-      ssl:
-        org: "M2 Example, Inc."
-        unit: "IT Dept."
-        city: Shibuya-ku
-        state: Tokyo
-        country: JP
-        password: sslsecret
-        cn: M2 Example Inc
-        expires: 3650
-
+# Satellite 6 does not need SSL configurations as it will generate SSL certs
+# inside installer by default:
+#      ssl:
+#        org: "M2 Example, Inc."
+#        unit: "IT Dept."
+#        city: Shibuya-ku
+#        state: Tokyo
+#        country: JP
+#        password: sslsecret
+#        cn: M2 Example Inc
+#        expires: 3650
+#
     proxy:
       #url:
       #port:
       #user:
       #password:
-
-    # NOTE: Must be configured for satellite servers.
-    #ntpservers:
-    #  - ...
 
     services:
       enabled:
@@ -1029,8 +1026,6 @@ guests:
     setup_data:
       - src: data/satellite6/Makefile
         dst: Makefile
-      - src: data/satellite6/answers.txt
-        dst: answers.txt
 
     templates:
       autoinst:
@@ -1042,6 +1037,14 @@ guests:
         interfaces:
           - mac: "52:54:00:05:00:16"
             network: service
+
+      - hostname: satellite6-sync-host-1
+        ip: 192.168.155.17
+        interfaces:
+          - mac: "52:54:00:05:00:17"
+            network: service
+
+        setup_data: []
 
   - name: fedora
     description: Fedora stable
