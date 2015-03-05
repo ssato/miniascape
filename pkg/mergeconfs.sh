@@ -10,7 +10,7 @@ for d in ${topdir}/conf/*/*.yml.d/; do
         outtmp=${out}.t
         sed -n '/^#/d; p' $f >> ${outtmp}
     done
-    test -f ${outtmp} && mv ${outtmp} ${out}
+    test -f ${outtmp} && mv ${outtmp} ${out} || :
 done
 
 # vim:sw=4:ts=4:et:
