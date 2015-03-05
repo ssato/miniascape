@@ -5,7 +5,7 @@
     filesystem: ext3
     virtinst:
       location: *rhel_5_location
-      os_variant: *&rhel_5_os_variant
+      os_variant: *rhel_5_os_variant
 
     disks:
       - pool: default
