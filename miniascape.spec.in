@@ -59,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rst
 %{_bindir}/*
 %config %{pkgconfdir}/*/*.yml
+%config %{pkgconfdir}/*/*.yml.d/*.yml
 %config %{pkgconfdir}/*/bootstrap/*.yml
 %{python_sitelib}/*
 
