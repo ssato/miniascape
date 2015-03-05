@@ -1,0 +1,79 @@
+# vim:sw=2:ts=2:et:
+
+  - name: rhel-6-cluster
+
+    # FIXME:
+    kickstart:
+      repos:
+        - name: "RHEL 6 x86_64 - Cluster"
+          #baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
+          baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
+
+    disks:
+      - pool: default
+        size: 5
+        bus: scsi
+      - pool: default
+        vol: rhel-6-cluster-data-1.img
+        perms: sh
+        size: 1
+        bus: scsi
+
+    cluster:
+      nodes:
+      - &rhel_6_cluster_node1 rhel-6-cluster-default-1
+      - &rhel_6_cluster_node2 rhel-6-cluster-default-2
+      resources:
+        ip: 192.168.155.110
+
+    hosts:
+      - ip: 192.168.122.111
+        hostname: *rhel_6_cluster_node1
+      - ip: 192.168.122.112
+        hostname: *rhel_6_cluster_node2
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-cluster-ks.cfg
+
+    setup_data:
+      - src: data/rhel-5-cluster/cluster.conf
+        dst: cluster.conf
+      - src: data/rhel-5-cluster/init_qdisk.sh
+        dst: init_qdisk.sh
+
+    guests:
+      - hostname: &rhel_6_cluster_1_hostname rhel-6-cluster-1
+        fqdn: &rhel_6_cluster_1_fqdn rhel-6-cluster-1.m2.local
+        ip: &rhel_6_cluster_1_ip 192.168.155.111
+        interfaces:
+          - mac: "52:54:00:05:01:11"  # for service
+            ip: *rhel_6_cluster_1_ip
+            host: *rhel_6_cluster_1_hostname
+            fqdn: *rhel_6_cluster_1_fqdn
+            network: service
+            activate: true
+          - bootproto: static  # for heartbeat
+            mac: "52:54:00:02:01:11"
+            ip: 192.168.122.111
+            host: rhel-6-cluster-default-1
+            network: default
+            nodns: true
+
+      - hostname: &rhel_6_cluster_2_hostname rhel-6-cluster-2
+        fqdn: &rhel_6_cluster_2_fqdn rhel-6-cluster-2.m2.local
+        ip: &rhel_6_cluster_2_ip 192.168.155.112
+        interfaces:
+          - mac: "52:54:00:05:01:12"  # for service
+            ip: *rhel_6_cluster_2_ip
+            host: *rhel_6_cluster_2_hostname
+            fqdn: *rhel_6_cluster_2_fqdn
+            network: service
+            activate: true
+          - bootproto: static  # for heartbeat
+            mac: "52:54:00:02:01:12"
+            ip: 192.168.122.112
+            host: rhel-6-cluster-default-2
+            network: default
+            nodns: true
+

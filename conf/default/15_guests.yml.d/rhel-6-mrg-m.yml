@@ -1,0 +1,40 @@
+# vim:sw=2:ts=2:et:
+
+  - name: rhel-6-mrg-m
+    description: RHEL 6 MRG-M nodes
+
+    kickstart:
+      repos:
+        - name: "RHEL 6 x86_64 - MRG-M"
+          baseurl: "http://ks/kstree/rhel-6-mrg-2.1-x86_64"
+
+    services:
+      enabled:
+        - openais
+        - qpidd
+
+    # @see common/00_base.yml:
+    openais:
+      bindnetaddr: 192.168.155.0
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-mrg-m-ks.cfg
+
+    setup_data:
+      - src: data/mrg-m/qpidd_cluster_check.py.txt
+        dst: qpidd_cluster_check.py
+
+    guests:
+      - hostname: rhel-6-mrg-m-1
+        ip: 192.168.155.71
+        interfaces:
+          - network: service
+            mac: "52:54:00:05:00:71"
+
+      - hostname: rhel-6-mrg-m-2
+        ip: 192.168.155.72
+        interfaces:
+          - network: service
+            mac: "52:54:00:05:00:72"
+

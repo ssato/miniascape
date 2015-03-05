@@ -1,0 +1,23 @@
+# vim:sw=2:ts=2:et:
+# IPA Guests:
+  - name: ipa
+    description: Red Hat IPA Server
+    ipa:
+      admin: admin
+      password: redhat0971
+
+    templates:
+      autoinst:
+        src: autoinstall.d/ipa-ks.cfg
+
+    setup_data:
+      - src: data/ipa/setup.sh
+        dst: setup.sh
+
+    guests:
+      - hostname: ipa-1
+        ip: 192.168.155.17
+        interfaces:
+          - mac: "52:54:00:05:00:17"
+            network: service
+

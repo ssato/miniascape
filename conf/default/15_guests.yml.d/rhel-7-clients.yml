@@ -1,0 +1,27 @@
+# vim:sw=2:ts=2:et:
+
+  - name: rhel-7-client
+    description: Versatile RHEL 7 client systems
+
+    virtinst:
+      location: *rhel_7_location
+      os_variant: rhel7
+      extra_args: console=tty0 console=ttyS0,115200 net.ifnames=0 video=640x480
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-7-min-ks.cfg
+
+    guests:
+      - hostname: rhel-7-client-1
+        ip: 192.168.155.175
+        interfaces:
+          - network: service
+            mac: "52:54:00:05:01:75"
+
+      - hostname: rhel-7-client-2
+        ip: 192.168.155.176
+        interfaces:
+          - network: service
+            mac: "52:54:00:05:01:76"
+

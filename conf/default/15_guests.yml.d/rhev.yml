@@ -1,0 +1,93 @@
+# vim:sw=2:ts=2:et:
+
+  - name: rhevh
+    description: RHEL Hypervisor node
+    virtinst:
+      ram: 2560
+      cpu: host
+      vcpus: 2
+      cdrom: /var/lib/libvirt/images/rhev-hypervisor6-6.4-20130912.1.iso
+      #TODO: --extra-args requires --local but ...
+      #
+      # see also: RHEV Hypervisor Deployment Guide, 4.2. Automated
+      # Installation: http://red.ht/1apjAJg
+      extra_args: install storage_init=/dev/sda BOOTIF=eth0 adminpw=redhat management_server=rhevm-1 rhevm_admin_password=redhat ...
+
+    #templates:
+      #autoinstall:
+        #dst: false
+
+    disks:
+      - pool: default
+        size: 6
+        bus: virtio
+
+    kickstart:
+      # NOTE: These accounts should be created automatically when to install
+      # rhevm RPMs. see also: RHEV Installation Guide, 2.3.6. Required User
+      # Accounts and Groups, http://red.ht/1bUaUjD
+      users: []
+      #  - name: vdsm
+      #    uid: 36
+      #  - name: ovirt
+      #    uid: 108
+
+    guests:
+      - hostname: rhevh-1
+        ip: 192.168.155.33
+        interfaces:
+          - mac: "52:54:00:05:00:33"
+            network: service
+
+    guests:
+      - hostname: rhevh-2
+        ip: 192.168.155.34
+        interfaces:
+          - mac: "52:54:00:05:00:34"
+            network: service
+
+  - name: rhevm
+    description: RHEV Manager node
+    disks:
+      - pool: default
+        size: 50
+        bus: scsi
+
+    virtinst:
+      ram: 2560
+      vcpus: 2
+
+    rhn:
+    #  username: foo@m2.local
+    #  password: xyzsecret
+      activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+    #  profilename: "REPLACE_THIS"
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhev-manager-ks.cfg
+
+    setup_data:
+      - src: data/rhev-manager/Makefile
+        dst: Makefile
+      - src: data/rhev-manager/answers.txt
+        dst: answers.txt.last_half
+      - src: data/rhev-manager/rhevm_setup_wrapper.py.txt
+        dst: rhevm_setup_wrapper.py
+
+    guests:
+      - hostname: rhevm-1
+        ip: 192.168.155.31
+        interfaces:
+          - mac: "52:54:00:05:00:31"
+            network: service
+
+        rhev:
+          # If remote:
+          # db_host: *fqdn
+          # db_remote_pass: xxxxxxxxx
+          #override_iptables: yes
+          auth_pass: redhat0123
+          db_local_pass: redhat0123
+          dc_type: NFS
+

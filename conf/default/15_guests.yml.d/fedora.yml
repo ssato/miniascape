@@ -1,0 +1,14 @@
+# vim:sw=2:ts=2:et:
+
+  - name: fedora
+    description: Fedora Stable
+
+    templates:
+      autoinst:
+        src: autoinstall.d/fedora-min-ks.cfg
+
+    guests:
+      - hostname: fedora-21-1
+        interfaces:
+          - network: service
+

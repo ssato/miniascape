@@ -1,0 +1,84 @@
+# vim:sw=2:ts=2:et:
+
+  - name: rhs
+    description: Red Hat Storage node
+    kickstart:
+      repos:
+        - name: "RHEL 6 x86_64 - ScalableFileSystem"
+          #baseurl: "http://ks/kstree/rhel/6/3/x86_64/ScalableFileSystem"
+          baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
+
+    rhs:
+      nodes:
+        - rhs-1
+        - rhs-2
+        - rhs-3
+        - rhs-4
+      volume: vol01
+      brick: /data/brick01
+
+    templates:
+      autoinst:
+        src: autoinstall.d/glusterfs-ks.cfg
+
+    guests:
+      - hostname: rhs-1
+        ip: 192.168.155.51
+        interfaces:
+          - mac: "52:54:00:05:00:51"
+            network: service
+
+        disks:
+          - pool: default
+            size: 5
+            bus: scsi
+          - pool: default
+            vol: rhs-1-data-1
+            size: 1
+            bus: scsi
+
+      - hostname: &rhs_2_hostname rhs-2
+        ip: &rhs_2_ip 192.168.155.52
+        interfaces:
+          - mac: "52:54:00:05:00:52"
+            network: service
+
+        disks:
+          - pool: default
+            size: 5
+            bus: scsi
+          - pool: default
+            vol: rhs-2-data-1
+            size: 1
+            bus: scsi
+
+      - hostname: &rhs_3_hostname rhs-3
+        ip: &rhs_3_ip 192.168.155.53
+        interfaces:
+          - mac: "52:54:00:05:00:53"
+            network: service
+
+        disks:
+          - pool: default
+            size: 5
+            bus: scsi
+          - pool: default
+            vol: rhs-3-data-1
+            size: 1
+            bus: scsi
+
+      - hostname: &rhs_4_hostname rhs-4
+        ip: &rhs_4_ip 192.168.155.54
+        interfaces:
+          - mac: "52:54:00:05:00:54"
+            network: service
+
+        disks:
+          - pool: default
+            size: 5
+            bus: scsi
+          - pool: default
+            vol: rhs-4-data-1
+            size: 1
+            bus: scsi
+

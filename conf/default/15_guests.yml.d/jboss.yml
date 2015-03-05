@@ -1,0 +1,115 @@
+# vim:sw=2:ts=2:et:
+
+  - name: jboss
+    description: JBoss EAP Server
+    disks:
+      - pool: default
+        size: 10
+        bus: scsi
+
+    virtinst:
+      ram: 1024
+      vcpus: 2
+      location: *rhel_7_location  # see 00_guests.yml
+      os_variant: rhel7
+
+    rhn:
+    #  username: foo@m2.local
+    #  password: xyzsecret
+      activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+    #  profilename: "REPLACE_THIS"
+
+    jboss:
+      master: 192.168.155.40
+      domain:
+        user: admin
+        secret:
+        plain: redhat
+        # python: base64.encodestring('redhat') or sh: echo -n 'redhat' | base64
+        base64: cmVkaGF0
+        # python: hashlib.md5('admin:ManagementRealm:redhat').hexdigest()
+        hash: c06ba95adae374bc766be220fad6cc0a
+
+    templates:
+      autoinst:
+        # src: autoinstall.d/rhel-6-jboss-ks.cfg
+        src: autoinstall.d/rhel-7-jboss-ks.cfg
+
+    setup_data:
+      - src: data/jboss/Makefile
+        dst: Makefile
+      - src: data/jboss/host-slave-0.xml
+        dst: host-slave-0.xml
+
+    guests:
+      - description: JBoss Domain Controller
+        hostname: jboss-0
+        ip: 192.168.155.40
+        interfaces:
+          - mac: "52:54:00:05:00:40"
+            network: service
+
+        jboss:
+          is_domain_controller: true
+          server_groups:
+            - name: group1
+            - name: group2
+
+        setup_data:
+          - src: data/jboss/Makefile
+            dst: Makefile
+          - src: data/jboss/domain-0.xml
+            dst: domain-0.xml
+          - src: data/jboss/host-master-0.xml
+            dst: host-master-0.xml
+          - src: data/jboss/domain-app-deploy.sh
+            dst: domain-app-deploy.sh
+            install:
+              mode: 755
+              dst: /usr/sbin/domain-app-deploy.sh
+
+      - hostname: &jboss_1_hostname jboss-1
+        ip: 192.168.155.41
+        interfaces:
+          - mac: "52:54:00:05:00:41"
+            network: service
+
+        jboss:
+          servers:
+            - name: *jboss_1_hostname
+              group: group1
+
+      - hostname: &jboss_2_hostname jboss-2
+        ip: 192.168.155.42
+        interfaces:
+          - mac: "52:54:00:05:00:42"
+            network: service
+
+        jboss:
+          servers:
+            - name: *jboss_2_hostname
+              group: group1
+
+      - hostname: &jboss_3_hostname jboss-3
+        ip: 192.168.155.43
+        interfaces:
+          - mac: "52:54:00:05:00:43"
+            network: service
+
+        jboss:
+          servers:
+            - name: *jboss_3_hostname
+              group: group2
+
+      - hostname: &jboss_4_hostname jboss-4
+        ip: 192.168.155.44
+        interfaces:
+          - mac: "52:54:00:05:00:44"
+            network: service
+
+        jboss:
+          servers:
+            - name: *jboss_4_hostname
+              group: group2
+
+

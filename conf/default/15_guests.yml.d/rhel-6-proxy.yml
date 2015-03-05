@@ -1,0 +1,35 @@
+# vim:sw=2:ts=2:et:
+
+  - name: rhel-6-proxy
+    squid:
+      allowed_network: 192.168.155.0/24
+      auth:
+        username: foo
+        password: secret
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-proxy-ks.cfg
+
+    setup_data:
+      - src: data/proxy/squid.conf
+        dst: squid.conf
+
+    guests:
+      - hostname: &rhel_6_proxy_1_hostname rhel-6-proxy-1
+        fqdn: &rhel_6_proxy_1_fqdn rhel-6-proxy-1.m2.local
+        ip: &rhel_6_proxy_1_ip 192.168.155.191
+        interfaces:
+          - mac: "52:54:00:05:01:91"
+            ip: *rhel_6_proxy_1_ip
+            host: *rhel_6_proxy_1_hostname
+            fqdn: *rhel_6_proxy_1_fqdn
+            network: service
+            activate: true
+          - bootproto: static
+            mac: "52:54:00:02:01:91"
+            ip: 192.168.122.191
+            host: rhel-6-proxy-default-1
+            network: default
+            nodns: true
+

@@ -1,0 +1,19 @@
+# vim:sw=2:ts=2:et:
+
+  - name: sam
+    description: RH Subscription Asset Manager server
+    virtinst:
+      ram: 2048
+      vcpus: 2
+
+    templates:
+      autoinst:
+        src: autoinstall.d/sam-ks.cfg
+
+    guests:
+      - hostname: &sam_1_hostname sam-1
+        ip: &sam_1_ip 192.168.155.15
+        interfaces:
+          - mac: "52:54:00:05:00:15"
+            network: service
+
