@@ -1,0 +1,62 @@
+# vim:sw=2:ts=2:et:
+
+  - name: ose-broker
+    description: OpenShift Enterprise Broker
+    templates:
+      autoinst:
+        src: autoinstall.d/openshift-broker-ks.cfg
+
+    packages:
+      add:
+        - ntp
+        - bind
+        - compat-readline5
+        - boost-filesystem
+        - boost-iostreams
+        - boost-program-options
+        - boost-system
+        - boost-thread
+        - git
+        - httpd
+        - java-1.6.0-openjdk
+        - krb5-workstation
+        - libicu
+        - mod_ssl
+        - perl-Git
+        - policycoreutils-python
+        - ruby
+        - yum-plugin-priorities
+
+    setup_screen: true
+
+    kickstart:
+      users:
+        - name: developer
+          uid: 1001
+
+    firewall:
+      rules:
+        - http
+        - "port=443:tcp"
+        - "port=27017:tcp"
+        - "port=61613:tcp"
+        - "port=61616:tcp"
+        - "port=53:tcp"
+        - "port=53:udp"
+
+    openshift:
+      install_components:
+        - broker
+        - named
+        - activemq
+        - datastore
+
+    guests:
+      - hostname: *broker_1_hostname
+        fqdn: *broker_1_fqdn
+        ip: *broker_1_ip
+        interfaces:
+          - mac: "52:54:00:21:00:11"
+            network: *openshift_network_0
+            bootproto: static
+

@@ -1,0 +1,63 @@
+# vim:sw=2:ts=2:et:
+
+  - name: ose-node
+    description: OpenShift Enterprise node
+    templates:
+      autoinst:
+        src: autoinstall.d/openshift-node-ks.cfg
+
+    packages:
+      add:
+        - compat-readline5
+        - git
+        - httpd
+        - mailcap
+        - ntp
+        - oddjob
+        - perl-Git
+        - policycoreutils-python
+        - rng-tools
+        - ruby
+        - yum-plugin-priorities
+
+    firewall:
+      rules:
+        - http
+        - "port=443:tcp"
+        - "port=8000:tcp"
+        - "port=8443:tcp"
+      input_rules:
+        - "-A INPUT -m state --state NEW -m tcp -p tcp --dport 2303:2308 -j ACCEPT"
+        - "-A INPUT -m state --state NEW -m tcp -p tcp --dport 35531:65535 -j ACCEPT"
+
+    openshift:
+      install_components:
+        - node
+      #cartridges:
+        #- php
+        #- ruby
+        #- haproxy
+
+    guests:
+      - hostname: *ose_node_1_hostname
+        ip: *ose_node_1_ip
+        fqdn: ose-node-1.openshift.example.com
+        interfaces:
+          - mac: "52:54:00:21:00:21"
+            network: *openshift_network_0
+            bootproto: static
+
+        openshift:
+          node_hostname: *ose_node_1_hostname
+
+      - hostname: *ose_node_2_hostname
+        ip: *ose_node_2_ip
+        fqdn: ose-node-2.openshift.example.com
+        interfaces:
+          - mac: "52:54:00:21:00:22"
+            network: *openshift_network_0
+            bootproto: static
+
+        openshift:
+          node_hostname: *ose_node_2_hostname
+

@@ -1,0 +1,45 @@
+# vim:sw=2:ts=2:et:
+
+  - name: ose-client
+    description: OpenShift Enterprise clients
+    templates:
+      autoinst:
+        src: autoinstall.d/openshift-client-ks.cfg
+
+    nameservers:
+      - ip: 8.8.8.8
+      - ip: *broker_1_ip
+
+    disks:
+      - pool: default
+        format: qcow2
+        cache: none
+        size: 10
+        bus: scsi
+
+    setup_data:
+      - src: data/openshift/Makefile.clients
+        dst: Makefile
+
+    partition: |
+      autopart
+
+    packages:
+      add:
+        - git
+        - perl-Git
+        - ruby
+        - yum-plugin-priorities
+
+    openshift:
+      is_server: True  # True if the client is RHEL 6 Server (! Workstation nor Client).
+
+    guests:
+      - ip: 192.168.210.101
+        hostname: ose-client-1
+        fqdn: ose-client-1.openshift.example.com
+        interfaces:
+          - mac: "52:54:00:21:01:01"
+            network: *openshift_network_0
+            bootproto: static
+
