@@ -2,6 +2,7 @@
 
   - name: satellite6
     description: Red Hat Satellite 6 server
+
     disks:
       - pool: default
         size: 90
@@ -17,22 +18,10 @@
 
     satellite:
       admin:
-        #name: admin
-        #password: secret
-        #email: root@localhost
+        name: admin
+        #password:
+        email: root@localhost
 
-# Satellite 6 does not need SSL configurations as it will generate SSL certs
-# inside installer by default:
-#      ssl:
-#        org: "M2 Example, Inc."
-#        unit: "IT Dept."
-#        city: Shibuya-ku
-#        state: Tokyo
-#        country: JP
-#        password: sslsecret
-#        cn: M2 Example Inc
-#        expires: 3650
-#
     proxy:
       #url:
       #port:
@@ -45,10 +34,7 @@
         - chronyd
 
     rhn:
-    #  username: foo@m2.local
-    #  password: xyzsecret
       activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
-    #  profilename: "REPLACE_THIS"
 
     setup_data:
       - src: data/satellite6/Makefile
