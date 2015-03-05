@@ -1,0 +1,26 @@
+  - name: compute
+    description: OpenStack Compute node
+
+    templates:
+      autoinst:
+        src: autoinstall.d/openstack-compute-ks.cfg
+
+    virtinst:
+      cpu: host
+
+    guests:
+      - hostname: compute-0
+        fqdn: compute-0.openstack.example.com
+        ip: *openstack_compute_0_ip_0
+        interfaces:
+          # eth0: access from/to public network for this openstack node:
+          - mac: "52:54:00:16:82:30"
+            ip: *openstack_compute_0_ip_0
+            network: *public_network
+
+          # eth1: guests access to public network via this (private side)
+          - mac: "52:54:00:68:32:30"
+            ip: 192.168.32.30
+            network: *private_network
+
+# vim:sw=2:ts=2:et:

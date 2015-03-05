@@ -1,0 +1,42 @@
+  - name: controller
+    description: OpenStack controller node
+
+    setup_data:
+      - src: data/openstack/Makefile
+        dst: Makefile
+      - src: data/openstack/controller_answers.txt
+        dst: answers.txt
+
+    templates:
+      autoinst:
+        src: autoinstall.d/openstack-controller-ks.cfg
+
+    guests:
+      - hostname: controller-0
+        fqdn: controller-0.openstack.example.com
+        ip: &openstack_controller_0_ip_0 192.168.200.20
+        interfaces:
+          # eth0: access from/to public network for this openstack node:
+          - mac: "52:54:00:16:82:20"
+            ip: *openstack_controller_0_ip_0
+            network: *public_network
+
+          # eth1: guests access to public network via this (public side)
+          - mac: "52:54:00:16:82:21"
+            ip: 192.168.200.21
+            network: *public_network
+
+          # eth2: guests access to public network via this (private side)
+          - mac: "52:54:00:68:32:20"
+            ip: 192.168.32.20
+            network: *private_network
+
+        openstack_compute_nodes:
+          - *openstack_compute_0_ip_0
+
+        packstack:
+          controller_ip: *openstack_controller_0_ip_0
+          compute_ips:
+            - *openstack_compute_0_ip_0
+
+# vim:sw=2:ts=2:et:
