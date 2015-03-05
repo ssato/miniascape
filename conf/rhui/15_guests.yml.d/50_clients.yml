@@ -1,0 +1,49 @@
+  - name: rhel-6-rhui-client
+    description: RHEL 6 client systems using CCP subscriptions
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-rhui-client-ks.cfg
+
+    disks:
+      - pool: default
+        format: qcow2
+        cache: none
+        size: 6
+        bus: scsi
+
+    guests:
+      - hostname: rhel-6-rhui-client-1
+        interfaces:
+          - network: *rhui_network_1
+            bootproto: dhcp
+
+  - name: rhel-5-rhui-client
+    description: RHEL 5 client systems using CCP subscriptions
+
+    filesystem: ext3
+    virtinst:
+      location: http://192.168.20.254/kstree/rhel-5.10-x86_64/
+      os_variant: rhel5.4
+
+    disks:
+      - pool: default
+        format: qcow2
+        cache: none
+        size: 6
+        bus: virtio
+
+    partition: |
+      part /boot --asprimary --fstype="ext3" --size=200
+      part /     --asprimary --fstype="ext3" --size=1 --grow
+      part swap  --fstype="swap" --size=1024
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-5-rhui-client-ks.cfg
+
+    guests:
+      - hostname: rhel-5-rhui-client-1
+        interfaces:
+          - network: *rhui_network_1
+            bootproto: dhcp
+
+# vim:sw=2:ts=2:et:

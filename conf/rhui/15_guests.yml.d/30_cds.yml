@@ -1,0 +1,35 @@
+  - name: cds
+    description: RHUI CDS Server
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhui-cds-ks.cfg
+
+    setup_data:
+      - src: data/rhui/cds/Makefile
+        dst: Makefile
+
+    guests:
+      - hostname: *cds_1_hostname
+        name: cds-1
+        ip: *cds_1_ip
+        interfaces:
+          - network: *rhui_network_1
+            bootproto: static
+            options: --activate
+
+        virtinst:
+          extra_args: ip=192.168.20.21 netmask=255.255.255.0
+
+      - hostname: *cds_2_hostname
+        name: cds-2
+        ip: *cds_2_ip
+        interfaces:
+          - network: *rhui_network_1
+            bootproto: static
+            options: --activate
+
+        virtinst:
+          extra_args: ip=192.168.20.22 netmask=255.255.255.0
+
+# vim:sw=2:ts=2:et:

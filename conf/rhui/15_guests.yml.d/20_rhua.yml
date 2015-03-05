@@ -1,0 +1,52 @@
+  - name: rhua
+    description: RHUA server
+
+    cert:
+      key_length: 2048
+      expiration_dates: 3650
+      subject: *ssl_cert_subject
+
+    rhui_entitlement_certs:
+      - *rhui_entitlement_cert
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhua-ks.cfg
+
+    setup_data:
+      - src: data/rhui/rhua/answers.txt
+        dst: answers.txt
+      - src: data/rhui/rhua/Makefile
+        dst: Makefile
+      - src: data/rhui/rhua/Makefile.certs
+        dst: certs/Makefile
+      - src: data/rhui/rhua/gen_rpm_gpgkey.sh
+        dst: gen_rpm_gpgkey.sh
+      - src: data/rhui/rhua/gen_ssl_server.sh
+        dst: gen_ssl_server.sh
+      - src: *rhui_entitlement_cert
+
+    cds:
+      cluster: *cds_cluster
+
+    cdsservers:
+      - name: *cds_1_hostname
+        fqdn: *cds_1_fqdn
+        cluster: *cds_cluster
+      - name: *cds_2_hostname
+        fqdn: *cds_2_fqdn
+        cluster: *cds_cluster
+
+    guests:
+      - name: rhua
+        hostname: *rhua_hostname
+        ip: *rhua_ip
+        interfaces:
+          - network: *rhui_network_1
+            bootproto: static
+            options: --activate
+
+        virtinst:
+          extra_args: ip=192.168.20.11 netmask=255.255.255.0
+
+# vim:sw=2:ts=2:et:

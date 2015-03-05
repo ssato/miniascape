@@ -53,6 +53,7 @@ common:
     #mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'
 
 guests:
+
   - name: rhua
     description: RHUA server
 
@@ -186,4 +187,3 @@ guests:
           - network: *rhui_network_1
             bootproto: dhcp
 
-# vim:sw=2:ts=2:et:
