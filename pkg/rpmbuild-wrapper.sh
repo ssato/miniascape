@@ -26,7 +26,8 @@ Options:
 
 Examples:
  $0 foo.spec
- $0 -d \$(mktemp -d) -v bar.spec
+ $0 -w \$(mktemp -d) bar.spec
+ $0 -w \$(mktemp -d) -v -s b baz.spec
 EOH
 }
 
