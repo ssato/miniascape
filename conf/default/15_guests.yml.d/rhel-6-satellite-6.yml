@@ -1,0 +1,51 @@
+# vim:sw=2:ts=2:et:
+
+  - name: rhel-6-satellite-6
+    description: Red Hat Satellite 6 server (RHEL 6)
+
+    disks:
+      - pool: default
+        size: 90
+        bus: scsi
+        format: raw
+        sparse: false
+
+    virtinst:
+      ram: 4092
+      vcpus: 4
+
+    satellite:
+      admin:
+        name: admin
+        #password:
+        email: root@localhost
+
+    proxy:
+      #url:
+      #port:
+      #user:
+      #password:
+
+    services:
+      enabled:
+        - sshd
+        - ntpd
+
+    rhn:
+      #activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
+
+    setup_data:
+      - src: data/satellite6/Makefile.rhel-6
+        dst: Makefile
+
+    templates:
+      autoinst:
+        src: autoinstall.d/rhel-6-satellite-6-ks.cfg
+
+    guests:
+      - hostname: rhel-6-satellite-6-1
+        ip: 192.168.155.19
+        interfaces:
+          - mac: "52:54:00:05:00:19"
+            network: service
+
