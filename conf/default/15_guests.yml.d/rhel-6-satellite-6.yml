@@ -17,7 +17,7 @@
     satellite:
       admin:
         name: admin
-        #password:
+        password: secret
         email: root@localhost
 
     proxy:
@@ -35,7 +35,7 @@
       #activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
 
     setup_data:
-      - src: data/satellite6/Makefile.rhel-6
+      - src: data/satellite6/Makefile
         dst: Makefile
 
     templates:
