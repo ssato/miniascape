@@ -2,6 +2,7 @@ from distutils.core import setup, Command
 from glob import glob
 
 import os
+import subprocess
 import sys
 
 curdir = os.getcwd()
@@ -71,8 +72,10 @@ class SrpmCommand(Command):
         rpmbuild = os.path.join(curdir, "pkg/rpmbuild-wrapper.sh")
         workdir = os.path.join(curdir, "dist")
 
-        os.system("%s -w %s -s %s %s" % (rpmbuild, workdir, self.build_stage,
-                                         rpmspec))
+        subprocess.check_call("%s -w %s -s %s %s" % (rpmbuild, workdir,
+                                                     self.build_stage,
+                                                     rpmspec),
+                              shell=True)
 
 
 class RpmCommand(SrpmCommand):
