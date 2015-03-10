@@ -49,8 +49,10 @@ data_files += concat(list_data_files_g(p, d) for p, d in
 class SrpmCommand(Command):
 
     user_options = []
-
     build_stage = "s"
+
+    curdir = os.path.abspath(os.curdir)
+    rpmspec = os.path.join(curdir, "%s.spec" % PACKAGE)
 
     def initialize_options(self):
         pass
@@ -59,22 +61,25 @@ class SrpmCommand(Command):
         pass
 
     def run(self):
+        self.pre_sdist()
         self.run_command('sdist')
         self.build_rpm()
 
+    def pre_sdist(self):
+        mergeconfs = os.path.join(self.curdir, "pkg/mergeconfs.sh")
+        subprocess.check_call(mergeconfs, shell=True)
+
+        c = open(self.rpmspec + ".in").read()
+        open(self.rpmspec, "w").write(c.replace("@VERSION@", VERSION))
+
     def build_rpm(self):
-        curdir = os.path.abspath(os.curdir)
-        rpmspec = os.path.join(curdir, "%s.spec" % PACKAGE)
 
-        c = open(rpmspec + ".in").read()
-        open(rpmspec, "w").write(c.replace("@VERSION@", VERSION))
-
-        rpmbuild = os.path.join(curdir, "pkg/rpmbuild-wrapper.sh")
-        workdir = os.path.join(curdir, "dist")
+        rpmbuild = os.path.join(self.curdir, "pkg/rpmbuild-wrapper.sh")
+        workdir = os.path.join(self.curdir, "dist")
 
         subprocess.check_call("%s -w %s -s %s %s" % (rpmbuild, workdir,
                                                      self.build_stage,
-                                                     rpmspec),
+                                                     self.rpmspec),
                               shell=True)
 
 
