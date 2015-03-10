@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 
 %changelog
-* Tue Jul 23 2014 Satoru SATOH <ssato@redhat.com> - 0.3.10.99-1
+* Tue Mar 10 2015 Satoru SATOH <ssato@redhat.com> - 0.3.10.99-1
 - Split some default config files and make them merged on build time
 
 * Wed Jul 23 2014 Satoru SATOH <ssato@redhat.com> - 0.3.10-1
