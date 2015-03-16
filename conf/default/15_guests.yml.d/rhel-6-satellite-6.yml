@@ -37,6 +37,9 @@
     setup_data:
       - src: data/satellite6/Makefile
         dst: Makefile
+      # TODO:
+      #- src: manifests.zip
+      #  dst: manifests.zip
 
     templates:
       autoinst:
@@ -47,5 +50,12 @@
         ip: 192.168.155.19
         interfaces:
           - mac: "52:54:00:05:00:19"
+            network: service
+        setup_screen: true
+
+      - hostname: rhel-6-satellite-6-2
+        ip: 192.168.155.20
+        interfaces:
+          - mac: "52:54:00:05:00:20"
             network: service
 
