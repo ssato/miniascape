@@ -51,11 +51,3 @@
           - mac: "52:54:00:05:00:16"
             network: service
 
-      - hostname: satellite6-sync-host-1
-        ip: 192.168.155.17
-        interfaces:
-          - mac: "52:54:00:05:00:17"
-            network: service
-
-        setup_data: []
-
