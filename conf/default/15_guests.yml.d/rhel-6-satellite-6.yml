@@ -5,7 +5,7 @@
 
     disks:
       - pool: default
-        size: 90
+        size: 120
         bus: scsi
         format: raw
         sparse: false
@@ -37,6 +37,8 @@
     setup_data:
       - src: data/satellite6/Makefile
         dst: Makefile
+      - src: data/satellite6/initial-setup.sh
+        dst: initial-setup.sh
       # TODO:
       #- src: manifests.zip
       #  dst: manifests.zip

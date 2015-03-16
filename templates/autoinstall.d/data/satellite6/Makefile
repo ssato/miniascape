@@ -10,12 +10,10 @@ SATELLITE_ISO ?= \
 $(WORKDIR)/$(if $(SATELLITE_ISO_URL),$(notdir $(SATELLITE_ISO_URL)),satellite.iso)
 
 # RHN related:
+RHSM_REGISTER ?= subscription-manager register || :
 RHSM_SUBSCRIPTION_POOL ?= {{ rhn.subscription.pool if rhn.subscription }}
 RHSM_SUBSCRIBE ?= subscription-manager subscribe \
 $(if $(RHSM_SUBSCRIPTION_POOL),--pool=$(RHSM_SUBSCRIPTION_POOL),--auto)
-
-RHSM_REGISTER ?= subscription-manager identity || \
-$(shell subscription-manager register && $(RHSM_SUBSCRIBE))
 
 RHSM_ENABLE_REPOS = \
 subscription-manager repos --disable '*' && \
@@ -29,21 +27,15 @@ $(if $(IS_RHEL_7),--enable rhel-7-server-rpms \
 
 # See also: Satellite 6.0 Installation, 2.2. Installing Red Hat Satellite with
 # an ISO Image: http://red.ht/1wICPsd
-define install-offline =
-test -f $(SATELLITE_ISO) || curl -o $(SATELLITE_ISO) $(SATELLITE_ISO_URL)
+INSTALL_RPMS_ONLINE = yum install -y katello
+INSTALL_RPMS_FROM_ISO = \
+test -f $(SATELLITE_ISO) || curl -o $(SATELLITE_ISO) $(SATELLITE_ISO_URL); \
 trap "umount /mnt" INT TERM && \
 mount -o ro,loop $(SATELLITE_ISO) /mnt && \
 cd /mnt && ./install_packages && cd - && umount /mnt
-endef
 
-define install-online =
-$(RHSM_REGISTER)
-$(RHSM_ENABLE_REPOS)
-yum install -y katello
-endef
-
-INSTALL_RPMS = $(if $(TO_INSTALL_ONLINE),$(install-online),$(install-offline))
-INSTALL = katello-installer $(KATELLO_INSTALLER_OPTIONS) 2>&1 | tee katello-installer.log
+INSTALL_RPMS = \
+$(if $(TO_INSTALL_ONLINE),$(INSTALL_RPMS_ONLINE),$(INSTALL_RPMS_FROM_ISO))
 
 KATELLO_INSTALLER_OPTIONS	?= \
 {% if satellite.admin is defined -%}
@@ -61,28 +53,29 @@ KATELLO_INSTALLER_OPTIONS	?= \
 {% endif -%}
 $(NULL)
 
+INSTALL_SATELLITE = \
+katello-installer $(KATELLO_INSTALLER_OPTIONS) 2>&1 | tee $(WORKDIR)/katello-installer.log
+
 FIREWALL_CMD ?= firewall-cmd --permanent --direct --add-rule
 
-define setup-firewall-firewalld =
-$(FIREWALL_CMD) ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner foreman -j ACCEPT
-$(FIREWALL_CMD) ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner foreman -j ACCEPT
-$(FIREWALL_CMD) ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner katello -j ACCEPT
-$(FIREWALL_CMD) ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner katello -j ACCEPT
-$(FIREWALL_CMD) ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner root -j ACCEPT
-$(FIREWALL_CMD) ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner root -j ACCEPT
-$(FIREWALL_CMD) ipv4 filter OUTPUT 1 -o lo -p tcp -m tcp --dport 9200 -j DROP
+SETUP_FIREWALL_W_FIREWALLD = \
+$(FIREWALL_CMD) ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner foreman -j ACCEPT && \
+$(FIREWALL_CMD) ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner foreman -j ACCEPT && \
+$(FIREWALL_CMD) ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner katello -j ACCEPT && \
+$(FIREWALL_CMD) ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner katello -j ACCEPT && \
+$(FIREWALL_CMD) ipv4 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner root -j ACCEPT && \
+$(FIREWALL_CMD) ipv6 filter OUTPUT 0 -o lo -p tcp -m tcp --dport 9200 -m owner --uid-owner root -j ACCEPT && \
+$(FIREWALL_CMD) ipv4 filter OUTPUT 1 -o lo -p tcp -m tcp --dport 9200 -j DROP && \
 $(FIREWALL_CMD) ipv6 filter OUTPUT 1 -o lo -p tcp -m tcp --dport 9200 -j DROP
-endef
 
-define setup-firewall-iptables =
-iptables -I INPUT -m state --state NEW -p tcp --dport 443 -j ACCEPT
-iptables -I INPUT -m state --state NEW -p tcp --dport 5671 -j ACCEPT
-iptables -I INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
-iptables -I INPUT -m state --state NEW -p tcp --dport 8140 -j ACCEPT
-iptables -I INPUT -m state --state NEW -p tcp --dport 9090 -j ACCEPT
-iptables -I INPUT -m state --state NEW -p tcp --dport 8080 -j ACCEPT
+SETUP_FIREWALL_W_IPTABLES = \
+iptables -I INPUT -m state --state NEW -p tcp --dport 443 -j ACCEPT && \
+iptables -I INPUT -m state --state NEW -p tcp --dport 5671 -j ACCEPT && \
+iptables -I INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT && \
+iptables -I INPUT -m state --state NEW -p tcp --dport 8140 -j ACCEPT && \
+iptables -I INPUT -m state --state NEW -p tcp --dport 9090 -j ACCEPT && \
+iptables -I INPUT -m state --state NEW -p tcp --dport 8080 -j ACCEPT && \
 iptables-save > /etc/sysconfig/iptables
-endef
 
 SETUP_FIREWALL = \
 $(if $(IS_RHEL_7),$(SETUP_FIREWALL_W_FIREWALLD),$(SETUP_FIREWALL_W_IPTABLES))
@@ -101,19 +94,15 @@ sudo -u apache pulp-manage-db && \
 katello-service start && \
 foreman-rake katello:reindex
 
-define install-online =
-$(RHSM_REGISTER)
-$(RHSM_ENABLE_REPOS)
-yum install -y katello
-endef
-
 # see: https://access.redhat.com/solutions/1325953
-define update =
+define update-satellite =
 $(RHSM_REGISTER)
 $(RHSM_ENABLE_REPOS)
 yum update -y
 $(KATELLO_REINDEX)
 endef
+
+INITIAL_SETUP_SCRIPT ?= $(WORKDIR)/initial-setup.sh
 
 
 all: check
@@ -121,15 +110,19 @@ all: check
 check:
 	$(CHECKS)
 
-setup:
+install:
 	$(CHECKS)
 	$(SETUP_FIREWALL)
-
-install: setup
+	$(RHSM_REGISTER)
+	$(RHSM_SUBSCRIBE )
+	$(RHSM_ENABLE_REPOS)
 	$(INSTALL_RPMS)
-	$(INSTALL)
+	$(INSTALL_SATELLITE)
+
+init:
+	bash -ex $(INITIAL_SETUP_SCRIPT) -D
 
 update:
-	$(update)
+	$(update-satellite)
 
-.PHONY: check install update
+.PHONY: check install init update
