@@ -117,7 +117,7 @@ function setup_product () {
         --interval daily --name "${sync_plan_name:?}"
     hammer sync-plan list --organization "${org}"
     hammer product set-sync-plan --organization "${org}" --name "${product}" \
-        --sync-plan "${sync_plan_name}"  # Or --sync-plan-id 1
+        --sync-plan-id 1  # It seems that --sync-plan is not valid.
 }
 
 function setup_content_view () {
@@ -130,10 +130,11 @@ function setup_content_view () {
         $(hammer --csv repository list --organization "${org}" | \
           sed -nr "s/^([[:digit:]]+),${repo_name_pattern}.*/\1/p")
     do
-        hammer content-view add-repository --organization "${org}" | \
+        hammer content-view add-repository --organization "${org}" \
             --name "${name:?}" --repository-id ${rid:?}
     done
-    hammer content-view publish --organization "${org:?}" --name "${name:?}"
+    hammer content-view publish --organization "${org:?}" \
+        --name "${name:?}" --async
 }
 
 function create_host_collection() {
