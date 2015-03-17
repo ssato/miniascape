@@ -45,7 +45,7 @@ KATELLO_INSTALLER_OPTIONS	?= \
 {{ "--foreman-admin-first-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
 {{ "--foreman-admin-last-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
 {% endif -%}
-{%- if proxy.fqdn is defined and proxy.fqdn -%}
+{%- if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
 {{-     "--katello-proxy-url=http://%s" % proxy.fqdn }} \
 --katello-proxy-port={{ proxy.port|default('8080') }} \
 {{ "--katello-proxy-username=%s" % proxy.username if proxy.username }} \
