@@ -1,9 +1,9 @@
-{% for user in users -%}
+{% for user in kickstart.users if user.name -%}
 user --name={{ user.name }}
-{%-  if user.groups is defined %} --groups={{ user.groups|join(',') }}{% endif -%}
-{%-  if user.homedir is defined %} --homedir={{ user.homedir }}{% endif -%}
-{%-  if user.password is defined %} --password={{ user.password }}{% endif -%}
-{%-  if user.iscrypted is defined %} --iscrypted{% endif -%}
-{%-  if user.shell is defined %} --shell={{ user.shell }}{% endif -%}
-{%-  if user.uid is defined %} --uid={{ user.uid }}{% endif %}
+{{-   " --groups=%s" % user.groups|join(',') if user.groups -}}
+{{-   " --homedir=%s" % user.homedir if user.homedir -}}
+{{-   " --password=%s" % user.password if user.password -}}
+{{-   " --iscrypted" if user.iscrypted -}}
+{{-   " --shell=%s" % user.shell if user.shell -}}
+{{-   " --uid=%s" % user.uid if user.uid }}
 {% endfor %}

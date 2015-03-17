@@ -1,0 +1,3 @@
+{% for repo in kickstart.repos if repo.name and repo.baseurl -%}
+repo --name="{{ repo.name }}" --baseurl={{ repo.baseurl }}
+{% endfor %}

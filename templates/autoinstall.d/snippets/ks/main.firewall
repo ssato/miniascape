@@ -1,0 +1,8 @@
+{% block firewall -%}
+firewall --enabled --ssh
+{%-   if firewall is defined -%}
+{%        for rule in firewall.rules -%}
+{{-           " --%s" % rule -}}
+{%        endfor %}
+{%    endif %}
+{% endblock %}

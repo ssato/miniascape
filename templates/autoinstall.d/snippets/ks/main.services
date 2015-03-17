@@ -1,5 +1,7 @@
 {% block services -%}
-{%   if services is defined -%}
+{%-    if services is defined -%}
 services
-{%-    if services.enabled is defined and services.enabled %} --enabled {{ services.enabled|join(',') }}{% endif -%}
-{%-    if services.disabled is defined and services.disabled %} --disabled {{ services.disabled|join(',') }}{% endif %}{% endif %}{% endblock %}
+{{-       " --enabled %s" % services.enabled|join(',') if services.enabled -}}
+{{-       " --disabled %s" % services.disabled|join(',') if services.disabled -}}
+{%-    endif %}
+{% endblock %}

@@ -1,0 +1,3 @@
+{% for group in kickstart.groups if group.name -%}
+group --name={{ group.name }} {{ "--gid=%s" % group.gid if group.gid }}
+{% endfor %}
