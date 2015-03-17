@@ -1,0 +1,4 @@
+# Custom scripts:
+{% for script in kickstart.custom_scripts -%}
+{{ script }}
+{% endfor %}
