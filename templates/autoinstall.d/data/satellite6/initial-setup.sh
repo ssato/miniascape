@@ -76,6 +76,10 @@ function upload_manifests () {
 
     test -d ${logdir} || mkdir -p ${logdir}
 
+    if test -f ${manifests_file}.base64 -a ! -f ${manifests_file}; then
+        base64 -d ${manifests_file}.base64 > ${manifests_file}
+    fi
+
     hammer subscription upload --organization "${org}" --file ${manifests_file:?}
     hammer product list --organization "${org}" --full-results | \
         tee ${logdir}/product.list
