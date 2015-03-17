@@ -17,7 +17,7 @@
     <dhcp>
       <range start='{{ dhcp.start }}' end='{{ dhcp.end }}'/>
       {% for h in hosts_w_unique_macs|sort(attribute="mac") if h.fqdn is defined or h.host is defined -%}
-      <host mac='{{ h.mac }}' {{ "name=%s" % h.fqdn if h.fqdn is defined else "name='%s.%s'" % (h.host, domain ) }} ip='{{ h.ip }}'/>
+      <host mac='{{ h.mac }}' {{ "name='%s'" % h.fqdn if h.fqdn is defined else "name='%s.%s'" % (h.host, domain ) }} ip='{{ h.ip }}'/>
 {%       endfor %}
     </dhcp>
 {%-    endif %}
