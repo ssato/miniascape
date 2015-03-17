@@ -12,5 +12,5 @@ network --device={{ ni.device }}
 {{-    " --activate" if ni.activate -}}
 {{-    " --nodefroute" if ni.nodefroute -}}
 {{-    " --nodns" if ni.nodns -}}
-{{-    " %s" % ni.options if ni.options -}}
+{{-    " %s" % ni.options if ni.options }}
 {% endfor %}
