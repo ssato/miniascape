@@ -39,9 +39,9 @@
         dst: Makefile
       - src: data/satellite6/initial-setup.sh
         dst: initial-setup.sh
-      # TODO:
-      #- src: manifests.zip
-      #  dst: manifests.zip
+      # base64 manifests.zip > manifests.zip.base64:
+      - src: manifests.zip.base64
+        dst: manifests.zip.base64
 
     templates:
       autoinst:
