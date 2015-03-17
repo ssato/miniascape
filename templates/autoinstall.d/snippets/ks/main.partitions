@@ -1,4 +1,4 @@
-{% block partition -%}
+{#- Experimental:
 zerombr
 clearpart {% if partitions is defined and partitions.clearpart_options is defined %}{{ partitions.clearpart_options }}{% else %}--all --initlabel{% endif %}
 {% if partitions is defined and (partitions.lvm is defined or partitions.parts is defined) -%}
@@ -17,4 +17,16 @@ part {{ part.mount }} --size={{ part.size|default('1') }} --fstype {{ filesystem
 {%      endfor %}{% else -%}
 part / --size=1 --fstype ext4 --grow
 {%    endif %}{% endif %}{% else -%}
-autopart{% endif %}{% endblock %}
+autopart{% endif %}
+-#}
+zerombr
+clearpart --all --initlabel
+{% if partition is defined and partition -%}
+{{     partition -}}
+{% else -%}
+part /boot  --size=500 --fstype {{ filesystem|default('ext4') }}
+part pv.100 --size=1 --grow
+volgroup vg01 pv.100
+logvol swap --fstype swap --name=lv01 --vgname=vg01 {{ '--recommended' if size == 'auto' else '--size=%s' % swap }}
+logvol /    --fstype {{ filesystem }} --name=lv02 --vgname=vg01 --size=1 --grow
+{% endif %}

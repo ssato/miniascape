@@ -1,0 +1,5 @@
+bootloader
+{%- if bootloader is defined -%}
+{{-     " --location=%s" % bootloader.location if bootloader.location -}}
+{{-     ' %s' % bootloader.options if bootloader.options -}}
+{%- endif %}

@@ -1,11 +1,16 @@
-{% block network -%}
-{%   for ni in interfaces -%}
-network --device={{ ni.device }} --bootproto={{ ni.bootproto|default('dhcp') }} --onboot={{ ni.onboot|default('yes') }}
-{%-    if ni.bootproto == 'static' %} --ip={{ ni.ip }} --netmask={{ ni.netmask|default('255.255.255.0') }}
-{%-      if ni.gateway is defined %} --gateway={{ ni.gateway }}{% endif -%}
-{%-      if ni.nameserver is defined %} --nameserver={{ ni.nameserver }}{% endif -%}
-{%-      if ni.fqdn is defined %} --hostname={{ ni.fqdn }}{% endif -%}
+{% for ni in interfaces if ni.device -%}
+network --device={{ ni.device }}
+{{-    " --onboot=%s" % ni.onboot|default('yes') -}}
+{%-    if ni.bootproto is defined and ni.bootproto != 'dhcp' -%}
+{{         " --bootproto=%s" % ni.bootproto -}}
+{{-        " --ip=%s" % ni.ip -}}
+{{-        " --netmask=%s" % ni.netmask|default('255.255.255.0') -}}
+{{-        " --gateway=%s" % ni.gateway if ni.gateway -}}
+{{-        " --nameserver=%s" % ni.nameserver if ni.nameserver -}}
+{{-        " --hostname=%s" % ni.fqdn if ni.fqdn -}}
 {%-    endif -%}
-{%-    if ni.nodns is defined %} --nodns{% endif -%}
-{%-    if ni.options %} {{ ni.options }}{% endif -%}
-{%   endfor %}{% endblock %}
+{{-    " --activate" if ni.activate -}}
+{{-    " --nodefroute" if ni.nodefroute -}}
+{{-    " --nodns" if ni.nodns -}}
+{{-    " %s" % ni.options if ni.options -}}
+{% endfor %}
