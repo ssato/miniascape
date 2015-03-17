@@ -125,7 +125,8 @@ function setup_content_view () {
     local repo_name_pattern="${2:?}"  # ex. 'Red Hat Enterprise Linux 6'
     local org=${3:-$ORGANIZATION}
 
-    hammer content-view create --organization "${org:?}" --name "${name:?}"
+    (hammer content-view list --organization "${org:?}" | grep "${name:?}") || \
+     hammer content-view create --organization "${org}" --name "${name}"
     for rid in \
         $(hammer --csv repository list --organization "${org}" | \
           sed -nr "s/^([[:digit:]]+),${repo_name_pattern}.*/\1/p")
