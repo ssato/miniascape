@@ -3,19 +3,19 @@
 #
 # ex. 
 #   cmdline: 'linux ks=http://ks.example.com/a-ks.cfg ip=192.168.122.10 \
-#               netmask=255.255.255.0 gateway=192.168.122.1
-#               hostname=a.example.com var0=aaa var1=bbb'
-#
+#               netmask=255.255.255.0 gateway=192.168.122.1 \
+#               hostname=a.example.com var0=aaa var1=bbb \
+#               rd.lvm.lv=fedora/root rhgb quiet'
 #   => 
-#      ks=http://ks.example.com/a-ks.cfg 
-#      ip=192.168.122.10
-#      netmask=255.255.255.0
-#      gateway=192.168.122.1
-#      hostname=a.example.com
-#      var0=aaa
-#      var1=bbb
+#      ks="http://ks.example.com/a-ks.cfg"
+#      ip="192.168.122.10"
+#      netmask="255.255.255.0"
+#      gateway="192.168.122.1"
+#      hostname="a.example.com"
+#      var0="aaa"
+#      var1="bbb"
 # 
 cat /proc/cmdline | sed 's/ /\
-/g' | sed -nr '/^[^=]+=[^=]+$/p' > /tmp/boot-params
+/g' | sed -nr 's/^([^=\.]+)=([^=]+)$/\1="\2"' > /tmp/boot-params
 
 source /tmp/boot-params   # hostname, etc.
