@@ -20,8 +20,13 @@
             mac: "52:54:00:05:01:75"
 
       - hostname: rhel-7-client-2
-        ip: 192.168.155.176
+        ip: &rhel_7_client_2_ip 192.168.155.176
         interfaces:
           - network: service
             mac: "52:54:00:05:01:76"
+            ip: *rhel_7_client_2_ip
+
+        store_cmdline: false
+        kickstart:
+          dynamic_network: true
 
