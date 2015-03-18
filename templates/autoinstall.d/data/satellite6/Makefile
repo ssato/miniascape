@@ -10,10 +10,11 @@ SATELLITE_ISO ?= \
 $(WORKDIR)/$(if $(SATELLITE_ISO_URL),$(notdir $(SATELLITE_ISO_URL)),satellite.iso)
 
 # RHN related:
-RHSM_REGISTER ?= subscription-manager register || :
-RHSM_SUBSCRIPTION_POOL ?= {{ rhn.subscription.pool if rhn.subscription }}
+RHSM_REGISTER_IF_NOT ?= subscription-manager register || :
+RHSM_SUBSCRIPTION_POOL ?= {{ rhn.subscription.pool if rhn.subscription and rhn.subscription.pool }}
 RHSM_SUBSCRIBE ?= subscription-manager subscribe \
 $(if $(RHSM_SUBSCRIPTION_POOL),--pool=$(RHSM_SUBSCRIPTION_POOL),--auto)
+RHSM_SUBSCRIBE_IF_NOT = subscription-manager repos || $(RHSM_SUBSCRIBE)
 
 RHSM_ENABLE_REPOS = \
 subscription-manager repos --disable '*' && \
@@ -96,7 +97,8 @@ foreman-rake katello:reindex
 
 # see: https://access.redhat.com/solutions/1325953
 define update-satellite =
-$(RHSM_REGISTER)
+$(RHSM_REGISTER_IF_NOT)
+$(RHSM_SUBSCRIBE_IF_NOT)
 $(RHSM_ENABLE_REPOS)
 yum update -y
 $(KATELLO_REINDEX)
@@ -113,8 +115,8 @@ check:
 install:
 	$(CHECKS)
 	$(SETUP_FIREWALL)
-	$(RHSM_REGISTER)
-	$(RHSM_SUBSCRIBE)
+	$(RHSM_REGISTER_IF_NOT)
+	$(RHSM_SUBSCRIBE_IF_NOT)
 	$(RHSM_ENABLE_REPOS)
 	$(INSTALL_RPMS)
 	$(INSTALL_SATELLITE)
