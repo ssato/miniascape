@@ -72,6 +72,8 @@ common:
     repos: []
     users: []
     packages_options: "--ignoremissing"
+    noipv6: false
+    nozeroconf: true
 
   virtinst:
     ram: 1024
