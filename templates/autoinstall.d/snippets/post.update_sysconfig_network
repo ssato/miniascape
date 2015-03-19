@@ -1,15 +1,22 @@
-if `which hostnamectl`; then  # systemd based linux dists, ex. RHEL >= 7
-  f=/etc/hostname
-  test -f $f.save || cp $f $f.save
-  echo {{ fqdn }} > /etc/hostname
+bp=/root/setup/boot-params; test -f ${bp} && source ${bp} || :
+fqdn="${hostname}"    # May be defined in ${bp}.
+gateway="${gateway}"  # Likewise.
+test "x${fqdn}" != "x" || fqdn={{ fqdn|default('localhost.localdomain') }}
+test "x${gateway}" != "x" || gateway={{ gateway|default('') }}
+
+f=/etc/sysconfig/network
+if test -f $f; then
+    test -f $f.save || cp $f $f.save
+    cat << EOF >> $f
+HOSTNAME=${fqdn}
+NOZEROCONF={{ kickstart.nozeroconf|default('yes') }}
+{{ "NETWORKING_IPV6=no" if noipv6 }}
+EOF
+    test "x${gateway}" = "x" || echo "GATEWAY=${gateway}" >> $f
 else
-  f=/etc/sysconfig/network
-  test -f $f.save || cp $f $f.save
-  for line in \
-    {% if fqdn is defined %}"# Ensure hostname is set to the FQDN instead of short hostname:" HOSTNAME={{ fqdn }}{% endif %} \
-    {% if noipv6 is defined and noipv6 %}NETWORKING_IPV6=no{% endif %} \
-    NOZEROCONF=yes \
-    {% if gateway is defined %}GATEWAY={{ gateway }}{% endif %} \
-    ; do echo "$line" >> $f
-  done
+    f=/etc/hostname
+    if test -f $f; then
+        test -f $f.save || cp $f $f.save
+        echo ${fqdn} > /etc/hostname
+    fi
 fi
