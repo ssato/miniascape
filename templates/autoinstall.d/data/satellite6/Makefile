@@ -128,3 +128,4 @@ update:
 	$(update-satellite)
 
 .PHONY: check install init update
+
