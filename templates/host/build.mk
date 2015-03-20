@@ -1,5 +1,5 @@
 TOPDIR = .
-SITE ?= {{ site|default('default') }}
+SITE ?=
 
 miniascape_OPTIONS = -t $(TOPDIR)/templates
 
