@@ -122,7 +122,9 @@ install:
 	$(INSTALL_SATELLITE)
 
 init:
-	bash -ex $(INITIAL_SETUP_SCRIPT) -D
+	bash -ex $(INITIAL_SETUP_SCRIPT)
+
+#	bash -ex $(INITIAL_SETUP_SCRIPT) -D
 
 update:
 	$(update-satellite)

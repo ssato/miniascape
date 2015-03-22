@@ -156,7 +156,7 @@ function create_activation_key () {
     local org=${4:-$ORGANIZATION}
 
     hammer activation-key create --organization "${org}" \
-        --name "${collection:?}" \
+        --name "${name:?}" \
         --content-view "${content_view:?}" \
         --lifecycle-environment "${lifecycle_env:?}"
 
@@ -175,7 +175,7 @@ function setup_rhel_6_repos () {
         '6Server' 'x86_64' "${org:?}"
 }
 
-function setup_user_given_repos () {
+function setup_user_repos () {
     local org=${1:-$ORGANIZATION}
 {% for repo in satellite.repos if repo.name and repo.releasever -%}
     setup_repo '{{ repo.name }}' \
@@ -190,20 +190,67 @@ function setup_rhel_6_content_view () {
     setup_content_view "${name:?}" "Red Hat Enterprise Linux 6" "${org:?}"
 }
 
-# FIXME: Define function to create lifecycle environments allow user
-# customizations.
-function setup_lifecycle_env_path_0 () {
+function setup_user_content_views () {
     local org=${1:-$ORGANIZATION}
 
+    {% for cv in cvs if cv.name and cv.repo_pattern -%}
+    setup_content_view "{{ cv.name }}" "{{ cv.repo_pattern }}" "${ORGANIZATION}"
+    {% endfor %}
+}
+
+# FIXME: Define function to create lifecycle environments allow user
+# customizations.
+function setup_lifecycle_env_path_3 () {
+    local path_0="Library"  # All lifecycle env paths start from it.
+    local path_1="${1:-Test}"
+    local path_2="${2:-Prod}"
+    local org=${3:-$ORGANIZATION}
+
     hammer lifecycle-environment create --organization "${org}" \
-        --name Test --prior Library
+         --prior "${path_0:?}" --name "${path_1:?}"
     hammer lifecycle-environment create --organization "${org}" \
-        --name Prod --prior Test
+         --prior "${path_1:?}" --name "${path_2:?}"
+}
+
+function setup_lifecycle_env_path_4 () {
+    local path_0="Library"  # All lifecycle env paths start from it.
+    local path_1="${1:-Dev}"
+    local path_2="${2:-Test}"
+    local path_3="${2:-Prod}"
+    local org=${4:-$ORGANIZATION}
+
+    hammer lifecycle-environment create --organization "${org}" \
+         --prior "${path_0:?}" --name "${path_1:?}"
+    hammer lifecycle-environment create --organization "${org}" \
+         --prior "${path_1:?}" --name "${path_2:?}"
+    hammer lifecycle-environment create --organization "${org}" \
+         --prior "${path_2:?}" --name "${path_3:?}"
+}
+
+function promote_content_view () {
+    local name="${1}"  # e.g. CV_RHEL_6
+    local org=${3:-$ORGANIZATION}
+
+    les=$(hammer lifecycle-environment list --organization "${org:?}" | \
+              sed -nr 's/^([[:digit:]]+).*/\1/p' | sort)
+    #          sed -nr 's/^([[:digit:]]+).*/\1/p' | sort | sed -n '2,$p')
+    cvv=$(hammer content-view version list --organization "${org:?}" \
+              --content-view "${name:?}" | \
+              sed -nr "s/^([[:digit:]]+).*${name}/\1/p" | sort -rn | sed -n '1p')
+    for leid in les; do \
+        hammer content-view version promote --organization "${org:?}" \
+            --content-view "${name}" --lifecycle-environment-id ${leid} \
+            --id ${cvv:?} # --async
+    done
 }
 
 function setup_rhel_6_activation_keys () {
     local org=${1:-$ORGANIZATION}
 
+    # TODO: Before creating activation keys we have to promote the content
+    # view. But it seems that there are issues when promoting content views
+    # such like http://projects.theforeman.org/issues/8547.
+    promote_content_view "CV_RHEL_6" "${org:?}"
     create_activation_key "AK_CV_RHEL_6_Test" "CV_RHEL_6" "Test" "${org:?}"
     create_activation_key "AK_CV_RHEL_6_Prod" "CV_RHEL_6" "Prod" "${org:?}"
 }
@@ -223,6 +270,16 @@ Options:
   -D        Initialize with script default settings
 
   -h        Show this help and exit.
+
+Commands:
+  init      Initialize all w/ default settings
+  upload    Upload manifests.zip
+  repo      Enable repos
+  product   Setup product
+  cv        Create Content view
+  host      Create host collection
+  akey      Create activation key
+  lepath    Create lifecycle environment path
 
 Examples:
  $0 -D
@@ -253,8 +310,20 @@ if test "x${USE_DEFAULT:?}" = "x1"; then
     setup_rhel_6_repos "${ORGANIZATION}"
     setup_product "${ORGANIZATION}"
     setup_rhel_6_content_view "CV_RHEL_6" "${ORGANIZATION}"
-    setup_lifecycle_env_path_0 "${ORGANIZATION}"
-    setup_rhel_6_activation_keys "${ORGANIZATION}"
+    setup_lifecycle_env_path_3 "Test" "Prod" "${ORGANIZATION}"
+    #setup_rhel_6_activation_keys "${ORGANIZATION}"
+else
+    setup_hammer_userconf ${ADMIN}
+    setup_org_and_location "${ORGANIZATION}" "${LOCATION}" ${ADMIN}
+    upload_manifests ${MANIFETS_FILE} "${ORGANIZATION}"
+
+    setup_user_repos "${ORGANIZATION}"
+    setup_product "${ORGANIZATION}"
+    setup_user_content_views "${ORGANIZATION}"
+    # TODO: Allow users to create and setup lifecycle environment paths freely.
+    setup_lifecycle_env_path_3 "Test" "Prod" "${ORGANIZATION}"
+    # TODO: Promote content views and create activation keys.
+    #setup_rhel_6_activation_keys "${ORGANIZATION}"
 fi
 
 # vim:sw=4:ts=4:et:
