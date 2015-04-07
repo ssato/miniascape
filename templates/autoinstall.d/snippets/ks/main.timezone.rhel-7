@@ -1,5 +1,5 @@
 timezone {{ timezone.timezone|default('Asia/Tokyo') -}}
-         {{ ' --isUtc' if timezone.utc -}}
+         {{ ' --isUtc' if timezone and timezone.utc -}}
 {%-   if ntpservers %} --ntpservers=
 {%-     for ns in ntpservers -%}
 {{-       ns.hostname if ns.hostname else ns.ip -}}
