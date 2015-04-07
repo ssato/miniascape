@@ -138,7 +138,7 @@ def render(filepath, ctx, paths, ask=False, fmap=None):
             usr_tmpl = raw_input(
                 "\n*** Missing template '%s'. "
                 "Please enter absolute or relative path starting from "
-                "'.' to the template file: " % mtmpl
+                "'.' to the template file: " % filepath
             )
             usr_tmpl = U.normpath(usr_tmpl.strip())
             usr_tmpldir = os.path.dirname(usr_tmpl)
