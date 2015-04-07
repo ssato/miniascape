@@ -1,0 +1,7 @@
+{%  if kickstart and kickstart.rootpw -%}
+rootpw {{ kickstart.rootpw }}
+{%- elif rootpw -%}
+rootpw {{ rootpw }}
+{%- else -%}
+rootpw {{ '%s' % m2_random_string() if m2_random_string is defined else 'secret' }}
+{%- endif %}

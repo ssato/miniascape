@@ -1,0 +1,5 @@
+{% if kickstart and kickstart.install -%}
+{{    kickstart.install }}
+{%-    else -%}
+url --url {{ virtinst.location }}
+{% endif -%}

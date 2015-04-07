@@ -1,0 +1,3 @@
+timezone
+{{-     " --utc" if timezone.utc -}}
+{{-     " %s" % timezone.timezone|default('Asia/Tokyo') }}
