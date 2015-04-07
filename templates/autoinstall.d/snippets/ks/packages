@@ -1,0 +1,13 @@
+{% for p in packages.installed -%}
+{{     p }}
+{% else -%}
+{%     include "data/rhel_basic_tools_rpms" -%}
+{% endfor -%}
+{% for p in packages.add -%}
+{{     p }}
+{% endfor -%}
+{% for p in packages.uninstalled -%}
+-{{     p }}
+{% else -%}
+{%     include "data/rhel_uninstalled_rpms" -%}
+{% endfor -%}
