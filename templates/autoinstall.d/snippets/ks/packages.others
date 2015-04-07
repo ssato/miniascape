@@ -1,0 +1,10 @@
+{% if packages and packages.add -%}
+{%   for p in packages.add -%}
+{{ p }}
+{%   endfor -%}
+{% endif -%}
+{% if packages and packages.del -%}
+{%   for p in packages.del -%}
+-{{ p }}
+{%   endfor -%}
+{% endif -%}
