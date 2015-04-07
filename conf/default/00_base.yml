@@ -71,7 +71,8 @@ common:
     finish: reboot
     repos: []
     users: []
-    packages_options: "--ignoremissing"
+    packages:
+      options: "--ignoremissing"
     noipv6: false
     nozeroconf: true
 
