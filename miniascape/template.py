@@ -14,17 +14,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import random
+import string
+
 from miniascape.globals import LOGGER as logging
 import miniascape.contrib.render
 import multiprocessing
 import os.path
 
 
-def _renderto(tpaths, ctx, tmpl, output, ask=False):
+def random_string(n=10):
+    return ''.join((random.choice(string.letters + string.digits)
+                    for i in range(n)))
+
+
+FMAP = dict(m2_random_string=random_string, )
+
+
+def _renderto(tpaths, ctx, tmpl, output, ask=False, fmap=None):
     """
     NOTE: Take care of arguments' order.
     """
-    miniascape.contrib.render.renderto(tmpl, ctx, tpaths, output, ask=ask)
+    miniascape.contrib.render.renderto(tmpl, ctx, tpaths, output, ask=ask,
+                                       fmap=fmap)
 
 
 def render_s(tpaths, ctx, tmpl_s, output):
@@ -40,11 +52,12 @@ def render_s(tpaths, ctx, tmpl_s, output):
     if not os.path.exists(d):
         os.makedirs(d)
 
-    content = miniascape.contrib.render.render_s(tmpl_s, ctx, tpaths)
+    content = miniascape.contrib.render.render_s(tmpl_s, ctx, tpaths,
+                                                 fmap=FMAP)
     miniascape.contrib.render.open(output, 'w', 'UTF-8').write(content)
 
 
-def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
+def renderto(tpaths, ctx, tmpl, output, ask=True, async=False, fmap=None):
     """
     NOTE: Take care not to forget stop (join) threads run from this function
     if ask = False and async = True.
@@ -63,11 +76,12 @@ def renderto(tpaths, ctx, tmpl, output, ask=True, async=False):
 
     if not ask and async:
         proc = multiprocessing.Process(target=_renderto,
-                                       args=(tpaths, ctx, tmpl, output, ask))
+                                       args=(tpaths, ctx, tmpl, output,
+                                             ask, fmap))
         proc.start()
         return proc
     else:
-        _renderto(tpaths, ctx, tmpl, output, ask)
+        _renderto(tpaths, ctx, tmpl, output, ask, fmap)
 
     return True
 

@@ -41,6 +41,7 @@ from jinja2.exceptions import TemplateNotFound
 from . import utils as U
 
 import codecs
+import collections
 import jinja2
 import logging
 import optparse
@@ -74,31 +75,45 @@ def tmpl_env(paths):
     return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
 
 
-def render_s(tmpl_s, ctx, paths=[os.curdir]):
+def render_s(tmpl_s, ctx, paths=[os.curdir], fmap=None):
     """
     Compile and render given template string `tmpl_s` with context `context`.
 
     :param tmpl_s: Template string
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
+    :param fmap: Template extension functions map :: {func_name: func}
 
     >>> s = render_s('a = {{ a }}, b = "{{ b }}"', {'a': 1, 'b': 'bbb'})
     >>> assert s == 'a = 1, b = "bbb"'
+    >>> inc = lambda i: i + 1
+    >>> s = render_s('a = {{ inc(1) }}', {}, fmap=dict(inc=inc, ))
+    >>> assert s == 'a = 2'
     """
-    return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
+    env = tmpl_env(paths)
+
+    if fmap is not None and isinstance(fmap, collections.Mapping):
+        env.globals.update(**fmap)
+
+    return env.from_string(tmpl_s).render(**ctx)
 
 
-def render_impl(filepath, ctx, paths):
+def render_impl(filepath, ctx, paths, fmap=None):
     """
     :param filepath: (Base) filepath of template file or '-' (stdin)
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
+    :param fmap: Template extension functions map :: {func_name: func}
     """
     env = tmpl_env(paths)
+
+    if fmap is not None and isinstance(fmap, collections.Mapping):
+        env.globals.update(**fmap)
+
     return env.get_template(os.path.basename(filepath)).render(**ctx)
 
 
-def render(filepath, ctx, paths, ask=False):
+def render(filepath, ctx, paths, ask=False, fmap=None):
     """
     Compile and render template, and return the result.
 
@@ -109,9 +124,10 @@ def render(filepath, ctx, paths, ask=False):
     :param ctx: Context dict needed to instantiate templates
     :param paths: Template search paths
     :param ask: Ask user for missing template location if True
+    :param fmap: Template extension functions map :: {func_name: func}
     """
     if filepath == '-':
-        return render_s(sys.stdin.read(), ctx, paths)
+        return render_s(sys.stdin.read(), ctx, paths, fmap)
     else:
         try:
             return render_impl(filepath, ctx, paths)
@@ -127,7 +143,7 @@ def render(filepath, ctx, paths, ask=False):
             usr_tmpl = U.normpath(usr_tmpl.strip())
             usr_tmpldir = os.path.dirname(usr_tmpl)
 
-            return render_impl(usr_tmpl, ctx, paths + [usr_tmpldir])
+            return render_impl(usr_tmpl, ctx, paths + [usr_tmpldir], fmap)
 
 
 def template_path(filepath, paths):
@@ -168,8 +184,9 @@ def parse_template_paths(tmpl, paths=None, sep=":"):
     return paths
 
 
-def renderto(tmpl, ctx, paths, output=None, encoding=U.ENCODING, ask=True):
-    content = render(tmpl, ctx, paths, ask)
+def renderto(tmpl, ctx, paths, output=None, encoding=U.ENCODING, ask=True,
+             fmap=None):
+    content = render(tmpl, ctx, paths, ask, fmap)
     if output and not output == '-':
         outdir = os.path.dirname(output)
         if not os.path.exists(outdir):
