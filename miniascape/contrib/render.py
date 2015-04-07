@@ -68,11 +68,17 @@ def mk_template_paths(filepath, template_paths=[]):
         return [os.curdir, tmpldir]
 
 
-def tmpl_env(paths):
+def tmpl_env(paths, fmap=None):
     """
     :param paths: Template search paths
+    :param fmap: Template extension functions map :: {func_name: func}
     """
-    return jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(paths))
+
+    if fmap is not None and isinstance(fmap, collections.Mapping):
+        env.globals.update(**fmap)
+
+    return env
 
 
 def render_s(tmpl_s, ctx, paths=[os.curdir], fmap=None):
@@ -90,12 +96,7 @@ def render_s(tmpl_s, ctx, paths=[os.curdir], fmap=None):
     >>> s = render_s('a = {{ inc(1) }}', {}, fmap=dict(inc=inc, ))
     >>> assert s == 'a = 2'
     """
-    env = tmpl_env(paths)
-
-    if fmap is not None and isinstance(fmap, collections.Mapping):
-        env.globals.update(**fmap)
-
-    return env.from_string(tmpl_s).render(**ctx)
+    return tmpl_env(paths).from_string(tmpl_s).render(**ctx)
 
 
 def render_impl(filepath, ctx, paths, fmap=None):
@@ -105,12 +106,8 @@ def render_impl(filepath, ctx, paths, fmap=None):
     :param paths: Template search paths
     :param fmap: Template extension functions map :: {func_name: func}
     """
-    env = tmpl_env(paths)
-
-    if fmap is not None and isinstance(fmap, collections.Mapping):
-        env.globals.update(**fmap)
-
-    return env.get_template(os.path.basename(filepath)).render(**ctx)
+    t = tmpl_env(paths).get_template(os.path.basename(filepath))
+    return t.render(**ctx)
 
 
 def render(filepath, ctx, paths, ask=False, fmap=None):
