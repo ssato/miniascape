@@ -1,3 +1,6 @@
+boot_params=${1:-/tmp/boot-params}
+test -f ${boot_params} && source ${boot_params}
+
 if test -n "${ip}"; then
     bootproto=static
     netmask=${netmask:-255.255.255.0}
