@@ -76,6 +76,13 @@ common:
     noipv6: false
     nozeroconf: true
 
+  kdump:
+    enabled: true
+    reserve: auto
+    # conf: |
+    # path /var/crash
+    # ...
+
   virtinst:
     ram: 1024
     vcpus: 2
