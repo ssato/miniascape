@@ -1,4 +1,26 @@
 # https://access.redhat.com/knowledge/solutions/8709:
+{%  if virtinst and virtinst.os_variant in ('rhel7', 'fedora21') -%}
+if grep -qE '^GRUB_CMDLINE_LINUX=.*ipv6.disable=1.*' /etc/default/grub; then
+  sed -r 's/^(GRUB_CMDLINE_LINUX=".*)"/\1 ipv6.disable=1"/' /etc/default/grub
+  if test -d /boot/efi/EFI/redhat/; then
+    grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
+  else
+    grub2-mkconfig -o /boot/grub2/grub.cfg
+  fi
+fi
+sysctldir=/etc/sysctl.d
+test -d $sysctldir || mkdir -p $sysctldir
+f=$sysctldir/90_ipv6.conf
+if test -f $f; then
+  :
+else
+  cat << EOF > $f
+# These configuration may have side effects.
+#net.ipv6.conf.all.disable_ipv6 = 1
+#net.ipv6.conf.default.disable_ipv6 = 1
+EOF
+fi
+{%  else -%}
 # modprobe:
 confdir=/etc/modprobe.d
 test -d /root/setup/$confdir || mkdir -p /root/setup/$confdir
@@ -24,3 +46,4 @@ fi
 # NOTE: It seems that system-config-firewall-base (lokkit) was uninstalled also
 # and that has side effects related to firewall config.
 #rpm -q iptables-ipv6 && yum remove -y iptables-ipv6 || :
+{%- endif %}
