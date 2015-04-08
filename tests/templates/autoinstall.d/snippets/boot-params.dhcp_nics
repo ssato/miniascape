@@ -1,0 +1,4 @@
+BOOT_IMAGE="/vmlinuz-3.19.3-200.fc21.x86_64"
+root="/dev/mapper/fedora-root"
+LANG="en_US.UTF-8"
+ip=dhcp6
