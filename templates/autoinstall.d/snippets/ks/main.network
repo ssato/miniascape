@@ -14,3 +14,6 @@ network --device={{ ni.device }}
 {{-    " --nodns" if ni.nodns -}}
 {{-    " %s" % ni.options if ni.options }}
 {% endfor %}
+{% if virtinst and virtinst.os_variant == 'rhel7' %}
+{{     'network --hostname=%s' % fqdn if fqdn }}
+{% endif -%}

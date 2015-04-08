@@ -1,0 +1,93 @@
+# vim:sw=4:ts=4:et:ft=sh:
+#
+# Installer boot options are drastically changed since RHEL 7.
+# See RHEL 7 Installation Guide, Network Boot Options: http://red.ht/1DGvZvH
+# and dracut.cmdline(7) for more details.
+# 
+# Static IP configuration examples:
+# 
+#     - ip=ip::gateway:netmask:hostname:interface:none
+#     - nameserver=...
+#     - ifname=eth0:01:23:45:67:89:ab
+#     - net.ifnames=0 (kernel boot option to switch to legacy nic naming mode)
+#     - bond=bond0:em1,em2[:mode=active-backup,tx_queues=32,downdelay=5000]
+# 
+#     - ip=192.168.122.101::192.168.122.1:255.255.255.0:rhel-7-srv-1.example.com:bond0:none 
+#       ip=10.0.122.11::10.0.122.254:255.255.0.0:rhel-7-srv-1.local:bond1:none 
+#       bond=bond0:em1,em2:mode=active-backup,downdelay=5000
+#       bond=bond1:em3,em4
+#       bootdev=bond0
+#
+# TODO:
+#   - process netmask in bits
+#   - team device support
+#   - team device support
+#
+boot_params=${1:-/tmp/boot-params}
+test -f ${boot_params} && source ${boot_params}
+
+if test ! -z "${ip}"; then
+
+    network_ks=/tmp/network-ks.cfg
+    bootdev=$(sed -nr 's/^bootdev=(.+)$/\1/p' ${boot_params})
+
+    bondidx=0
+    for bond in $(sed -nr 's/^bond=(.+)$/\1/p' ${boot_params}); do
+        echo "${bond}" | sed -r \
+            's/([^:]+):([^:]+)(:([^:]+))?/bond=\1; slaves=\2; bond_opts=\4/' \
+            > /tmp/bond-${bondidx}
+        bondidx=$(( ${bondidx} + 1 ))
+    done
+
+    nicidx=0
+    for ip in $(sed -nr 's/^ip=(.+)$/\1/p' ${boot_params}); do
+
+        # 1. Try the pattern of automatic configuration of any interface:
+        method=$(echo "${ip}" | sed -nr 's/^([^:]+)$/\1/p')
+        if test ! -z ${method}; then
+            nics=$(/sbin/ip -o link show up | \
+                   sed -nr '/ lo:/d; s/^[[:digit:]]+: ([^:]+): .*/\1/p')
+            for nic in ${nics}; do
+                test ${method} = "ibft" && bootproto=ibft || bootproto=dhcp
+                echo "network --device=${nic} --bootproto=${bootproto} --onboot=yes" >> ${network_ks}
+            done
+            test -z ${hostname} || echo "network --hostname=${hostname}" \
+                >> ${network_ks}
+            break
+        fi
+
+        nic_params=/tmp/nic-${nicidx}
+
+        # 2. Try the pattern of automatic configuration of this interface:
+        nic_method=$(echo "${ip}" | sed -nr 's/^([^:]+):([^:]+)$/nic=\1 method=\2/p')
+        if test ! -z "${nic_method}"; then
+            echo "${nic_method}" > ${nic_params}
+            source ${nic_params}  # Define nic vars, nic and method.
+            test ${method} = "ibft" && bootproto=ibft || bootproto=dhcp
+            echo "network --device=${nic} --bootproto=${bootproto} --onboot=yes" >> ${network_ks}
+            continue
+        fi
+
+        # 3. Try the pattern of static configuration.
+        echo "${ip}" | sed -nr 's/^([^:]+):+([^:]+)?:([^:]+):([^:]+)?:([^:]+):none$/ip=\1; gateway=\2; netmask=\3; hostname=\4; nic=\5/p' > ${nic_params}
+        source ${nic_params}  # Define nic vars: ip, netmask, etc.
+        nicidx=$(( ${nicidx} + 1 ))
+
+        test "x${ip}" = "x" -o "x${nic}" = "x" -o "x${netmask}" = "x" && \
+            continue || :
+
+        network_opts="--bootproto=static --device=${nic:?} --ip=${ip:?} --netmask=${netmask:?} $(test -z ${gateway} || echo --gateway=${gateway:?}) $(test -z ${hostname} || echo --hostname=${hostname:?})"
+
+        if test "x${nic:0:4}" = "xbond"; then
+            for f in /tmp/bond*; do
+                if grep -q "bond=${nic}" $f 2>/dev/null; then
+                    source $f  # Define bond device vars: bond, slaves, bond_opts.
+                    network_opts="${network_opts:?} --bondslaves=${slaves:?} $(test -z ${bond_opts} || echo --bondopts=${bond_opts:?})"
+                fi
+            done
+        fi
+
+        test -z ${hostname} || echo "network --hostname=${hostname}" >> ${network_ks}
+        echo "network ${network_opts}" >> ${network_ks}
+    done
+fi

@@ -14,8 +14,11 @@
 #      hostname="a.example.com"
 #      var0="aaa"
 #      var1="bbb"
-# 
+#
+boot_params=/tmp/boot-params
 cat /proc/cmdline | sed 's/ /\
-/g' | sed -nr 's/^([^=\.]+)=([^=]+)$/\1="\2"' > /tmp/boot-params
+/g' | sed -nr '
+s/^([^=\.]+)=([^=]+)$/\1="\2"/p
+' > ${boot_params}
 
-source /tmp/boot-params   # hostname, etc.
+source ${boot_params}
