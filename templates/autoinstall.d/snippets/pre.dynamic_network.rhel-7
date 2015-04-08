@@ -1,5 +1,5 @@
-# vim:sw=4:ts=4:et:ft=sh:
-#
+# {# vim:sw=4:ts=4:et:ft=sh:
+#  #}
 # Installer boot options are drastically changed since RHEL 7.
 # See RHEL 7 Installation Guide, Network Boot Options: http://red.ht/1DGvZvH
 # and dracut.cmdline(7) for more details.
