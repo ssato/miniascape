@@ -50,7 +50,7 @@ location_opts="--cdrom {{ virtinst.cdrom }}"
 location_opts="--location={{ virtinst.location }} --initrd-inject=${ks_path}"
 extra_args="{{ 'inst.loglevel=debug inst.headless inst.text inst.' if virtinst.os_variant and virtinst.os_variant == 'rhel7' }}ks=file:/${kscfg} {{ virtinst.extra_args|default('') }}"
 {%         if interfaces|length > 1 -%}
-extra_args="$extra_args{{ ' %s' % ksdevice if ksdevice }}"
+extra_args="$extra_args{{ ' ksdevice=%s' % ksdevice if ksdevice and not (virtinst and virtinst.os_variant in ('rhel7', 'fedora21')) }}"
 {%         endif -%}
 {%     endif -%}
 {% endblock %}
