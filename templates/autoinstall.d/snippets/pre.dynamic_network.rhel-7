@@ -1,3 +1,4 @@
+{% include "snippets/pre.dynamic_network.rhel-7.functions" %}
 # {# vim:sw=4:ts=4:et:ft=sh:
 #  #}
 # Installer boot options are drastically changed since RHEL 7.
@@ -13,7 +14,7 @@
 #     - bond=bond0:em1,em2[:mode=active-backup,tx_queues=32,downdelay=5000]
 # 
 #     - ip=192.168.122.101::192.168.122.1:255.255.255.0:rhel-7-srv-1.example.com:bond0:none
-#       ip=10.0.122.11::10.0.122.254:255.255.0.0:rhel-7-srv-1.local:bond1:none
+#       ip=192.168.1.11::192.168.1.254:255.255.0.0::bond1:none
 #       bond=bond0:em1,em2:mode=active-backup,downdelay=5000
 #       bond=bond1:em3,em4
 #       bootdev=bond0
@@ -29,7 +30,21 @@ network_ks=${3:-${workdir}/network-ks.cfg}
 
 test -f ${boot_params} && source ${boot_params} || :
 
-{% include "snippets/pre.dynamic_network.rhel-7.functions" %}
+iface_rest_config () {
+    local iface=$1
+    local network_opts=""
+
+    if test "x${iface:0:4}" = "xbond"; then
+        for f in ${workdir}/bond*; do
+            if grep -q "bond=${iface}" $f 2>/dev/null; then
+                source $f  # Load bond device vars: bond, slaves, bond_opts.
+                network_opts=" --bondslaves=${slaves:?}$(test -z ${bond_opts} || echo \ --bondopts=${bond_opts:?})"
+                break
+            fi
+        done
+    fi
+    echo "${network_opts}"
+}
 
 if test ! -z "${ip}"; then  # It may be defined in ${boot_params} file.
     bootdev=$(find_bootdev $(cat ${boot_params}))
@@ -40,7 +55,8 @@ if test ! -z "${ip}"; then  # It may be defined in ${boot_params} file.
         bondidx=$(( ${bondidx} + 1 ))
     done
 
-    echo '' > ${network_ks}  # Create it newly always.
+    rm -f ${network_ks}  # Create it newly always.
+    touch ${network_ks}  # Create it newly always.
 
     ifaceidx=0
     for ip in $(sed -nr 's/^ip="?(.+)"?$/\1/p' ${boot_params}); do
@@ -67,7 +83,8 @@ if test ! -z "${ip}"; then  # It may be defined in ${boot_params} file.
             echo "[Info] Use DHCP or iBFT for this interface"
             echo "${iface_def}" | tee ${iface_params}
             source ${iface_params}  # Load vars, iface, bootproto and method.
-            echo "network --device=${iface} --bootproto=${bootproto} --onboot=yes" | tee -a ${network_ks}
+            network_opts="--bootproto=${bootproto:?} --device=${iface:?} --onboot=yes$(iface_rest_config ${iface})"
+            echo "network ${network_opts}" | tee -a ${network_ks}
             continue
         fi
 
@@ -87,17 +104,9 @@ if test ! -z "${ip}"; then  # It may be defined in ${boot_params} file.
         fi
 
         network_opts="--bootproto=static --device=${iface:?} --ip=${ip:?} --netmask=${netmask:?}"
-        network_opts="${network_opts:?} $(test -z ${gateway} || echo --gateway=${gateway:?})"
-        network_opts="${network_opts:?} $(test -z ${hostname} || echo --hostname=${hostname:?})"
-
-        if test "x${iface:0:4}" = "xbond"; then
-            for f in ${workdir}/bond*; do
-                if grep -q "bond=${iface}" $f 2>/dev/null; then
-                    source $f  # Load bond device vars: bond, slaves, bond_opts.
-                    network_opts="${network_opts:?} --bondslaves=${slaves:?} $(test -z ${bond_opts} || echo --bondopts=${bond_opts:?})"
-                fi
-            done
-        fi
+        network_opts="${network_opts:?}$(test -z ${gateway} || echo \ --gateway=${gateway:?})"
+        network_opts="${network_opts:?}$(test -z ${hostname} || echo \ --hostname=${hostname:?})"
+        network_opts="${network_opts:?}$(iface_rest_config ${iface})"
 
         test -z ${hostname} || echo "network --hostname=${hostname}" | tee -a ${network_ks}
         echo "network ${network_opts}" | tee -a ${network_ks}

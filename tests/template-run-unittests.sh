@@ -4,6 +4,7 @@
 curdir=${0%/*}
 targets="
 templates/autoinstall.d/snippets/pre.dynamic_network.rhel-7.functions
+templates/autoinstall.d/snippets/pre.dynamic_network.rhel-7
 "
 
 for t in ${targets}; do

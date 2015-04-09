@@ -1,0 +1,2 @@
+network --bootproto=dhcp --device=em1 --onboot=yes
+network --bootproto=ibft --device=p1p1 --onboot=yes

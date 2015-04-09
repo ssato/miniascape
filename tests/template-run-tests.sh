@@ -5,7 +5,6 @@ curdir=${0%/*}
 topdir=${curdir}/../
 targets="
 templates/autoinstall.d/snippets/pre.store_cmdline
-templates/autoinstall.d/snippets/pre.dynamic_network.rhel-7.functions
 "
 
 workdir=${1:-$(mktemp -d)}
