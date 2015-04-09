@@ -5,6 +5,7 @@ curdir=${0%/*}
 topdir=${curdir}/../
 targets="
 templates/autoinstall.d/snippets/pre.store_cmdline
+templates/autoinstall.d/snippets/pre.dynamic_network.rhel-7.functions
 "
 
 workdir=${1:-$(mktemp -d)}
@@ -30,6 +31,6 @@ for t in ${targets}; do
             echo "-------------------------------------------"
         fi
     done
-    rm -rf ${workdir:?}
 done
+rm -rf ${workdir:?}
 # vim:sw=4:ts=4:et:

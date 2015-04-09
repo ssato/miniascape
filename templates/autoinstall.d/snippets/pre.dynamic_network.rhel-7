@@ -32,7 +32,7 @@ test -f ${boot_params} && source ${boot_params} || :
 {% include "pre.dynamic_network.rhel-7.functions" %}
 
 if test ! -z "${ip}"; then  # It may be defined in ${boot_params} file.
-    bootdev=$(find_bootdev ${boot_params})
+    bootdev=$(find_bootdev $(cat ${boot_params}))
     bondidx=0
     for bond_spec in $(sed -nr 's/^bond="?(.+)"?$/\1/p' ${boot_params}); do
         echo "[Info] Found a bonding device: ${bond_spec}"

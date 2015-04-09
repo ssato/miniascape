@@ -1,7 +1,9 @@
-# $1:  ${boot_params} file
+# {# vim:sw=4:ts=4:et:ft=sh:
+#  #}
+# $1: The content of ${boot_params} file
 # output: bootdev device name or an empty string
 find_bootdev () {
-    sed -nr 's/^bootdev="?(.+)"?$/\1/p' $1
+    echo "$1" | sed -nr 's/^bootdev="?([^"]+)"?$/\1/p'
 }
 
 # $1: boot bond spec, e.g. bond0:em1,em2:mode=active-backup,downdelay=5000,
@@ -10,23 +12,29 @@ find_bootdev () {
 #   'bond=bond0; slaves=em1,em2; bond_opts=mode=active-backup,downdelay=5000'
 #   or an empty string means parse failure.
 parse_bond_spec () {
-    echo "$1" | sed -r 's/([^:]+):([^:]+)(:([^:]+))?/bond=\1; slaves=\2; bond_opts="\4"/'
+    echo "$1" | sed -nr 's/^(bond[^:]+):([^:]+)(:([^:]+))?/bond=\1; slaves=\2; bond_opts="\4"/p'
 }
 
 # $1: ip spec, e.g. '(dhcp|dhcp6|auto6|ibft)'.
 # output: automatic configuration method (bootproto) or an empty string
 parse_ip_spec__auto_config_all_bootproto () {
     local method=$(echo "$1" | sed -nr 's/^([^:]+)$/\1/p')
-    # TODO: What should be choosen as bootproto for the method, dhcp6 and auto6 ?
-    test ${method} = "ibft" && bootproto=ibft || bootproto=dhcp
-    echo "${bootproto}"
+    if test -z "${method}"; then
+        echo ''
+    else
+        # TODO: What should be choosen as bootproto for the method, dhcp6 and auto6 ?
+        test "${method}" = "ibft" && bootproto=ibft || bootproto=dhcp
+        echo "${bootproto}"
+    fi
 }
 
 # $1: Link up interface devices list by `/sbin/ip -o link show up` or none
 # output: Link up interface device names or an empty string
 list_linkup_interfaces () {
-    local out=${1:-$(/sbin/ip -o link show up)}
-    echo "${out}" | sed -nr '/ lo:/d; / virbr[[:digit:]]+:/d; s/^[[:digit:]]+: ([^:]+): .*/\1/p'
+    local out="${1:-$(/sbin/ip -o link show up)}"
+    cat << EOF | sed -nr '/ lo:/d; / virbr[[:digit:]]+:/d; s/^[[:digit:]]+: ([^:]+): .*/\1/p'
+${out}
+EOF
 }
 
 # $1: ip spec, e.g. '(iface_name):(dhcp|dhcp6|auto6|ibft)'.
@@ -34,12 +42,12 @@ list_linkup_interfaces () {
 # see: function:`ip_auto_config_all_bootproto`
 parse_ip_spec__auto_config () {
     local iface_method=$(echo "$1" | sed -nr 's/^([^:]+):([^:]+)$/iface=\1; method=\2/p')
-    if test -z ${iface_method}; then
+    if test -z "${iface_method}"; then
         echo ''
     else
         local method=$(echo "${iface_method}" | sed -nr 's/^iface=[^;]+; method=(.+)$/\1/p')
         test ${method} = "ibft" && bootproto=ibft || bootproto=dhcp
-        echo "${iface_method} bootproto=${bootproto}"
+        echo "${iface_method}; bootproto=${bootproto}"
     fi
 }
 
