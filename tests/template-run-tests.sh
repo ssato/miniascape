@@ -1,5 +1,5 @@
 #! /bin/bash
-set -e
+#set -e
 
 curdir=${0%/*}
 topdir=${curdir}/../
@@ -20,7 +20,15 @@ for t in ${targets}; do
         exp=${f/input/output.exp}
 
         bash ${tt} ${output} ${f}
-        diff -u ${exp} ${output}
+        t_result=$(diff -u ${exp} ${output}); t_rc=$?
+        if test ${t_rc} -eq 0; then
+            echo "OK: ${bf}"
+        else
+            echo "NG: ${bf}"
+            echo "-------------------------------------------"
+            echo "${t_result}"
+            echo "-------------------------------------------"
+        fi
     done
     rm -rf ${workdir:?}
 done
