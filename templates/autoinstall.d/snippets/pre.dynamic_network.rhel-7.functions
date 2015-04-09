@@ -12,7 +12,7 @@ find_bootdev () {
 #   'bond=bond0; slaves=em1,em2; bond_opts=mode=active-backup,downdelay=5000'
 #   or an empty string means parse failure.
 parse_bond_spec () {
-    echo "$1" | sed -nr 's/^(bond[^:]+):([^:]+)(:([^:]+))?/bond=\1; slaves=\2; bond_opts="\4"/p'
+    echo "$1" | sed -nr 's/^(bond[^:]+):([^:]+)(:([^:]+))?/bond=\1; slaves=\2; bond_opts=\4/p'
 }
 
 # $1: ip spec, e.g. '(dhcp|dhcp6|auto6|ibft)'.
