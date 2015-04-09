@@ -29,7 +29,7 @@ network_ks=${3:-${workdir}/network-ks.cfg}
 
 test -f ${boot_params} && source ${boot_params} || :
 
-{% include "pre.dynamic_network.rhel-7.functions" %}
+{% include "snippets/pre.dynamic_network.rhel-7.functions" %}
 
 if test ! -z "${ip}"; then  # It may be defined in ${boot_params} file.
     bootdev=$(find_bootdev $(cat ${boot_params}))
