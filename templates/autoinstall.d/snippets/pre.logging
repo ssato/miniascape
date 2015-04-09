@@ -1,3 +1,4 @@
+{%  if not (virtinst and virtinst.os_variant in ('rhel7', 'fedora21')) -%}
 # copied from cobbler licensed under GPLv2+
 set -x -v
 exec 1>/tmp/ks-pre.log 2>&1
@@ -10,3 +11,4 @@ while : ; do
         break
     fi
 done &
+{%- endif %}
