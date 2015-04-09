@@ -3,12 +3,11 @@
 # Process cmdline passed on boot and make up shell script contains parameter
 # definitions:
 #
-# ex. 
-#   cmdline: 'linux ks=http://ks.example.com/a-ks.cfg ip=192.168.122.10 \
-#               netmask=255.255.255.0 gateway=192.168.122.1 \
-#               hostname=a.example.com var0=aaa var1=bbb \
-#               rd.lvm.lv=fedora/root rhgb quiet'
-#   => 
+# ex. 'linux ks=http://ks.example.com/a-ks.cfg ip=192.168.122.10 \
+#      netmask=255.255.255.0 gateway=192.168.122.1 \
+#      hostname=a.example.com var0=aaa var1=bbb \
+#      rd.lvm.lv=fedora/root rhgb quiet'
+# -->
 #      ks="http://ks.example.com/a-ks.cfg"
 #      ip="192.168.122.10"
 #      netmask="255.255.255.0"
@@ -17,6 +16,6 @@
 #      var0="aaa"
 #      var1="bbb"
 #
-boot_params=${1:-/tmp/boot-params}
-cat /proc/cmdline | sed 's/ /\n/g' | \
-    sed -nr ' s/^([^=\.]+)=([^=]+)$/\1="\2"/p' > ${boot_params}
+output=${1:-/tmp/boot-params}
+cmdline=${2:-/proc/cmdline}
+sed 's/ /\n/g' ${cmdline:?} | sed -nr 's/^([^=\.]+)=([^=]+)$/\1="\2"/p' > ${output:?}
