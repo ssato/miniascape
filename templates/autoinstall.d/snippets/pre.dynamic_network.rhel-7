@@ -9,11 +9,11 @@
 #     - ip=ip::gateway:netmask:hostname:interface:none
 #     - nameserver=...
 #     - ifname=eth0:01:23:45:67:89:ab
-#     - net.ifnames=0 (kernel boot option to switch to legacy nic naming mode)
+#     - net.ifnames=0 (kernel boot option to switch to legacy iface naming mode)
 #     - bond=bond0:em1,em2[:mode=active-backup,tx_queues=32,downdelay=5000]
 # 
-#     - ip=192.168.122.101::192.168.122.1:255.255.255.0:rhel-7-srv-1.example.com:bond0:none 
-#       ip=10.0.122.11::10.0.122.254:255.255.0.0:rhel-7-srv-1.local:bond1:none 
+#     - ip=192.168.122.101::192.168.122.1:255.255.255.0:rhel-7-srv-1.example.com:bond0:none
+#       ip=10.0.122.11::10.0.122.254:255.255.0.0:rhel-7-srv-1.local:bond1:none
 #       bond=bond0:em1,em2:mode=active-backup,downdelay=5000
 #       bond=bond1:em3,em4
 #       bootdev=bond0
@@ -24,70 +24,82 @@
 #   - team device support
 #
 boot_params=${1:-/tmp/boot-params}
-test -f ${boot_params} && source ${boot_params}
+workdir=${2:-/tmp}
+network_ks=${3:-${workdir}/network-ks.cfg}
 
-if test ! -z "${ip}"; then
+test -f ${boot_params} && source ${boot_params} || :
 
-    network_ks=/tmp/network-ks.cfg
-    bootdev=$(sed -nr 's/^bootdev=(.+)$/\1/p' ${boot_params})
+{% include "pre.dynamic_network.rhel-7.functions" %}
 
+if test ! -z "${ip}"; then  # It may be defined in ${boot_params} file.
+    bootdev=$(find_bootdev ${boot_params})
     bondidx=0
-    for bond in $(sed -nr 's/^bond=(.+)$/\1/p' ${boot_params}); do
-        echo "${bond}" | sed -r \
-            's/([^:]+):([^:]+)(:([^:]+))?/bond=\1; slaves=\2; bond_opts=\4/' \
-            > /tmp/bond-${bondidx}
+    for bond_spec in $(sed -nr 's/^bond="?(.+)"?$/\1/p' ${boot_params}); do
+        echo "[Info] Found a bonding device: ${bond_spec}"
+        parse_bond_spec "${bond_spec}" | tee ${workdir}/bond-${bondidx}
         bondidx=$(( ${bondidx} + 1 ))
     done
 
-    nicidx=0
-    for ip in $(sed -nr 's/^ip=(.+)$/\1/p' ${boot_params}); do
+    echo '' > ${network_ks}  # Create it newly always.
 
-        # 1. Try the pattern of automatic configuration of any interface:
-        method=$(echo "${ip}" | sed -nr 's/^([^:]+)$/\1/p')
-        if test ! -z ${method}; then
-            nics=$(/sbin/ip -o link show up | \
-                   sed -nr '/ lo:/d; s/^[[:digit:]]+: ([^:]+): .*/\1/p')
-            for nic in ${nics}; do
-                test ${method} = "ibft" && bootproto=ibft || bootproto=dhcp
-                echo "network --device=${nic} --bootproto=${bootproto} --onboot=yes" >> ${network_ks}
+    ifaceidx=0
+    for ip in $(sed -nr 's/^ip="?(.+)"?$/\1/p' ${boot_params}); do
+        echo "[Debug] ip=${ip}"
+
+        # 1. Try the pattern of automatic configuration for all interfaces:
+        bootproto=$(parse_ip_spec__auto_config_all_bootproto "${ip}")
+        if test ! -z ${bootproto}; then
+            echo "[Info] Use DHCP or iBFT for all interfaces"
+            ifaces=$(list_linkup_interfaces)
+            for iface in ${ifaces}; do
+                echo "network --device=${iface} --bootproto=${bootproto} --onboot=yes" | tee -a ${network_ks}
             done
-            test -z ${hostname} || echo "network --hostname=${hostname}" \
-                >> ${network_ks}
+            test -z ${hostname} || echo "network --hostname=${hostname}" | tee -a ${network_ks}
             break
         fi
 
-        nic_params=/tmp/nic-${nicidx}
+        iface_params=${workdir}/iface-${ifaceidx}
+        ifaceidx=$(( ${ifaceidx} + 1 ))
 
-        # 2. Try the pattern of automatic configuration of this interface:
-        nic_method=$(echo "${ip}" | sed -nr 's/^([^:]+):([^:]+)$/nic=\1 method=\2/p')
-        if test ! -z "${nic_method}"; then
-            echo "${nic_method}" > ${nic_params}
-            source ${nic_params}  # Define nic vars, nic and method.
-            test ${method} = "ibft" && bootproto=ibft || bootproto=dhcp
-            echo "network --device=${nic} --bootproto=${bootproto} --onboot=yes" >> ${network_ks}
+        # 2. Try the pattern of automatic configuration for this specific interface:
+        iface_def=$(parse_ip_spec__auto_config "${ip}")
+        if test ! -z "${iface_def}"; then
+            echo "[Info] Use DHCP or iBFT for this interface"
+            echo "${iface_def}" | tee ${iface_params}
+            source ${iface_params}  # Load vars, iface, bootproto and method.
+            echo "network --device=${iface} --bootproto=${bootproto} --onboot=yes" | tee -a ${network_ks}
             continue
         fi
 
         # 3. Try the pattern of static configuration.
-        echo "${ip}" | sed -nr 's/^([^:]+):+([^:]+)?:([^:]+):([^:]+)?:([^:]+):none$/ip=\1; gateway=\2; netmask=\3; hostname=\4; nic=\5/p' > ${nic_params}
-        source ${nic_params}  # Define nic vars: ip, netmask, etc.
-        nicidx=$(( ${nicidx} + 1 ))
+        iface_def=$(parse_ip_spec__static_config "${ip}")
+        if test -z "${iface_def}"; then
+            echo "[Warn] Parse failed for the ip, maybe wrong format: ${ip}"
+            continue
+        fi
 
-        test "x${ip}" = "x" -o "x${nic}" = "x" -o "x${netmask}" = "x" && \
-            continue || :
+        echo "${iface_def}" | tee ${iface_params}
+        source ${iface_params}  # Load vars, ip, netmask, etc.
 
-        network_opts="--bootproto=static --device=${nic:?} --ip=${ip:?} --netmask=${netmask:?} $(test -z ${gateway} || echo --gateway=${gateway:?}) $(test -z ${hostname} || echo --hostname=${hostname:?})"
+        if test "x${ip}" = "x" -o "x${iface}" = "x" -o "x${netmask}" = "x"; then
+            echo "[Warn] A/some parameters are not given for this interface: ${iface_def}"
+            continue
+        fi
 
-        if test "x${nic:0:4}" = "xbond"; then
-            for f in /tmp/bond*; do
-                if grep -q "bond=${nic}" $f 2>/dev/null; then
-                    source $f  # Define bond device vars: bond, slaves, bond_opts.
+        network_opts="--bootproto=static --device=${iface:?} --ip=${ip:?} --netmask=${netmask:?}"
+        network_opts="${network_opts:?} $(test -z ${gateway} || echo --gateway=${gateway:?})"
+        network_opts="${network_opts:?} $(test -z ${hostname} || echo --hostname=${hostname:?})"
+
+        if test "x${iface:0:4}" = "xbond"; then
+            for f in ${workdir}/bond*; do
+                if grep -q "bond=${iface}" $f 2>/dev/null; then
+                    source $f  # Load bond device vars: bond, slaves, bond_opts.
                     network_opts="${network_opts:?} --bondslaves=${slaves:?} $(test -z ${bond_opts} || echo --bondopts=${bond_opts:?})"
                 fi
             done
         fi
 
-        test -z ${hostname} || echo "network --hostname=${hostname}" >> ${network_ks}
-        echo "network ${network_opts}" >> ${network_ks}
+        test -z ${hostname} || echo "network --hostname=${hostname}" | tee -a ${network_ks}
+        echo "network ${network_opts}" | tee -a ${network_ks}
     done
 fi
