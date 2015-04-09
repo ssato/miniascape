@@ -1,0 +1,5 @@
+ip="192.168.122.101::192.168.122.1:255.255.255.0:rhel-7-srv-1.example.com:bond0:none"
+ip="10.0.122.11::10.0.122.254:255.255.0.0:rhel-7-srv-1.local:bond1:none"
+bond="bond0:em1,em2:mode=active-backup,downdelay=5000"
+bond="bond1:em3,em4"
+bootdev="bond0"
