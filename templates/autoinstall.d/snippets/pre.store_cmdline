@@ -18,4 +18,4 @@
 #
 output=${1:-/tmp/boot-params}
 cmdline=${2:-/proc/cmdline}
-sed 's/ /\n/g' ${cmdline:?} | sed -nr 's/^([^=\.]+)=([^=]+)$/\1="\2"/p' > ${output:?}
+sed 's/ /\n/g' ${cmdline:?} | sed -nr 's/^([^=\.]+)=(.+)$/\1="\2"/p' > ${output:?}
