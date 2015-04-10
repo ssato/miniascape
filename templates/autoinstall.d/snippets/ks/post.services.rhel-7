@@ -1,0 +1,8 @@
+{%- if services -%}
+{%      for svc in services.enabled -%}
+systemctl enable {{ svc }}
+{%      endfor -%}
+{%      for svc in services.disabled -%}
+systemctl disable {{ svc }}
+{%      endfor -%}
+{%- endif %}
