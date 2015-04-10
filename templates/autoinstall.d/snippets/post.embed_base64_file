@@ -1,10 +1,10 @@
-{% macro embed_base64_file(setup_data, tar_xz=true, outdir="/root") -%}
+{%  macro embed_base64_file(setup_data, tar_xz=true, outdir="/root") -%}
 {%     if setup_data is defined -%}
 outdir={{ outdir }}
 datadir=${outdir}/setup
 test -d ${outdir} || mkdir -p ${outdir}
 chown -R root.root ${outdir}
-chmod -R -m 700 ${outdir} || chmod -R 700 ${outdir}
+chmod -R 700 ${outdir}
 cat << 'EOF' > ${outdir}/setup.tar.xz.base64
 {%         include 'setup.tar.xz.base64' %}
 EOF
@@ -16,7 +16,7 @@ cd ${outdir} && base64 -i -d setup.tar.xz.base64 > setup.tar.xz && xz -d setup.t
 {%         for data in setup_data if data.install is defined -%}
 idir=$(dirname {{ data.install.dst }}); test -d $idir || install -d $idir
 install -m{{ data.install.mode|default('644') }} {% if data.install.backup %}--suffix=.save --backup{% endif %} ${datadir}/{{ data.dst }} {{ data.install.dst }}
-{%-        else %}  #  ... there is no data to install.
+{%-        else -%}  #  ... there is no data to install.
 {%         endfor %}
-{%-    endif %}
-{% endmacro %}
+{%-    endif -%}
+{%- endmacro %}
