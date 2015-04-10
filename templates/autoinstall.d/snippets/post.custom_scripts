@@ -1,4 +1,3 @@
-
 # Custom scripts: start -------------------------------
 {% for script in kickstart.custom_scripts -%}
 {{ script }}
