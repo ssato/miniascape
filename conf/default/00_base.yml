@@ -75,6 +75,7 @@ common:
       options: "--ignoremissing"
     noipv6: false
     nozeroconf: true
+    custom_script: ""
 
   kdump:
     enabled: true
