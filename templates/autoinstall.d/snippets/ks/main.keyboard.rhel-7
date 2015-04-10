@@ -1,2 +1,2 @@
-keyboard --vckeymap={{ keyboard|default('us') }} --xlayouts={{ keyboard|default('us'
-) }}
+keyboard --vckeymap={{ keyboard|default('us') }} --xlayouts={{ keyboard|default('us') }}
+{# #}

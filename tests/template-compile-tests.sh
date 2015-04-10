@@ -4,7 +4,7 @@
 curdir=${0%/*}
 topdir=${curdir}/../
 targets="
-templates/autoinstall.d/snippets/ks/post.services.rhel-7
+$(sed '/^#.*/d' ${curdir}/template-compile-tests.targets)
 "
 
 for tgt in ${targets}; do
@@ -34,7 +34,7 @@ for tgt in ${targets}; do
     done
     tmpl=${tmpl/*templates\/}
     echo "${tmpl}: "$(test ${ng_cnt} -eq 0 && echo 'OK' || echo "NG [${ng_cnt}]")
-    rm -rf ${workdir:?}
+    #rm -rf ${workdir:?}
 done
 
 # vim:sw=4:ts=4:et:

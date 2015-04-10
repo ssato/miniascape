@@ -1,0 +1,1 @@
+timezone Africa/Accra --isUtc --ntpservers=ntp-0.example.com,ntp-1.example.com

@@ -1,0 +1,6 @@
+timezone:
+  timezone: Africa/Accra
+  utc: true
+ntpservers:
+  - hostname: ntp-0.example.com
+  - hostname: ntp-1.example.com
