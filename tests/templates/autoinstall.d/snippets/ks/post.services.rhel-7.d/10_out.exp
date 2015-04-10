@@ -1,0 +1,4 @@
+systemctl enable sshd
+systemctl enable ntpd
+systemctl disable NetworkManager
+systemctl disable nfsd

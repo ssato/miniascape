@@ -1,7 +1,0 @@
-services:
-  enabled:
-    - sshd
-    - ntpd
-  disabled:
-    - NetworkManager
-    - nfsd
