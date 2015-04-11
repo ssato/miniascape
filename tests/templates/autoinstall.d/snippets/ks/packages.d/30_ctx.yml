@@ -1,0 +1,13 @@
+packages:
+  installed:
+    - "@core"
+    - bash-completion
+
+  add:
+    - zsh
+
+  uninstalled:
+    - rsh
+    - telnet-server
+  del:
+    - mlocate

@@ -1,0 +1,6 @@
+@core
+bash-completion
+zsh
+-rsh
+-telnet-server
+-mlocate

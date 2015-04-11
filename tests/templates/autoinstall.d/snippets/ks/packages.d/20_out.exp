@@ -1,0 +1,4 @@
+@core
+bash-completion
+-rsh
+-telnet-server
