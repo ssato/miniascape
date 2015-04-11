@@ -1,1 +1,3 @@
-firstboot {{ kickstart.firstboot|default('--disable') }}
+{% if kickstart and kickstart.firstboot -%}
+firstboot {{ kickstart.firstboot if kickstart.firstboot in ('--reconfig', '--enabled', '--enable', '--disabled', '--disable') else '--enable' }}
+{% endif %}
