@@ -1,5 +1,5 @@
 {%  if kickstart and kickstart.custom_script -%}
 # Custom script: start -------------------------------
-{{ kickstart.custom_script -}}
+{{ kickstart.custom_script }}
 # Custom script: end ---------------------------------
-{%- endif %}
+{% endif %}
