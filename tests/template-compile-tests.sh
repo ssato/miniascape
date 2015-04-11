@@ -33,8 +33,7 @@ for tgt in ${targets}; do
         fi
     done
     tmpl=${tmpl/*templates\/}
-    echo "${tmpl}: "$(test ${ng_cnt} -eq 0 && echo 'OK' || echo "NG [${ng_cnt}]")
-    #rm -rf ${workdir:?}
+    echo "${tmpl}: "$(test ${ng_cnt} -eq 0 && (echo 'OK'; rm -rf ${workdir:?}) || echo "NG [${ng_cnt}]")
 done
 
 # vim:sw=4:ts=4:et:
