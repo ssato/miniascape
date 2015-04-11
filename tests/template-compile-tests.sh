@@ -22,7 +22,7 @@ for tgt in ${targets}; do
         exp_f=${tmpl_test_datadir}/${test_basename}_out.exp
         out_f=${workdir}/${test_basename}_out
 
-        jinja2-cli r -C ${ctx_f} -o ${out_f} ${tmpl} 2>/dev/null
+        jinja2-cli r -C ${ctx_f} -T ${topdir}/templates/autoinstall.d -o ${out_f} ${tmpl} 2>/dev/null
         test_result=$(diff -u ${exp_f} ${out_f}); test_rc=$?
         if test ${test_rc} -ne 0; then
             echo "NG: ${test_basename}"
