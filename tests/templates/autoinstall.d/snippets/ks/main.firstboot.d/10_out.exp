@@ -1,0 +1,1 @@
+firstboot --disable

@@ -1,0 +1,2 @@
+kickstart:
+  firstboot: --disable
