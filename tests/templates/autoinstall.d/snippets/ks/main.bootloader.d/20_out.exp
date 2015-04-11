@@ -1,0 +1,1 @@
+bootloader --timeout=10 --append="hdd=ide-scsi ide=nodma"

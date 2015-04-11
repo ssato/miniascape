@@ -1,0 +1,1 @@
+firewall --enabled --ssh --trust em1 --smtp --port=1234:tcp
