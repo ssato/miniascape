@@ -1,0 +1,2 @@
+kdump:
+  reserve: 128M
