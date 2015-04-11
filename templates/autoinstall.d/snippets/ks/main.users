@@ -1,9 +1,14 @@
-{% for user in kickstart.users if user.name -%}
+{%  if kickstart and kickstart.users -%}
+{%      for user in kickstart.users if user.name -%}
 user --name={{ user.name }}
+{{-   " --gecos=\"%s\"" % user.gecos if user.gecos -}}
 {{-   " --groups=%s" % user.groups|join(',') if user.groups -}}
 {{-   " --homedir=%s" % user.homedir if user.homedir -}}
 {{-   " --password=%s" % user.password if user.password -}}
 {{-   " --iscrypted" if user.iscrypted -}}
 {{-   " --shell=%s" % user.shell if user.shell -}}
-{{-   " --uid=%s" % user.uid if user.uid }}
-{% endfor %}
+{{-   " --uid=%s" % user.uid if user.uid -}}
+{{-   " --gid=%s" % user.gid if user.gid -}}
+{{-   " --lock" if user.lock }}
+{%      endfor %}
+{%- endif %}
