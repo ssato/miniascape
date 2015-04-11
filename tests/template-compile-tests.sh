@@ -21,11 +21,12 @@ for tgt in ${targets}; do
         test_basename=${test_basename/_ctx.yml/}
         exp_f=${tmpl_test_datadir}/${test_basename}_out.exp
         out_f=${workdir}/${test_basename}_out
+        err_f=${workdir}/${test_basename}_err
 
-        jinja2-cli r -C ${ctx_f} -T ${topdir}/templates/autoinstall.d -o ${out_f} ${tmpl} 2>/dev/null
+        jinja2-cli r -C ${ctx_f} -T ${topdir}/templates/autoinstall.d -o ${out_f} ${tmpl} 2> ${err_f}
         test_result=$(diff -u ${exp_f} ${out_f}); test_rc=$?
         if test ${test_rc} -ne 0; then
-            echo "NG: ${test_basename}"
+            echo "NG: ${test_basename}, see the log ${err_f} for more details:"
             echo "-------------------------------------------"
             echo "${test_result}"
             echo "-------------------------------------------"
