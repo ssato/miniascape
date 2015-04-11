@@ -1,0 +1,2 @@
+user --name=foo --gecos="xxxxxx ,,," --groups=admin,wheel --homedir=/var/lib/foo --password=xxxxxxxxxxxxxxxxxxxxxxxxx --iscrypted --shell=/bin/zsh --uid=1010 --gid=1011
+user --name=bar --groups=admin --uid=1020 --lock

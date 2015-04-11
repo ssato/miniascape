@@ -1,0 +1,19 @@
+kickstart:
+  users:
+    - name: foo
+      gecos: "xxxxxx ,,,"
+      groups:
+        - admin
+        - wheel
+      homedir: /var/lib/foo
+      password: xxxxxxxxxxxxxxxxxxxxxxxxx
+      iscrypted: true
+      shell: /bin/zsh
+      uid: 1010
+      gid: 1011
+
+    - name: bar
+      groups:
+        - admin
+      uid: 1020
+      lock: true
