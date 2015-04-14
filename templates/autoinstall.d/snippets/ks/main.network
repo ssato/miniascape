@@ -1,8 +1,8 @@
 {% for ni in interfaces if ni.device -%}
 network --device={{ ni.device }}
 {{-    " --onboot=%s" % ni.onboot|default('yes') -}}
+{{-    " --bootproto=%s" % ni.bootproto|default('dhcp') -}}
 {%-    if ni.bootproto is defined and ni.bootproto != 'dhcp' -%}
-{{         " --bootproto=%s" % ni.bootproto -}}
 {{-        " --ip=%s" % ni.ip -}}
 {{-        " --netmask=%s" % ni.netmask|default('255.255.255.0') -}}
 {{-        " --gateway=%s" % ni.gateway if ni.gateway -}}
@@ -14,6 +14,7 @@ network --device={{ ni.device }}
 {{-    " --nodns" if ni.nodns -}}
 {{-    " %s" % ni.options if ni.options }}
 {% endfor %}
-{% if virtinst and virtinst.os_variant == 'rhel7' %}
-{{     'network --hostname=%s' % fqdn if fqdn }}
-{% endif -%}
+{%- if virtinst and virtinst.os_variant == 'rhel7' and fqdn -%}
+{{     'network --hostname=%s' % fqdn -}}
+{%  endif %}
+{# #}
