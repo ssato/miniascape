@@ -1,0 +1,2 @@
+virtinst:
+  location: "file:///images/install/squashfs.img"

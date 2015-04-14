@@ -1,0 +1,6 @@
+kickstart:
+  repos:
+    - name: "RHEL 6 x86_64 - Cluster"
+      baseurl: "http://ks/kstree/rhel/6/6/x86_64/HighAvailability"
+    - name: "RHEL 6 x86_64 - GFS"
+      baseurl: "http://ks/kstree/rhel/6/6/x86_64/ResilientStorage"

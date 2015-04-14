@@ -1,0 +1,23 @@
+interfaces:
+  - device: en0
+    activate: true
+    nodefroute: true
+    nodns: true
+    options: "--noipv6"
+
+  - device: p1p1
+    bootproto: static
+    ip: 192.168.122.101
+
+  - device: p1p2
+    onboot: "no"
+    bootproto: static
+    ip: 127.0.0.10
+    netmask: 255.255.0.0
+    gateway: 127.0.0.254
+    nameserver: 127.0.0.250
+    fqdn: foo-1.example.com
+
+fqdn: rhel-7.example.com
+virtinst:
+  os_variant: rhel7
