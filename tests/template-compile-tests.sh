@@ -3,9 +3,13 @@
 
 curdir=${0%/*}
 topdir=${curdir}/../
-targets="
+
+targets=${1}
+if test "x${targets}" = x; then
+    targets="
 $(sed '/^#.*/d' ${curdir}/template-compile-tests.targets)
 "
+fi
 
 for tgt in ${targets}; do
     workdir=${1:-$(mktemp -d)}
