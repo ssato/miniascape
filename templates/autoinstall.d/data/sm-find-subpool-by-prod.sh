@@ -65,8 +65,8 @@ Examples:
 
     \$ ./sm-find-subpool-by-prod.sh "Red Hat Enterprise Linux Atomic Host"
     # Red Hat Enterprise Linux Atomic Host:
-    8a85f***********************07f1 19141 01/01/2022
-    8a85f***********************2daa 1 05/06/2015
+    8a8xx***********************xxxx 19141 01/01/2022
+    8a8xx***********************xxxx 1 05/06/2015
     \$
 EOH
     exit 0
