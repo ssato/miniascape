@@ -12,7 +12,15 @@ set -e
 
 found_pools () {
     local prod="${1}"
-    local input="${2:-$(subscription-manager list --available)}"
+    local input="${2}"
+
+    if test "x${2}" = "x"; then
+        input=$(mktemp /tmp/available_subs.XXXXXXXXX)
+        echo "[Info] Save the available subscription list: ${input}"
+        subscription-manager list --available > ${input}
+    fi
+
+    echo "[Info] Searched product=${PRODUCT}"
 
     sed -nr "
 /^Subscription Name:/ {
@@ -64,6 +72,8 @@ Usage: ${0} PRODUCT [INPUT]
 Examples:
 
     \$ ./sm-find-subpool-by-prod.sh "Red Hat Enterprise Linux Atomic Host"
+    [Info] Save the available subscriptions list: /tmp/available_subs.VKNOdjgMZc
+    [Info] Searched product=Red Hat Enterprise Linux Atomic Host
     # Red Hat Enterprise Linux Atomic Host:
     8a8xx***********************xxxx 19141 01/01/2022
     8a8xx***********************xxxx 1 05/06/2015
@@ -72,7 +82,6 @@ EOH
     exit 0
 fi
 
-echo "# ${PRODUCT}:"
 found_pools "${PRODUCT:?}" "${INPUT}"
 
 # vim:sw=4:ts=4:et:
