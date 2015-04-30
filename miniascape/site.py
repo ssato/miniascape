@@ -48,7 +48,7 @@ def load_site_ctx(ctxpath):
             logging.info("Not exist and skipped: " + ctxpath)
             return None
 
-    ctx = anyconfig.load(ctxpath)
+    ctx = anyconfig.load(ctxpath, ac_template=True)
 
     if not ctx:
         logging.warn("No config loaded from: " + ctxpath)

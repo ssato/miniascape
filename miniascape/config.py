@@ -193,7 +193,7 @@ class ConfFiles(dict):
         confs = self.list_host_confs()
 
         logging.info("Loading host config files")
-        return anyconfig.load(confs)
+        return anyconfig.load(confs, ac_template=True)
 
     def load_guest_confs(self, name, group=None):
         """
@@ -204,7 +204,7 @@ class ConfFiles(dict):
 
         logging.info("Loading guest config files: " + name)
         logging.debug("Configs: " + str(confs))
-        c = anyconfig.load(confs)
+        c = anyconfig.load(confs, ac_template=True)
 
         return _add_special_confs(_guest_add_missings(c))
 
@@ -238,7 +238,7 @@ class ConfFiles(dict):
         nis = dict(self._aggregate_guest_net_interfaces_g())
 
         for ncs in ncss:
-            netctx = anyconfig.load(ncs)
+            netctx = anyconfig.load(ncs, ac_template=True)
             name = netctx["name"]
 
             ns = nis.get(name, [])

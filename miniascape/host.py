@@ -116,7 +116,7 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
             logging.warn("Net xml already exists: " + netxml)
             return
 
-        nc = anyconfig.load(netconf)
+        nc = anyconfig.load(netconf, ac_template=True)
         nc["hosts"] = hosts_w_unique_ips(nc)
         nc["hosts_w_unique_macs"] = hosts_w_unique_macs(nc)
 
