@@ -86,7 +86,9 @@ $(if $(IS_RHEL_7),$(SETUP_FIREWALL_W_FIREWALLD),$(SETUP_FIREWALL_W_IPTABLES))
 CHECKS	?= \
 hostname -f && hostname -s && \
 ping -c1 localhost && ping -c1 `hostname -s` && \
-ping -c1 `hostname -f` && date
+ping -c1 `hostname -f` && date \
+{%- if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
+{{ "&& curl -vk --proxy http://%s" % proxy.fqdn }}{{ ":%s" % proxy.port|default('8080') }} https://cdn.redhat.com{% endif %}
 
 KATELLO_REINDEX = \
 katello-service stop && \
