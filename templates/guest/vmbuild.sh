@@ -64,7 +64,7 @@ extra_args="$extra_args{{ ' ksdevice=%s' % ksdevice if ksdevice and not (virtins
 
 {% block virt_install -%}
 virt-install \
-{{     virtinst.basic_options|default('--check-cpu --hvm --accelerate --noreboot --noautoconsole') }} \
+{{     virtinst.basic_options|default('--check-cpu --hvm --accelerate --noautoconsole') }} \
 --name=${name:?} \
 --connect=${connect:?} \
 --wait={{ virtinst.waittime|default('10') }} \
