@@ -56,14 +56,10 @@ if [ $1 = 0 ]; then    # uninstall (! update)
 fi
 
 %files
-#%doc
-%{_datadir}/miniascape/networks.d/*.xml
+%{_datadir}/libvirt/networks/*.xml
 
 %files -n       miniascape-host-data-common
 %{_sysconfdir}/modprobe.d/kvm.conf
-%{_sysconfdir}/httpd/conf.d/miniascape_autoinst.conf
-%{_sysconfdir}/auto.master.d/isos.autofs
-%{_sysconfdir}/auto.isos
 %{_libexecdir}/miniascape/*.sh
 %{_libexecdir}/miniascape/default/*.sh
 

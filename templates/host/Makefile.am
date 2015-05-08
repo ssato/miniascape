@@ -1,8 +1,8 @@
 EXTRA_DIST = package.spec rpm.mk
 include $(abs_top_srcdir)/rpm.mk
 
-pkgdata0dir = /usr/share/miniascape/networks.d
-dist_pkgdata0_DATA = $(wildcard usr/share/miniascape/networks.d/*.xml)
+pkgdata0dir = /usr/share/libvirt/networks
+dist_pkgdata0_DATA = $(wildcard networks/*.xml)
 
 pkgdata1dir = /usr/libexec/miniascape
 dist_pkgdata1_DATA = \
@@ -16,7 +16,6 @@ usr/libexec/miniascape/default/fixup_software_bridge.sh
 
 pkgdata3dir = /etc
 dist_pkgdata3_DATA = \
-etc/auto.isos \
 etc/fence_virt.conf
 
 pkgdata4dir = /etc/auto.master.d
