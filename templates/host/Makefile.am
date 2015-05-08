@@ -18,14 +18,6 @@ pkgdata3dir = /etc
 dist_pkgdata3_DATA = \
 etc/fence_virt.conf
 
-pkgdata4dir = /etc/auto.master.d
-dist_pkgdata4_DATA = \
-etc/auto.master.d/isos.autofs
-
-pkgdata5dir = /etc/httpd/conf.d
-dist_pkgdata5_DATA = \
-etc/httpd/conf.d/miniascape_autoinst.conf
-
 pkgdata6dir = /etc/modprobe.d
 dist_pkgdata6_DATA = \
 etc/modprobe.d/kvm.conf

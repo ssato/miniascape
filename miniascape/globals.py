@@ -53,7 +53,7 @@ M_HOST_CONF_SUBDIR = "host.d"
 M_CONF_PATTERN = "*.yml"
 
 M_HOST_OUT_SUBDIR = "host"
-M_NETS_OUT_SUBDIR = "usr/share/miniascape/networks.d"
+M_NETS_OUT_SUBDIR = "networks"
 
 M_WORK_TOPDIR = "miniascape-workdir-" + timestamp("%Y%m%d")
 M_ENCODING = locale.getdefaultlocale()[1]
