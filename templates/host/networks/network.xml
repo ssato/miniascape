@@ -12,6 +12,7 @@
 {%       endfor %}
   </dns>
 {%- endif %}
+{%  if gateway is defined and gateway -%}
   <ip address='{{ gateway }}' netmask='{{ netmask|default("255.255.255.0") }}'>
     {% if dhcp is defined -%}
     <dhcp>
@@ -22,4 +23,5 @@
     </dhcp>
 {%-    endif %}
   </ip>
+{%- endif %}
 </network>
