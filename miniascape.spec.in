@@ -16,6 +16,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  python
 Requires:       python-anyconfig >= 0.0.7
+Requires:       python-anytemplate >= 0.0.2
 Obsoletes:      miniascape-data-default <= 0.3.7
 Obsoletes:      miniascape-data-default-devel <= 0.3.7
 
@@ -66,6 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Mar 10 2015 Satoru SATOH <ssato@redhat.com> - 0.3.10.99-1
 - Split some default config files and make them merged on build time
+- Added a runtime dependency to python-anytemplate
 
 * Wed Jul 23 2014 Satoru SATOH <ssato@redhat.com> - 0.3.10-1
 - Add basic application tests runner script
