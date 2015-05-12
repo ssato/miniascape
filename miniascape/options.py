@@ -16,14 +16,15 @@
 #
 from miniascape.globals import LOGGER as logging
 
-import miniascape.globals as G
+import miniascape.globals
 import optparse
 
 
-M_DEFAULTS = dict(tmpldir=[], ctxs=[], site=None, workdir=G.M_WORK_TOPDIR,
-                  verbose=1)
+M_DEFAULTS = dict(tmpldir=[], ctxs=[], site=None,
+                  workdir=miniascape.globals.M_WORK_TOPDIR, verbose=1)
 
-M_DEFAULTS_POST = dict(tmpldir=G.M_TMPL_DIR, site=G.M_SITE_DEFAULT)
+M_DEFAULTS_POST = dict(tmpldir=miniascape.globals.M_TMPL_DIR,
+                       site=miniascape.globals.M_SITE_DEFAULT)
 
 
 def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
@@ -34,10 +35,12 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
     p = optparse.OptionParser(usage)
     p.set_defaults(**defaults)
 
-    ctxs_0 = G.site_src_ctx().replace(G.M_SITE_DEFAULT, "<site>")
+    ctxs_0 = miniascape.globals.site_src_ctx()
+    ctxs_0 = ctxs_0.replace(miniascape.globals.M_SITE_DEFAULT, "<site>")
 
-    p.add_option("-t", "--tmpldir", action="append",
-                 help="Template top dir[s] [[{}]]".format(G.M_TMPL_DIR))
+    thelp = "Template top dir[s] [[{}]]".format(miniascape.globals.M_TMPL_DIR)
+
+    p.add_option("-t", "--tmpldir", action="append", help=thelp)
     p.add_option("-s", "--site", help="Choose site [%default]")
     p.add_option("-C", "--ctx", dest="ctxs", action="append",
                  help="Specify context (conf) file[s] or path glob "
@@ -56,7 +59,7 @@ def option_parser(defaults=M_DEFAULTS, usage="%prog [OPTION ...]"):
 
 
 def _default_ctxs(site):
-    dctxs = G.site_src_ctx(site)
+    dctxs = miniascape.globals.site_src_ctx(site)
     logging.info("Site default ctxs: site={}, default={}".format(site, dctxs))
     return dctxs
 

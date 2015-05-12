@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2014 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,85 +14,43 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-import random
-import string
-
-from miniascape.globals import LOGGER as logging
-import miniascape.contrib.render
-import multiprocessing
+import anytemplate
+import anytemplate.utils
 import os.path
 
-
-def random_string(n=10):
-    return ''.join((random.choice(string.letters + string.digits)
-                    for i in range(n)))
+from miniascape.globals import LOGGER as logging
 
 
-FMAP = dict(m2_random_string=random_string, )
-
-
-def _renderto(tpaths, ctx, tmpl, output, ask=False, fmap=None):
+def renders_to(template, context=None, output=None, at_paths=None):
     """
-    NOTE: Take care of arguments' order.
+    :param template: Template content string
+    :param context: A dict or dict-like object to instantiate given
+        template file
+    :param output: File path to write the rendered result string to or None/'-'
+        to print it to stdout
+    :param at_paths: Template search paths
     """
-    miniascape.contrib.render.renderto(tmpl, ctx, tpaths, output, ask=ask,
-                                       fmap=fmap)
+    res = anytemplate.renders(template, context, at_paths=at_paths,
+                              at_engine="jinja2", at_ask_missing=True)
+    anytemplate.utils.write_to_output(res, output)
 
 
-def render_s(tpaths, ctx, tmpl_s, output):
+def render_to(template, context=None, output=None, at_paths=None):
     """
-    NOTE: Take care not to forget stop (join) threads run from this function
-    if ask = False and async = True.
-
-    :param ctx: Context (dict like obj) to instantiate templates
-    :param tmpl_s: Template string
-    :param output: Output file path
+    :param template: Template file path
+    :param context: A dict or dict-like object to instantiate given
+        template file
+    :param output: File path to write the rendered result string to or None/'-'
+        to print it to stdout
+    :param at_paths: Template search paths
     """
-    d = os.path.dirname(output)
-    if not os.path.exists(d):
-        os.makedirs(d)
-
-    content = miniascape.contrib.render.render_s(tmpl_s, ctx, tpaths,
-                                                 fmap=FMAP)
-    miniascape.contrib.render.open(output, 'w', 'UTF-8').write(content)
-
-
-def renderto(tpaths, ctx, tmpl, output, ask=True, async=False, fmap=None):
-    """
-    NOTE: Take care not to forget stop (join) threads run from this function
-    if ask = False and async = True.
-
-    :param tpaths: List of template search paths
-    :param ctx: Context (dict like obj) to instantiate templates
-    :param tmpl: Template filename
-    :param output: Output file path
-    :param ask: It will ask for paths of missing templates if True
-    :param async: Run template rendering function asynchronously if possible
-        and it's True.
-    """
-    d = os.path.dirname(output)
-    if not os.path.exists(d):
-        os.makedirs(d)
-
-    if not ask and async:
-        proc = multiprocessing.Process(target=_renderto,
-                                       args=(tpaths, ctx, tmpl, output,
-                                             ask, fmap))
-        proc.start()
-        return proc
-    else:
-        _renderto(tpaths, ctx, tmpl, output, ask, fmap)
-
-    return True
-
-
-def finish_renderto_procs(procs):
-    for p in procs:
-        p.join()
+    anytemplate.render_to(template, context, output, at_paths,
+                          at_engine="jinja2", at_ask_missing=True)
 
 
 def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
     """
+    Compile template config files.
 
     :param conf: Config object holding templates info
     :param tmpldirs: Template paths
@@ -120,6 +78,7 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
 
         logging.debug("Generating {} from {} [{}]".format(dst, src, k))
         logging.debug("Template path: " + ", ".join(tpaths))
-        renderto(tpaths, conf, src, dst)
+        anytemplate.render_to(src, conf, dst, at_paths=tpaths,
+                              at_engine="jinja2")
 
 # vim:sw=4:ts=4:et:

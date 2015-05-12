@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013, 2014 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2013 - 2015 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -108,8 +108,8 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     tpaths = [os.path.join(d, "config") for d in tmpldirs]
     for net in conf.get("networks", []):
         noutdir = os.path.join(outdir, "networks.d", net["name"])
-        miniascape.template.renderto(tpaths, net, "network.j2",
-                                     os.path.join(noutdir, baseyml))
+        miniascape.template.render_to("network.j2", net,
+                                      os.path.join(noutdir, baseyml), tpaths)
 
     guests_key = "guests"
     for ggroup in conf.get("guests", []):

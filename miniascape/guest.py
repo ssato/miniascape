@@ -19,16 +19,16 @@
 from __future__ import print_function
 from miniascape.globals import LOGGER as logging
 
-import miniascape.config
-import miniascape.globals as G
-import miniascape.options
-import miniascape.template as T
-
 import itertools
 import os.path
 import os
 import subprocess
 import sys
+
+import miniascape.config
+import miniascape.globals as G
+import miniascape.options
+import miniascape.template
 
 
 _AUTOINST_SUBDIR = "autoinstall.d"
@@ -77,7 +77,7 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
                 [os.path.dirname(out)]
 
             logging.debug("Generating {} from {}".format(out, src))
-            T.renderto(tpaths, config, src, out, ask=True)
+            miniascape.template.render_to(src, config, out, tpaths)
         else:
             dst = t.get("dst", None)
             assert dst is not None, "'dst' must be given if content is set!"
@@ -86,7 +86,7 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
             tpaths = gtmpldirs + [os.path.dirname(out)]
 
             logging.debug("Generating {} from given content".format(out))
-            T.render_s(tpaths, config, content, out)
+            miniascape.template.renders_to(content, config, out, tpaths)
 
     return subprocess.check_output(
         "tar --xz -c setup | base64 > setup.tar.xz.base64",
@@ -115,7 +115,8 @@ def gen_guest_files(name, conffiles, tmpldirs, workdir,
 
     logging.debug("Generating setup data archive to embedded: " + name)
     arrange_setup_data(gtmpldirs, conf, workdir)
-    T.compile_conf_templates(conf, tmpldirs, workdir, "templates")
+    miniascape.template.compile_conf_templates(conf, tmpldirs, workdir,
+                                               "templates")
 
 
 def show_vm_names(conffiles):
@@ -164,8 +165,9 @@ def gen_all(cf, tmpldirs, workdir):
     conf["distdata"] = list(mk_distdata_g(guests))
 
     logging.debug("Generating guests common build aux files...")
-    T.compile_conf_templates(conf, tmpldirs,
-                             _guests_workdir(workdir), "guests_templates")
+    miniascape.template.compile_conf_templates(conf, tmpldirs,
+                                               _guests_workdir(workdir),
+                                               "guests_templates")
 
 
 def option_parser():

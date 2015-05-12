@@ -20,11 +20,11 @@ from __future__ import print_function
 from miniascape.globals import LOGGER as logging, set_loglevel
 import miniascape.globals as G
 import miniascape.options as O
-import miniascape.template as T
 import miniascape.utils as U
 import os.path
 import os
 import sys
+import miniascape.template
 
 
 def bootstrap(site, workdir, site_template=G.M_SITE_DEFAULT,
@@ -61,14 +61,13 @@ def bootstrap(site, workdir, site_template=G.M_SITE_DEFAULT,
 
             for fn in filenames:
                 (fn_base, ext) = os.path.splitext(fn)
-
                 if ext == ".j2":
                     logging.debug("Jinja2 template found: " + fn)
-                    T.renderto([dirpath] + tpaths, ctx, fn,
-                               os.path.join(workdir, reldir, fn_base))
+                    ofn = os.path.join(workdir, reldir, fn_base)
                 else:
-                    T.renderto([dirpath] + tpaths, {}, fn,
-                               os.path.join(workdir, reldir, fn))
+                    ofn = os.path.join(workdir, reldir, fn)
+
+                miniascape.template.render_to(fn, ctx, ofn, [dirpath] + tpaths)
 
 
 def option_parser():

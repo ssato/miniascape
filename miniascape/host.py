@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 - 2014 Satoru SATOH <ssato@redhat.com>
+# Copyright (C) 2012 - 2015 Satoru SATOH <ssato@redhat.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ from miniascape.globals import LOGGER as logging
 import miniascape.config
 import miniascape.globals as G
 import miniascape.options as O
-import miniascape.template as T
+import miniascape.template
 
 import anyconfig
 import os.path
@@ -121,7 +121,7 @@ def gen_vnet_files(cf, tmpldirs, workdir, force):
         nc["hosts_w_unique_macs"] = hosts_w_unique_macs(nc)
 
         logging.debug("Generating network xml: " + netxml)
-        T.renderto(tpaths, nc, tmpl, netxml)
+        miniascape.template.render_to(tmpl, nc, netxml, tpaths)
 
 
 def gen_host_files(cf, tmpldirs, workdir, force):
@@ -137,7 +137,8 @@ def gen_host_files(cf, tmpldirs, workdir, force):
     gen_vnet_files(cf, tmpldirs, workdir, force)
 
     conf["timestamp"] = G.timestamp()
-    T.compile_conf_templates(conf, tmpldirs, workdir, "host_templates")
+    miniascape.template.compile_conf_templates(conf, tmpldirs, workdir,
+                                               "host_templates")
 
 
 def option_parser():
