@@ -16,18 +16,18 @@
 #
 from __future__ import print_function
 
-import miniascape.bootstrap
-import miniascape.config
-import miniascape.globals
-import miniascape.guest
-import miniascape.options as MO
-import miniascape.host
-import miniascape.site
-
 import anyconfig
 import logging
 import os
 import sys
+
+import miniascape.bootstrap
+import miniascape.config
+import miniascape.globals
+import miniascape.guest
+import miniascape.host
+import miniascape.options
+import miniascape.site
 
 
 def is_superuser():
@@ -42,9 +42,9 @@ def build(argv):
     """
     Configure and build files.
     """
-    defaults = dict(build=True, genconf=True, **MO.M_DEFAULTS)
+    defaults = dict(build=True, genconf=True, **miniascape.options.M_DEFAULTS)
 
-    p = MO.option_parser(defaults)
+    p = miniascape.options.option_parser(defaults)
     p.add_option("--no-build", action="store_false", dest="build",
                  help="Do not build, generate ks.cfg, vm build scripts, etc.")
     p.add_option("--no-genconf", action="store_false", dest="genconf",
@@ -52,7 +52,7 @@ def build(argv):
     (options, args) = p.parse_args(argv)
 
     miniascape.globals.set_loglevel(options.verbose)
-    options = MO.tweak_options(options)
+    options = miniascape.options.tweak_options(options)
 
     # suppress logs from anyconfig unless the environment variable
     # 'ANYCONFIG_DEBUG' is set to 1.
