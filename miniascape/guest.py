@@ -85,7 +85,8 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
             out = os.path.join(gworkdir, "setup", dst)
             tpaths = gtmpldirs + [os.path.dirname(out)]
 
-            logging.debug("Generating {} from given content".format(out))
+            logging.debug("Generating {} from given content and paths: "
+                          "{}".format(out, ','.join(tpaths)))
             miniascape.template.renders_to(content, config, out, tpaths)
 
     return subprocess.check_output(
