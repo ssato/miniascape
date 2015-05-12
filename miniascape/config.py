@@ -16,13 +16,13 @@
 #
 from miniascape.globals import LOGGER as logging
 
-import miniascape.globals as G
-import miniascape.memoize
-import miniascape.utils as U
-
 import anyconfig
 import itertools
 import os.path
+
+import miniascape.globals as G
+import miniascape.memoize
+import miniascape.utils as U
 
 
 def list_net_names(netdir):
