@@ -35,22 +35,12 @@ class Test_00_effectful_functions(unittest.TestCase):
     def tearDown(self):
         C.cleanup_workdir(self.workdir)
 
-    def test_10_renderto_sync(self):
+    def test_10_render_to(self):
         ctx = A.load(_CONFFILE_0)
         tmpl = _TMPL_0
         output = os.path.join(self.workdir, "tmpl.out")
 
-        TT.renderto(self.tpaths, ctx, tmpl, output, ask=True, async=False)
-        self.assertTrue(os.path.exists(output))
-
-    def test_12_renderto_async(self):
-        ctx = A.load(_CONFFILE_0)
-        tmpl = _TMPL_0
-        output = os.path.join(self.workdir, "tmpl.out")
-
-        job = TT.renderto(self.tpaths, ctx, tmpl, output, ask=False,
-                          async=True)
-        TT.finish_renderto_procs([job])
+        TT.render_to(tmpl, ctx, output, self.tpaths)
         self.assertTrue(os.path.exists(output))
 
     def test_30_compile_conf_templates(self):
