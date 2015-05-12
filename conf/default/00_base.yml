@@ -87,7 +87,7 @@ common:
   virtinst:
     ram: 1024
     vcpus: 2
-    basic_options: --check-cpu --hvm --accelerate --noreboot --noautoconsole
+    basic_options: --check-cpu --hvm --accelerate --noautoconsole
     connect: "qemu:///system"
     waittime: 12
     arch: x86_64
