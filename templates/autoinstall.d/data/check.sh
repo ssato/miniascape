@@ -14,8 +14,9 @@ for f in /etc/sysconfig/network-scripts/ifcfg-*; do
     echo "# ${f##*/}:"
     cat $f
 done
-ls -l /etc/sysctl.d
+ls -l /etc/sysctl.d; sysctl -a > ${logdir}/sysctl-a.txt
 ls -l /etc/sudoers.d
 rpm -qa --qf "%{n},%{v},%{r},%{arch},%{e}\n" | sort > ${logdir}/rpm-qa.0.txt
-sysctl -a > ${logdir}/sysctl-a.txt
-) | tee ${logdir}/check.sh.log
+test -d /etc/systemd && (systemctl; systemctl list-unit-files) || \
+    /sbin/chkconfig --list
+) 2>&1 | tee ${logdir}/check.sh.log
