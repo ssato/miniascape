@@ -9,7 +9,7 @@ if test -f $f; then
     test -f $f.save || cp $f $f.save
     cat << EOF >> $f
 HOSTNAME=${fqdn}
-NOZEROCONF={{ kickstart.nozeroconf|default('yes') }}
+{{ "NOZEROCONF=yes" if kickstart.nozeroconf }}
 {{ "NETWORKING_IPV6=no" if noipv6 }}
 EOF
     test "x${gateway}" = "x" || echo "GATEWAY=${gateway}" >> $f
