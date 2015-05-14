@@ -192,7 +192,7 @@ class ConfFiles(dict):
     def load_host_confs(self):
         confs = self.list_host_confs()
 
-        logging.info("Loading host config files")
+        logging.info("Loading host configs")
         return anyconfig.load(confs, ac_template=True)
 
     def load_guest_confs(self, name, group=None):
@@ -202,8 +202,7 @@ class ConfFiles(dict):
         """
         confs = self.list_guest_confs(name, group)
 
-        logging.info("Loading guest config files: " + name)
-        logging.debug("Configs: " + str(confs))
+        logging.info("Loading guest configs: %s", name)
         c = anyconfig.load(confs, ac_template=True)
 
         return _add_special_confs(_guest_add_missings(c))
