@@ -75,6 +75,7 @@ _LOGGING_FORMAT = "%(asctime)s %(name)s: [%(levelname)s] %(message)s"
 
 
 def getLogger(name="miniascape", format=_LOGGING_FORMAT,
+              datefmt="%Y-%m-%d %H:%M:%S",
               level=logging.WARNING, **kwargs):
     """
     Initialize custom logger.
