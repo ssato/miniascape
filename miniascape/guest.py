@@ -76,7 +76,7 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
                 [os.path.join(d, os.path.dirname(src)) for d in gtmpldirs] + \
                 [os.path.dirname(out)]
 
-            logging.debug("Generating {} from {}".format(out, src))
+            logging.debug("Generating %s from %s", out, src)
             miniascape.template.render_to(src, config, out, tpaths)
         else:
             dst = t.get("dst", None)
@@ -85,8 +85,8 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
             out = os.path.join(gworkdir, "setup", dst)
             tpaths = gtmpldirs + [os.path.dirname(out)]
 
-            logging.debug("Generating {} from given content and paths: "
-                          "{}".format(out, ','.join(tpaths)))
+            logging.debug("Generating %s from given content and paths: %s",
+                          out, ','.join(tpaths))
             miniascape.template.renders_to(content, config, out, tpaths)
 
     return subprocess.check_output(
@@ -105,16 +105,16 @@ def gen_guest_files(name, conffiles, tmpldirs, workdir,
     :param tmpldirs: Template dirs :: [path]
     :param workdir: Working top dir
     """
-    logging.info("Generating files for the guest: " + name)
+    logging.info("Generating files for: %s", name)
 
     conf = conffiles.load_guest_confs(name)
     gtmpldirs = [os.path.join(d, subdir) for d in tmpldirs]
 
     if not os.path.exists(workdir):
-        logging.debug("Creating working dir: " + workdir)
+        logging.debug("Creating working dir: %s", workdir)
         os.makedirs(workdir)
 
-    logging.debug("Generating setup data archive to embedded: " + name)
+    logging.debug("Generating setup data: %s", name)
     arrange_setup_data(gtmpldirs, conf, workdir)
     miniascape.template.compile_conf_templates(conf, tmpldirs, workdir,
                                                "templates")
@@ -165,7 +165,7 @@ def gen_all(cf, tmpldirs, workdir):
     conf["timestamp"] = G.timestamp()
     conf["distdata"] = list(mk_distdata_g(guests))
 
-    logging.debug("Generating guests common build aux files...")
+    logging.debug("Generating common aux files...")
     miniascape.template.compile_conf_templates(conf, tmpldirs,
                                                _guests_workdir(workdir),
                                                "guests_templates")
