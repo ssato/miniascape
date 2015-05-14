@@ -95,7 +95,7 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
-    logging.info("Generating site config in %s", outdir)
+    logging.info("Generating site config: %s", outdir)
     baseyml = "00_base.yml"  # Config file loaded first.
     common_conf = conf.get("common", {})
     common_conf["site"] = conf.get("site", G.M_SITE_DEFAULT)
