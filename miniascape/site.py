@@ -45,13 +45,13 @@ def load_site_ctx(ctxpath):
         ctxpath = os.path.join(ctxpath, G.M_CONF_PATTERN)
     else:
         if '*' not in ctxpath and not os.path.exists(ctxpath):
-            logging.info("Not exist and skipped: " + ctxpath)
+            logging.info("Not exist and skipped: %s", ctxpath)
             return None
 
     ctx = anyconfig.load(ctxpath, ac_template=True)
 
     if not ctx:
-        logging.warn("No config loaded from: " + ctxpath)
+        logging.warn("No config loaded from: %s", ctxpath)
 
     return ctx
 
@@ -70,7 +70,7 @@ def load_site_ctxs(ctxs):
         if diff:
             conf.update(diff)
         else:
-            logging.warn("No config loaded from: " + ctxpath)
+            logging.warn("No config loaded from: %s", ctxpath)
 
     if not conf:
         raise EmptyConfigError("No config available from: " + ','.join(ctxs))
@@ -95,7 +95,7 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
-    logging.info("Generating site config files into {}".format(outdir))
+    logging.info("Generating site config in %s", outdir)
     baseyml = "00_base.yml"  # Config file loaded first.
     common_conf = conf.get("common", {})
     common_conf["site"] = conf.get("site", G.M_SITE_DEFAULT)
