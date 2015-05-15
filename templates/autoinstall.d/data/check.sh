@@ -10,7 +10,7 @@ uname -a
 df -h
 mount
 gendiff /etc .save
-for f in /etc/sysconfig/network-scripts/ifcfg-*; do
+for f in /etc/sysconfig/network-scripts/{ifcfg-*,route*}; do
     echo "# ${f##*/}:"
     cat $f
 done
