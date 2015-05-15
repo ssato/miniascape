@@ -36,10 +36,10 @@ mount -o ro,loop $(SATELLITE_ISO) /mnt && \
 cd /mnt && ./install_packages && cd - && umount /mnt
 
 INSTALL_RPMS = \
-$(if $(TO_INSTALL_ONLINE),$(INSTALL_RPMS_ONLINE),$(INSTALL_RPMS_FROM_ISO))
+rpm -q katello || ($(if $(TO_INSTALL_ONLINE),$(INSTALL_RPMS_ONLINE),$(INSTALL_RPMS_FROM_ISO)))
 
 CONFIGURE_JAVA = \
-alternatives --set java `echo /usr/lib/jvm/java-1.8.0-openjdk-*/jre/bin/java`
+alternatives --set java `echo /usr/lib/jvm/java-1.7.0-openjdk-*/jre/bin/java` || :
 
 KATELLO_INSTALLER_OPTIONS	?= \
 {% if satellite.admin is defined -%}
