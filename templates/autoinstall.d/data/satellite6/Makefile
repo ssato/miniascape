@@ -38,6 +38,9 @@ cd /mnt && ./install_packages && cd - && umount /mnt
 INSTALL_RPMS = \
 $(if $(TO_INSTALL_ONLINE),$(INSTALL_RPMS_ONLINE),$(INSTALL_RPMS_FROM_ISO))
 
+CONFIGURE_JAVA = \
+alternatives --set java `echo /usr/lib/jvm/java-1.8.0-openjdk-*/jre/bin/java`
+
 KATELLO_INSTALLER_OPTIONS	?= \
 {% if satellite.admin is defined -%}
 --foreman-admin-username={{ satellite.admin.name|default('admin') }} \
@@ -87,7 +90,7 @@ CHECKS	?= \
 hostname -f && hostname -s && \
 ping -c1 localhost && ping -c1 `hostname -s` && \
 ping -c1 `hostname -f` && date \
-{%- if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
+{% if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
 {{ "&& curl -vk --proxy http://%s" % proxy.fqdn }}{{ ":%s" % proxy.port|default('8080') }} https://cdn.redhat.com{% endif %}
 
 KATELLO_REINDEX = \
@@ -116,11 +119,11 @@ check:
 
 install:
 	$(CHECKS)
-	$(SETUP_FIREWALL)
 	$(RHSM_REGISTER_IF_NOT)
 	$(RHSM_SUBSCRIBE_IF_NOT)
 	$(RHSM_ENABLE_REPOS)
 	$(INSTALL_RPMS)
+	$(CONFIGURE_JAVA)
 	$(INSTALL_SATELLITE)
 
 init:
