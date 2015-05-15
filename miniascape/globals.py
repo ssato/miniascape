@@ -80,7 +80,7 @@ def getLogger(name="miniascape", format=_LOGGING_FORMAT,
     """
     Initialize custom logger.
     """
-    logging.basicConfig(level=level, format=format)
+    logging.basicConfig(level=level, format=format, datefmt=datefmt)
     logger = logging.getLogger(name)
 
     h = logging.StreamHandler()
