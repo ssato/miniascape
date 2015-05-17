@@ -204,7 +204,7 @@ function publish_and_promote_content_view () {
     cvv=$(hammer content-view version list --organization "${org:?}" \
               --content-view "${name:?}" | \
               sed -nr "s/^([[:digit:]]+).*${name}/\1/p" | sort -rn | sed -n '1p')
-    for leid in les; do \
+    for leid in ${les}; do \
         hammer content-view version promote --organization "${org:?}" \
             --content-view "${name}" --lifecycle-environment-id ${leid} \
             --id ${cvv:?} # --async
