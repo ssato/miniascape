@@ -51,14 +51,14 @@ function setup_org_and_location () {
     local location=${2:-$ORGANIZATION}
     local admin=${3:-$ADMIN}
 
-    local orgid="$(hammer organization list | sed -nr "s/^([[:digit:]]+) .*${org:?}*/\1/p')"
+    local orgid=$(hammer organization list | sed -nr "s/^([[:digit:]]+) .*${org:?}*/\1/p")
 
     if test "x${org}" != "x${ORGANIZATION}"; then
         test "x${orgid}" = "x" && \
             hammer organization create --name="${org}" --label="${org}"
     fi
 
-    local locid="$(hammer location list | sed -nr "s/^([[:digit:]]+) .*${location:?}*/\1/p')"
+    local locid=$(hammer location list | sed -nr "s/^([[:digit:]]+) .*${location:?}*/\1/p")
     if test "x${location:?}" != "x${LOCATION}"; then
         test "x${locid}" = "x" && \
             hammer location create --name="${location}"
