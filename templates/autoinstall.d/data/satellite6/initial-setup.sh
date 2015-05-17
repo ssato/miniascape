@@ -2,14 +2,11 @@
 set -e
 
 # Defaults:
-USE_DEFAULT=0
-
 ADMIN={{ satellite.admin.name|default('admin') }}
 PASSWORD="{{ satellite.admin.password|default('') }}"
 ORGANIZATION={{ satellite.organization|default('Default_Organization') }}
 LOCATION={{ satellite.location|default('Default_Location') }}
 MANIFETS_FILE={{ satellite.manifests_file|default('manifests.zip') }}
-
 LOGDIR=logs
 
 
@@ -30,7 +27,7 @@ function setup_hammer_userconf () {
         echo "[Info] ${userconf} already exists! Nothing to do."
     else
         if test -f ${sysconf:?}; then
-            if test "x${admin_password:?}" = "x"; then
+            if test "x${admin_password}" = "x"; then
                 #read -s -p "Password: " -t 20 admin_password
                 admin_password=`guess_admin_password`
             fi
@@ -54,12 +51,17 @@ function setup_org_and_location () {
     local location=${2:-$ORGANIZATION}
     local admin=${3:-$ADMIN}
 
-    if test "x${org:?}" != "x${ORGANIZATION}"; then
-        hammer organization create --name="${org}" --label="${org}"
+    local orgid="$(hammer organization list | sed -nr "s/^([[:digit:]]+) .*${org:?}*/\1/p')"
+
+    if test "x${org}" != "x${ORGANIZATION}"; then
+        test "x${orgid}" = "x" && \
+            hammer organization create --name="${org}" --label="${org}"
     fi
 
+    local locid="$(hammer location list | sed -nr "s/^([[:digit:]]+) .*${location:?}*/\1/p')"
     if test "x${location:?}" != "x${LOCATION}"; then
-        hammer location create --name="${location}"
+        test "x${locid}" = "x" && \
+            hammer location create --name="${location}"
     fi
 
     # TODO: Which of the followings are necessary?
@@ -87,28 +89,27 @@ function upload_manifests () {
         tee ${logdir}/rhel-server-repos.list
 }
 
-function setup_repo () {
-    local name="$1"   # ex. 'Red Hat Enterprise Linux 6 Server (RPMs)'
-    local releasever="$2"  # ex. '6Server'
-    local basearch=${3:-x86_64}
-    local org=${4:-$ORGANIZATION}
-    local product="${5:-Red Hat Enterprise Linux Server}"
+function setup_sync_plan () {
+    local org=${1:-$ORGANIZATION}
+    local product="${2:-Red Hat Enterprise Linux Server}"
+    local logdir=${3:-$LOGDIR}
+    local sync_plan_name="Daily sync"
 
-    hammer repository-set enable \
-        --organization "${org:?}" --product "${product:?}" \
-        --name "${name:?}" \
-        --basearch ${basearch:?} --releasever=${releasever:?}
+    test -d ${logdir} || mkdir -p ${logdir}
+
+    hammer sync-plan create --organization "${org}" \
+        --interval daily --name "${sync_plan_name:?}"
+    hammer sync-plan list --organization "${org}"
+    hammer product set-sync-plan --organization "${org}" --name "${product}" \
+        --sync-plan-id 1  # It seems that --sync-plan is not valid.
 }
 
-function setup_product () {
+function sync_product_repos () {
     local org=${1:-$ORGANIZATION}
     local product="${2:-Red Hat Enterprise Linux Server}"
     local logdir=${3:-$LOGDIR}
 
     local repos_csv=${logdir:?}/repos_$(echo ${product:?} | tr ' ' _).csv
-    local sync_plan_name="Daily sync"
-
-    test -d ${logdir} || mkdir -p ${logdir}
 
     hammer --csv repository list --organization "${org:?}" | tee ${repos_csv:?}
     for rid in $(sed -nr 's/^([[:digit:]]+),.*/\1/p' ${repos_csv})
@@ -116,12 +117,6 @@ function setup_product () {
         hammer repository synchronize --organization "${org}" \
             --id ${rid:?} --async
     done
-
-    hammer sync-plan create --organization "${org}" \
-        --interval daily --name "${sync_plan_name:?}"
-    hammer sync-plan list --organization "${org}"
-    hammer product set-sync-plan --organization "${org}" --name "${product}" \
-        --sync-plan-id 1  # It seems that --sync-plan is not valid.
 }
 
 function setup_content_view () {
@@ -138,8 +133,6 @@ function setup_content_view () {
         hammer content-view add-repository --organization "${org}" \
             --name "${name:?}" --repository-id ${rid:?}
     done
-    hammer content-view publish --organization "${org:?}" \
-        --name "${name:?}" --async
 }
 
 function create_host_collection() {
@@ -164,72 +157,46 @@ function create_activation_key () {
 }
 
 # pre-defined and common tasks:
-function setup_rhel_6_repos () {
-    local org=${1:-$ORGANIZATION}
-
-    setup_repo 'Red Hat Enterprise Linux 6 Server (RPMs)' \
-        '6Server' 'x86_64' "${org:?}"
-    setup_repo 'Red Hat Enterprise Linux 6 Server - RH Common (RPMs)' \
-        '6Server' 'x86_64' "${org:?}"
-    setup_repo 'Red Hat Enterprise Linux 6 Server - Optional (RPMs)' \
-        '6Server' 'x86_64' "${org:?}"
-}
-
 function setup_user_repos () {
     local org=${1:-$ORGANIZATION}
+    local product="${2:-Red Hat Enterprise Linux Server}"
+
 {% for repo in satellite.repos if repo.name and repo.releasever -%}
-    setup_repo '{{ repo.name }}' \
-        '{{ repo.releasever }}' '{{  repo.arch|default("x86_64") }}' "${org:?}"
+    hammer repository-set enable \
+        --organization "${org:?}" --product "${product:?}" \
+        --name '{{ repo.name }}'
+        --basearch {{ repo.arch|default("x86_64") }} \
+        --releasever '{{ repo.releasever }}'
 {% endfor %}
-}
-
-function setup_rhel_6_content_view () {
-    local name="${1:-CV_RHEL_6}"
-    local org=${2:-$ORGANIZATION}
-
-    setup_content_view "${name:?}" "Red Hat Enterprise Linux 6" "${org:?}"
 }
 
 function setup_user_content_views () {
     local org=${1:-$ORGANIZATION}
 
-    {% for cv in cvs if cv.name and cv.repo_pattern -%}
+    {% for cv in satellite.cvs if cv.name and cv.repo_pattern -%}
     setup_content_view "{{ cv.name }}" "{{ cv.repo_pattern }}" "${ORGANIZATION}"
     {% endfor %}
 }
 
-# FIXME: Define function to create lifecycle environments allow user
-# customizations.
-function setup_lifecycle_env_path_3 () {
-    local path_0="Library"  # All lifecycle env paths start from it.
-    local path_1="${1:-Test}"
-    local path_2="${2:-Prod}"
-    local org=${3:-$ORGANIZATION}
+function setup_lifecycle_env_paths () {
+    local org=${1:-$ORGANIZATION}
+    local path_prev="Library"  # All lifecycle env paths start from it.
 
-    hammer lifecycle-environment create --organization "${org}" \
-         --prior "${path_0:?}" --name "${path_1:?}"
-    hammer lifecycle-environment create --organization "${org}" \
-         --prior "${path_1:?}" --name "${path_2:?}"
+    shift 1
+    local paths="${@:-Test Prod}"
+
+    for path in $paths; do
+        hammer lifecycle-environment create --organization "${org}" \
+             --prior "${path_prev:?}" --name "${path:?}"
+        local path_prev=$path
+    done
 }
 
-function setup_lifecycle_env_path_4 () {
-    local path_0="Library"  # All lifecycle env paths start from it.
-    local path_1="${1:-Dev}"
-    local path_2="${2:-Test}"
-    local path_3="${2:-Prod}"
-    local org=${4:-$ORGANIZATION}
-
-    hammer lifecycle-environment create --organization "${org}" \
-         --prior "${path_0:?}" --name "${path_1:?}"
-    hammer lifecycle-environment create --organization "${org}" \
-         --prior "${path_1:?}" --name "${path_2:?}"
-    hammer lifecycle-environment create --organization "${org}" \
-         --prior "${path_2:?}" --name "${path_3:?}"
-}
-
-function promote_content_view () {
+function publish_and_promote_content_view () {
     local name="${1}"  # e.g. CV_RHEL_6
-    local org=${3:-$ORGANIZATION}
+    local org=${2:-$ORGANIZATION}
+
+    hammer content-view publish --organization "${org:?}" --name "${name:?}"
 
     les=$(hammer lifecycle-environment list --organization "${org:?}" | \
               sed -nr 's/^([[:digit:]]+).*/\1/p' | sort)
@@ -244,15 +211,20 @@ function promote_content_view () {
     done
 }
 
-function setup_rhel_6_activation_keys () {
+function publish_and_promote_content_views () {
     local org=${1:-$ORGANIZATION}
 
-    # TODO: Before creating activation keys we have to promote the content
-    # view. But it seems that there are issues when promoting content views
-    # such like http://projects.theforeman.org/issues/8547.
-    promote_content_view "CV_RHEL_6" "${org:?}"
-    create_activation_key "AK_CV_RHEL_6_Test" "CV_RHEL_6" "Test" "${org:?}"
-    create_activation_key "AK_CV_RHEL_6_Prod" "CV_RHEL_6" "Prod" "${org:?}"
+    {% for cv in satellite.cvs if cv.name -%}
+    publish_and_promote_content_view "{{ cv.name }}" "${ORGANIZATION}"
+    {% endfor %}
+}
+
+function setup_activation_keys_for_lifecycle_environments () {
+    local org=${1:-$ORGANIZATION}
+
+    {% for akey in activation_keys if akey.name and akey.cv and akey.environment -%}
+    create_activation_key "{{ akye.name }}" "{{ akey.cv }}" "{{ akey.environment }}" "${org:?}"
+    {% endfor %}
 }
 
 
@@ -268,18 +240,9 @@ Options:
   -M FILE   Path to manifests file [$MANIFETS_FILE]
 
   -D        Initialize with script default settings
+  -S        Synchronize repos
 
   -h        Show this help and exit.
-
-Commands:
-  init      Initialize all w/ default settings
-  upload    Upload manifests.zip
-  repo      Enable repos
-  product   Setup product
-  cv        Create Content view
-  host      Create host collection
-  akey      Create activation key
-  lepath    Create lifecycle environment path
 
 Examples:
  $0 -D
@@ -288,42 +251,50 @@ EOH
 
 
 # main:
-while getopts "a:o:l:M:Dh" opt
+while getopts "a:o:l:M:h" opt
 do
   case $opt in
     a) ADMIN=$OPTARG ;;
     o) ORGANIZATION=$OPTARG ;;
     l) LOCATION=$OPTARG ;;
     M) MANIFETS_FILE=$OPTARG ;;
-    D) USE_DEFAULT=1 ;;
     h) show_help; exit 0 ;;
     \?) show_help; exit 1 ;;
   esac
 done
 shift $(($OPTIND - 1))
 
-if test "x${USE_DEFAULT:?}" = "x1"; then
-    setup_hammer_userconf ${ADMIN}
-    setup_org_and_location "${ORGANIZATION}" "${LOCATION}" ${ADMIN}
-    upload_manifests ${MANIFETS_FILE} "${ORGANIZATION}"
-
-    setup_rhel_6_repos "${ORGANIZATION}"
-    setup_product "${ORGANIZATION}"
-    setup_rhel_6_content_view "CV_RHEL_6" "${ORGANIZATION}"
-    setup_lifecycle_env_path_3 "Test" "Prod" "${ORGANIZATION}"
-    #setup_rhel_6_activation_keys "${ORGANIZATION}"
-else
-    setup_hammer_userconf ${ADMIN}
-    setup_org_and_location "${ORGANIZATION}" "${LOCATION}" ${ADMIN}
-    upload_manifests ${MANIFETS_FILE} "${ORGANIZATION}"
-
-    setup_user_repos "${ORGANIZATION}"
-    setup_product "${ORGANIZATION}"
-    setup_user_content_views "${ORGANIZATION}"
-    # TODO: Allow users to create and setup lifecycle environment paths freely.
-    setup_lifecycle_env_path_3 "Test" "Prod" "${ORGANIZATION}"
-    # TODO: Promote content views and create activation keys.
-    #setup_rhel_6_activation_keys "${ORGANIZATION}"
+if test "x$cmd" = "x"; then
+    cat << EOH
+Usage: $0 [OPTION...] COMMAND
+Commands:
+  i[nit]     Initialize:
+               - Setup hammer user configuration file
+               - Setup organization and location for the user
+               - Upload manifests
+               - Setup repos and products
+               - Setup content views
+               - Setup lifecycle environment paths
+  s[ync]     Synchronize repos
+  p[romote]  Promote content views
+EOH
+    exit 0
 fi
+
+case $cmd in
+  i*) setup_hammer_userconf ${ADMIN};
+      setup_org_and_location "${ORGANIZATION}" "${LOCATION}" ${ADMIN};
+      upload_manifests ${MANIFETS_FILE} "${ORGANIZATION}";
+      setup_user_repos "${ORGANIZATION}";
+      setup_product "${ORGANIZATION}";
+      setup_user_content_views "${ORGANIZATION}";
+      setup_lifecycle_env_paths "${ORGANIZATION}";
+      ;;
+  s*) sync_product_repos
+      ;;
+  p*) publish_and_promote_content_views "${ORGANIZATION}";
+      setup_activation_keys_for_lifecycle_environments "${ORGANIZATION}";
+      ;;
+esac
 
 # vim:sw=4:ts=4:et:
