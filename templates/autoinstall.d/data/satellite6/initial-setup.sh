@@ -228,9 +228,13 @@ function promote_content_views_first_async () {
 
 function setup_activation_keys_for_lifecycle_environments () {
     local org=${1:-$ORGANIZATION}
+    local logdir=${2:-$LOGDIR}
+    local akeylist0=${logdir}/akeys.txt.0
 
+    hammer activation-key list --organization "${org:?}" --by ID | tee ${logdir}/akeys.txt.0
     {% for akey in satellite.activation_keys if akey.name and akey.cv and akey.environment -%}
-    create_activation_key "{{ akey.name }}" "{{ akey.cv }}" "{{ akey.environment }}" "${org:?}"
+    grep "{{ akey.name }}" ${akeylist0} || \
+        create_activation_key "{{ akey.name }}" "{{ akey.cv }}" "{{ akey.environment }}" "${org:?}"
     {% endfor %}
 }
 
