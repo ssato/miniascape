@@ -7,6 +7,7 @@ PASSWORD="{{ satellite.admin.password|default('') }}"
 ORGANIZATION={{ satellite.organization|default('Default_Organization') }}
 LOCATION={{ satellite.location|default('Default_Location') }}
 MANIFETS_FILE={{ satellite.manifests_file|default('manifests.zip') }}
+LIFECYCLE_ENVIRONMENT_PATHS="{{ satellite.lifecycle_environments|join(' ', attribute='name') if satellite.lifecycle_environments else 'Test Prod' }}"
 LOGDIR=logs
 
 
@@ -192,38 +193,44 @@ function setup_lifecycle_env_paths () {
     done
 }
 
-function publish_and_promote_content_view () {
+function publish_content_view () {
     local name="${1}"  # e.g. CV_RHEL_6
     local org=${2:-$ORGANIZATION}
 
     hammer content-view publish --organization "${org:?}" --name "${name:?}"
+}
 
-    les=$(hammer lifecycle-environment list --organization "${org:?}" | \
-              sed -nr 's/^([[:digit:]]+).*/\1/p' | sort)
-    #          sed -nr 's/^([[:digit:]]+).*/\1/p' | sort | sed -n '2,$p')
-    cvv=$(hammer content-view version list --organization "${org:?}" \
-              --content-view "${name:?}" | \
-              sed -nr "s/^([[:digit:]]+).*${name}/\1/p" | sort -rn | sed -n '1p')
-    for leid in ${les}; do \
-        hammer content-view version promote --organization "${org:?}" \
-            --content-view "${name}" --lifecycle-environment-id ${leid} \
-            --id ${cvv:?} # --async
+function publish_content_views_async () {
+    local org=${1:-$ORGANIZATION}
+
+    local cvs=$(hammer content-view list --organization "${org:?}" --nondefault Default_Organization_View | sed -nr 's/^([[:digit:]]+) .*/\1/p' | sort)
+    for cv in ${cvs}; do
+        hammer content-view publish --organization "${org:?}" --name "${cv}" --async
     done
 }
 
-function publish_and_promote_content_views () {
+function promote_content_views_first_async () {
     local org=${1:-$ORGANIZATION}
 
-    {% for cv in satellite.cvs if cv.name -%}
-    publish_and_promote_content_view "{{ cv.name }}" "${ORGANIZATION}"
-    {% endfor %}
+    local cvids=$(hammer content-view list --organization "${org:?}" --nondefault Default_Organization_View | sed -nr 's/^([[:digit:]]+) .*/\1/p' | sort)
+    local first_lep=$(hammer lifecycle-environment list --organization "${org}" | \
+        sed -nr 's/^([[:digit:]]+) .*/\1/p' | sort | sed -n '2p')
+
+    for cvid in ${cvids}; do
+        local cvv=$(hammer content-view version list --organization "${org}" \
+            --content-view-id "${cvid:?}" | \
+            sed -nr "s/^([[:digit:]]+) .*/\1/p" | sort -rn | sed -n '1p')
+        hammer content-view version promote --organization "${org}" \
+            --content-view-id "${cvid}" --lifecycle-environment-id ${first_lep} \
+            --id ${cvv:?} --async
+    done
 }
 
 function setup_activation_keys_for_lifecycle_environments () {
     local org=${1:-$ORGANIZATION}
 
-    {% for akey in activation_keys if akey.name and akey.cv and akey.environment -%}
-    create_activation_key "{{ akye.name }}" "{{ akey.cv }}" "{{ akey.environment }}" "${org:?}"
+    {% for akey in satellite.activation_keys if akey.name and akey.cv and akey.environment -%}
+    create_activation_key "{{ akey.name }}" "{{ akey.cv }}" "{{ akey.environment }}" "${org:?}"
     {% endfor %}
 }
 
@@ -258,11 +265,13 @@ do
     o) ORGANIZATION=$OPTARG ;;
     l) LOCATION=$OPTARG ;;
     M) MANIFETS_FILE=$OPTARG ;;
+    P) LIFECYCLE_ENVIRONMENT_PATHS="$OPTARG" ;;
     h) show_help; exit 0 ;;
     \?) show_help; exit 1 ;;
   esac
 done
 shift $(($OPTIND - 1))
+cmd=$1
 
 if test "x$cmd" = "x"; then
     cat << EOH
@@ -276,7 +285,16 @@ Commands:
                - Setup content views
                - Setup lifecycle environment paths
   s[ync]     Synchronize repos
-  p[romote]  Promote content views
+  pu[blish]  Publish content views to library lifecycle environment path asynchronously
+  pr[omote]  Promote content views
+  a[key]     Setup activation keys
+
+Options:
+  -a ADMIN   Administrator's name [$ADMIN]
+  -o ORG     Organization name [$ORGANIZATION]
+  -l LOC     Location name [$LOCATION]
+  -M MFILE   Manifest file [$MANIFETS_FILE]
+  -L PATHS   Quoted, space separated lifecycle environment paths [$LIFECYCLE_ENVIRONMENT_PATHS]
 EOH
     exit 0
 fi
@@ -288,12 +306,15 @@ case $cmd in
       setup_user_repos "${ORGANIZATION}";
       setup_product "${ORGANIZATION}";
       setup_user_content_views "${ORGANIZATION}";
-      setup_lifecycle_env_paths "${ORGANIZATION}";
+      setup_lifecycle_env_paths "${ORGANIZATION}" ${LIFECYCLE_ENVIRONMENT_PATHS};
       ;;
   s*) sync_product_repos
       ;;
-  p*) publish_and_promote_content_views "${ORGANIZATION}";
-      setup_activation_keys_for_lifecycle_environments "${ORGANIZATION}";
+  pu*) publish_content_views_async  "${ORGANIZATION}";
+       ;;
+  pr*) promote_content_views_first_async  "${ORGANIZATION}";
+       ;;
+  a*) setup_activation_keys_for_lifecycle_environments "${ORGANIZATION}";
       ;;
 esac
 
