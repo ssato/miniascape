@@ -8,7 +8,7 @@ ORGANIZATION={{ satellite.organization|default('Default_Organization') }}
 LOCATION={{ satellite.location|default('Default_Location') }}
 MANIFETS_FILE={{ satellite.manifests_file|default('manifests.zip') }}
 LIFECYCLE_ENVIRONMENT_PATHS="{{ satellite.lifecycle_environments|join(' ', attribute='name') if satellite.lifecycle_environments else 'Test Prod' }}"
-HOST_COLLECTIONS="{{ satellite.host_collections|join(' ', attribute='name') if satellite.host_collections -%}"
+HOST_COLLECTIONS="{{ satellite.host_collections|join(' ', attribute='name') if satellite.host_collections }}"
 LOGDIR=logs
 
 
