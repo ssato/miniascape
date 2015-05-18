@@ -8,6 +8,7 @@ ORGANIZATION={{ satellite.organization|default('Default_Organization') }}
 LOCATION={{ satellite.location|default('Default_Location') }}
 MANIFETS_FILE={{ satellite.manifests_file|default('manifests.zip') }}
 LIFECYCLE_ENVIRONMENT_PATHS="{{ satellite.lifecycle_environments|join(' ', attribute='name') if satellite.lifecycle_environments else 'Test Prod' }}"
+HOST_COLLECTIONS="{{ satellite.host_collections|join(' ', attribute='name') if satellite.host_collections -%}"
 LOGDIR=logs
 
 
@@ -193,6 +194,18 @@ function setup_lifecycle_env_paths () {
     done
 }
 
+function setup_host_collections () {
+    local org=${1:-$ORGANIZATION}
+    shift 1
+    local hcs="${@:-$ORGANIZATION}"
+
+    local hcs_now=$(hammer host-collection list --organization "${org:?}" | sed -nr '/^([[:digit:]]+)/p')
+
+    for hc in ${hcs}; do
+        hammer host-collection create --organization "${org}" --name "${hc}"
+    done
+}
+
 function publish_content_view () {
     local name="${1}"  # e.g. CV_RHEL_6
     local org=${2:-$ORGANIZATION}
@@ -262,7 +275,7 @@ EOH
 
 
 # main:
-while getopts "a:o:l:M:h" opt
+while getopts "a:o:l:M:P:H:h" opt
 do
   case $opt in
     a) ADMIN=$OPTARG ;;
@@ -270,6 +283,7 @@ do
     l) LOCATION=$OPTARG ;;
     M) MANIFETS_FILE=$OPTARG ;;
     P) LIFECYCLE_ENVIRONMENT_PATHS="$OPTARG" ;;
+    H) HOST_COLLECTIONS="$OPTARG" ;;
     h) show_help; exit 0 ;;
     \?) show_help; exit 1 ;;
   esac
@@ -288,6 +302,7 @@ Commands:
                - Setup repos and products
                - Setup content views
                - Setup lifecycle environment paths
+               - Setup host collections
   s[ync]     Synchronize repos
   pu[blish]  Publish content views to library lifecycle environment path asynchronously
   pr[omote]  Promote content views
@@ -298,7 +313,8 @@ Options:
   -o ORG     Organization name [$ORGANIZATION]
   -l LOC     Location name [$LOCATION]
   -M MFILE   Manifest file [$MANIFETS_FILE]
-  -L PATHS   Quoted, space separated lifecycle environment paths [$LIFECYCLE_ENVIRONMENT_PATHS]
+  -P PATHS   Quoted, space separated lifecycle environment paths [$LIFECYCLE_ENVIRONMENT_PATHS]
+  -H HCS     Quoted, space separated host-collection names [$HOST_COLLECTIONS]
 EOH
     exit 0
 fi
@@ -311,6 +327,7 @@ case $cmd in
       setup_product "${ORGANIZATION}";
       setup_user_content_views "${ORGANIZATION}";
       setup_lifecycle_env_paths "${ORGANIZATION}" ${LIFECYCLE_ENVIRONMENT_PATHS};
+      setup_host_collections "${ORGANIZATION}" ${HOST_COLLECTIONS};
       ;;
   s*) sync_product_repos
       ;;
