@@ -166,7 +166,7 @@ function setup_user_repos () {
 {% for repo in satellite.repos if repo.name and repo.releasever -%}
     hammer repository-set enable \
         --organization "${org:?}" --product "${product:?}" \
-        --name '{{ repo.name }}'
+        --name '{{ repo.name }}' \
         --basearch {{ repo.arch|default("x86_64") }} \
         --releasever '{{ repo.releasever }}'
 {% endfor %}
@@ -324,7 +324,6 @@ case $cmd in
       setup_org_and_location "${ORGANIZATION}" "${LOCATION}" ${ADMIN};
       upload_manifests ${MANIFETS_FILE} "${ORGANIZATION}";
       setup_user_repos "${ORGANIZATION}";
-      setup_product "${ORGANIZATION}";
       setup_user_content_views "${ORGANIZATION}";
       setup_lifecycle_env_paths "${ORGANIZATION}" ${LIFECYCLE_ENVIRONMENT_PATHS};
       setup_host_collections "${ORGANIZATION}" ${HOST_COLLECTIONS};
