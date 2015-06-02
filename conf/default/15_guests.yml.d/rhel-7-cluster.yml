@@ -1,6 +1,6 @@
 # vim:sw=2:ts=2:et:
 
-  - name: rhel-7-cluster
+  - name: &cluster_name rhel-7-cluster
     description: RHEL 7 cluser nodes
 
     kickstart:
@@ -21,12 +21,33 @@
         size: 1
         bus: scsi
 
-    cluster:
+    cluster: &cluster_def
+      name: *cluster_name
       nodes:
         - &rhel_7_cluster_node_1 rhel-7-cluster-default-1
         - &rhel_7_cluster_node_2 rhel-7-cluster-default-2
+
+      services:
+        - name: &rhel_7_cluster_svc_0 WEB_SERVICE
+          resources:
+            - &rhel_7_cluster_res_0_name vip
+            - &rhel_7_cluster_res_1_name web_server
+
       resources:
-        ip: 192.168.155.130
+        - name: *rhel_7_cluster_res_0_name
+          type: "ocf:heartbeat:IPaddr"
+          params:
+            ip: 192.168.155.130
+            cidr_netmask: 24
+
+        - name: *rhel_7_cluster_res_1_name
+          type: "ocf:heartbeat:apache"
+          params:
+            - statusurl: "http://192.168.155.130/"
+
+      constraints:
+        - service: *rhel_7_cluster_svc_0
+          prefers: "rhel-7-cluster-default-1=INFINITY"
 
     hosts:
       - ip: 192.168.122.131
@@ -81,5 +102,4 @@
             ip: *rhel_7_cluster_node_2
             host: rhel-7-cluster-default-2
             nodns: true
-
 
