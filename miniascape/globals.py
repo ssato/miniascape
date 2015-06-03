@@ -100,4 +100,7 @@ def set_loglevel(level):
     logging.getLogger().setLevel(lvl)
     LOGGER.setLevel(lvl)
 
+
+logging.getLogger("anytemplate").setLevel(logging.WARN)
+
 # vim:sw=4:ts=4:et:
