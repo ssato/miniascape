@@ -40,7 +40,7 @@ $(WORKDIR)/setup.stamp: $(WORKDIR)/install.stamp
 		pcmk_host_list="{{ cluster.nodes|join(',') }}"
 	{% for res in cluster.resources if res.name and res.type and res.params -%}
 	pcs resource create {{ res.name }} {{ res.type }} \
-		{% for key, val in res.params %}{{ key }}="{{ val }}" {% endfor %}; \
+		{% for key, val in res.params.iteritems() %}{{ key }}="{{ val }}" {% endfor %}; \
 	{% endfor %}
 	{% for svc in cluster.services if svc.name and svc.resources -%}
 	pcs resource group add {{ svc.name }} {{ svc.resouces|join(' ') }}; \
