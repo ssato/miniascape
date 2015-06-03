@@ -52,7 +52,7 @@ class SrpmCommand(Command):
     build_stage = "s"
 
     curdir = os.path.abspath(os.curdir)
-    rpmspec = os.path.join(curdir, "%s.spec" % PACKAGE)
+    rpmspec = os.path.join(curdir, "pkg/package.spec")
 
     def initialize_options(self):
         pass
@@ -66,21 +66,16 @@ class SrpmCommand(Command):
         self.build_rpm()
 
     def pre_sdist(self):
-        mergeconfs = os.path.join(self.curdir, "pkg/mergeconfs.sh")
-        subprocess.check_call(mergeconfs, shell=True)
-
         c = open(self.rpmspec + ".in").read()
         open(self.rpmspec, "w").write(c.replace("@VERSION@", VERSION))
 
     def build_rpm(self):
-
         rpmbuild = os.path.join(self.curdir, "pkg/rpmbuild-wrapper.sh")
         workdir = os.path.join(self.curdir, "dist")
 
-        subprocess.check_call("%s -w %s -s %s %s" % (rpmbuild, workdir,
-                                                     self.build_stage,
-                                                     self.rpmspec),
-                              shell=True)
+        cmd_s = "%s -w %s -s %s %s" % (rpmbuild, workdir, self.build_stage,
+                                       self.rpmspec)
+        subprocess.check_call(cmd_s, shell=True)
 
 
 class RpmCommand(SrpmCommand):

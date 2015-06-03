@@ -1,6 +1,5 @@
 include MANIFEST.in
 include README.rst
-include miniascape.spec.in
 include setup.py
 include pkg/*
 include tools/*
