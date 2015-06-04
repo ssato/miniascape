@@ -1,0 +1,10 @@
+# DO NOT OVERWRITE/CUSTOMIZE THIS!
+{% include "00_includes/30_guests.yml" %}
+
+guests:
+{% include "20_guests/rhel-5-cluster.yml" %}
+{% include "20_guests/rhel-6-cluster-gfs.yml" %}
+{% include "20_guests/rhel-6-cluster.yml" %}
+{% include "20_guests/rhel-7-cluster.yml" %}
+
+# vim:sw=2:ts=2:et:
