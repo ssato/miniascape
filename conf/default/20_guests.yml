@@ -1,9 +1,5 @@
 # DO NOT OVERWRITE/CUSTOMIZE THIS!
-common:
-  # Download iso images from https://access.redhat.com here.
-  rhel_7_location: &rhel_7_location /var/lib/libvirt/images/rhel-server-7.1-x86_64-dvd.iso
-  rhel_5_location: &rhel_5_location /var/lib/libvirt/images/rhel-server-5.11-x86_64-dvd.iso
-  rhel_5_os_variant: &rhel_5_os_variant rhel5.4
+{% include "00_includes/30_guests.yml" %}
 
 guests:
 {% include "20_guests/fedora.yml" %}
