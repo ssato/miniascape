@@ -28,6 +28,7 @@
         vol: rhel-7-cluster-data-1.img
         size: 1
         bus: scsi
+        shareable: true
 
     cluster: &cluster_def
       name: *cluster_name
