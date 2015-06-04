@@ -67,7 +67,8 @@
     virtinst:
       location: *rhel_7_location
       os_variant: rhel7
-      extra_args: console=tty0 console=ttyS0,115200 net.ifnames=0 video=640x480
+      #extra_args: console=tty0 console=ttyS0,115200 net.ifnames=0
+      extra_args: net.ifnames=0 inst.resolution=640x480
 
     templates:
       autoinst:
