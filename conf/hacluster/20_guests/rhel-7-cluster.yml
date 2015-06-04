@@ -5,7 +5,8 @@
 
     kickstart:
       repos:
-        {% for repo in kickstart.repos if repo.name and repo.baseurl and 'RHEL 7' in repo.name and ('HighAvailability' in repo.name or 'ResilientStorage' in repo.name) -%}
+        {% if kickstart -%}
+        {%     for repo in kickstart.repos if repo.name and repo.baseurl and 'RHEL 7' in repo.name and ('HighAvailability' in repo.name or 'ResilientStorage' in repo.name) -%}
         # Examples:
         #- name: "RHEL 7 x86_64 HighAvailability"
         #  baseurl: http://binaries/contents/RHEL/7/1/x86_64/default/addons/HighAvailability/
@@ -17,6 +18,7 @@
         - name: "CentOS 7 x86_64"
           baseurl: http://mirror.centos.org/centos/7/os/x86_64/
         {% endfor %}
+        {% endif %}
 
     disks:
       - pool: default
@@ -74,6 +76,7 @@
       - src: data/rhel-7-cluster/Makefile
         dst: Makefile
 
+    # Quick and dirty workaround for rhbz#1206267
     guests:
       - hostname: &rhel_7_cluster_1_hostname rhel-7-cluster-1
         fqdn: &rhel_7_cluster_1_fqdn rhel-7-cluster-1.m2.local
@@ -85,12 +88,15 @@
             host: *rhel_7_cluster_1_hostname
             fqdn: *rhel_7_cluster_1_fqdn
             activate: true
+            options: "--gateway=192.168.155.254"
+
           - network: default  # For Inter-cluster-nodes communication
             bootproto: static
             mac: "52:54:00:02:01:78"
             ip: *rhel_7_cluster_node_1_ip
             host: rhel-7-cluster-default-1
             nodns: true
+            gateway: 192.168.122.1
 
       - hostname: &rhel_7_cluster_2_hostname rhel-7-cluster-2
         fqdn: &rhel_7_cluster_2_fqdn rhel-7-cluster-2.m2.local
@@ -102,10 +108,13 @@
             host: *rhel_7_cluster_2_hostname
             fqdn: *rhel_7_cluster_2_fqdn
             activate: true
+            options: "--gateway=192.168.155.254"
+
           - network: default
             bootproto: static
             mac: "52:54:00:02:01:79"
             ip: *rhel_7_cluster_node_2_ip
             host: rhel-7-cluster-default-2
             nodns: true
+            gateway: 192.168.122.1
 
