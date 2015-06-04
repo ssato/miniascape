@@ -87,7 +87,7 @@ virt-install \
 {{-    ',keymap=%s' % keyboard if keyboard }} \
 --os-type={{ virtinst.os_type|default('linux') }} \
 --os-variant={{ virtinst.os_variant }} \
-{%     if virtinst.os_variant and virtinst.os_variant == 'rhel7' -%}
+{%     if use_serial_console and virtinst.os_variant and virtinst.os_variant == 'rhel7' -%}
 --console pty,target_type=serial {%	endif -%} \
 ${virtio_scsi_controller} \
 ${location_opts} \
