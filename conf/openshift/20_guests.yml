@@ -1,0 +1,10 @@
+# DO NOT OVERWRITE/CUSTOMIZE THIS!
+{% include "00_includes/30_guests.yml" %}
+{% include "15_includes/00_common.yml" %}
+
+guests:
+{% include "20_guests/ose-broker.yml" %}
+{% include "20_guests/ose-clients.yml" %}
+{% include "20_guests/ose-node.yml" %}
+
+# vim:sw=2:ts=2:et:
