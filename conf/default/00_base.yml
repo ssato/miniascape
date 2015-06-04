@@ -9,6 +9,9 @@ common:
 
 {% include "00_includes/00_common.yml" %}
 {% include "00_includes/10_common.yml" %}
+{% include "00_includes/70_site.yml" ignore missing %}
+{% include "00_includes/90_custom.yml" ignore missing %}
+
 {% include "00_includes/10_packages.yml" %}
 {% include "00_includes/20_host.yml" %}
 
