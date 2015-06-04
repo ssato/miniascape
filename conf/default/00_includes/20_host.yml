@@ -1,6 +1,3 @@
-# Do not edit this and override some defaults w/ your wanted ones in your
-# custom conf starts w/ 'x0_' (x = 2..9) instead.
-
 host:
   isomntdir: /srv/content
   isodatadir: /srv/images

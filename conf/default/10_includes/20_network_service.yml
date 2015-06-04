@@ -1,0 +1,14 @@
+  - name: service
+    mode: nat
+    domain: *domain
+    gateway: *gateway
+    netmask: *netmask
+    network: 192.168.155.0
+    dhcp:
+      start: 192.168.155.200
+      end: 192.168.155.250
+      static:
+        start: 192.168.155.10
+        end: 192.168.155.199
+
+# vim:sw=2:ts=2:et:

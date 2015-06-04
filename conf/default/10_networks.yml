@@ -1,52 +1,9 @@
-# Network related parameters.
-#
-# Typically these depened on site use, so copy this and edit optimized for your
-# purpose as needed.
-
+# DO NOT OVERWRITE/CUSTOMIZE THIS!
 common:
-  domain: &domain m2.local
-  gateway: &gateway 192.168.155.254
-  netmask: &netmask 255.255.255.0
-
-  nameservers:
-    - ip: 8.8.8.8
-    - ip: *gateway
-      #options:
-
-# Libvirt's default virtual (NAT) network, used as management network.
-default_network: &default_network
-  name: default
-  mode: nat
-  bridge: virbr0
-  domain: example.com
-  gateway: 192.168.122.1
-  netmask: 255.255.255.0
-  network: 192.168.122.0
-  dhcp:
-    start: 192.168.122.200
-    end: 192.168.122.254
-    static:
-      start: 192.168.122.10
-      end: 192.168.122.199
+{% include "00_includes/00_common.yml" %}
 
 networks:
-  - *default_network
-
-  - name: service
-    mode: nat
-    bridge: &net_service_bridge virbr5
-    domain: *domain
-    gateway: *gateway
-    netmask: *netmask
-    network: 192.168.155.0
-    dhcp:
-      start: 192.168.155.200
-      end: 192.168.155.250
-      static:
-        start: 192.168.155.10
-        end: 192.168.155.199
-
-host:
-  bridge: *net_service_bridge
+{% include "10_includes/10_network_default.yml" %}
+{% include "10_includes/20_network_service.yml" %}
 
 # vim:sw=2:ts=2:et:

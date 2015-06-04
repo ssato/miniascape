@@ -1,0 +1,26 @@
+# DO NOT OVERWRITE/CUSTOMIZE THIS!
+common:
+  # Download iso images from https://access.redhat.com here.
+  rhel_7_location: &rhel_7_location /var/lib/libvirt/images/rhel-server-7.1-x86_64-dvd.iso
+  rhel_5_location: &rhel_5_location /var/lib/libvirt/images/rhel-server-5.11-x86_64-dvd.iso
+  rhel_5_os_variant: &rhel_5_os_variant rhel5.4
+
+guests:
+{% include "20_guests/fedora.yml" %}
+{% include "20_guests/ipa.yml" %}
+{% include "20_guests/jboss.yml" %}
+{% include "20_guests/rhds.yml" %}
+{% include "20_guests/rhel-5-clients.yml" %}
+{% include "20_guests/rhel-6-clients.yml" %}
+{% include "20_guests/rhel-6-lvs.yml" %}
+{% include "20_guests/rhel-6-mrg-m.yml" %}
+{% include "20_guests/rhel-6-proxy.yml" %}
+{% include "20_guests/rhel-6-satellite-6.yml" %}
+{% include "20_guests/rhel-7-clients.yml" %}
+{% include "20_guests/rhev.yml" %}
+{% include "20_guests/rhs.yml" %}
+{% include "20_guests/sam.yml" %}
+{% include "20_guests/satellite.yml" %}
+{% include "20_guests/satellite6.yml" %}
+
+# vim:sw=2:ts=2:et:
