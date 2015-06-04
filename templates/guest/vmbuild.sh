@@ -34,6 +34,9 @@ path={{ disk.path }}
 {%     if disk.perms is defined -%}
 ,perms={{ disk.perms }}
 {%-    endif -%}
+{%     if disk.shareable is defined and disk.shareable -%}
+,shareable=on
+{%-    endif -%}
 {%     if disk.format == 'raw' and disk.sparse is defined -%}
 ,sparse={% if disk.sparse %}true{% else %}false{% endif -%}
 {%     endif -%}
