@@ -1,4 +1,27 @@
+site: rhui
+
 common:
+  virtinst:
+    # You must override this!
+    location: "http://192.168.122.1/kstree/rhel-6.5-x86_64/"
+
+  # Set empty to avoid iso image is used.
+  kickstart:
+    install:
+
+  # RHUI servers require much disk spaces.
+  partition: |
+    part /boot --asprimary --fstype="ext4" --size=200
+    part /     --asprimary --fstype="ext4" --size=1 --grow
+    part swap  --fstype="swap" --size=1024
+
+  domain: &domain rhui.local
+  gateway: &gateway 192.168.20.254
+  netmask: &netmask 255.255.255.0
+
+  nameservers:
+    - hostname: *gateway
+
   autopart: true
   rhui_network_1: &rhui_network_1 192.168.20.0  # see 10_networks.yml
 
@@ -52,6 +75,19 @@ common:
     # change DNS server addresses to gateway's one:
     #mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'
 
-guests:
+networks:
+  - name: rhui-service
+    mode: nat
+    bridge: virbr20
+    domain: *domain
+    gateway: *gateway
+    netmask: *netmask
+    network: 192.168.20.0
+    dhcp:
+      start: 192.168.20.200
+      end: 192.168.20.250
+      static:
+        start: 192.168.20.10
+        end: 192.168.20.199
 
 # vim:sw=2:ts=2:et:
