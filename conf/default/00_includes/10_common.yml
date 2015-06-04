@@ -37,8 +37,8 @@
     timezone: Asia/Tokyo
 
   # template cond variables:
-  use_serial_console: true
-  store_cmdline: true
+  use_serial_console: false
+  store_cmdline: false
   setup_screen: false
 
   #ntpservers:
