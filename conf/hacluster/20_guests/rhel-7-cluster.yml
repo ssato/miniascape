@@ -5,12 +5,18 @@
 
     kickstart:
       repos:
-        - name: "CentOS 7 x86_64"
-          baseurl: http://mirror.centos.org/centos/7/os/x86_64/
+        {% for repo in kickstart.repos if repo.name and repo.baseurl and 'RHEL 7' in repo.name and ('HighAvailability' in repo.name or 'ResilientStorage' in repo.name) -%}
+        # Examples:
         #- name: "RHEL 7 x86_64 HighAvailability"
         #  baseurl: http://binaries/contents/RHEL/7/1/x86_64/default/addons/HighAvailability/
         #- name: "RHEL 7 x86_64 ResilientStorage"
         #  baseurl: http://binaries/contents/RHEL/7/1/x86_64/default/addons/ResilientStorage/
+        - name: "{{ repo.name }}"
+          baseurl: "{{ repo.baseurl }}"
+        {% else -%}
+        - name: "CentOS 7 x86_64"
+          baseurl: http://mirror.centos.org/centos/7/os/x86_64/
+        {% endfor %}
 
     disks:
       - pool: default
@@ -50,9 +56,9 @@
           prefers: "rhel-7-cluster-default-1=INFINITY"
 
     hosts:
-      - ip: 192.168.122.131
+      - ip: &rhel_7_cluster_node_1_ip 192.168.122.131
         hostname: *rhel_7_cluster_node_1
-      - ip: 192.168.122.132
+      - ip: &rhel_7_cluster_node_2_ip 192.168.122.132
         hostname: *rhel_7_cluster_node_2
 
     virtinst:
@@ -82,7 +88,7 @@
           - network: default  # For Inter-cluster-nodes communication
             bootproto: static
             mac: "52:54:00:02:01:78"
-            ip: *rhel_7_cluster_node_1
+            ip: *rhel_7_cluster_node_1_ip
             host: rhel-7-cluster-default-1
             nodns: true
 
@@ -99,7 +105,7 @@
           - network: default
             bootproto: static
             mac: "52:54:00:02:01:79"
-            ip: *rhel_7_cluster_node_2
+            ip: *rhel_7_cluster_node_2_ip
             host: rhel-7-cluster-default-2
             nodns: true
 
