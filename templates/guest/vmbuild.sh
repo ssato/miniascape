@@ -55,6 +55,14 @@ extra_args="$extra_args{{ ' ksdevice=%s' % ksdevice if ksdevice and not (virtins
 {%     endif -%}
 {% endblock %}
 
+{% block create_vols -%}
+{%     for disk in disks if disk.pool and disk.vol -%}
+{{ '# create storage volumes on ahead of virt-install run.' if loop.first }}
+virsh vol-key {{ disk.vol }} {{ disk.pool }} || \
+virsh vol-create-as {{ disk.pool }} {{ disk.vol }} {{ disk.size }}GiB --format {{ disk.format|default("qcow2") }}
+{%     endfor %}
+{% endblock %}
+
 {% block virtio_scsi_def -%}
 # Use virtio-scsi if available and there is a scsi disk:
 {%     for disk in disks if disk.bus and disk.bus == 'scsi' -%}
