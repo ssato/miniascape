@@ -52,7 +52,7 @@ test -f $bf || cp $f $bf
 sed -i -e 's/^\(NM_CONTROLLED=\)/#\1/' \
        -e 's/^\(DHCP_HOSTNAME=\)/#\1/' \
        -e 's/^\(UUID=\)/#\1/' \
-       -e 's/^\(HWADDR=\)/#\1/' \
+{{ "-e 's/^\(HWADDR=\)/#\1/'" if virtinst.os_variant != 'rhel7' }} \
        {{ "-e 's/^\(IPV6INIT=.*\)/IPV6INIT=no/'" if noipv6 }} $f
 {%-     endif %}
 {%    endfor %}
