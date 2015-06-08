@@ -1,0 +1,33 @@
+# Makefile to setup pacemaker cluster: custom defs.
+WORKDIR ?= /root/setup
+#SETUP_FORCE ?= --force
+SETUP_FORCE ?=
+
+PASSWORD ?= {{ m2_random_string() if m2_random_string is defined }}
+
+PCS_CLUSTER_NAME ?= {{ cluster.name|default('examplecluster') }}
+PCS_CLUSTER_NODES ?= {{ cluster.nodes|join(' ') }}
+PCS_FENCE_DEV_NAME ?= fence_virt_0
+
+PCS_FENCE_HOST_MAP ?= \
+{% for fence_host in cluster.fence_hosts if fence_host.host and fence_host.domain -%}
+{{     fence_host.host }}:{{ fence_host.domain }}{{ ';' if not loop.last }}{% endfor %}
+PCS_FENCE_HOST_LIST ?= {{ cluster.nodes|join(',') }}
+
+PCS_SETUP_RESOURCES ?=
+{% for res in cluster.resources if res.name and res.type and res.params -%}
+PCS_RESOURCE_{{ loop.index0 }} ?= {{ res.name }} {{ res.type }} \
+{% for key, val in res.params.iteritems() %}{{ key }}="{{ val }}" {% endfor %}
+PCS_SETUP_RESOURCES += pcs resource create $(PCS_RESOURCE_{{ loop.index0 }})
+{% endfor %}
+
+PCS_SETUP_SERVICES ?=
+{% for svc in cluster.services if svc.name and svc.resources -%}
+PCS_SERVICE_{{ loop.index0 }} ?= {{ svc.name }} {{ svc.resouces|join(' ') }}
+PCS_SETUP_SERVICES += pcs resource group add $(PCS_SERVICE_{{ loop.index0 }})
+{% endfor %}
+{% for constraint in cluster.constraints if constraint.service and constraint.prefers -%}
+PCS_CONSTRAINT_{{ loop.index0 }} ?= {{ constraint.service }} prefers {{ constraint.prefers }}
+{% endfor %}
+
+# vim:noet:
