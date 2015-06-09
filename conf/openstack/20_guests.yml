@@ -1,0 +1,11 @@
+# DO NOT OVERWRITE/CUSTOMIZE THIS!
+public_network: &public_network openstack-public
+private_network: &private_network openstack-private
+openstack_compute_0_ip: &openstack_compute_0_ip_0 192.168.200.31
+
+guests:
+{% include "20_guests/allinone.yml" %}
+{% include "20_guests/compute.yml" %}
+{% include "20_guests/controller.yml" %}
+
+# vim:sw=2:ts=2:et:

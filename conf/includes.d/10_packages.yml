@@ -1,0 +1,78 @@
+# DO NOT OVERWRITE/CUSTOMIZE THIS!
+  packages:
+    installed:
+      - audit
+      - curl
+      - lftp
+      - make
+      - ntpdate
+      - rpm-build
+      - system-config-firewall-base
+      - screen
+      - sos
+      - strace
+      - sysstat
+      - tcpdump
+      - vim-enhanced
+      - w3m
+      - xz
+
+    uninstalled:
+      - "*-firmware"
+      - Deployment_Guide-en-US
+      - "NetworkManager*"
+      - "Red_Hat_Enterprise_Linux-Release_Notes-*"
+      - "abrt*"
+      - acpid
+      - "alsa*"
+      - amtu
+      - "aspell*"
+      - "b43-*"
+      - "bluez*"
+      - bridge-utils
+      - ccid
+      - conman
+      - coolkey
+      - "dmraid*"
+      - fetchmail
+      - "firstboot*"
+      - fprintd-pam
+      - ftp
+      - gpm
+      - "hunspell*"
+      - "isdn4k*"
+      - ledmon
+      - mcstrans
+      #- mdadm
+      - nano
+      - ntsysv
+      - pcmciautils
+      - "pcsc-lite*"
+      - ppp
+      - psacct
+      - radvd
+      - rdate
+      - rdist
+      - rfkill
+      - rng-tools
+      - rp-pppoe
+      - setuptool
+      - sgpio
+      - smartmontools
+      - "system-config-date*"
+      - system-config-kdump
+      - "system-config-keyboard*"
+      - system-config-kickstart
+      - system-config-language
+      - system-config-lvm
+      - system-config-network-tui
+      - "system-config-printer*"
+      - "system-config-services*"
+      - "system-config-users*"
+      - systemtap-runtime
+      - talk
+      - vconfig
+      - wireless-tools
+      - wpa_supplicant
+
+# vim:sw=2:ts=2:et:

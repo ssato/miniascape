@@ -1,7 +1,6 @@
 # DO NOT OVERWRITE/CUSTOMIZE THIS!
-{% include "00_includes/30_guests.yml" %}
-
 generate_hosts: true
+{% include "00_includes/30_guests.yml" %}
 
 guests:
 {% include "20_guests/rhel-5-cluster.yml" %}

@@ -3,7 +3,7 @@ common:
 {% include "00_includes/00_common.yml" %}
 
 networks:
-{% include "10_includes/10_network_default.yml" %}
-{% include "10_includes/20_network_service.yml" %}
+{% include "00_includes/10_network_default.yml" %}
+{% include "00_includes/20_network_service.yml" %}
 
 # vim:sw=2:ts=2:et:

@@ -1,9 +1,10 @@
+
   - name: &cluster_name rhel-7-cluster
     description: RHEL 7 cluser nodes
 
     kickstart:
       repos:
-        {% if kickstart -%}
+        {% if kickstart and kickstart.repos -%}
         {%     for repo in kickstart.repos if repo.name and repo.baseurl and 'RHEL 7' in repo.name and ('HighAvailability' in repo.name or 'ResilientStorage' in repo.name) -%}
         # Examples:
         #- name: "RHEL 7 x86_64 HighAvailability"
@@ -88,10 +89,12 @@
         hostname: *rhel_7_cluster_node_2
 
     virtinst:
+      # FIXME: Keep DRY principle.
+      #location: /var/lib/libvirt/images/rhel-server-7.1-x86_64-dvd.iso
       location: *rhel_7_location
       os_variant: rhel7
       #extra_args: console=tty0 console=ttyS0,115200 net.ifnames=0
-      extra_args: net.ifnames=0 inst.resolution=640x480
+      extra_args: "net.ifnames=0 inst.resolution=640x480"
 
     templates:
       autoinst:
@@ -107,31 +110,31 @@
       # :see: http://clusterlabs.org/wiki/PgSQL_Replicated_Cluster
       # :note: Edit replica network address written into /var/lib/pgsql/data/pg_hba.conf.
       - content: |
-        #! /bin/bash
-        set -ex
-        echo "Initialize PostgreSQL replica master ..."
-        su - postgres "mkdir -p /var/lib/pgsql/pg_archive"
-        su - postgres "cd /var/lib/pgsql/data && initdb"
-        cat << 'EOF' > postgresql.conf
-        archive_mode = on
-        archive_command = 'cp %p /var/lib/pgsql/pg_archive/%f'
-        hot_standby = on
-        hot_standby_feedback = on
-        listen_addresses = '*'
-        max_standby_archive_delay = -1
-        max_standby_streaming_delay = -1
-        replication_timeout = 5000
-        restart_after_crash = off
-        synchronous_commit = on
-        max_wal_senders=5
-        wal_keep_segments = 32
-        wal_level = hot_standby
-        wal_receiver_status_interval = 2
-        EOF
-        su - postgresql install -b -S .save -m 600 postgresql.conf /var/lib/pgsql/data/
-        grep -E '^host *replication' /var/lib/pgsql/data/pg_hba.conf || \
-          (su - postgresql "cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.save" && \
-           echo 'host replication all 192.168.122.0/24 trust' >> /var/lib/pgsql/data/pg_hba.conf
+          #! /bin/bash
+          set -ex
+          echo "Initialize PostgreSQL replica master ..."
+          su - postgres "mkdir -p /var/lib/pgsql/pg_archive"
+          su - postgres "cd /var/lib/pgsql/data && initdb"
+          cat << 'EOF' > postgresql.conf
+          archive_mode = on
+          archive_command = 'cp %p /var/lib/pgsql/pg_archive/%f'
+          hot_standby = on
+          hot_standby_feedback = on
+          listen_addresses = '*'
+          max_standby_archive_delay = -1
+          max_standby_streaming_delay = -1
+          replication_timeout = 5000
+          restart_after_crash = off
+          synchronous_commit = on
+          max_wal_senders=5
+          wal_keep_segments = 32
+          wal_level = hot_standby
+          wal_receiver_status_interval = 2
+          EOF
+          su - postgresql install -b -S .save -m 600 postgresql.conf /var/lib/pgsql/data/
+          grep -E '^host *replication' /var/lib/pgsql/data/pg_hba.conf || \
+            (su - postgresql "cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.save" && \
+             echo 'host replication all 192.168.122.0/24 trust' >> /var/lib/pgsql/data/pg_hba.conf
         dst: init_replica_master.sh
 
       - content: |
@@ -143,21 +146,21 @@
       # :see: likewise
       # :note: Edit replica master written into /var/lib/pgsql/data/recovery.conf.
       - content: |
-        #! /bin/bash
-        set -ex
-        echo "Initialize PostgreSQL replica slave ..."
-        su - postgres "rm -rf /var/lib/pgsql/data/"
-        su - postgres "pg_basebackup -h 192.168.122.131 -U postgres -D /var/lib/pgsql/data -X stream -P"
-        su - postgres "mkdir -p /var/lib/pgsql/pg_archive"
-        test -f /var/lib/pgsql/data/recovery.conf || \
-        cat << 'EOF' > /var/lib/pgsql/data/recovery.conf
-        standby_mode = 'on'
-        primary_conninfo = 'host=192.168.122.130 port=5432 user=postgres application_name=192.168.122.132'
-        restore_command = 'cp /var/lib/pgsql/pg_archive/%f %p'
-        recovery_target_timeline = 'latest'
-        EOF
-        chmod 0600 /var/lib/pgsql/data/recovery.conf
-        chown postgres.postgres /var/lib/pgsql/data/recovery.conf
+          #! /bin/bash
+          set -ex
+          echo "Initialize PostgreSQL replica slave ..."
+          su - postgres "rm -rf /var/lib/pgsql/data/"
+          su - postgres "pg_basebackup -h 192.168.122.131 -U postgres -D /var/lib/pgsql/data -X stream -P"
+          su - postgres "mkdir -p /var/lib/pgsql/pg_archive"
+          test -f /var/lib/pgsql/data/recovery.conf || \
+          cat << 'EOF' > /var/lib/pgsql/data/recovery.conf
+          standby_mode = 'on'
+          primary_conninfo = 'host=192.168.122.130 port=5432 user=postgres application_name=192.168.122.132'
+          restore_command = 'cp /var/lib/pgsql/pg_archive/%f %p'
+          recovery_target_timeline = 'latest'
+          EOF
+          chmod 0600 /var/lib/pgsql/data/recovery.conf
+          chown postgres.postgres /var/lib/pgsql/data/recovery.conf
         dst: init_replica_slave.sh
 
     # Quick and dirty workaround for rhbz#1206267
