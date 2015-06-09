@@ -37,6 +37,7 @@
     timezone: Asia/Tokyo
 
   # template cond variables:
+  generate_hosts: false
   use_serial_console: false
   store_cmdline: false
   setup_screen: false

@@ -1,6 +1,8 @@
 # DO NOT OVERWRITE/CUSTOMIZE THIS!
 {% include "00_includes/30_guests.yml" %}
 
+generate_hosts: true
+
 guests:
 {% include "20_guests/rhel-5-cluster.yml" %}
 {% include "20_guests/rhel-6-cluster-gfs.yml" %}
