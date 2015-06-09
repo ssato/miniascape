@@ -19,6 +19,8 @@ templates/autoinstall.d/snippets/ks/packages
 templates/autoinstall.d/snippets/ks/post.custom_script
 templates/autoinstall.d/snippets/ks/post.services.rhel-7
 
+templates/autoinstall.d/data/rhel-7-cluster/Makefile
+
 #templates/autoinstall.d/snippets/ks/main.partitions
 #templates/guest/rpm/rpm.mk
 #templates/guest/rpm/package.spec
