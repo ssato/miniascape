@@ -1,6 +1,5 @@
 # DO NOT OVERWRITE/CUSTOMIZE THIS!
 {% include "00_includes/30_guests.yml" %}
-{% include "15_includes/00_common.yml" %}
 
 guests:
 {% include "20_guests/ose-broker.yml" %}
