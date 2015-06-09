@@ -1,0 +1,16 @@
+  # Network for guests managed with openstack
+  # (address is taken from CL210 default)
+  - name: openstack-private
+    mode: nat
+    bridge: virbr32
+    gateway: 192.168.32.254
+    netmask: *netmask
+    network: 192.168.32.0
+    dhcp:
+      start: 192.168.32.200
+      end: 192.168.32.250
+      static:
+        start: 192.168.32.10
+        end: 192.168.32.50
+
+# vim:sw=2:ts=2:et:
