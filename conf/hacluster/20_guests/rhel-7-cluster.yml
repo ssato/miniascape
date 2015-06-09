@@ -41,6 +41,7 @@
           resources:
             - &rhel_7_cluster_res_0_name vip
             - &rhel_7_cluster_res_1_name web_server
+            - &rhel_7_cluster_res_2_name db_server
 
       resources:
         - name: *rhel_7_cluster_res_0_name
@@ -53,6 +54,9 @@
           type: "ocf:heartbeat:apache"
           params:
             statusurl: "http://192.168.155.130/"
+
+        - name: *rhel_7_cluster_res_2_name
+          type: ocf:
 
       constraints:
         - service: *rhel_7_cluster_svc_0
@@ -77,6 +81,8 @@
     setup_data:
       - src: data/rhel-7-cluster/Makefile
         dst: Makefile
+      - src: data/rhel-7-cluster/Makefile.custom
+        dst: Makefile.custom
 
     # Quick and dirty workaround for rhbz#1206267
     guests:
