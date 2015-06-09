@@ -4,20 +4,38 @@
 #
 
 # NOTE: Every customization should go in it.
--include Makefile.custom
+#-include Makefile.custom
 
 RPMS ?= pcs fence-agents-all
-OPEN_CLUSTER_PORTS = \
-systemctl status firewalld && \
-  (firewall-cmd --permanent --add-service=high-availability; \
-   firewall-cmd --add-service=high-availability; \
-   firewall-cmd --permanent --add-port 1229/tcp; \
-   firewall-cmd --add-port 1229/tcp) || \
-systemctl status iptables && \
-  (iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 1229 -j ACCEPT; \
-   iptables -I INPUT  -p udp --dport 5405 -j ACCEPT; \
-   iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 2224 -j ACCEPT) || :
 
+# Firewall configurations:
+SETUP_FIREWALL_FOR_FENCE_XVM ?= \
+systemctl status firewalld && \
+(firewall-cmd --permanent --add-port 1229/tcp && \
+ firewall-cmd --add-port 1229/tcp) || \
+(systemctl status iptables && \
+ iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 1229 -j ACCEPT || :)
+
+SETUP_FIREWALL_FOR_HA_CLUSTER ?= \
+systemctl status firewalld && \
+  (firewall-cmd --permanent --add-service=high-availability && \
+   firewall-cmd --add-service=high-availability) || \
+(systemctl status iptables && \
+ iptables -I INPUT  -p udp --dport 5405 -j ACCEPT && \
+ iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 2224 -j ACCEPT || :)
+
+ENSURE_PCSD_STARTED ?= \
+(systemctl is-enabled pcsd || systemctl enable pcsd) && \
+(systemctl is-active pcsd || systemctl start pcsd)
+
+# see: pcs(8)
+PCS_AUTH_ALL = \
+test -f /var/lib/pcsd/tokens || \
+pcs cluster auth -u hacluster -p $(PCS_PASSWORD) $(PCS_CLUSTER_NODES)
+
+PCS_SETUP_START = \
+pcs cluster status || \
+pcs cluster setup --start --name $(PCS_CLUSTER_NAME) $(PCS_CLUSTER_NODES)
 
 all:
 	@echo "Usage: make [VAR_OVERRIDES ...]"
@@ -32,36 +50,41 @@ $(WORKDIR)/install.stamp:
 	rpm -q $(RPMS) || yum install -y $(RPMS)
 	touch $@
 
+# RHEL 7 High Availability Add-On Administration,
+# Chapter 1. Creating a Red Hat High-Availability Cluster with Pacemaker:
+# http://red.ht/1T8SX3C
 prep: $(WORKDIR)/prep.stamp
 $(WORKDIR)/prep.stamp: $(WORKDIR)/install.stamp
-	echo $(PASSWORD) | passwd hacluster --stdin --force
-	$(OPEN_CLUSTER_PORTS)
-	systemctl enable pcsd && systemctl start pcsd && systemctl pcsd start
+	echo $(PCS_PASSWORD) | passwd hacluster --stdin --force
+	$(SETUP_FIREWALL_FOR_FENCE_XVM)
+	$(SETUP_FIREWALL_FOR_HA_CLUSTER)
+	$(ENSURE_PCSD_STARTED)
 	touch $@
 
-# - RHEL 7 HA Addon Admin Guide, 1.1. Cluster software installation:
-#   http://red.ht/1AiWJ4k
-setup-cluster: $(WORKDIR)/setup-cluster.stamp
-$(WORKDIR)/setup-cluster.stamp: $(WORKDIR)/prep.stamp
-	pcs cluster status || pcs cluster start --all
-	pcs cluster setup --start --name $(PCS_CLUSTER_NAME) $(SETUP_FORCE) $(PCS_CLUSTER_NODES)
-	pcs cluster auth -u hacluster -p $(PASSWORD) $(SETUP_FORCE) $(PCS_CLUSTER_NODES)
+# RHEL 7 High Availability Add-On Administration, 1.2. Cluster Creation:
+# http://red.ht/1dtvh9p
+create-cluster: $(WORKDIR)/create-cluster.stamp
+$(WORKDIR)/create-cluster.stamp: $(WORKDIR)/prep.stamp
+	$(PCS_AUTH_ALL)
+	$(PCS_SETUP_START)
 	pcs cluster enable --all
 	pcs cluster status
 	touch $@
 
-
+# - RHEL 7 High Availability Add-On Administration, 1.3. Fencing Configuration:
+#   http://red.ht/1S1ywEe
+# - `pcs stonith describe fence_xvm`
 # - How can I avoid having to create a stonith device for each node in a
 #   cluster where the "port" (-n) values do not match the node names in RHEL 6
 #   or 7 with pacemaker?: https://access.redhat.com/solutions/701463
 setup-fences: $(WORKDIR)/setup-fences.stamp
-$(WORKDIR)/setup-fences.stamp: $(WORKDIR)/setup-cluster.stamp
+$(WORKDIR)/setup-fences.stamp: $(WORKDIR)/create-cluster.stamp
+	pcs stonith show --all
 	pcs property show --full
-	pcs stonith create $(PCS_FENCE_DEV_NAME) fence_virt \
-		pcmk_host_check="static-list" pcmk_host_list="$(PCS_FENCE_HOST_LIST)" \
-		pcmk_host_map="$(PCS_FENCE_HOST_MAP)"
+	$(PCS_SETUP_FENCES)
+	pcs stonith show --all
+	pcs property show --full
 	pcs property set stonith-enabled=true
-	pcs property show --full
 	pcs cluster status
 	touch $@
 
@@ -81,4 +104,4 @@ $(WORKDIR)/setup-services.stamp: $(WORKDIR)/setup-resources.stamp
 
 setup: $(WORKDIR)/setup-services
 
-.PHONY: install prep setup-cluster setup-fences setup-resources setup-services setup
+.PHONY: install prep create-cluster setup-fences setup-resources setup-services setup

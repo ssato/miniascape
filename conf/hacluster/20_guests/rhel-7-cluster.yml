@@ -36,38 +36,46 @@
         - &rhel_7_cluster_node_1 rhel-7-cluster-default-1
         - &rhel_7_cluster_node_2 rhel-7-cluster-default-2
 
-      services:
-        - name: &rhel_7_cluster_svc_0 WEB_SERVICE
-          resources:
-            - &rhel_7_cluster_rsc_1_name vip0
-            - &rhel_7_cluster_rsc_2_name vip1
-            - &rhel_7_cluster_rsc_3_name web_server
-            - &rhel_7_cluster_rsc_4_name db_server
+      fences:
+        - id: fence_xvm_1
+          type: fence_xvm
+          options:
+            port: default_rhel-7-cluster-1
+
+        - id: fence_xvm_2
+          type: fence_xvm
+          options:
+            port: default_rhel-7-cluster-2
+            delay: 20
 
       resources:
-        - name: *rhel_7_cluster_rsc_1_name
+        - id: &rhel_7_cluster_rsc_1_name vip1
           type: "ocf:heartbeat:IPaddr"
-          params:
-            ip: &rhel_7_cluster_rsc_1_ip 192.168.155.130
+          options:
+            ip: 192.168.155.130
             cidr_netmask: 24
+          others:
+            group: ha-postgres
 
-        - name: *rhel_7_cluster_rsc_2_name
+        - id: &rhel_7_cluster_rsc_2_name vip2
           type: "ocf:heartbeat:IPaddr"
-          params:
+          options:
             ip: &rhel_7_cluster_rsc_2_ip 192.168.122.130
             cidr_netmask: 24
+          others:
+            group: ha-postgres
 
-        - name: *rhel_7_cluster_rsc_3_name
+        - id: &rhel_7_cluster_rsc_3_name web_server
           type: "ocf:heartbeat:apache"
-          params:
+          options:
             statusurl: "http://192.168.155.130/"
+          others:
+            group: ha-httpd
 
-        - name: *rhel_7_cluster_rsc_4_name
+        - id: &rhel_7_cluster_rsc_4_name db_server
           type: "ocf:heartbeat:pgsql"
-
-      constraints:
-        - service: *rhel_7_cluster_svc_0
-          prefers: "rhel-7-cluster-default-1=INFINITY"
+          others:
+            group: ha-postgres
 
     postgresql:
       replica:
