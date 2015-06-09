@@ -9,8 +9,10 @@ cleanup () { rm -rf ${workdir}; }
 
 trap cleanup INT TERM
 
-for site in default openshift openstack rhui; do
-  for f in *.yml ; do anyconfig_cli --template -vv $f; done
+for site in default hacluster openshift openstack rhui; do
+  anyconfig_cli -vv --template "conf/${site}/"'*.yml' -o ${workdir}/conf.yml \
+    2>&1 | tee ${workdir}/conf.${site}.log
+
   PYTHONPATH=${topdir} python miniascape/cli.py b \
     -t ${topdir}/templates -C conf/${site}/ -w ${workdir}
 done
