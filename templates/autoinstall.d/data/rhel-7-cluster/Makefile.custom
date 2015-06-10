@@ -40,7 +40,3 @@ pcs resource master {{ rsc.id }}-master {{ rsc.id }} {{ dictjoin(rsc.master.opti
 {% for cstr in cluster.constraints -%}
 PCS_SETUP_CONSTRAINTS += pcs constraint {{ cstr }};
 {% endfor %}
-
-pcs constraint colocation add db_server-master with Master db_server-master INFINITY;
-pcs constraint order promote db_server-master then start db_server-master symmetrical=false score=INFINITY;
-pcs constraint order demote db_server-master then stop db_server-master symmetrical=false score=0
