@@ -25,9 +25,12 @@ systemctl status firewalld && \
 SETUP_FIREWALL_FOR_HA_CLUSTER ?= \
 systemctl status firewalld && \
   (firewall-cmd --permanent --add-service=high-availability && \
-   firewall-cmd --add-service=high-availability) || \
+   firewall-cmd --add-service=high-availability &&
+   firewall-cmd --permanent --add-port 2224/tcp &&
+   firewall-cmd --add-port 2224/tcp|| \
 (systemctl status iptables && \
  iptables -I INPUT  -p udp --dport 5405 -j ACCEPT && \
+ iptables -I INPUT  -p tcp --dport 2224 -j ACCEPT && \
  iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 2224 -j ACCEPT || :)
 
 ENSURE_PCSD_STARTED ?= \
@@ -62,8 +65,9 @@ $(WORKDIR)/install.stamp:
 	touch $@
 
 # RHEL 7 High Availability Add-On Administration,
-# Chapter 1. Creating a Red Hat High-Availability Cluster with Pacemaker:
-# http://red.ht/1T8SX3C
+# - Chapter 1. Creating a Red Hat High-Availability Cluster with Pacemaker:
+#   http://red.ht/1T8SX3C
+# - Chapter 11. The pcsd Web UI: http://red.ht/1cKGqSD
 prep: $(WORKDIR)/prep.stamp
 $(WORKDIR)/prep.stamp: $(WORKDIR)/install.stamp
 	echo $(PCS_PASSWORD) | passwd hacluster --stdin --force
@@ -110,6 +114,9 @@ ifeq ($(PCS_SETUP_RESOURCES),)
 echo "PCS_SETUP_RESOURCES is not set. Aborting ..."; exit 1
 else
 	$(PCS_SETUP_RESOURCES)
+endif
+ifeq ($(PCS_SETUP_CONSTRAINTS),)
+	$(PCS_SETUP_CONSTRAINTS)
 endif
 	pcs resource show --full
 	pcs cluster status

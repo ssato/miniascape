@@ -11,6 +11,7 @@ PCS_CLUSTER_NODES ?= {{ cluster.nodes|join(' ') }}
 
 PCS_SETUP_FENCES =?
 PCS_SETUP_RESOURCES ?=
+PCS_SETUP_CONSTRAINTS ?=
 
 {% for fence in cluster.fences if fence.id and fence.type -%}
 PCS_SETUP_FENCES += \
@@ -22,6 +23,15 @@ pcs stonith create {{ fence.id }} {{ fence.type }} \
 PCS_SETUP_RESOURCES += \
 pcs resource create {{ rsc.id }} {{ rsc.type }} \
  {% if rsc.options %}{% for k, v in rsc.options.iteritems() %}{{ k }}='{{ v }}' {% endfor %}{% endif %} \
- {{ '--group %s' % rsc.group if rsc.group }} {{ rsc.others|join(' ') if rsc.others }}; 
+ {% for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ op.options|join(' ') }} {% endfor %} \
+ {{ 'meta %s' % rsc.meta.options|join(' ') if rsc.meta and rsc.meta.options }} \
+ {{ '--clone %s' % rsc.clone.options|join(' ') if rsc.clone and rsc.clone.options }} \
+ {{ '--master %s' % rsc.master.options|join(' ') if rsc.master.options }} \
+ {{ '--group %s' % rsc.group if rsc.group }} \
+ {{ '--before %s' % rsc.before if rsc.before }} {{ '--after %s' % rsc.after if rsc.after }} \
+ {{ rsc.others|join(' ') if rsc.others }}; 
+{% endfor %}
+{% for cstr in cluster.constraints -%}
+PCS_SETUP_CONSTRAINTS += pcs constraint {{ cstr }};
 {% endfor %}
 # vim:noet:
