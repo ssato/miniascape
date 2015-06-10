@@ -175,10 +175,10 @@
           wal_level = hot_standby
           wal_receiver_status_interval = 2
           EOF
-          su - postgresql -c "install -b -S .save -m 600 postgresql.conf /var/lib/pgsql/data/"
+          su - postgres -c "install -b -S .save -m 600 postgresql.conf /var/lib/pgsql/data/"
           grep -E '^host *replication' /var/lib/pgsql/data/pg_hba.conf || \
-            (su - postgresql -c "cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.save" && \
-             echo 'host replication all 192.168.122.0/24 trust' >> /var/lib/pgsql/data/pg_hba.conf
+          (su - postgres -c "cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.save" && \
+             echo 'host replication all 192.168.122.0/24 trust' >> /var/lib/pgsql/data/pg_hba.conf)
         dst: init_replica_master.sh
 
       - content: |
