@@ -86,6 +86,7 @@ $(WORKDIR)/create-cluster.stamp: $(WORKDIR)/prep.stamp
 	pcs cluster status
 	touch $@
 
+# FIXME:
 # - RHEL 7 High Availability Add-On Administration, 1.3. Fencing Configuration:
 #   http://red.ht/1S1ywEe
 # - `pcs stonith describe fence_xvm`
