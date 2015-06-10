@@ -54,7 +54,7 @@
           options:
             ip: &rhel_7_cluster_rsc_1_ip 192.168.155.130
             cidr_netmask: 24
-          group: ha-postgres
+          group: ha-postgres-vips
           others: []
 
         - id: &rhel_7_cluster_rsc_2_name replica_master_ip
@@ -62,11 +62,10 @@
           options:
             ip: &rhel_7_cluster_rsc_2_ip 192.168.122.130
             cidr_netmask: 24
-          group: ha-postgres
+          group: ha-postgres-vips
 
         - id: &rhel_7_cluster_rsc_3_name db_server
           type: "ocf:heartbeat:pgsql"
-          group: ha-postgres
           master:
             options:
               master-max: 1
@@ -109,9 +108,9 @@
                 on-fail: block
 
       constraints:
-        - "colocation add ha-postgres with Master db_server-master INFINITY"
-        - "order promote db_server-master then start ha-postgres symmetrical=false score=INFINITY"
-        - "order demote db_server-master then stop ha-postgres symmetrical=false score=0"
+        - "colocation add ha-postgres-vips with Master db_server-master INFINITY"
+        - "order promote db_server-master then start ha-postgres-vips symmetrical=false score=INFINITY"
+        - "order demote db_server-master then stop ha-postgres-vips symmetrical=false score=0"
 
     postgresql:
       replica:

@@ -27,13 +27,20 @@ pcs stonith create {{ fence.id }} {{ fence.type }} {{ dictjoin(fence.options) }}
 PCS_SETUP_RESOURCES += \
 pcs resource create {{ rsc.id }} {{ rsc.type }} {{ dictjoin(rsc.options) }} \
 {{     '--group %s' % rsc.group if rsc.group }} \
-{%     for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ dictjoin(op.options) }}{% endfor %} \
-{{     'meta %s' % rsc.meta.options|join(' ') if rsc.meta and rsc.meta.options }} \
 {{     '--clone %s' % rsc.clone.options|join(' ') if rsc.clone and rsc.clone.options }} \
-{%     if rsc.master %} --master {{ dictjoin(rsc.master.options) }}{% endif %} \
 {{     '--before %s' % rsc.before if rsc.before }} {{ '--after %s' % rsc.after if rsc.after }} \
-{{     rsc.others|join(' ') if rsc.others }};
+{{     'meta %s' % rsc.meta.options|join(' ') if rsc.meta and rsc.meta.options }} \
+{{     rsc.others|join(' ') if rsc.others }} \
+{%     for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ dictjoin(op.options) }}{% endfor %}; \
+{%     if rsc.master -%} 
+PCS_SETUP_RESOURCES += \
+pcs resource master {{ rsc.id }}-master {{ rsc.id }} {{ dictjoin(rsc.master.options) }};
+{%-    endif %}
 {% endfor %}
 {% for cstr in cluster.constraints -%}
 PCS_SETUP_CONSTRAINTS += pcs constraint {{ cstr }};
 {% endfor %}
+
+pcs constraint colocation add db_server-master with Master db_server-master INFINITY;
+pcs constraint order promote db_server-master then start db_server-master symmetrical=false score=INFINITY;
+pcs constraint order demote db_server-master then stop db_server-master symmetrical=false score=0
