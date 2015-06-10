@@ -54,28 +54,25 @@
           options:
             ip: 192.168.155.130
             cidr_netmask: 24
-          others:
-            group: ha-postgres
+          group: ha-postgres
+          others: []
 
         - id: &rhel_7_cluster_rsc_2_name vip2
           type: "ocf:heartbeat:IPaddr"
           options:
             ip: &rhel_7_cluster_rsc_2_ip 192.168.122.130
             cidr_netmask: 24
-          others:
-            group: ha-postgres
+          group: ha-postgres
 
         - id: &rhel_7_cluster_rsc_3_name web_server
           type: "ocf:heartbeat:apache"
           options:
             statusurl: "http://192.168.155.130/"
-          others:
-            group: ha-httpd
+          group: ha-httpd
 
         - id: &rhel_7_cluster_rsc_4_name db_server
           type: "ocf:heartbeat:pgsql"
-          others:
-            group: ha-postgres
+          group: ha-postgres
 
     postgresql:
       replica:

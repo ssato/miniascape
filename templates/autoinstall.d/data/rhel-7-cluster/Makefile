@@ -8,6 +8,12 @@
 
 RPMS ?= pcs fence-agents-all
 
+# RHEL 7 High Availability Add-On Administration,
+# 2.8. Backing Up and Restoring a Cluster Configuration:
+# http://red.ht/1GxBbDy
+PCS_BACKUP_FILE ?= pcs-backup-$(date +%F_%T)
+PCS_DO_BACKUP ?= pcs config backup $(PCS_BACKUP_FILE)
+
 # Firewall configurations:
 SETUP_FIREWALL_FOR_FENCE_XVM ?= \
 systemctl status firewalld && \
@@ -30,12 +36,17 @@ ENSURE_PCSD_STARTED ?= \
 
 # see: pcs(8)
 PCS_AUTH_ALL = \
+ifeq ($(PCS_CLUSTER_NODES),)
+echo "PCS_CLUSTER_NODES is not set. Aborting ..."; exit 1
+else
 test -f /var/lib/pcsd/tokens || \
 pcs cluster auth -u hacluster -p $(PCS_PASSWORD) $(PCS_CLUSTER_NODES)
+endif
 
 PCS_SETUP_START = \
 pcs cluster status || \
 pcs cluster setup --start --name $(PCS_CLUSTER_NAME) $(PCS_CLUSTER_NODES)
+
 
 all:
 	@echo "Usage: make [VAR_OVERRIDES ...]"
@@ -81,27 +92,30 @@ setup-fences: $(WORKDIR)/setup-fences.stamp
 $(WORKDIR)/setup-fences.stamp: $(WORKDIR)/create-cluster.stamp
 	pcs stonith show --all
 	pcs property show --full
+ifeq ($(PCS_SETUP_FENCES),)
+echo "PCS_SETUP_FENCES is not set. Aborting ..."; exit 1
+else
 	$(PCS_SETUP_FENCES)
+endif
 	pcs stonith show --all
 	pcs property show --full
 	pcs property set stonith-enabled=true
 	pcs cluster status
+	$(PCS_DO_BACKUP)
 	touch $@
 
 setup-resources: $(WORKDIR)/setup-resources.stamp
 $(WORKDIR)/setup-resources.stamp: $(WORKDIR)/setup-fences.stamp
+ifeq ($(PCS_SETUP_RESOURCES),)
+echo "PCS_SETUP_RESOURCES is not set. Aborting ..."; exit 1
+else
 	$(PCS_SETUP_RESOURCES)
+endif
 	pcs resource show --full
 	pcs cluster status
+	$(PCS_DO_BACKUP)
 	touch $@
 
-# TODO: Setup typical constraints
-setup-services: $(WORKDIR)/setup-services.stamp
-$(WORKDIR)/setup-services.stamp: $(WORKDIR)/setup-resources.stamp
-	$(PCS_SETUP_SERVICES)
-	pcs cluster status
-	touch $@
+setup: $(WORKDIR)/setup-resources
 
-setup: $(WORKDIR)/setup-services
-
-.PHONY: install prep create-cluster setup-fences setup-resources setup-services setup
+.PHONY: install prep create-cluster setup-fences setup-resources setup
