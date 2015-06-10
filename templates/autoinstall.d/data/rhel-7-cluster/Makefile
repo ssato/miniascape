@@ -25,13 +25,13 @@ systemctl status firewalld && \
 SETUP_FIREWALL_FOR_HA_CLUSTER ?= \
 systemctl status firewalld && \
   (firewall-cmd --permanent --add-service=high-availability && \
-   firewall-cmd --add-service=high-availability &&
-   firewall-cmd --permanent --add-port 2224/tcp &&
-   firewall-cmd --add-port 2224/tcp|| \
+   firewall-cmd --add-service=high-availability && \
+   firewall-cmd --permanent --add-port 2224/tcp && \
+   firewall-cmd --add-port 2224/tcp) || \
 (systemctl status iptables && \
- iptables -I INPUT  -p udp --dport 5405 -j ACCEPT && \
- iptables -I INPUT  -p tcp --dport 2224 -j ACCEPT && \
- iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 2224 -j ACCEPT || :)
+ (iptables -I INPUT  -p udp --dport 5405 -j ACCEPT && \
+  iptables -I INPUT  -p tcp --dport 2224 -j ACCEPT && \
+  iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 2224 -j ACCEPT) || :)
 
 ENSURE_PCSD_STARTED ?= \
 (systemctl is-enabled pcsd || systemctl enable pcsd) && \
