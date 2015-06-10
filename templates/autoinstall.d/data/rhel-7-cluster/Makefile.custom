@@ -13,11 +13,11 @@ PCS_SETUP_FENCES =?
 PCS_SETUP_FENCES += \
 "pcs stonith show {{ fence.id }} || \
 pcs stonith create {{ fence.id }} {{ fence.type }} \
-  {% if fence.options %}{% for k, v in fence.options.iteritems() %}{{ k }}='{{ v }}'{% endif %}; "{% endfor %}
+  {% if fence.options %}{% for k, v in fence.options.iteritems() %}{{ k }}='{{ v }}'{% endfor %}{% endif %}; "
 {% endfor %}
 
 PCS_SETUP_RESOURCES ?=
-{% for rcs in cluster.resources if rsc.id and rsc.type -%}
+{% for rsc in cluster.resources if rsc.id and rsc.type -%}
 PCS_SETUP_RESOURCES += \
 "pcs resource create {{ rsc.id }} {{ rsc.type }} \
  {% if rsc.options %}{% for k, v in rsc.options.iteritems() %}{{ k }}='{{ v }}' {% endfor %}{% endif %} \

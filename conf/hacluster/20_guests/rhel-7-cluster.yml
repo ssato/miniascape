@@ -31,7 +31,7 @@
         shareable: true
 
     cluster: &cluster_def
-      name: *cluster_name
+      name: &cluster_name_0 rhel-7-cluster-0
       nodes:
         - &rhel_7_cluster_node_1 rhel-7-cluster-default-1
         - &rhel_7_cluster_node_2 rhel-7-cluster-default-2
@@ -50,15 +50,15 @@
 
       resources:
         - id: &rhel_7_cluster_rsc_1_name vip1
-          type: "ocf:heartbeat:IPaddr"
+          type: "ocf:heartbeat:IPaddr2"
           options:
-            ip: 192.168.155.130
+            ip: &rhel_7_cluster_rsc_1_ip 192.168.155.130
             cidr_netmask: 24
           group: ha-postgres
           others: []
 
         - id: &rhel_7_cluster_rsc_2_name vip2
-          type: "ocf:heartbeat:IPaddr"
+          type: "ocf:heartbeat:IPaddr2"
           options:
             ip: &rhel_7_cluster_rsc_2_ip 192.168.122.130
             cidr_netmask: 24
