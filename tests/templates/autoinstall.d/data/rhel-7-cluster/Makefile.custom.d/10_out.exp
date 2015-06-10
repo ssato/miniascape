@@ -1,0 +1,41 @@
+# Makefile to setup pacemaker cluster: custom defs.
+WORKDIR ?= /root/setup
+
+#SETUP_FORCE ?= --force
+SETUP_FORCE ?=
+
+PCS_PASSWORD ?= secret
+
+PCS_CLUSTER_NAME ?= rhel-7-cluster-0
+PCS_CLUSTER_NODES ?= rhel-7-cluster-default-1 rhel-7-cluster-default-2
+
+PCS_SETUP_FENCES =?
+PCS_SETUP_RESOURCES ?=
+
+PCS_SETUP_FENCES += \
+pcs stonith show fence_xvm_1 || \
+pcs stonith create fence_xvm_1 fence_xvm \
+  port='default_rhel-7-cluster-1' ; 
+PCS_SETUP_FENCES += \
+pcs stonith show fence_xvm_2 || \
+pcs stonith create fence_xvm_2 fence_xvm \
+  delay='20' port='default_rhel-7-cluster-2' ; 
+
+PCS_SETUP_RESOURCES += \
+pcs resource create vip1 ocf:heartbeat:IPaddr2 \
+ ip='192.168.155.130' cidr_netmask='24'  \
+ --group ha-postgres ; 
+PCS_SETUP_RESOURCES += \
+pcs resource create vip2 ocf:heartbeat:IPaddr2 \
+ ip='192.168.122.130' cidr_netmask='24'  \
+ --group ha-postgres ; 
+PCS_SETUP_RESOURCES += \
+pcs resource create web_server ocf:heartbeat:apache \
+ statusurl='http://192.168.155.130/'  \
+ --group ha-httpd ; 
+PCS_SETUP_RESOURCES += \
+pcs resource create db_server ocf:heartbeat:pgsql \
+  \
+ --group ha-postgres ; 
+
+# vim:noet:
