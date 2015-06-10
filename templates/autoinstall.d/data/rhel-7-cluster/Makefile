@@ -38,10 +38,10 @@ ENSURE_PCSD_STARTED ?= \
 (systemctl is-active pcsd || systemctl start pcsd)
 
 # see: pcs(8)
-PCS_AUTH_ALL = \
 ifeq ($(PCS_CLUSTER_NODES),)
-echo "PCS_CLUSTER_NODES is not set. Aborting ..."; exit 1
+PCS_AUTH_ALL = echo "PCS_CLUSTER_NODES is not set. Aborting ..."; exit 1
 else
+PCS_AUTH_ALL = \
 test -f /var/lib/pcsd/tokens || \
 pcs cluster auth -u hacluster -p $(PCS_PASSWORD) $(PCS_CLUSTER_NODES)
 endif
@@ -97,7 +97,7 @@ $(WORKDIR)/setup-fences.stamp: $(WORKDIR)/create-cluster.stamp
 	pcs stonith show --all
 	pcs property show --full
 ifeq ($(PCS_SETUP_FENCES),)
-echo "PCS_SETUP_FENCES is not set. Aborting ..."; exit 1
+	echo "PCS_SETUP_FENCES is not set. Aborting ..."; exit 1
 else
 	$(PCS_SETUP_FENCES)
 endif
@@ -111,11 +111,11 @@ endif
 setup-resources: $(WORKDIR)/setup-resources.stamp
 $(WORKDIR)/setup-resources.stamp: $(WORKDIR)/setup-fences.stamp
 ifeq ($(PCS_SETUP_RESOURCES),)
-echo "PCS_SETUP_RESOURCES is not set. Aborting ..."; exit 1
+	echo "PCS_SETUP_RESOURCES is not set. Aborting ..."; exit 1
 else
 	$(PCS_SETUP_RESOURCES)
 endif
-ifeq ($(PCS_SETUP_CONSTRAINTS),)
+ifneq ($(PCS_SETUP_CONSTRAINTS),)
 	$(PCS_SETUP_CONSTRAINTS)
 endif
 	pcs resource show --full
