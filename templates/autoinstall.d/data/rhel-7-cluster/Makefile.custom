@@ -26,9 +26,10 @@ pcs resource create {{ rsc.id }} {{ rsc.type }} \
  {% for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ op.options|join(' ') }} {% endfor %} \
  {{ 'meta %s' % rsc.meta.options|join(' ') if rsc.meta and rsc.meta.options }} \
  {{ '--clone %s' % rsc.clone.options|join(' ') if rsc.clone and rsc.clone.options }} \
- {{ '--master %s' % rsc.master.options|join(' ') if rsc.master.options }} \
+ {% if rsc.master and rsc.master.options %}--master {{ rsc.master.options|join(' ') }}{% endif %} \
  {{ '--group %s' % rsc.group if rsc.group }} \
- {{ '--before %s' % rsc.before if rsc.before }} {{ '--after %s' % rsc.after if rsc.after }} \
+ {{ '--before %s' % rsc.before if rsc.before }} \
+ {{ '--after %s' % rsc.after if rsc.after }} \
  {{ rsc.others|join(' ') if rsc.others }}; 
 {% endfor %}
 {% for cstr in cluster.constraints -%}
