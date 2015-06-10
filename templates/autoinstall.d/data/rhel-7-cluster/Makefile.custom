@@ -31,7 +31,7 @@ pcs resource create {{ rsc.id }} {{ rsc.type }} {{ dictjoin(rsc.options) }} \
 {{     '--before %s' % rsc.before if rsc.before }} {{ '--after %s' % rsc.after if rsc.after }} \
 {{     'meta %s' % rsc.meta.options|join(' ') if rsc.meta and rsc.meta.options }} \
 {{     rsc.others|join(' ') if rsc.others }} \
-{%     for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ dictjoin(op.options) }}{% endfor %}; \
+{%     for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ dictjoin(op.options) }}{% endfor %};
 {%     if rsc.master -%} 
 PCS_SETUP_RESOURCES += \
 pcs resource master {{ rsc.id }}-master {{ rsc.id }} {{ dictjoin(rsc.master.options) }};
