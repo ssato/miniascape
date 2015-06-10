@@ -69,11 +69,12 @@
           group: ha-postgres
           master:
             options:
-              - master-max=1
-              - master-node-max=1
-              - clone-max=2
-              - clone-node-max=1
-              - notify=true
+              master-max: 1
+              master-node-max: 1
+              clone-max: 2
+              clone-node-max: 1
+              notify: "true"
+
           options:
             rep_mode: sync
             node_list: "rhel-7-cluster-default-1 rhel-7-cluster-default-2"
@@ -84,28 +85,28 @@
           ops:
             - action: monitor
               options:
-                - timeout: 60s
-                  interval: 10s
-                  on-fail: restart
-                  role: Master
+                timeout: 60s
+                interval: 10s
+                on-fail: restart
+                role: Master
 
             - action: promote
               options:
-                - timeout: 60s
-                  interval: 0s
-                  on-fail: restart
+                timeout: 60s
+                interval: 0s
+                on-fail: restart
 
             - action: demote
               options:
-                - timeout: 60s
-                  interval: 0s
-                  on-fail: stop
+                timeout: 60s
+                interval: 0s
+                on-fail: stop
 
             - action: stop
               options:
-                - timeout: 60s
-                  interval: 0s
-                  on-fail: block
+                timeout: 60s
+                interval: 0s
+                on-fail: block
 
       constraints:
         - "colocation add ha-postgres with Master db_server-master INFINITY"
