@@ -4,7 +4,7 @@
 #
 
 # NOTE: Every customization should go in it.
-#-include Makefile.custom
+-include Makefile.custom
 
 RPMS ?= pcs fence-agents-all
 
@@ -119,3 +119,4 @@ endif
 setup: $(WORKDIR)/setup-resources
 
 .PHONY: install prep create-cluster setup-fences setup-resources setup
+

@@ -1,6 +1,6 @@
 kdump:
-  reserve: 128M
   conf: |
     path /var/crash
     core_collector makedumpfile -d 17 -c
     default reboot
+  reserve: 128M

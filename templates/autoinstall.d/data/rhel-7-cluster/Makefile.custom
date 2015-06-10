@@ -1,5 +1,6 @@
 # Makefile to setup pacemaker cluster: custom defs.
 WORKDIR ?= /root/setup
+
 #SETUP_FORCE ?= --force
 SETUP_FORCE ?=
 
@@ -9,19 +10,18 @@ PCS_CLUSTER_NAME ?= {{ cluster.name|default('rhel-7-cluster-0') }}
 PCS_CLUSTER_NODES ?= {{ cluster.nodes|join(' ') }}
 
 PCS_SETUP_FENCES =?
+PCS_SETUP_RESOURCES ?=
+
 {% for fence in cluster.fences if fence.id and fence.type -%}
 PCS_SETUP_FENCES += \
-"pcs stonith show {{ fence.id }} || \
+pcs stonith show {{ fence.id }} || \
 pcs stonith create {{ fence.id }} {{ fence.type }} \
-  {% if fence.options %}{% for k, v in fence.options.iteritems() %}{{ k }}='{{ v }}'{% endfor %}{% endif %}; "
+  {% if fence.options %}{% for k, v in fence.options.iteritems() %}{{ k }}='{{ v }}' {% endfor %}{% endif %}; 
 {% endfor %}
-
-PCS_SETUP_RESOURCES ?=
 {% for rsc in cluster.resources if rsc.id and rsc.type -%}
 PCS_SETUP_RESOURCES += \
-"pcs resource create {{ rsc.id }} {{ rsc.type }} \
+pcs resource create {{ rsc.id }} {{ rsc.type }} \
  {% if rsc.options %}{% for k, v in rsc.options.iteritems() %}{{ k }}='{{ v }}' {% endfor %}{% endif %} \
- {{ '--group %s' % rsc.group if rsc.group }} {{ rsc.others|join(' ') if rsc.others }}
+ {{ '--group %s' % rsc.group if rsc.group }} {{ rsc.others|join(' ') if rsc.others }}; 
 {% endfor %}
-
 # vim:noet:
