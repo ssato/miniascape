@@ -15,6 +15,9 @@ PCS_SETUP_FENCES =?
 PCS_SETUP_RESOURCES ?=
 PCS_SETUP_CONSTRAINTS ?=
 
+# RHEL 7 High Availability Add-On Administration,
+# - 5. Configuring Cluster Resources: http://red.ht/1JEoIyK
+# - 8.2. Multi-State Resources: Resources That Have Multiple Modes: http://red.ht/1JEoJCK
 {% for fence in cluster.fences if fence.id and fence.type -%}
 PCS_SETUP_FENCES += \
 pcs stonith show {{ fence.id }} || \
@@ -34,4 +37,3 @@ pcs resource create {{ rsc.id }} {{ rsc.type }} {{ dictjoin(rsc.options) }} \
 {% for cstr in cluster.constraints -%}
 PCS_SETUP_CONSTRAINTS += pcs constraint {{ cstr }};
 {% endfor %}
-# vim:noet:
