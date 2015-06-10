@@ -75,12 +75,12 @@
               - clone-node-max=1
               - notify=true
           options:
-            - rep_mode: sync
-              node_list: "rhel-7-cluster-default-1 rhel-7-cluster-default-2"
-              restore_command: "cp /var/lib/pgsql/pg_archive/%f %p"
-              primary_conninfo_opt: "keepalives_idle=60 keepalives_interval=5 keepalives_count=5"
-              master_ip: *rhel_7_cluster_rsc_2_ip
-              restart_on_promote: "true"
+            rep_mode: sync
+            node_list: "rhel-7-cluster-default-1 rhel-7-cluster-default-2"
+            restore_command: "cp /var/lib/pgsql/pg_archive/%f %p"
+            primary_conninfo_opt: "keepalives_idle=60 keepalives_interval=5 keepalives_count=5"
+            master_ip: *rhel_7_cluster_rsc_2_ip
+            restart_on_promote: "true"
           ops:
             - action: monitor
               options:
