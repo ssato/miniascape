@@ -85,6 +85,12 @@
             - action: monitor
               options:
                 timeout: 60s
+                interval: 15s
+                on-fail: restart
+
+            - action: monitor
+              options:
+                timeout: 60s
                 interval: 10s
                 on-fail: restart
                 role: Master
@@ -106,6 +112,11 @@
                 timeout: 60s
                 interval: 0s
                 on-fail: block
+
+            - action: notify
+              options:
+                timeout: 60s
+                interval: 0s
 
       constraints:
         - "colocation add ha-postgres-vips with Master db_server-master INFINITY"
