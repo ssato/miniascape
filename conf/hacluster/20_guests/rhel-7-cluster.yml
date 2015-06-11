@@ -36,17 +36,22 @@
         - &rhel_7_cluster_node_1 rhel-7-cluster-default-1
         - &rhel_7_cluster_node_2 rhel-7-cluster-default-2
 
+      # Delaying Fencing in a Two Node Cluster to Prevent Fence Races or "Fence
+      # Death" Scenarios: https://access.redhat.com/solutions/54829
       fences:
         - id: fence_xvm_1
           type: fence_xvm
           options:
             port: default_rhel-7-cluster-1
+            pcmk_host_list: *rhel_7_cluster_node_1
+            # or pcmk_host_map: "rhel-7-cluster-default-1:default_rhel-7-cluster-1"
 
         - id: fence_xvm_2
           type: fence_xvm
           options:
             port: default_rhel-7-cluster-2
-            delay: 20
+            pcmk_host_list: *rhel_7_cluster_node_2
+            delay: 5
 
       resources:
         - id: &rhel_7_cluster_rsc_1_name svc_ip
