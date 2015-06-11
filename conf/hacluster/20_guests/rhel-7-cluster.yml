@@ -4,20 +4,8 @@
 
     kickstart:
       repos:
-        {% if kickstart and kickstart.repos -%}
-        {%     for repo in kickstart.repos if repo.name and repo.baseurl and 'RHEL 7' in repo.name and ('HighAvailability' in repo.name or 'ResilientStorage' in repo.name) -%}
-        # Examples:
-        #- name: "RHEL 7 x86_64 HighAvailability"
-        #  baseurl: http://binaries/contents/RHEL/7/1/x86_64/default/addons/HighAvailability/
-        #- name: "RHEL 7 x86_64 ResilientStorage"
-        #  baseurl: http://binaries/contents/RHEL/7/1/x86_64/default/addons/ResilientStorage/
-        - name: "{{ repo.name }}"
-          baseurl: "{{ repo.baseurl }}"
-        {% else -%}
-        - name: "CentOS 7 x86_64"
-          baseurl: http://mirror.centos.org/centos/7/os/x86_64/
-        {% endfor %}
-        {% endif %}
+        - name: "RHEL 7 High Availability Add-On"
+          baseurl: "file:///run/install/repo/addons/HighAvailability/"
 
     disks:
       - pool: default
@@ -36,8 +24,10 @@
         - &rhel_7_cluster_node_1 rhel-7-cluster-default-1
         - &rhel_7_cluster_node_2 rhel-7-cluster-default-2
 
-      # Delaying Fencing in a Two Node Cluster to Prevent Fence Races or "Fence
-      # Death" Scenarios: https://access.redhat.com/solutions/54829
+      # - RHEL 7 High Availability Add-On Reference, 4.2. General Properties of
+      #   Fencing Devices: http://red.ht/1dy3Mvd
+      # - Delaying Fencing in a Two Node Cluster to Prevent Fence Races or "Fence
+      #   Death" Scenarios: https://access.redhat.com/solutions/54829
       fences:
         - id: fence_xvm_1
           type: fence_xvm
@@ -69,14 +59,24 @@
             cidr_netmask: 24
           group: ha-postgres-vips
 
+        # clone-{node-,}max, notify:
+        # - RHEL 7 High Availability Add-On Reference, Chapter 8. Advanced
+        #   Resource types, Table 8.1. Resource Clone Options:
+        #   http://red.ht/1GuDaH4
+        #
+        # master-{node-,}max:
+        # - RHEL 7 High Availability Add-On Reference, 8.2. Multi-State
+        #   Resources: Resources That Have Multiple Modes, Table 8.2.
+        #   Properties of a Multi-State Resource: http://red.ht/1JEoJCK
+        #
         - id: &rhel_7_cluster_rsc_3_name db_server
           type: "ocf:heartbeat:pgsql"
           master:
             options:
-              master-max: 1
-              master-node-max: 1
-              clone-max: 2
-              clone-node-max: 1
+              # master-max: 1
+              # master-node-max: 1
+              # clone-max: 2 (same as the number of cluster nodes)
+              # clone-node-max: 1
               notify: "true"
 
           options:
@@ -123,8 +123,15 @@
                 timeout: 60s
                 interval: 0s
 
+      # - RHEL 7 High Availability Add-On Reference, Chapter 8. Advanced
+      #   Resource types, 8.2.2. Multi-state Constraints: http://red.ht/1JEoJCK
+      # - RHEL 7 High Availability Add-On Reference, 6.3. Colocation of
+      #   Resources, Table 6.3. Properties of a Colocation Constraint:
+      #   http://red.ht/1KYhBy5
+      # - RHEL 7 High Availability Add-On Reference, 6.2. Order Constraints,
+      #   Table 6.2. Properties of an Order Constraint: http://red.ht/1B8gnjA
       constraints:
-        - "colocation add ha-postgres-vips with Master db_server-master INFINITY"
+        - "colocation add ha-postgres-vips with master db_server-master INFINITY"
         - "order promote db_server-master then start ha-postgres-vips symmetrical=false score=INFINITY"
         - "order demote db_server-master then stop ha-postgres-vips symmetrical=false score=0"
 
