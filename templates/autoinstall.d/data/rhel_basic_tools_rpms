@@ -1,4 +1,5 @@
 audit
+bash-completion
 curl
 lftp
 make
