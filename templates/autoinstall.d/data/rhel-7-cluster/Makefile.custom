@@ -25,17 +25,21 @@ pcs stonith create {{ fence.id }} {{ fence.type }} {{ dictjoin(fence.options) }}
 {% endfor %}
 {% for rsc in cluster.resources if rsc.id and rsc.type -%}
 PCS_SETUP_RESOURCES += \
-pcs resource create {{ rsc.id }} {{ rsc.type }} {{ dictjoin(rsc.options) }} \
-{{     '--group %s' % rsc.group if rsc.group }} \
-{{     '--clone %s' % rsc.clone.options|join(' ') if rsc.clone and rsc.clone.options }} \
-{{     '--before %s' % rsc.before if rsc.before }} {{ '--after %s' % rsc.after if rsc.after }} \
-{{     'meta %s' % rsc.meta.options|join(' ') if rsc.meta and rsc.meta.options }} \
+pcs resource create {{ rsc.id }} '{{ rsc.type }}' {{ dictjoin(rsc.options) }} \
+{{     '--group %s ' % rsc.group if rsc.group -}}
+{{     '--clone %s ' % rsc.clone.options|join(' ') if rsc.clone and rsc.clone.options -}}
+{{     '--before %s' % rsc.before if rsc.before }} {{ '--after %s ' % rsc.after if rsc.after -}}
+{%     if rsc.master -%}
+{{-    '--master ' }}{{ 'meta %s ' % dictjoin(rsc.master.options) -}}
+{%-    endif -%}
+{{     'meta %s ' % rsc.meta.options|join(' ') if rsc.meta and rsc.meta.options -}}
 {{     rsc.others|join(' ') if rsc.others }} \
-{%     for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ dictjoin(op.options) }}{% endfor %};
-{%     if rsc.master -%} 
-PCS_SETUP_RESOURCES += \
-pcs resource master {{ rsc.id }}-master {{ rsc.id }} {{ dictjoin(rsc.master.options) }};
-{%-    endif %}
+{%     for op in rsc.ops if rsc.ops %}op {{ op.action }} {{ dictjoin(op.options) }} \
+{% endfor %};
+#{%     if rsc.master -%}
+#PCS_SETUP_RESOURCES += \
+#pcs resource master {{ rsc.id }}-master {{ rsc.id }} {{ dictjoin(rsc.master.options) }};
+#{%-    endif %}
 {% endfor %}
 {% for cstr in cluster.constraints -%}
 PCS_SETUP_CONSTRAINTS += pcs constraint {{ cstr }};
