@@ -11,7 +11,7 @@ RPMS ?= pcs fence-agents-all
 # RHEL 7 High Availability Add-On Administration,
 # 2.8. Backing Up and Restoring a Cluster Configuration:
 # http://red.ht/1GxBbDy
-PCS_BACKUP_FILE ?= pcs-backup-$(date +%F_%T)
+PCS_BACKUP_FILE ?= pcs-backup-$(shell date +%F_%T)
 PCS_DO_BACKUP ?= pcs config backup $(PCS_BACKUP_FILE)
 
 # Firewall configurations:
