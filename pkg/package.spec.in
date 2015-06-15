@@ -75,9 +75,17 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 
 %changelog
-* Tue Mar 10 2015 Satoru SATOH <ssato@redhat.com> - 0.3.10.99-1
-- Split some default config files and make them merged on build time
+* Mon Jun 15 2015 Satoru SATOH <ssato@redhat.com> - 0.3.11-1
+- Split some default config files and make them merged on build time with using
+  template config support in anyconfig
 - Added a runtime dependency to python-anytemplate
+- Added RHEL 7 cluster nodes, normal guests, JBoss EAP 6.x nodes, Satellite 6
+  nodes and so on
+- Fine tunes in VM build scripts
+- Change the default installation data source from http to iso (local)
+- Fix flake8 and pylint errors and warnings
+- Add some more template tests
+- A lot of minor fixes and enhancements in templates
 
 * Wed Jul 23 2014 Satoru SATOH <ssato@redhat.com> - 0.3.10-1
 - Add basic application tests runner script
