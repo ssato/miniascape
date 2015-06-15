@@ -178,10 +178,12 @@
       - content: |
           #! /bin/bash
           set -ex
+          postgresql_conf=${0%/*}/postgresql.conf
           echo "Initialize PostgreSQL replica master ..."
+          su - postgres -c "test -f /var/lib/pgsql/PG_VERSION && rm -rf /var/lib/pgsql/data/* || :"
           su - postgres -c "mkdir -p /var/lib/pgsql/pg_archive"
           su - postgres -c "cd /var/lib/pgsql/data && initdb"
-          cat << 'EOF' > postgresql.conf
+          cat << 'EOF' > ${postgresql_conf}
           archive_mode = on
           archive_command = 'cp %p /var/lib/pgsql/pg_archive/%f'
           hot_standby = on
@@ -197,7 +199,7 @@
           wal_level = hot_standby
           wal_receiver_status_interval = 2
           EOF
-          su - postgres -c "install -b -S .save -m 600 postgresql.conf /var/lib/pgsql/data/"
+          install -o postgres -g postgres -S .save -m 600 ${postgresql_conf} /var/lib/pgsql/data/
           grep -E '^host *replication' /var/lib/pgsql/data/pg_hba.conf || \
           (su - postgres -c "cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.save" && \
              echo 'host replication all 192.168.122.0/24 trust' >> /var/lib/pgsql/data/pg_hba.conf)
@@ -215,7 +217,7 @@
           #! /bin/bash
           set -ex
           echo "Initialize PostgreSQL replica slave ..."
-          su - postgres -c "rm -rf /var/lib/pgsql/data/"
+          su - postgres -c "rm -rf /var/lib/pgsql/data/* /var/lib/pgsql/pg_archive"
           su - postgres -c "pg_basebackup -h 192.168.122.131 -U postgres -D /var/lib/pgsql/data -X stream -P"
           su - postgres -c "mkdir -p /var/lib/pgsql/pg_archive"
           test -f /var/lib/pgsql/data/recovery.conf || \
