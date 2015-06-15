@@ -16,9 +16,14 @@
 #
 import anytemplate
 import anytemplate.utils
+import jinja2.ext
 import os.path
 
 from miniascape.globals import LOGGER as logging
+
+
+_JINJA2_EXTS = [jinja2.ext.do, jinja2.ext.with_, jinja2.ext.loopcontrols,
+                jinja2.ext.i18n]
 
 
 def renders_to(template, context=None, output=None, at_paths=None):
@@ -31,7 +36,8 @@ def renders_to(template, context=None, output=None, at_paths=None):
     :param at_paths: Template search paths
     """
     res = anytemplate.renders(template, context, at_paths=at_paths,
-                              at_engine="jinja2", at_ask_missing=True)
+                              at_engine="jinja2", at_ask_missing=True,
+                              extensions=_JINJA2_EXTS)
     anytemplate.utils.write_to_output(res, output)
 
 
@@ -45,7 +51,8 @@ def render_to(template, context=None, output=None, at_paths=None):
     :param at_paths: Template search paths
     """
     anytemplate.render_to(template, context, output, at_paths,
-                          at_engine="jinja2", at_ask_missing=True)
+                          at_engine="jinja2", at_ask_missing=True,
+                          extensions=_JINJA2_EXTS)
 
 
 def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
