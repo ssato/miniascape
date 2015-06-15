@@ -1,5 +1,8 @@
 site: rhui
 
+networks:
+{% include "00_includes/40_network_rhui.yml" %}
+
 common:
   virtinst:
     # You must override this!
@@ -74,20 +77,5 @@ common:
   test:
     # change DNS server addresses to gateway's one:
     #mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'
-
-networks:
-  - name: rhui-service
-    mode: nat
-    bridge: virbr20
-    domain: *domain
-    gateway: *gateway
-    netmask: *netmask
-    network: 192.168.20.0
-    dhcp:
-      start: 192.168.20.200
-      end: 192.168.20.250
-      static:
-        start: 192.168.20.10
-        end: 192.168.20.199
 
 # vim:sw=2:ts=2:et:
