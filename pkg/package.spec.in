@@ -67,11 +67,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README.rst
 %{_bindir}/*
+%config %{pkgconfdir}/*/*.j2
 %config %{pkgconfdir}/*/*.yml
-%config %{pkgconfdir}/*/*/*.yml
 %config %{pkgconfdir}/*/*/*.j2
+%config %{pkgconfdir}/*/*/*.yml
 %config %{pkgconfdir}/*/*_includes
-%config %{pkgconfdir}/*/bootstrap/*.yml
 %{python_sitelib}/*
 
 %changelog
