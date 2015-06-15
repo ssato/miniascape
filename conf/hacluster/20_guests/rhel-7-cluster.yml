@@ -24,6 +24,11 @@
         - &rhel_7_cluster_node_1 rhel-7-cluster-default-1
         - &rhel_7_cluster_node_2 rhel-7-cluster-default-2
 
+      init:
+        - pcs property set no-quorum-policy="ignore"
+        - pcs resource defaults resource-stickiness="INFINITY"
+        - pcs resource defaults migration-threshold="1"
+
       # - RHEL 7 High Availability Add-On Reference, 4.2. General Properties of
       #   Fencing Devices: http://red.ht/1dy3Mvd
       # - Delaying Fencing in a Two Node Cluster to Prevent Fence Races or "Fence
@@ -180,15 +185,17 @@
           set -ex
           postgresql_conf=${0%/*}/postgresql.conf
           echo "Initialize PostgreSQL replica master ..."
-          su - postgres -c "test -f /var/lib/pgsql/PG_VERSION && rm -rf /var/lib/pgsql/data/* || :"
           su - postgres -c "mkdir -p /var/lib/pgsql/pg_archive"
-          su - postgres -c "cd /var/lib/pgsql/data && initdb"
+          su - postgres -c "test -f /var/lib/pgsql/PG_VERSION && rm -rf /var/lib/pgsql/data/* || :"
+          # see /usr/share/doc/postgresql-*/README.rpm-dist (alt. service postgresql initdb)
+          postgresql-setup initdb
           cat << 'EOF' > ${postgresql_conf}
           archive_mode = on
           archive_command = 'cp %p /var/lib/pgsql/pg_archive/%f'
           hot_standby = on
           hot_standby_feedback = on
           listen_addresses = '*'
+          log_directory = 'pg_log'
           max_standby_archive_delay = -1
           max_standby_streaming_delay = -1
           replication_timeout = 5000
@@ -208,7 +215,7 @@
       - content: |
           #! /bin/bash
           set -e
-          psql -U postgres -c "SELECT client_addr,sync_state FROM pg_stat_replication;"
+          psql -U postgres -c "SELECT * FROM pg_stat_replication;"
         dst: check_replica.sh
 
       # :see: likewise

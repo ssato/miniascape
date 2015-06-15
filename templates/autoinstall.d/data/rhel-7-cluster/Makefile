@@ -82,6 +82,7 @@ create-cluster: $(WORKDIR)/create-cluster.stamp
 $(WORKDIR)/create-cluster.stamp: $(WORKDIR)/prep.stamp
 	$(PCS_AUTH_ALL)
 	$(PCS_SETUP_START)
+	$(PCS_SETUP_INIT)
 	pcs cluster enable --all
 	pcs cluster status
 	touch $@
