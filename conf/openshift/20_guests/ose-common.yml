@@ -1,9 +1,6 @@
 # References:
 # * https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/2/html/Deployment_Guide/
 #
-networks:
-{% include "00_includes/10_network_ose.yml" %}
-
 site: openshift
 common:
   name_prefix: openshift_
@@ -80,7 +77,6 @@ common:
 
   nameservers:
     - ip: *gateway
-    - ip: 8.8.8.8
     - ip: &broker_1_ip 192.168.210.11
 
   store_cmdline: false

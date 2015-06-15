@@ -1,5 +1,10 @@
 # DO NOT OVERWRITE/CUSTOMIZE THIS!
+networks:
+{% include "00_includes/10_network_ose.yml" %}
+
 {% include "00_includes/30_guests.yml" %}
+
+{% include "20_guests/ose-common.yml" %}
 
 guests:
 {% include "20_guests/ose-broker.yml" %}
