@@ -51,6 +51,8 @@ PCS_SETUP_START = \
 pcs cluster status || \
 pcs cluster setup --start --name $(PCS_CLUSTER_NAME) $(PCS_CLUSTER_NODES)
 
+PCS_STATUS = pcs cluster status --full; pcs status --full
+
 
 all:
 	@echo "Usage: make [VAR_OVERRIDES ...]"
@@ -85,7 +87,7 @@ $(WORKDIR)/create-cluster.stamp: $(WORKDIR)/prep.stamp
 	$(PCS_SETUP_START)
 	$(PCS_SETUP_INIT)
 	pcs cluster enable --all
-	pcs cluster status
+	$(PCS_STATUS)
 	touch $@
 
 # FIXME:
@@ -107,7 +109,7 @@ endif
 	pcs stonith show --all
 	pcs property show --full
 	pcs property set stonith-enabled=true
-	pcs cluster status
+	$(PCS_STATUS)
 	$(PCS_DO_BACKUP)
 	touch $@
 
@@ -122,7 +124,7 @@ ifneq ($(PCS_SETUP_CONSTRAINTS),)
 	$(PCS_SETUP_CONSTRAINTS)
 endif
 	pcs resource show --full
-	pcs cluster status
+	$(PCS_STATUS)
 	$(PCS_DO_BACKUP)
 	touch $@
 
