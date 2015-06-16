@@ -11,13 +11,13 @@ PCS_PASSWORD ?= {{ m2_random_string() if m2_random_string is defined else 'secre
 PCS_CLUSTER_NAME ?= {{ cluster.name|default('rhel-7-cluster-0') }}
 PCS_CLUSTER_NODES ?= {{ cluster.nodes|join(' ') }}
 
-PCS_SETUP_INIT =?
-PCS_SETUP_FENCES =?
+PCS_SETUP_INIT ?=
+PCS_SETUP_FENCES ?=
 PCS_SETUP_RESOURCES ?=
 PCS_SETUP_CONSTRAINTS ?=
 
 {% for it in cluster.init -%}
-PCS_SETUP_INIT += {{ it }}
+PCS_SETUP_INIT += {{ it }};
 {% else -%}
 PCS_SETUP_INIT = :
 {% endfor %}
