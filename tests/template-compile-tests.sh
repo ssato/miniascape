@@ -27,8 +27,9 @@ for tgt in ${targets}; do
         out_f=${workdir}/${test_basename}_out
         err_f=${workdir}/${test_basename}_err
 
-        anytemplate_cli -E jinja2 -C ${ctx_f} -T ${topdir}/templates/autoinstall.d \
-            -o ${out_f} ${tmpl} 2> ${err_f}
+        # anytemplate_cli -E jinja2 -C ${ctx_f} -T ${topdir}/templates/autoinstall.d \
+        #    -o ${out_f} ${tmpl} 2> ${err_f}
+        ${curdir}/template-compile.py ${tmpl} ${ctx_f} ${out_f} ${topdir}/templates/autoinstall.d
         test_result=$(diff -u ${exp_f} ${out_f}); test_rc=$?
         if test ${test_rc} -ne 0; then
             echo "NG: ${test_basename}, see the log ${err_f} for more details:"
