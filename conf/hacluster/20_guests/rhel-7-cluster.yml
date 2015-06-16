@@ -218,6 +218,11 @@
           grep -E '^host *replication' /var/lib/pgsql/data/pg_hba.conf || \
           (su - postgres -c "cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.save" && \
              echo 'host replication all 192.168.122.0/24 trust' >> /var/lib/pgsql/data/pg_hba.conf)
+          systemctl status firewalld && \
+            (firewall-cmd --permanent --add-service=postgresql && \
+             firewall-cmd --add-service=postgresql) || \
+          (systemctl status iptables && \
+           iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 5432 -j ACCEPT || :)
         dst: init_replica_master.sh
 
       - content: |
@@ -244,6 +249,11 @@
           EOF
           chmod 0600 /var/lib/pgsql/data/recovery.conf
           chown postgres.postgres /var/lib/pgsql/data/recovery.conf
+          systemctl status firewalld && \
+            (firewall-cmd --permanent --add-service=postgresql && \
+             firewall-cmd --add-service=postgresql) || \
+          (systemctl status iptables && \
+           iptables -I INPUT  -p tcp -m state --state NEW -m tcp --dport 5432 -j ACCEPT || :)
         dst: init_replica_slave.sh
 
     # Quick and dirty workaround for rhbz#1206267
