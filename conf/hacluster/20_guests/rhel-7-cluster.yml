@@ -194,7 +194,7 @@
           postgresql_conf=${0%/*}/postgresql.conf
           echo "Initialize PostgreSQL replica master ..."
           su - postgres -c "mkdir -p /var/lib/pgsql/pg_archive"
-          su - postgres -c "test -f /var/lib/pgsql/PG_VERSION && rm -rf /var/lib/pgsql/data/* || :"
+          su - postgres -c "test -f /var/lib/pgsql/data/PG_VERSION && rm -rf /var/lib/pgsql/data/* || :"
           # see /usr/share/doc/postgresql-*/README.rpm-dist (alt. service postgresql initdb)
           postgresql-setup initdb
           cat << 'EOF' > ${postgresql_conf}
