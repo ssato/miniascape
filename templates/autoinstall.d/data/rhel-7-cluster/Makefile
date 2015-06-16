@@ -35,7 +35,8 @@ systemctl status firewalld && \
 
 ENSURE_PCSD_STARTED ?= \
 (systemctl is-enabled pcsd || systemctl enable pcsd) && \
-(systemctl is-active pcsd || systemctl start pcsd)
+(systemctl is-active pcsd || systemctl start pcsd); \
+systemctl status pcsd
 
 # see: pcs(8)
 ifeq ($(PCS_CLUSTER_NODES),)
