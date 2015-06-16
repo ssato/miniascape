@@ -54,6 +54,7 @@
           options:
             ip: &rhel_7_cluster_rsc_1_ip 192.168.155.130
             cidr_netmask: 24
+            nic: eth0
           group: ha-postgres-vips
           others: []
 
@@ -62,6 +63,7 @@
           options:
             ip: &rhel_7_cluster_rsc_2_ip 192.168.122.130
             cidr_netmask: 24
+            nic: eth1
           group: ha-postgres-vips
 
         # clone-{node-,}max, notify:
@@ -116,6 +118,12 @@
                 timeout: 60s
                 interval: 0s
                 on-fail: stop
+
+            - action: start
+              options:
+                timeout: 60s
+                interval: 0s
+                on-fail: restart
 
             - action: stop
               options:
