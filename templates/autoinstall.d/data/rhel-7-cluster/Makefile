@@ -115,6 +115,7 @@ endif
 
 setup-resources: $(WORKDIR)/setup-resources.stamp
 $(WORKDIR)/setup-resources.stamp: $(WORKDIR)/setup-fences.stamp
+	test -f /var/lib/pgsql/data/postgresql.conf
 ifeq ($(PCS_SETUP_RESOURCES),)
 	echo "PCS_SETUP_RESOURCES is not set. Aborting ..."; exit 1
 else
