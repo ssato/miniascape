@@ -10,9 +10,12 @@ PCS_PASSWORD ?= secret
 PCS_CLUSTER_NAME ?= rhel-7-cluster-0
 PCS_CLUSTER_NODES ?= rhel-7-cluster-default-1 rhel-7-cluster-default-2
 
-PCS_SETUP_FENCES =?
+PCS_SETUP_INIT ?=
+PCS_SETUP_FENCES ?=
 PCS_SETUP_RESOURCES ?=
 PCS_SETUP_CONSTRAINTS ?=
+
+PCS_SETUP_INIT = :
 
 # RHEL 7 High Availability Add-On Administration,
 # - 5. Configuring Cluster Resources: http://red.ht/1JEoIyK
@@ -25,32 +28,29 @@ pcs stonith show fence_xvm_2 || \
 pcs stonith create fence_xvm_2 fence_xvm delay='20' port='default_rhel-7-cluster-2' ;
 
 PCS_SETUP_RESOURCES += \
-pcs resource create svc_ip ocf:heartbeat:IPaddr2 ip='192.168.155.130' cidr_netmask='24'  \
---group ha-postgres \
- \
- \
- \
- \
+pcs resource create svc_ip 'ocf:heartbeat:IPaddr2' ip='192.168.155.130' cidr_netmask='24'  \
   \
 ;
+#
 PCS_SETUP_RESOURCES += \
-pcs resource create replica_master_ip ocf:heartbeat:IPaddr2 ip='192.168.122.130' cidr_netmask='24'  \
---group ha-postgres \
- \
- \
- \
- \
+pcs resource create replica_master_ip 'ocf:heartbeat:IPaddr2' ip='192.168.122.130' cidr_netmask='24'  \
   \
 ;
+#
 PCS_SETUP_RESOURCES += \
-pcs resource create db_server ocf:heartbeat:pgsql restart_on_promote='true' rep_mode='sync' node_list='rhel-7-cluster-default-1 rhel-7-cluster-default-2' master_ip='192.168.122.130' restore_command='cp /var/lib/pgsql/pg_archive/%f %p' primary_conninfo_opt='keepalives_idle=60 keepalives_interval=5 keepalives_count=5'  \
---group ha-postgres \
-op monitor interval='10s' role='Master' timeout='60s' on-fail='restart' op promote interval='0s' timeout='60s' on-fail='restart' op demote interval='0s' timeout='60s' on-fail='stop' op stop interval='0s' timeout='60s' on-fail='block'  \
- \
- \
- --master master-node-max='1' master-max='1' clone-max='2' notify='true' clone-node-max='1'  \
-  \
+pcs resource create db_server 'ocf:heartbeat:pgsql' restart_on_promote='true' rep_mode='sync' node_list='rhel-7-cluster-default-1 rhel-7-cluster-default-2' master_ip='192.168.122.130' restore_command='cp /var/lib/pgsql/pg_archive/%f %p' primary_conninfo_opt='keepalives_idle=60 keepalives_interval=5 keepalives_count=5'  \
+ --master meta master-node-max='1' master-max='1' clone-max='2' notify='true' clone-node-max='1'   \
+op monitor interval='10s' role='Master' timeout='60s' on-fail='restart'  \
+op promote interval='0s' timeout='60s' on-fail='restart'  \
+op demote interval='0s' timeout='60s' on-fail='stop'  \
+op stop interval='0s' timeout='60s' on-fail='block'  \
 ;
+##PCS_SETUP_RESOURCES += \
+#pcs resource master db_server-master db_server master-node-max='1' master-max='1' clone-max='2' notify='true' clone-node-max='1' ;
+#
+
+PCS_SETUP_RESOURCES += \
+pcs resource group add ha-postgres svc_ip replica_master_ip db_server
 
 PCS_SETUP_CONSTRAINTS += pcs constraint colocation add ha-postgres with Master db_server-master INFINITY;
 PCS_SETUP_CONSTRAINTS += pcs constraint order promote db_server-master then start ha-postgres symmetrical=false score=INFINITY;
