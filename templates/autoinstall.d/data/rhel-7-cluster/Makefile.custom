@@ -3,6 +3,8 @@
 {%     if adict %}{% for k, v in adict.iteritems() %}{{ k }}='{{ v }}' {% endfor %}{% endif %}{% endmacro %}
 WORKDIR ?= /root/setup
 
+RPMS ?= pcs fence-agents-common {{ cluster.fence_agent_rpm|default('fence-agents-all') }}
+
 #SETUP_FORCE ?= --force
 SETUP_FORCE ?=
 

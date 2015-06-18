@@ -5,6 +5,7 @@ lftp
 make
 ntpdate
 rpm-build
+rsync
 system-config-firewall-base
 screen
 sos

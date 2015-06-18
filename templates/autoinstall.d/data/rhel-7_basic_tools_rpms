@@ -3,6 +3,7 @@ bash-completion
 chrony
 lftp
 pcp
+rsync
 screen
 sos
 strace
