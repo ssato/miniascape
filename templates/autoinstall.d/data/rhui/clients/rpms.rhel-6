@@ -678,3 +678,6 @@ rpm-build
 libselinux-python
 python-paramiko
 redhat-lsb
+# for certification with ccp-client:
+openscap-utils
+scap-security-guide
