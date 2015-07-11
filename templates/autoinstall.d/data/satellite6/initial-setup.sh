@@ -66,7 +66,6 @@ function setup_org_and_location () {
             hammer location create --name="${location}"
     fi
 
-    # TODO: Which of the followings are necessary?
     hammer location add-user --name="${location}" --user="${admin}"
     hammer location add-organization --name="${location}" --organization="${org}"
     hammer organization add-user --name="${org}" --user="${admin:?}"
