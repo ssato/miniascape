@@ -39,6 +39,15 @@ curl -vk --connect-timeout 5 $(CURL_PROXY_OPT) https://cdn.redhat.com
 #   - 2.1.2. Downloading from a Disconnected Network: http://red.ht/1MlR1jf
 #   - 2.2. Running the Installation and Configuration Program: http://red.ht/1NVBbMD
 
+# Yum repos (software collection) are required anyway:
+SETUP_RHN ?= \
+subscription-manager identity || \
+subscription-manager register $(SUBSCRIPTION_MANAGER_REGISTER_OPTS) && \
+subscription-manager repos --disable '*' && \
+subscription-manager repos --enable rhel-6-server-rpms \
+--enable rhel-server-rhscl-6-rpms \
+--enable rhel-server-6-satellite-6-beta-rpms
+
 # a-1. Offline installation w/ ISO image downloaded before.
 SETUP_SATELLITE_ISO ?= \
 cd $(WORKDIR) && (test -f satellite.iso || ln -sf `ls -1 satellite*.iso | head -n 1` satellite.iso)
@@ -173,7 +182,8 @@ check.stamp: $(LOGDIR)
 	touch $@
 
 install: install.stamp
-install.stamp: check.stamp $(SATELLITE_ISO)
+install.stamp: check.stamp
+	subscription-manager identity
 	$(SETUP_SATELLITE_ISO)
 	$(INSTALL_SATELLITE_RPMS)
 	$(CONFIGURE_BEFORE_SATELLITE_INSTALLATION)

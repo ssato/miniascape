@@ -17,6 +17,8 @@ CHECK_IF_NTPD_IS_RUNNING_AND_ENABLED ?= rpm -q ntp 2>/dev/null && systemctl stat
 CHECK_IF_NTPD_IS_RUNNING_AND_ENABLED ?= rpm -q ntp 2>/dev/null && service ntpd status && chkconfig ntpd
 {% endif %}
 
+SUBSCRIPTION_MANAGER_REGISTER_OPTS ?=
+
 SATELLITE_ISO ?= satellite.iso
 
 # Katello
@@ -49,7 +51,7 @@ KATELLO_INSTALLER_OPTIONS   ?= \
 {{ "--foreman-admin-email=%s" % satellite.admin.email if satellite.admin.email }} \
 {{ "--foreman-admin-first-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
 {{ "--foreman-admin-last-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
-{%- if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
+{%  if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
 {{      "--katello-proxy-url=http://%s" % proxy.fqdn }} \
 --katello-proxy-port={{ proxy.port|default('8080') }} \
 {{ "--katello-proxy-username=%s" % proxy.username if proxy.username }} \
@@ -127,7 +129,7 @@ SETUP_HOST_COLLECTIONS ?= \
 hammer host-collection list --organization "$(ORG_NAME)" | tee $(HCS_LIST_0) && \
 {%  for hc in satellite.host_collections if hc.name -%}
 grep "{{ hc.name }}" $(HCS_LIST_0) 2>/dev/null || \
-hammer host-collection create --organization "$(ORG_NAME)" --name "{{ hc.name }}"
+hammer host-collection create --organization "$(ORG_NAME)" --name "{{ hc.name }}";
 {%- else -%}
 hammer host-collection create --organization "$(ORG_NAME)" --name "HC_RHEL_6_x86_64_Latest_Test" && \
 hammer host-collection create --organization "$(ORG_NAME)" --name "HC_RHEL_6_x86_64_Latest_Prod"
