@@ -44,9 +44,15 @@ SETUP_RHN ?= \
 subscription-manager identity || \
 subscription-manager register $(SUBSCRIPTION_MANAGER_REGISTER_OPTS) && \
 subscription-manager repos --disable '*' && \
-subscription-manager repos --enable rhel-6-server-rpms \
---enable rhel-server-rhscl-6-rpms \
---enable rhel-server-6-satellite-6-beta-rpms
+test -f /etc/systemd && \
+subscription-manager repos \
+    --enable rhel-7-server-rpms \
+    --enable rhel-server-rhscl-7-rpms \
+    --enable rhel-server-7-satellite-6-beta-rpms || \
+subscription-manager repos \
+    --enable rhel-6-server-rpms \
+    --enable rhel-server-rhscl-6-rpms \
+    --enable rhel-server-6-satellite-6-beta-rpms
 
 # a-1. Offline installation w/ ISO image downloaded before.
 SETUP_SATELLITE_ISO ?= \
@@ -114,7 +120,7 @@ org_id=`hammer --csv organization list | sed -nr 's/^([[:digit:]]+),$(ORG_NAME),
 test "x$${org_id}" != "x" && echo $${org_id} > $(ORGID_FILE)
 
 SETUP_LOCATION = \
-(hammer --csv location list | grep -E '^[[:digit:]]+,$(LOCATION_NAME),.+') || \
+(hammer --csv location list | grep -E '^[[:digit:]]+,$(LOCATION_NAME)') || \
 hammer location create --name="$(LOCATION_NAME)"; \
 loc_info=`hammer --output yaml location info --name="$(LOCATION_NAME)"` && \
 (echo $$loc_info | grep -E 'login: $(ADMIN_NAME)$$' 2>/dev/null) || \
@@ -136,6 +142,9 @@ hammer sync-plan create --organization "$(ORG_NAME)" \
   --interval daily --name "Daily Sync" --enabled true && \
 hammer product set-sync-plan --organization-id `cat $(ORGID_FILE)` \
   --name "$(PRODUCT)" --sync-plan-id 1  # It seems that --sync-plan is not valid.
+
+SYNC_REPOS_BY_PRODUCT = \
+hammer product synchronize --name "$(PRODUCT)" --organization-id `cat $(ORGID_FILE)`
 
 SYNC_REPOS = \
 for rid in \
@@ -183,7 +192,7 @@ check.stamp: $(LOGDIR)
 
 install: install.stamp
 install.stamp: check.stamp
-	subscription-manager identity
+	$(SETUP_RHN)
 	$(SETUP_SATELLITE_ISO)
 	$(INSTALL_SATELLITE_RPMS)
 	$(CONFIGURE_BEFORE_SATELLITE_INSTALLATION)
@@ -204,7 +213,7 @@ setup.stamp:
 	$(SETUP_HOST_COLLECTIONS)
 
 sync:
-	$(SYNC_REPOS)
+	$(SYNC_REPOS_BY_PRODUCT)
 
 publish:
 	$(PUBLISH_REPOS)
