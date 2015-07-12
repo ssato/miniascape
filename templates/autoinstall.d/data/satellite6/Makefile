@@ -95,8 +95,8 @@ katello-installer $(KATELLO_INSTALLER_OPTIONS) 2>&1 | tee $(LOGDIR)/katello-inst
 #
 SETUP_HAMMER_USER_CONF = \
 test -f $(HAMMER_USER_CONF) || \
-(test -d $(dir HAMMER_USER_CONF) || \
- mkdir -m 0700 $(dir HAMMER_USER_CONF); \
+(test -d $(dir $(HAMMER_USER_CONF)) || \
+ mkdir -m 0700 $(dir $(HAMMER_USER_CONF)); \
  cp $(HAMMER_SYS_CONF) $(HAMMER_USER_CONF) && \
  chmod 600 $(HAMMER_USER_CONF) && \
  echo "" >> $(HAMMER_USER_CONF) && \
@@ -125,11 +125,11 @@ hammer location add-organization --name="$(LOCATION_NAME)" --organization "$(ORG
 LOAD_MANIFEST = \
 cd $(WORKDIR) && \
 (manifest_base64=`ls -1 manifest*.base64 | head -n 1`; \
- test "x$$manifest_base64" != "x" && test ! -f $(MANIFET_FILE).base64 && \
- ln -sf $$manifest_base64 $(MANIFET_FILE).base64); \
-test -f $(MANIFETS_FILE).base64 -a ! -f $(MANIFETS_FILE) && \
-base64 -d $(MANIFETS_FILE).base64 > $(MANIFETS_FILE) || :; \
-hammer subscription upload --organization "$(ORG_NAME)" --file $(MANIFET_FILE)
+ test "x$$manifest_base64" != "x" && test ! -f $(MANIFEST_FILE).base64 && \
+ ln -sf $$manifest_base64 $(MANIFEST_FILE).base64); \
+test -f $(MANIFEST_FILE).base64 -a ! -f $(MANIFEST_FILE) && \
+base64 -d $(MANIFEST_FILE).base64 > $(MANIFEST_FILE) || :; \
+hammer subscription upload --organization "$(ORG_NAME)" --file $(MANIFEST_FILE)
 
 SETUP_DAILY_SYNC_PLAN = \
 hammer sync-plan create --organization "$(ORG_NAME)" \
@@ -191,7 +191,8 @@ install.stamp: check.stamp
 	touch $@
 
 setup: setup.stamp
-setup.stamp: install.stamp
+setup.stamp:
+	test -f install.stamp
 	$(SETUP_HAMMER_USER_CONF)
 	$(SETUP_ORG)
 	$(SETUP_LOCATION)

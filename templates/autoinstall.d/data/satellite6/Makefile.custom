@@ -39,7 +39,7 @@ ORG_LABEL ?= Default_Organization
 {%  endif -%}
 
 LOCATION_NAME ?= {{ satellite.location|default('Default Location') }}
-MANIFET_FILE ?= manifest.zip
+MANIFEST_FILE ?= manifest.zip
 PRODUCT ?= Red Hat Enterprise Linux Server 
 LIFECYCLE_ENVIRONMENT_PATHS ?= \
 {{ satellite.lifecycle_environments|join(' ', attribute='name') if satellite.lifecycle_environments else 'Test Prod' }}
@@ -60,7 +60,7 @@ KATELLO_INSTALLER_OPTIONS   ?= \
 $(NULL)
 
 HAMMER_SYS_CONF ?= /etc/hammer/cli.modules.d/foreman.yml
-HAMMER_USER_CONF ?= ~/.hammer/cli_config.yml
+HAMMER_USER_CONF ?= $(HOME)/.hammer/cli_config.yml
 HAMMER_ADMIN_NAME = $(ADMIN_NAME)
 # http://gsw-hammer.documentation.rocks/initial_configuration,_adding_red_repos/hammer_credentials.html
 HAMMER_ADMIN_PASSWORD ?= \
