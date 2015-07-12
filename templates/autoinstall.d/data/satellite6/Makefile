@@ -137,9 +137,9 @@ done
 
 PUBLISH_REPOS = \
 for cid in \
-    `hammer content-view list --organization "$(ORG_NAME)" --nondefault 1 | \
+    `hammer --output yaml content-view list --organization "$(ORG_NAME)" --nondefault 1 | \
      sed -nr 's/.*Content View ID: ([[:digit:]]+)/\1/p'`; do \
-    hammer content-view publish --organization "$(ORG_NAME)" --id $$cid --async; \
+    hammer content-view publish --organization "$(ORG_NAME)" --id $$cid; \
 done
 
 PUBLISH_AND_PROMOTE_CONTENT_VIEWS = \
@@ -152,14 +152,14 @@ for cid in \
          sed -nr 's/.*Version: (.+)/\1/p' | sort -rn | head -n 1` && \
     for lep in $(LIFECYCLE_ENVIRONMENT_PATHS); do \
         hammer content-view version promote --content-view-id $$cid \
-	    --organization "$(ORG_NAME)" --version $$latest_ver \
-	    --to-lifecycle-environment $$lep; \
+	    --organization "$(ORG_NAME)" --version "$$latest_ver" \
+	    --to-lifecycle-environment "$$lep"; \
     done; \
 done
 
 
 all:
-	@echo "Usage: make (check | install | setup | sync | publish)"
+	@echo "Usage: make (check | install | setup | sync | publish | promote)"
 
 
 $(LOGDIR):
@@ -196,6 +196,9 @@ sync:
 	$(SYNC_REPOS)
 
 publish:
+	$(PUBLISH_REPOS)
+
+promote:
 	$(PUBLISH_AND_PROMOTE_CONTENT_VIEWS)
 	$(SETUP_ACTIVATION_KEYS)
 
