@@ -97,32 +97,65 @@ test -f $(HAMMER_USER_CONF) || \
 ORGID_FILE = $(LOGDIR)/orgid.txt
 
 SETUP_ORG = \
-org_id=`hammer organization list | sed -nr "s/^([[:digit:]]+) .*$(ORG_NAME).*/\1/p"`; \
-(test "x$${org_id}" = "x" && \
- hammer organization create --name="$(ORG_NAME)" --label="$(ORG_LABEL)" || :) && \
-hammer organization add-user --name="$(ORG_NAME)" --user="$(ADMIN_NAME)" && \
-org_id=`hammer organization list | sed -nr "s/^([[:digit:]]+) .*$(ORG_NAME).*/\1/p"`; \
+(hammer --csv organization list | grep -E '^[[:digit:]]+,$(ORG_NAME),.+') || \
+hammer organization create --name="$(ORG_NAME)" --label="$(ORG_LABEL)"; \
+hammer --output yaml organization info --name="$(ORG_NAME)" | grep -E 'login: $(ADMIN_NAME)$$' || \
+hammer organization add-user --name="$(ORG_NAME)" --user="$(ADMIN_NAME)"; \
+org_id=`hammer --csv organization list | sed -nr 's/^([[:digit:]]+),$(ORG_NAME),.+/\1/p'`; \
 test "x$${org_id}" != "x" && echo $${org_id} > $(ORGID_FILE)
 
 SETUP_LOCATION = \
-loc_id=`hammer location list | sed -nr "s/^([[:digit:]]+) .*$(LOCATION_NAME).*/\1/p"`; \
-(test "x$${loc_id}" = "x" && hammer location create --name="$(LOCATION_NAME)" || :); \
+(hammer --csv location list | grep -E '^[[:digit:]]+,$(LOCATION_NAME),.+') || \
+hammer location create --name="$(LOCATION_NAME)"; \
+loc_info=`hammer --output yaml location info --name="$(LOCATION_NAME)"` && \
+(echo $$loc_info | grep -E 'login: $(ADMIN_NAME)$$' 2>/dev/null) || \
 hammer location add-user --name="$(LOCATION_NAME)" --user="$(ADMIN_NAME)"; \
-hammer location add-organization --name="$(LOCATION_NAME)" --organization="$(ORG_NAME)"
-
+(echo $$loc_info | grep -E 'name: $(ORG_NAME)$$' 2>/dev/null) || \
+hammer location add-organization --name="$(LOCATION_NAME)" --organization "$(ORG_NAME)"
 
 LOAD_MANIFEST = \
-(test -f $(MANIFETS_FILE).base64 -a ! -f $(MANIFETS_FILE) && \
- base64 -d $(MANIFETS_FILE).base64 > $(MANIFETS_FILE) || :); \
-hammer subscription upload --organization-id `cat $(ORGID_FILE)` --file $(MANIFET_FILE)
+cd $(WORKDIR) && \
+(manifest_base64=`ls -1 manifest*.base64 | head -n 1`; \
+ test "x$$manifest_base64" != "x" && test ! -f $(MANIFET_FILE).base64 && \
+ ln -sf $$manifest_base64 $(MANIFET_FILE).base64); \
+test -f $(MANIFETS_FILE).base64 -a ! -f $(MANIFETS_FILE) && \
+base64 -d $(MANIFETS_FILE).base64 > $(MANIFETS_FILE) || :; \
+hammer subscription upload --organization "$(ORG_NAME)" --file $(MANIFET_FILE)
 
 SETUP_DAILY_SYNC_PLAN = \
-hammer sync-plan create --organization "$(ORG_NAME)" --interval daily --name "Daily Sync" --enabled false && \
+hammer sync-plan create --organization "$(ORG_NAME)" \
+  --interval daily --name "Daily Sync" --enabled true && \
 hammer product set-sync-plan --organization-id `cat $(ORGID_FILE)` \
   --name "$(PRODUCT)" --sync-plan-id 1  # It seems that --sync-plan is not valid.
 
-#SYNC_REPOS = \
-#PUBLISH_AND_PROMOTE_CONTENT_VIEWS = \
+SYNC_REPOS = \
+for rid in \
+    `hammer --output yaml repository list --organization "$(ORG_NAME)" | \
+     sed -nr 's/.*Id: ([[:digit:]]+)/\1/p'`; do \
+    hammer repository synchronize --organization "$(ORG_NAME)" --id $$rid --async; \
+done
+
+PUBLISH_REPOS = \
+for cid in \
+    `hammer content-view list --organization "$(ORG_NAME)" --nondefault 1 | \
+     sed -nr 's/.*Content View ID: ([[:digit:]]+)/\1/p'`; do \
+    hammer content-view publish --organization "$(ORG_NAME)" --id $$cid --async; \
+done
+
+PUBLISH_AND_PROMOTE_CONTENT_VIEWS = \
+for cid in \
+    `hammer content-view list --organization "$(ORG_NAME)" --nondefault 1 | \
+     sed -nr 's/.*Content View ID: ([[:digit:]]+)/\1/p'`; do \
+    hammer content-view publish --organization "$(ORG_NAME)" --id $$cid && \
+    latest_ver=`hammer --output yaml content-view version list \
+                       --organization "$(ORG_NAME)" --content-view-id $$cid | \
+         sed -nr 's/.*Version: (.+)/\1/p' | sort -rn | head -n 1` && \
+    for lep in $(LIFECYCLE_ENVIRONMENT_PATHS); do \
+        hammer content-view version promote --content-view-id $$cid \
+	    --organization "$(ORG_NAME)" --version $$latest_ver \
+	    --to-lifecycle-environment $$lep; \
+    done; \
+done
 
 
 all:
@@ -160,11 +193,10 @@ setup.stamp: install.stamp
 	$(SETUP_HOST_COLLECTIONS)
 
 sync:
-	@echo TBD
+	$(SYNC_REPOS)
 
 publish:
-	@echo TBD
-	exit 1
+	$(PUBLISH_AND_PROMOTE_CONTENT_VIEWS)
 	$(SETUP_ACTIVATION_KEYS)
 
 
