@@ -144,7 +144,7 @@ done
 
 PUBLISH_AND_PROMOTE_CONTENT_VIEWS = \
 for cid in \
-    `hammer content-view list --organization "$(ORG_NAME)" --nondefault 1 | \
+    `hammer --output yaml content-view list --organization "$(ORG_NAME)" --nondefault 1 | \
      sed -nr 's/.*Content View ID: ([[:digit:]]+)/\1/p'`; do \
     hammer content-view publish --organization "$(ORG_NAME)" --id $$cid && \
     latest_ver=`hammer --output yaml content-view version list \
