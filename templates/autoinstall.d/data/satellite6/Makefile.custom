@@ -48,7 +48,7 @@ HOST_COLLECTIONS ?= {{ satellite.host_collections|join(' ', attribute='name') if
 
 KATELLO_INSTALLER_OPTIONS   ?= \
 --foreman-admin-username=$(ADMIN_NAME) \
-{{ "--foreman-admin-password=\"%s\"" % satellite.admin.password if satellite.admin.password }} \
+{{ "--foreman-admin-password='%s'" % satellite.admin.password if satellite.admin.password }} \
 {{ "--foreman-admin-email=%s" % satellite.admin.email if satellite.admin.email }} \
 {{ "--foreman-admin-first-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
 {{ "--foreman-admin-last-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
