@@ -21,7 +21,7 @@
 CHECK_IF_NTPD_IS_SYNCHED ?= $(CHECK_IF_NTPD_IS_RUNNING_AND_ENABLED) && ntptime
 CHECK_CLOCK ?= date && $(CHECK_IF_NTPD_IS_SYNCHED)
 
-CHECK_FQND ?= \
+CHECK_FQDN ?= \
 hostname && hostname -f && hostname -s && \
 ping -c1 -w3 localhost && ping -c1 -w3 `hostname -s` && \
 ping -c1 -w3 `hostname -f`
