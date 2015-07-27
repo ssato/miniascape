@@ -220,8 +220,10 @@ publish:
 
 promote:
 	$(PUBLISH_AND_PROMOTE_CONTENT_VIEWS)
+
+akeys:
 	$(SETUP_ACTIVATION_KEYS)
 
 
-.PHONY: check install setup sync publish
+.PHONY: check install setup sync publish promote akeys
 # vim:noet:
