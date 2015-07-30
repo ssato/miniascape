@@ -14,8 +14,8 @@ cd ${outdir} && base64 --decode setup.tar.xz.base64 | tar --xz -xC ${outdir}/ &&
 cd ${outdir} && base64 -i -d setup.tar.xz.base64 > setup.tar.xz && xz -d setup.tar.xz && tar -xf setup.tar -C ${outdir}/ && cd -
 {%-        endif %}
 {%         for data in setup_data if data.install is defined -%}
-idir=$(dirname {{ data.install.dst }}); test -d $idir || install -d $idir
-install -m{{ data.install.mode|default('644') }} {% if data.install.backup %}--suffix=.save --backup{% endif %} ${datadir}/{{ data.dst }} {{ data.install.dst }}
+idir=$(dirname {{ data.install.dst }}); test -d $idir || install -d $idir;
+install -m{{ data.install.mode|default('644') }} {% if data.install.backup %}--suffix=.save --backup{% endif %} ${datadir}/{{ data.dst }} {{ data.install.dst }};
 {%-        else -%}  #  ... there is no data to install.
 {%         endfor %}
 {%-    endif -%}
