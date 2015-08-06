@@ -1,0 +1,21 @@
+# Common variables:
+WORKDIR ?= /root/setup
+LOGDIR ?= $(WORKDIR)/logs
+
+# Custom definitions.
+{% if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
+PROXY_URL ?= {{ "http://%s" % proxy.fqdn }}{{ ":%s" % proxy.port|default('8080') }}
+CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+{% else -%}
+PROXY_URL ?=
+CURL_PROXY_OPT ?=
+{% endif %}
+
+SUBSCRIPTION_MANAGER_REGISTER_OPTS ?= \
+{{ "--consumerid %s" % rhn.uuid if rhn and rhn.uuid is defined and rhn.uuid }}
+
+# OSE:
+OSE_MASTER ?= {{ openshift.master.fqdn }}
+OSE_NODES ?= {{ openshift.nodes|join(' ', attribute='fqdn') }}
+
+# vim:noet:ft=make:

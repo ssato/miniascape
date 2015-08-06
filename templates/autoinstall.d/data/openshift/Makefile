@@ -1,86 +1,142 @@
-# Makefile to setup OpenShift Enterprise brokers and nodes.
-# Requirements: curl, etc.
-# Author: Satoru SATOH <ssato@redhat.com>
+# Makefile to install and setup OpenShift Enterprise 3.0 master node.
+# Author: Satoru SATOH <ssato/redhat.com>
 # License: MIT
 #
-WORKDIR ?= /root/setup
+# Overview of the steps after RHEL installation:
+#   1. Registration and subscription attachment (master and node)
+#   2. Yum repository setup (master and node)
+#   3. Install RPMs:
+#      a. master: git, etc.
+#      b. node: docker, etc.
+#   4. Fully update RPMs (master and node)
+#   5. Setup Docker and its Storage (node)
+#   6. Install and setup OSE with ansible (workstation)
+#
+# References:
+#   - Red Hat OpenShift Enterprise Administrator Guide
+#   - Red Hat OpenShift Enterprise Architecture
+#   - Red Hat OpenShift Enterprise Getting Started
+#
+# Load variables, etc.
+-include Makefile.custom
 
-RHN_USERNAME ?= {{ rhn.username if rhn.username }}
-RHN_PASSWORD ?= {{ rhn.password if rhn.password }}
-RHSM_SUBSCRIPTION_POOL ?= {{ rhn.subscription.pool if rhn.subscription }}
+# Flags:
+IS_MASTER ?= yes
+IS_WORKSTATION ?= $(IS_MASTER)
+HA_MASTER ?=
 
-RHSM_REGISTER ?= \
-subscription-manager register \
-$(if $(RHN_USERNAME),--username=$(RHN_USERNAME),) \
-$(if $(RHN_PASSWORD),--password=$(RHN_PASSWORD),) \
---force
+CHECK_CLOCK ?= date && chronyc tracking && chronyc sources
+CHECK_FQDN ?= \
+hostname && hostname -f && hostname -s && \
+ping -c1 -w3 localhost && ping -c1 -w3 `hostname -s` && \
+ping -c1 -w3 `hostname -f`
 
-RHSM_SUBSCRIBE ?= \
-subscription-manager subscribe \
-$(if $(RHSM_SUBSCRIPTION_POOL),--pool=$(RHSM_SUBSCRIPTION_POOL),--auto)
+CA_CERT ?= /etc/rhsm/ca/redhat-uep.pem
+CHECK_CDN_ACCESS ?= \
+curl -v --cacert $(CA_CERT) --connect-timeout 5 $(CURL_PROXY_OPT) https://cdn.redhat.com
 
-RHSM_ACTIVATE_REPOS ?= \
-subscription-manager repos \
-{% for r in repos -%}
---enable={{ r }} \
-{% endfor %}
+# Yum repos (software collection) are required anyway:
+REGISTER_RHN_IF_NOT ?= \
+subscription-manager identity || subscription-manager register $(SUBSCRIPTION_MANAGER_REGISTER_OPTS)
 
-OPENSHIFT_SH_URL ?= {{ openshift.openshift_sh_url|default('https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh') }}
-OPENSHIFT_SH_LOG ?= $(WORKDIR)/log/openshift.sh.log
-OPENSHIFT_SH_OPTIONS ?= \
-install_method={{ openshift.install_method|default('none') }} \
-install_components="{{ openshift.install_components|join(',') }}" \
-{% if openshift.install_method == 'rhsm' -%}
-rhn_user=$(RHN_USERNAME) rhn_pass=$(RHN_PASSWORD) $(if $(RHSM_SUBSCRIPTION_POOL),sm_reg_pool=$(RHSM_SUBSCRIPTION_POOL),) \
-{% endif -%}
-domain={{ openshift.domain|default('apps.openshift.example.com') }} \
-hosts_domain={{ openshift.hosts_domain|default('openshift.example.com') }} \
-broker_hostname={{ openshift.broker_hostname }} \
-activemq_hostname={{ openshift.broker_hostname }} \
-datastore_hostname={{ openshift.broker_hostname }} \
-mcollective_password={{ openshift.mcollective_password|default('rhosesecret') }} \
-{% if "named" in openshift.install_components -%}
-named_entries="{{ hostname }}:{{ openshift.broker_ip }},broker:{{ openshift.broker_ip }},activemq:{{ openshift.activemq_ip }}{% if openshift.nodes %},{% for node in openshift.nodes if node.hostname and node.ip %}{{ node.hostname }}:{{ node.ip }}{{ ',' if not loop.last }}{% endfor %}{% endif %}" \
-{% endif -%}
-{% if "broker" in openshift.install_components -%}
-{{ 'valid_gear_sizes="%s"' % openshift.valid_gear_sizes if openshift.valid_gear_sizes }} \
-{{ "default_gear_size=%s" % openshift.default_gear_size if openshift.default_gear_size }} \
-{{ "default_gear_capabilities=%s" % openshift.default_gear_capabilities if openshift.default_gear_capabilities }} \
-{%   if openshift.district_mappings -%}
-default_districts=false
-district_mappings="
-{%-    for district, nodes in openshift.district_mappings.iteritems() -%}
-{{ district }}:{{ nodes|join(',') }}{{ ';' if not loop.last }}
-{%-    endfor %}" \
-{%   endif -%}
-{% endif -%}
-{{ "mongodb_broker_password=%s" % openshift.mongodb_broker_password if openshift.mongodb_broker_password }} \
-{{ "openshift_password1=%s" % openshift.openshift_password1 if openshift.openshift_password1 }} \
-{% if "node" in openshift.install_components -%}
-node_hostname={{ openshift.node_hostname }} \
-broker_ip_addr={{ openshift.broker_ip }} \
-{{ "node_profile=%s" % openshift.node_profile if openshift.node_profile }} \
-{%   if openshift.cartridges -%}
-cartridges={{ openshift.cartridges|join(',') }} \
-{%   endif -%}
-{% endif -%}
-$(NULL)
+OSE_COMMON_YUM_REPOS ?= \
+rhel-7-server-rpms \
+rhel-7-server-extras-rpms \
+rhel-7-server-optional-rpms \
+rhel-7-server-ose-3.0-rpms
+
+OSE_MASTER_YUM_REPOS = $(OSE_COMMON_YUM_REPOS)
+ifneq ($(strip $(HA_MASTER)),)
+OSE_MASTER_YUM_REPOS += rhel-ha-for-rhel-7-server-rpms
+endif
+
+SETUP_NODE_YUM_REPOS ?= \
+subscription-manager repos --disable '*' && \
+subscription-manager repos $(addprefix --enable=,$(OSE_COMMON_YUM_REPOS))
+
+SETUP_MASTER_YUM_REPOS ?= \
+subscription-manager repos --disable '*' && \
+subscription-manager repos $(addprefix --enable=,$(OSE_MASTER_YUM_REPOS))
+
+OSE_COMMON_RPMS ?=
+OSE_NODE_RPMS ?= $(OSE_COMMON_RPMS) docker
+OSE_MASTER_RPMS ?= $(OSE_COMMON_RPMS) wget git net-tools bind-utils iptables-services bridge-utils
+
+ifeq ($(strip $(IS_MASTER)),)
+INSTALL_RPMS ?= \
+rpm -q $(OSE_NODE_RPMS) || yum install -y $(OSE_NODE_RPMS)
+else
+INSTALL_RPMS ?= rpm -q $(OSE_MASTER_RPMS) || yum install -y $(OSE_MASTER_RPMS)
+endif
+FULLY_UPDATE_RPMS = yum update -y
+
+EPEL_RELEASE_RPM_URL ?= https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+
+ifeq ($(strip $(IS_MASTER)$(IS_WORKSTATION)),)
+PRE_INSTALL_SETUP ?=
+rpm -q docker && \
+(grep -qE '^INSECURE_REGISTRY' /etc/sysconfig/docker 2>/dev/null || \
+sed -i.save -e "/INSECURE_REGISTRY/a \
+INSECURE_REGISTRY='--insecure-registry 172.30.0.0/16'\n" /etc/sysconfig/docker) && \
+touch /etc/sysconfig/docker-storage-setup.save && \
+echo "VG=vgdocker" >> /etc/sysconfig/docker-storage-setup && \
+docker-storage-setup && \
+rm -rf /var/lib/docker/* && \
+(systemctl is-active docker && systemctl restart docker || :)
+else ifeq ($(strip $(IS_WORKSTATION)),)
+PRE_INSTALL_SETUP ?= \
+(test -f $(HOME)/.ssh/id_rsa || ssh-keygen -t rsa -N '' -f .ssh/id_rsa) && \
+for host in $(OSE_MASTER) $(OSE_NODES); do ssh-copy-id $$host; done && \
+rpm -q ansible || \
+(test -f /etc/yum.repos.d/epel.repo -o -f /etc/fedora-release || \
+ (yum install -y $(EPEL_RELEASE_RPM_URL) && \
+  sed -i.save -e 's/^(enabled)/(&) = 0/' /etc/yum.repos.d/epel.repo && \
+  yum --enablerepo=epel install -y ansible)) && \
+(rpm -q ansible || yum install -y ansible) && \
+(rpm -q git || yum install -y git) && \
+git clone https://github.com/openshift/openshift-ansible openshift-ansible.git
+else
+PRE_INSTALL_SETUP ?= :
+endif
+
+# There are several ways to install and setup OSE 3:
+#   a. Quick Installation:
+#      x. Run installer available from https://install.openshift.com/ose/
+#      y. Run Installation utility available from
+#         https://install.openshift.com/portable/oo-install-ose.tgz
+#
+#   b. Advanced Installation: install and setup with ansbile playbook.
+#      OSE playbook is available from https://github.com/openshift/openshift-ansible
+#
+ifeq ($(strip $(IS_WORKSTATION)),)
+OSE_INSTALL ?= :
+else
+OSE_INSTALL ?= \
+cd openshift-ansible.git && git checkout -b 3.x v3.0.0 && \
+ansible-playbook -i ../ansible.hosts playbooks/byo/config.yml && \
+ssh $(OSE_MASTER) "oc get nodes"
+endif
 
 
-all: setup.stamp
+all:
+	@echo "Usage: make (check | install-rpms | install | setup)"
 
-rhsm:
-	subscription-manager identity || ($(RHSM_REGISTER) && $(RHSM_SUBSCRIBE))
-	subscription-manager repos --disable='*'
-	$(RHSM_ACTIVATE_REPOS)
-	yum update -y
 
-openshift.sh:
-	curl -O $(OPENSHIFT_SH_URL)
+check:
+	$(CHECK_CLOCK)
+	$(CHECK_FQDN)
+	$(CHECK_CDN_ACCESS)
 
-setup.stamp: openshift.sh
-	test -d $(dir $(OPENSHIFT_SH_LOG)) || mkdir -p $(dir $(OPENSHIFT_SH_LOG))
-	bash $< $(OPENSHIFT_SH_OPTIONS) 2>&1 | tee -a $(OPENSHIFT_SH_LOG)
+install-rpms:
+	$(REGISTER_RHN_IF_NOT)
+	$(INSTALL_RPMS)
+	$(FULLY_UPDATE_RPMS)
+
+install: install.stamp
+install.stamp:
+	$(PRE_INSTALL_SETUP)
+	$(OSE_INSTALL)
 	touch $@
 
-.PHONY: rhsm
+.PHONY: check install-rpms install
+# vim:noet:

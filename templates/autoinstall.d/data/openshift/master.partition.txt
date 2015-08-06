@@ -1,0 +1,7 @@
+zerombr
+clearpart  --all --initlabel
+part /boot --size=200
+part pv.10 --size=1 --grow
+volgroup vg0 pv.10
+logvol /    --name=lv_root --vgname=vg0 --size=1 --grow
+logvol swap --name=lv_swap --vgname=vg0 --fstype=swap --recommended
