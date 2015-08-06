@@ -1,31 +1,24 @@
 # vim:sw=2:ts=2:et:
 
-  - name: ose-broker
-    description: OpenShift Enterprise Broker
+  - name: ose-master
+    description: OpenShift Enterprise 3 Master node
     templates:
       autoinst:
-        src: autoinstall.d/openshift-broker-ks.cfg
+        src: autoinstall.d/openshift-3-master-ks.cfg
 
     packages:
       add:
-        - ntp
-        - bind
-        - compat-readline5
-        - boost-filesystem
-        - boost-iostreams
-        - boost-program-options
-        - boost-system
-        - boost-thread
+        # 
+        - bind-utils
+        - bridge-utils
         - git
-        - httpd
-        - java-1.6.0-openjdk
-        - krb5-workstation
-        - libicu
-        - mod_ssl
-        - perl-Git
-        - policycoreutils-python
-        - ruby
-        - yum-plugin-priorities
+        - iptables-services
+        - net-tools
+        - wget
+        # 
+        - gcc
+        - python-virtualenv
+        - docker
 
     setup_screen: true
 
@@ -46,15 +39,15 @@
 
     openshift:
       install_components:
-        - broker
+        - master
         - named
         - activemq
         - datastore
 
     guests:
-      - hostname: *broker_1_hostname
-        fqdn: *broker_1_fqdn
-        ip: *broker_1_ip
+      - hostname: *master_1_hostname
+        fqdn: *master_1_fqdn
+        ip: *master_1_ip
         interfaces:
           - mac: "52:54:00:21:00:11"
             network: *openshift_network_0
