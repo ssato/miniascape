@@ -4,50 +4,14 @@
     description: OpenShift Enterprise 3 Master node
     templates:
       autoinst:
-        src: autoinstall.d/openshift-3-master-ks.cfg
-
-    packages:
-      add:
-        # 
-        - bind-utils
-        - bridge-utils
-        - git
-        - iptables-services
-        - net-tools
-        - wget
-        # 
-        - gcc
-        - python-virtualenv
-        - docker
+        src: autoinstall.d/openshift-master-ks.cfg
 
     setup_screen: true
 
-    kickstart:
-      users:
-        - name: developer
-          uid: 1001
-
-    firewall:
-      rules:
-        - http
-        - "port=443:tcp"
-        - "port=27017:tcp"
-        - "port=61613:tcp"
-        - "port=61616:tcp"
-        - "port=53:tcp"
-        - "port=53:udp"
-
-    openshift:
-      install_components:
-        - master
-        - named
-        - activemq
-        - datastore
-
     guests:
-      - hostname: *master_1_hostname
-        fqdn: *master_1_fqdn
-        ip: *master_1_ip
+      - hostname: *ose_3_master_hostname
+        fqdn: *ose_3_master_fqdn
+        ip: *ose_3_master_ip
         interfaces:
           - mac: "52:54:00:21:00:11"
             network: *openshift_network_0

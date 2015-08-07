@@ -5,71 +5,8 @@ site: openshift
 common:
   name_prefix: openshift_
 
-  ntpservers:
-    - hostname: clock.redhat.com
-
-  virtinst:
-    ram: 2048
-
-  disks:
-    - pool: default
-      format: qcow2
-      cache: none
-      size: 20
-      bus: scsi
-
-  partition: |
-    part /boot --size=200
-    part pv.10001 --size=1 --grow
-    volgroup vg_0 pv.10001
-    logvol /    --name=lv_root --vgname=vg_0 --size=1 --grow
-    logvol swap --name=lv_swap --vgname=vg_0 --size=1024
-
-  rhn:
-  #  username: foo@m2.local
-  #  password: xyzsecret
-  #  activationkeys: &rhn_activationkey "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
-  #  profilename: "REPLACE_THIS"
-    subscription:
-      pool:
-
-  packages:
-    add:
-      - ntp
-
-  setup_data:
-    - src: data/openshift/Makefile
-      dst: Makefile
-    #- src: data/openshift/oo-install-cfg.yml
-    #  install:
-    #    dst: "~/.openshift/oo-install-cfg.yml"
-
+  store_cmdline: false
   generate_hosts: true
-
-  openshift:
-    config_file: ~/.openshift/oo-install-cfg.yml
-    openshift_sh_url: "https://raw.githubusercontent.com/openshift/openshift-extras/enterprise-2.2/enterprise/install-scripts/generic/openshift.sh"
-    install_components: []
-    install_method: rhsm
-    domain:
-    hosts_domain:
-    broker_hostname:
-    node_hostname:
-    broker_ip:
-    activemq_ip:
-    nodes: []  # [ {hostname: , ip: }]
-
-    # see: 'Important' note in OSE 2 Deployment Guide, 9.12. Configuring Gear
-    # Profiles (Sizes): http://red.ht/1vMoMWr
-    valid_gear_sizes: small
-    default_gear_size: small
-    default_gear_capabilities: small
-
-    mcollective_password: rhosesecret
-
-    mongodb_broker_password:
-    openshift_password1:
-    cartridges: standard
 
   domain: *domain
   gateway: *gateway
@@ -77,62 +14,61 @@ common:
 
   nameservers:
     - ip: *gateway
-    - ip: &broker_1_ip 192.168.210.11
-
-  store_cmdline: false
 
   redhat:
     subscription:
       pool:
 
   virtinst:
-    location: /var/lib/libvirt/images/rhel-server-6.6-x86_64-dvd.iso
+    location: /var/lib/libvirt/images/rhel-server-7.1-x86_64-dvd.iso
+
+  disks:
+    - pool: default
+      format: qcow2
+      cache: none
+      size: 30
+      bus: scsi
+
+  setup_data:
+    - src: data/openshift/Makefile
+      dst: Makefile
+    - src: data/openshift/Makefile.custom
+      dst: Makefile.custom
 
   hosts:
-    - ip: *broker_1_ip
-      hostname: &broker_1_hostname ose-broker-1
-      fqdn: &broker_1_fqdn ose-broker-1.openshift.example.com
-
-    - ip: &ose_node_1_ip 192.168.210.21
-      hostname: &ose_node_1_hostname ose-node-1
-      fqdn: &ose_node_1_fqdn ose-node-1.openshift.example.com
-
-    - ip: &ose_node_2_ip 192.168.210.22
-      hostname: &ose_node_2_hostname ose-node-2
-      fqdn: &ose_node_2_fqdn ose-node-2.openshift.example.com
+    - fqdn: &ose_3_master_fqdn ose-3-master.ose.example.com
+      hostname: &ose_3_master_hostname ose-3-master
+      ip: &ose_3_master_ip 192.168.210.5
+    - fqdn: &ose_3_node_0_fqdn ose-3-node-0.ose.example.com
+      hostname: &ose_3_node_0_hostname ose-3-node-0
+      ip: &ose_3_node_0_ip 192.168.210.10
+    - fqdn: &ose_3_node_1_fqdn ose-3-node-1.ose.example.com
+      hostname: &ose_3_node_1_hostname ose-3-node-1
+      ip: &ose_3_node_1_ip 192.168.210.11
+    - fqdn: &ose_3_node_2_fqdn ose-3-node-2.ose.example.com
+      hostname: &ose_3_node_2_hostname ose-3-node-2
+      ip: &ose_3_node_1_ip 192.168.210.12
 
   # see: OSE Deployment Guide, 2.3. Red Hat Subscription Requirements:
   # http://red.ht/1ExJoRz
   repos:
-    - rhel-6-server-rpms                      # Red Hat Enterprise Linux 6
-    - rhel-server-rhscl-6-rpms                # Red Hat Software Collections (1)
-    - rhel-6-server-ose-2.2-infra-rpms        # Red Hat OpenShift Enterprise Infrastructure
-    - rhel-6-server-ose-2.2-node-rpms         # Red Hat OpenShift Enterprise Application Node
-    - rhel-6-server-ose-2.2-rhc-rpms          # Red Hat OpenShift Enterprise Client Tools
-    - rhel-6-server-ose-2.2-jbosseap-rpms     # Red Hat OpenShift Enterprise JBoss EAP add-on
-    - jb-ews-2-for-rhel-6-server-rpms         # JBoss Enterprise Web Server 2
-    - jb-eap-6-for-rhel-6-server-rpms         # JBoss Enterprise Application Platform 6
-    # These are optional?:
-    - rhel-6-server-ose-2.2-jbossamq-rpms     # Red Hat OpenShift Enterprise 2.2 JBoss A-MQ add-on
-    - rhel-6-server-ose-2.2-jbossfuse-rpms    # Red Hat OpenShift Enterprise 2.2 JBoss FUSE add-on
+    - rhel-7-server-rpms             # Red Hat Enterprise Linux 7
+    - rhel-7-server-extras-rpms      # Red Hat Enterprise Linux 7 Extras
+    - rhel-7-server-optional-rpms    # Red Hat Enterprise Linux 7 Optional
+    - rhel-7-server-ose-3.0-rpms     # Red Hat OpenShift Enterprise 3.0
+    - rhel-ha-for-rhel-7-server-rpms # Red Hat Enterprise Linux 7 HA Addon
 
   openshift:
-    domain: apps.openshift.example.com
-    hosts_domain: *domain
-    broker_hostname: *broker_1_hostname
-    broker_ip: *broker_1_ip
-    activemq_ip: *broker_1_ip
+    domain: cloudapps.ose.example.com
+    master:
+      fqdn: *ose_3_master_fqdn
+      ip: *ose_3_master_ip
     nodes:
-      - hostname: *ose_node_1_hostname
-        ip: *ose_node_1_ip
-
-      - hostname: *ose_node_2_hostname
-        ip: *ose_node_2_ip
-
-    # valid_gear_sizes: small
-    # default_gear_size: small
-    # default_gear_capabilities: small
-    # mongodb_broker_password:
-    # openshift_password1:
+      - fqdn: *ose_3_node_0_fqdn
+        ip: *ose_3_node_0_ip
+      - fqdn: *ose_3_node_1_fqdn
+        ip: *ose_3_node_1_ip
+      - fqdn: *ose_3_node_2_fqdn
+        ip: *ose_3_node_2_ip
 
 # vim:sw=2:ts=2:et:
