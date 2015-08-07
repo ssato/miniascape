@@ -6,6 +6,22 @@
       autoinst:
         src: autoinstall.d/openshift-node-ks.cfg
 
+    virtinst:
+      vcpus: 1
+
+    disks:
+      - pool: default
+        format: qcow2
+        cache: none
+        size: 20
+        bus: scsi
+
+      - pool: default
+        format: qcow2
+        cache: none
+        size: 20
+        bus: scsi
+
     guests:
       - hostname: *ose_3_node_0_hostname
         ip: *ose_3_node_0_ip
@@ -14,6 +30,9 @@
           - mac: "52:54:00:21:00:20"
             network: *openshift_network_0
             bootproto: static
+            ip: *ose_3_node_0_ip
+            gateway: *gateway
+            netmask: *netmask
 
       - hostname: *ose_3_node_1_hostname
         ip: *ose_3_node_1_ip
@@ -22,6 +41,9 @@
           - mac: "52:54:00:21:00:21"
             network: *openshift_network_0
             bootproto: static
+            ip: *ose_3_node_1_ip
+            gateway: *gateway
+            netmask: *netmask
 
       - hostname: *ose_3_node_2_hostname
         ip: *ose_3_node_2_ip
@@ -30,4 +52,7 @@
           - mac: "52:54:00:21:00:22"
             network: *openshift_network_0
             bootproto: static
+            ip: *ose_3_node_2_ip
+            gateway: *gateway
+            netmask: *netmask
 

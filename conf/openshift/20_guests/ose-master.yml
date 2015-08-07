@@ -16,4 +16,7 @@
           - mac: "52:54:00:21:00:11"
             network: *openshift_network_0
             bootproto: static
+            ip: *ose_3_master_ip
+            gateway: *gateway
+            netmask: *netmask
 

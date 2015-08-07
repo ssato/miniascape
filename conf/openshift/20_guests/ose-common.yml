@@ -25,7 +25,7 @@ common:
       pool:
 
   virtinst:
-    location: /var/lib/libvirt/images/rhel-server-7.1-x86_64-dvd.iso
+    location: *rhel_7_location
 
   disks:
     - pool: default
