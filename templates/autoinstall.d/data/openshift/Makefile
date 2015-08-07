@@ -60,11 +60,14 @@ subscription-manager repos $(addprefix --enable=,$(OSE_MASTER_YUM_REPOS))
 
 OSE_COMMON_RPMS ?=
 OSE_NODE_RPMS ?= $(OSE_COMMON_RPMS) docker
-OSE_MASTER_RPMS ?= $(OSE_COMMON_RPMS) wget git net-tools bind-utils iptables-services bridge-utils
+OSE_MASTER_RPMS ?= $(OSE_COMMON_RPMS)
+OSE_WORKSTATION_RPMS ?= wget git net-tools bind-utils iptables-services bridge-utils
 
-ifeq ($(strip $(IS_MASTER)),)
+ifeq ($(strip $(IS_MASTER)$(IS_WORKSTATION)),)
 INSTALL_RPMS ?= \
 rpm -q $(OSE_NODE_RPMS) || yum install -y $(OSE_NODE_RPMS)
+else ifeq ($(strip $(IS_MASTER)),)
+INSTALL_RPMS ?= rpm -q $(OSE_MASTER_RPMS) || yum install -y $(OSE_WORKSTATION_RPMS)
 else
 INSTALL_RPMS ?= rpm -q $(OSE_MASTER_RPMS) || yum install -y $(OSE_MASTER_RPMS)
 endif
@@ -83,7 +86,7 @@ echo "VG=vgdocker" >> /etc/sysconfig/docker-storage-setup && \
 docker-storage-setup && \
 rm -rf /var/lib/docker/* && \
 (systemctl is-active docker && systemctl restart docker || :)
-else ifeq ($(strip $(IS_WORKSTATION)),)
+else ifeq ($(strip $(IS_MASTER)),)
 PRE_INSTALL_SETUP ?= \
 (test -f $(HOME)/.ssh/id_rsa || ssh-keygen -t rsa -N '' -f .ssh/id_rsa) && \
 for host in $(OSE_MASTER) $(OSE_NODES); do ssh-copy-id $$host; done && \
