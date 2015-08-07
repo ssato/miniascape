@@ -6,8 +6,6 @@
       autoinst:
         src: autoinstall.d/openshift-master-ks.cfg
 
-    setup_screen: true
-
     guests:
       - hostname: *ose_3_master_hostname
         fqdn: *ose_3_master_fqdn

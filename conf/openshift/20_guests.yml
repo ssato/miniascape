@@ -9,5 +9,6 @@ networks:
 guests:
 {% include "20_guests/ose-master.yml" %}
 {% include "20_guests/ose-node.yml" %}
+{% include "20_guests/ose-workstation.yml" %}
 
 # vim:sw=2:ts=2:et:

@@ -1,0 +1,32 @@
+# vim:sw=2:ts=2:et:
+
+  - name: ose-workstation
+    description: OpenShift Enterprise workstation to install, setup OSE
+    templates:
+      autoinst:
+        src: autoinstall.d/openshift-workstation-ks.cfg
+
+    setup_screen: true
+
+    nameservers:
+      - ip: *gateway
+
+    disks:
+      - pool: default
+        format: qcow2
+        cache: none
+        size: 10
+        bus: scsi
+
+    guests:
+      - ip: &ose_3_client_ip 192.168.210.101
+        hostname: ose-3-workstation-1
+        fqdn: ose-3-workstation-1.ose.example.com
+        interfaces:
+          - mac: "52:54:00:21:01:01"
+            network: *openshift_network_0
+            bootproto: static
+            ip: *ose_3_client_ip
+            gateway: *gateway
+            netmask: *netmask
+
