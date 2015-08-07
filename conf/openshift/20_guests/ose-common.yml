@@ -15,6 +15,11 @@ common:
   nameservers:
     - ip: *gateway
 
+  # Set empty
+  partition:
+  kdump:
+    enabled: false
+
   redhat:
     subscription:
       pool:
@@ -47,7 +52,7 @@ common:
       ip: &ose_3_node_1_ip 192.168.210.11
     - fqdn: &ose_3_node_2_fqdn ose-3-node-2.ose.example.com
       hostname: &ose_3_node_2_hostname ose-3-node-2
-      ip: &ose_3_node_1_ip 192.168.210.12
+      ip: &ose_3_node_2_ip 192.168.210.12
 
   # see: OSE Deployment Guide, 2.3. Red Hat Subscription Requirements:
   # http://red.ht/1ExJoRz
