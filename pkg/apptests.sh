@@ -25,7 +25,7 @@ for f in ${workdir}/guests.d/{rhel-7-,jboss,satellite6}*/ks.cfg; do
   sed -i '/^%addon/,/%end/d' $f
   ksvalidator -e -v RHEL7 $f
 done
-for f in ${workdir}/guests.d/ose*/ks.cfg; do ksvalidator -e -v RHEL6 $f; done
+for f in ${workdir}/guests.d/ose*/ks.cfg; do ksvalidator -e -v RHEL7 $f; done
 for f in ${workdir}/guests.d/{rhua,cds}*/ks.cfg; do ksvalidator -e -v RHEL6 $f; done
 
 cleanup
