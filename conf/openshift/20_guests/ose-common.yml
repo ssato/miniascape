@@ -40,6 +40,8 @@ common:
       dst: Makefile
     - src: data/openshift/Makefile.custom
       dst: Makefile.custom
+    - src: data/openshift/ansible.hosts
+      dst: ansible.hosts
 
   hosts:
     - fqdn: &ose_3_master_fqdn ose-3-master.ose.example.com
@@ -69,12 +71,20 @@ common:
     master:
       fqdn: *ose_3_master_fqdn
       ip: *ose_3_master_ip
+      region: infra
+      zone: default
     nodes:
       - fqdn: *ose_3_node_0_fqdn
         ip: *ose_3_node_0_ip
+        region: infra
+        zone: default
       - fqdn: *ose_3_node_1_fqdn
         ip: *ose_3_node_1_ip
+        region: primary
+        zone: east
       - fqdn: *ose_3_node_2_fqdn
         ip: *ose_3_node_2_ip
+        region: primary
+        zone: west
 
 # vim:sw=2:ts=2:et:
