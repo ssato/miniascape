@@ -17,6 +17,7 @@ common:
 
   # Set empty
   partition:
+  packages:
   kdump:
     enabled: false
 
