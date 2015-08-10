@@ -58,20 +58,27 @@ SETUP_MASTER_YUM_REPOS ?= \
 subscription-manager repos --disable '*' && \
 subscription-manager repos $(addprefix --enable=,$(OSE_MASTER_YUM_REPOS))
 
-OSE_COMMON_RPMS ?=
+SETUP_WORKSTATION_YUM_REPOS ?= \
+subscription-manager repos --disable '*' && \
+subscription-manager repos $(addprefix --enable=,$(OSE_COMMON_YUM_REPOS))
+
+OSE_COMMON_RPMS ?= bash
 OSE_NODE_RPMS ?= $(OSE_COMMON_RPMS) docker
 OSE_MASTER_RPMS ?= $(OSE_COMMON_RPMS)
 OSE_WORKSTATION_RPMS ?= wget git net-tools bind-utils iptables-services bridge-utils
 
 ifeq ($(strip $(IS_MASTER)$(IS_WORKSTATION)),)
+SETUP_YUM_REPOS = $(SETUP_NODE_YUM_REPOS)
 INSTALL_RPMS ?= \
 rpm -q $(OSE_NODE_RPMS) || yum install -y $(OSE_NODE_RPMS)
 else ifeq ($(strip $(IS_MASTER)),)
-INSTALL_RPMS ?= rpm -q $(OSE_MASTER_RPMS) || yum install -y $(OSE_WORKSTATION_RPMS)
+SETUP_YUM_REPOS = $(SETUP_WORKSTATION_YUM_REPOS)
+INSTALL_RPMS ?= rpm -q $(OSE_WORKSTATION_RPMS) || yum install -y $(OSE_WORKSTATION_RPMS)
 else
+SETUP_YUM_REPOS = $(SETUP_MASTER_YUM_REPOS)
 INSTALL_RPMS ?= rpm -q $(OSE_MASTER_RPMS) || yum install -y $(OSE_MASTER_RPMS)
 endif
-FULLY_UPDATE_RPMS = yum update -y
+FULLY_UPDATE_RPMS = yum update -y && echo "Now it should be rebooted..."
 
 EPEL_RELEASE_RPM_URL ?= https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
 
@@ -97,7 +104,8 @@ rpm -q ansible || \
   yum --enablerepo=epel install -y ansible)) && \
 (rpm -q ansible || yum install -y ansible) && \
 (rpm -q git || yum install -y git) && \
-git clone https://github.com/openshift/openshift-ansible openshift-ansible.git
+(test -d openshift-ansible.git || \
+git clone https://github.com/openshift/openshift-ansible openshift-ansible.git)
 else
 PRE_INSTALL_SETUP ?= :
 endif
@@ -132,6 +140,7 @@ check:
 
 install-rpms:
 	$(REGISTER_RHN_IF_NOT)
+	$(SETUP_YUM_REPOS)
 	$(INSTALL_RPMS)
 	$(FULLY_UPDATE_RPMS)
 
