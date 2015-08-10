@@ -1,0 +1,9 @@
+deployment_type=enterprise=enterprise
+
+[masters]
+{{ openshift.master.fqdn }} openshift_hostname={{ openshift.master.fqdn }}
+
+[nodes]
+{% for node in openshift.nodes if node.fqdn and node.region and node.zone -%}
+{{     node.fqdn }} openshift_node_labels="{'region': '{{ node.region }}', 'zone': '{{ node.zone }}'}" openshift_hostname="{{ node.fqdn }}"
+{% endfor %}

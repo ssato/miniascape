@@ -1,0 +1,10 @@
+# http://red.ht/1In5SJF
+bind-utils
+bridge-utils
+git
+iptables-services
+net-tools
+wget
+#
+gcc
+python-virtualenv
