@@ -99,7 +99,7 @@
     #location: "ftp://ftp.iij.ad.jp/pub/linux/centos/6.5/os/x86_64/"
     #location: "ftp://ftp.riken.jp/Linux/centos/6.5/os/x86_64/"
     #location: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
-    location: /var/lib/libvirt/images/rhel-server-6.6-x86_64-dvd.iso
+    location: /var/lib/libvirt/images/rhel-server-6.7-x86_64-dvd.iso
 
   rhn:
     username: # ex. foo@m2.local
