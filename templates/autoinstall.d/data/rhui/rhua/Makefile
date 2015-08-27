@@ -56,7 +56,8 @@ register:
 	subscription-manager unregister || :
 	subscription-manager clean || :
 	subscription-manager register --type=rhui $(SUBSCRIPTION_MANAGER_OPTIONS) $(SUBSCRIPTION_MANAGER_LOGIN_OPTIONS)
-	subscription-manager repos --disable '*' --enable rhel-6-server-rhui-rpms --enable rhel-x86_64-6-rhui-2-rpms
+	subscription-manager repos --disable '*'
+	subscription-manager repos --enable rhel-6-server-rhui-rpms --enable rhel-x86_64-6-rhui-2-rpms
 	@echo "Now you ready to generate RHUI entitlement cert on: https://access.redhat.com/management/consumers/ "
 
 check: $(WORKDIR)/check.stamp
