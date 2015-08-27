@@ -21,8 +21,9 @@
 -include Makefile.custom
 
 # Flags:
-IS_MASTER ?= yes
+IS_MASTER ?=
 IS_WORKSTATION ?= $(IS_MASTER)
+IS_NODE ?=
 HA_MASTER ?=
 
 CHECK_CLOCK ?= date && chronyc tracking && chronyc sources
