@@ -68,11 +68,29 @@ common:
 
   openshift:
     domain: cloudapps.ose.example.com
+
+    # http://red.ht/1Nl35So
+    # - Allow All: AllowAllPasswordIdentityProvider
+    # - Deny All: DenyAllPasswordIdentityProvider (default)
+    # - HTPasswd: HTPasswdPasswordIdentityProvider
+    # - ...
+    # see OSEv3:vars
+    identityProviders:
+      # NOTE: openshift ansible playbook does part of this configuration.
+      # Last step is to create user and set password:
+      # 'htpasswd -b /etc/openshift/openshift-passwd <user> <passwd>'
+      - name: htpasswd_auth
+        login: "true"
+        challenge: "true"
+        kind: HTPasswdPasswordIdentityProvider
+        filename: /etc/openshift/openshift-passwd
+
     master:
       fqdn: *ose_3_master_fqdn
       ip: *ose_3_master_ip
       region: infra
       zone: default
+
     nodes:
       - fqdn: *ose_3_node_0_fqdn
         ip: *ose_3_node_0_ip
