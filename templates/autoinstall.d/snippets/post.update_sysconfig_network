@@ -3,20 +3,21 @@ fqdn="${hostname}"    # May be defined in ${bp}.
 gateway="${gateway}"  # Likewise.
 test "x${fqdn}" != "x" || fqdn={{ fqdn|default('localhost.localdomain') }}
 test "x${gateway}" != "x" || gateway={{ gateway|default('') }}
-
 f=/etc/sysconfig/network
 if test -f $f; then
     test -f $f.save || cp $f $f.save
-    cat << EOF >> $f
-HOSTNAME=${fqdn}
-{{ "NOZEROCONF=yes" if kickstart.nozeroconf }}
-{{ "NETWORKING_IPV6=no" if noipv6 }}
-EOF
+    grep -Eq "^HOSTNAME=${fqdn}" $f 2>/dev/null 1>/dev/null || echo "HOSTNAME=${fqdn}" >> $f
+{%  if kickstart.nozeroconf -%}
+    grep -Eq "^NOZEROCONF=yes" $f 2>/dev/null 1>/dev/null || echo "NOZEROCONF=yes" >> $f
+{%- endif %}
+{%  if not kickstart.ipv6 -%}
+    grep -Eq "^NETWORKING_IPV6=no" $f 2>/dev/null 1>/dev/null || echo "NETWORKING_IPV6=no" >> $f
+{%- endif %}
     test "x${gateway}" = "x" || echo "GATEWAY=${gateway}" >> $f
 else
     f=/etc/hostname
     if test -f $f; then
         test -f $f.save || cp $f $f.save
-        echo ${fqdn} > /etc/hostname
+        grep -q ${fqdn} $f 2>/dev/null 1>/dev/null || echo "${fqdn}" > /etc/hostname
     fi
 fi
