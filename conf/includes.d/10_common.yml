@@ -42,10 +42,14 @@
   store_cmdline: false
   setup_screen: false
 
-  #ntpservers:
-    # TODO: set default NTP servers.
-    # - hostname: 0.pool.ntp.org
-    #   options: ...
+  ntp:
+    slew_mode: true
+    servers: &ntp_servers
+      # TODO: set default NTP servers.
+      # - hostname: 0.pool.ntp.org
+      #   options: ...
+
+  ntpservers: *ntp_servers
 
   firewall:
     rules: []
@@ -73,7 +77,7 @@
     users: []
     packages:
       options: "--ignoremissing"
-    noipv6: false
+    ipv6: false
     nozeroconf: true
     custom_script: ""
 
