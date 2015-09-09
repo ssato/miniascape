@@ -23,4 +23,11 @@ $(CURDIR)/test.ks.cfg: $(CURDIR)/ks.cfg
 $(CURDIR)/vmbuild-test.sh: $(CURDIR)/vmbuild.sh
 	sed -e 's/ks.cfg/test.ks.cfg/g' $< | $(mod_for_test_env) > $@.t && mv $@.t $@
 
-.PHONY: netregist build
+# make ks floppy:
+floppy_iso_name ?= {{ '%s' % name_prefix if name_prefix }}{{ '%s' % hostname or name }}-kscfg.iso
+
+floppy: $(CURDIR)/$(floppy_iso_name)
+$(CURDIR)/$(floppy_iso_name): $(CURDIR)/ks.cfg
+	mkisofs -R -J -o $(floppy_iso_name) ks.cfg
+
+.PHONY: netregist build floppy
