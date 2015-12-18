@@ -34,10 +34,15 @@ cat << EOF > /root/dot.rpmmacros
   gpg --force-v3-sigs --digest-algo=sha1 --batch --no-verbose --no-armor \
       --passphrase-fd 3 --no-secmem-warning -u "%{_gpg_name}" \
       -sbo %{__signature_filename} %{__plaintext_filename}
+
+# see: https://access.redhat.com/solutions/874193
+%_binary_payload w9.gzdio
+%_source_payload w9.gzdio
+%_source_filedigest_algorithm 1
+%_binary_filedigest_algorithm 1
+%_default_patch_fuzz 2
 EOF
 
 (cd /root && test -f .rpmmacros || ln -s dot.rpmmacros .rpmmacros)
-
 #rpm --import ${custom_gpg_key}
-
 # vim:sw=2:ts=2:et:
