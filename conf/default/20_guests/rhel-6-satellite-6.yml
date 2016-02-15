@@ -37,8 +37,10 @@
     setup_data:
       - src: data/satellite6/Makefile
         dst: Makefile
-      - src: data/satellite6/initial-setup.sh
-        dst: initial-setup.sh
+      - src: data/satellite6/Makefile.custom
+        dst: Makefile.custom
+      # - src: data/satellite6/initial-setup.sh
+      #  dst: initial-setup.sh
       - src: data/satellite6/check-pulp-rpm-checksums.sh
         dst: check-pulp-rpm-checksums.sh
       # base64 manifests.zip > manifests.zip.base64:
