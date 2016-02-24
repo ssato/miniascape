@@ -1,0 +1,115 @@
+# vim:sw=2:ts=2:et:
+
+networks:
+
+  - name: satellite-service
+    mode: nat
+    domain: example.com
+    gateway: 192.168.122.1
+    netmask: 255.255.255.0
+    network: 192.168.122.0
+    dhcp:
+      start: 192.168.122.200
+      end: 192.168.122.254
+      static:
+        start: 192.168.122.10
+        end: 192.168.122.199
+
+common:
+  domain: *domain
+  gateway: *gateway
+  netmask: *netmask
+
+  nameservers:
+    - hostname: *gateway
+
+  ntpservers:
+    - ip: *gateway
+
+  ntp:
+    slew_mode: true
+    servers:
+      - hostname: *gateway
+
+  kickstart:
+    install: cdrom
+    #custom_script: |
+    # ...
+    uesrs:
+
+  packages:
+    installed:
+    add:
+      - kexec-tools
+
+  rhn:
+    username:
+    password: ""
+
+  hosts: &hosts
+    - ip: <satellite_ip>
+      fqdn: <satellite_fqdn>
+      hostname: <satellite_hostname>
+
+  rootpw: <common_root_pwd>
+
+guests:
+  - name: satellite
+    description: Red Hat Satellite 6 server
+
+    disks:
+      - pool: default
+        size: 150
+        bus: scsi
+        format: raw
+        sparse: false
+
+    virtinst:
+      ram: 2048
+      vcpus: 2
+      os_variant: rhel7
+
+    satellite:
+      admin:
+        name: admin
+        #password:
+        email: root@localhost
+
+    proxy:
+      #url:
+      #port:
+      #user:
+      #password:
+
+    services:
+      enabled:
+        - sshd
+        - chronyd
+
+    rhn:
+      consumer_id: <satellite_consumer_id>
+
+    setup_data:
+      - src: data/satellite6/Makefile
+        dst: Makefile
+      - src: data/satellite6/Makefile.custom
+        dst: Makefile.custom
+      # - src: data/satellite6/initial-setup.sh
+      #       #  dst: initial-setup.sh
+      - src: data/satellite6/check-pulp-rpm-checksums.sh
+        dst: check-pulp-rpm-checksums.sh
+      # base64 manifests.zip > manifests.zip.base64:
+      - src: manifests.zip.base64
+        dst: manifests.zip.base64
+
+    templates:
+      autoinst:
+        src: autoinstall.d/satellite6-ks.cfg
+
+    guests:
+      - hostname: satellite6-1
+        ip: 192.168.155.16
+        interfaces:
+          - mac: "52:54:00:05:00:16"
+            network: service
+
