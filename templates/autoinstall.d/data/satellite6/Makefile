@@ -10,8 +10,8 @@
 #   5. Promote & Publish
 #
 # References:
-#   - Satellite 6.1 beta Installation Guide
-#   - Red Hat Satellite 6.1 Beta Guide: https://access.redhat.com/articles/1380023
+#   - Satellite 6.1 Installation Guide
+#   - Red Hat Satellite 6.1 Guide: https://access.redhat.com/articles/1380023
 #
 
 # Load variables, etc.
@@ -34,7 +34,7 @@ curl -vk --connect-timeout 5 $(CURL_PROXY_OPT) https://cdn.redhat.com
 #   b. Do configuration necessary for satellite installation 
 #   c. Install Satellite w/ its installer, katello-installer
 #
-# References: Satellite 6.1 beta Installation Guide,
+# References: Satellite 6.1 Installation Guide,
 #   - 1.4. Prerequisites: http://red.ht/1Hki76R
 #   - 2.1.2. Downloading from a Disconnected Network: http://red.ht/1MlR1jf
 #   - 2.2. Running the Installation and Configuration Program: http://red.ht/1NVBbMD
@@ -48,11 +48,11 @@ test -f /etc/systemd && \
 subscription-manager repos \
     --enable rhel-7-server-rpms \
     --enable rhel-server-rhscl-7-rpms \
-    --enable rhel-server-7-satellite-6-beta-rpms || \
+    --enable rhel-server-7-satellite-6-rpms || \
 subscription-manager repos \
     --enable rhel-6-server-rpms \
     --enable rhel-server-rhscl-6-rpms \
-    --enable rhel-server-6-satellite-6-beta-rpms
+    --enable rhel-server-6-satellite-6-rpms
 
 # a-1. Offline installation w/ ISO image downloaded before.
 SETUP_SATELLITE_ISO ?= \
