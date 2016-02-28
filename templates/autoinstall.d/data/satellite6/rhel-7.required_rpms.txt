@@ -24,6 +24,7 @@ gperftools-libs
 httpcomponents-client
 httpcomponents-core
 httpd
+ipmitool
 jakarta-commons-httpclient
 jakarta-commons-io
 jakarta-commons-lang
@@ -63,8 +64,11 @@ python-markupsafe
 pytz
 regexp
 ruby
+rubygem-bundler
 rubygem-json
+rubygem-net-http-persistent
 rubygem-rdoc
+rubygem-thor
 rubygems
 scannotation
 scl-utils
