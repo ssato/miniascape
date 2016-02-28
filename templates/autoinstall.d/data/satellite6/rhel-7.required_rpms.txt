@@ -69,7 +69,7 @@ rubygems
 scannotation
 scl-utils
 servlet
-sl4j
+slf4j
 syslinux
 tomcat
 tomcat-jsp-2.2-api
