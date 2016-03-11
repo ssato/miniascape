@@ -63,7 +63,7 @@ def load_site_ctxs(ctxs):
     :param ctxs: List of context file[s], glob patterns of context files
         or dirs :: [str]
     """
-    conf = anyconfig.container()
+    conf = anyconfig.to_container()
     for ctxpath in ctxs:
         diff = load_site_ctx(ctxpath)
 
