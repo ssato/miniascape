@@ -19,6 +19,7 @@ dom4j
 genisoimage
 geronimo-annotation
 geronimo-jms
+git
 glassfish-jaxb
 gperftools-libs
 httpcomponents-client
@@ -52,6 +53,7 @@ mod_ssl
 mod_wsgi
 net-tools
 objectweb-asm
+pciutils
 policycoreutils-python
 postgresql
 postgresql-jdbc
@@ -61,6 +63,7 @@ python-cherrypy
 python-imaging
 python-ldap
 python-markupsafe
+python-requests
 pytz
 regexp
 ruby
