@@ -1,5 +1,6 @@
 NetworkManager-config-server
 bash-completion
+bind-utils
 chrony
 lftp
 pcp
