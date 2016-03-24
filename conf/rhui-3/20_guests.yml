@@ -1,0 +1,10 @@
+# DO NOT OVERWRITE/CUSTOMIZE THIS!
+{% include "20_guests/00_guests.yml" %}
+
+guests:
+{% include "20_guests/20_rhua.yml" %}
+{% include "20_guests/30_cds.yml" %}
+{% include "20_guests/40_haproxy.yml" %}
+{% include "20_guests/50_clients.yml" %}
+
+# vim:sw=2:ts=2:et:

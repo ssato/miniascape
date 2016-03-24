@@ -1,0 +1,111 @@
+site: rhui
+
+networks:
+{% include "00_includes/40_network_rhui.yml" %}
+
+common:
+  virtinst:
+    # You must override this!
+    location: "http://192.168.122.1/kstree/rhel-7.2-x86_64/"
+
+  # Set empty to avoid iso image is used.
+  kickstart:
+    install:
+
+  # RHUI servers require much disk spaces.
+  partition: |
+    part /boot --asprimary --size=200
+    part /     --size=1 --grow
+    part swap  --fstype="swap" --size=1024
+
+  # :see: 00_includes/40_network_rhui.yml
+  domain: *domain
+  gateway: *gateway
+  netmask: *netmask
+
+  nameservers:
+    - hostname: *gateway
+
+  rhui_network_1: &rhui_network_1 192.168.160.0  # use 'default' network instead?
+
+  rhui:
+    # example: 54fb6627dbaa37721048e4549db3224d.pem
+    rhui_entitlement_cert: &rhui_entitlement_cert rhui_entitlement_cert_0.pem
+
+    ssl_cert_subject: &ssl_cert_subject "/C=JP/ST=Tokyo/O=Example, Inc./CN="
+
+    rhua:
+      ip: &rhua_ip 192.168.160.20
+      fqdn: &rhua_fqdn rhua.example.com
+      hostname: &rhua_hostname rhua
+
+    cds-1:
+      ip: &cds_1_ip 192.168.160.21
+      fqdn: &cds_1_fqdn cds-1.example.com
+      cli_fqdn: *cds_1_fqdn
+      hostname: &cds_1_hostname cds-1
+
+    cds-2:
+      ip: &cds_2_ip 192.168.160.22
+      fqdn: &cds_2_fqdn cds-2.example.com
+      cli_fqdn: *cds_2_fqdn
+      hostname: &cds_2_hostname cds-2
+
+    cds-3:
+      ip: &cds_3_ip 192.168.160.23
+      fqdn: &cds_3_fqdn cds-3.example.com
+      cli_fqdn: *cds_2_fqdn
+      hostname: &cds_2_hostname cds-3
+
+    haproxy-1:
+      ip: &haproxy_1_ip 192.168.160.11
+      fqdn: &haproxy_1_fqdn haproxy-1.example.com
+      hostname: &haproxy_1_hostname haproxy-1
+
+    haproxy-2:
+      ip: &haproxy_1_ip 192.168.160.12
+      fqdn: &haproxy_1_fqdn haproxy-1.example.com
+      hostname: &haproxy_1_hostname haproxy-1
+
+  hosts: &hosts
+    # RHUA:
+    - ip: *rhua_ip
+      fqdn: *rhua_fqdn
+      hostname: *rhua_hostname
+
+    # CDS 1:
+    - ip: *cds_1_ip
+      fqdn: *cds_1_fqdn
+      hostname: *cds_1_hostname
+
+    # CDS 2:
+    - ip: *cds_2_ip
+      fqdn: *cds_2_fqdn
+      hostname: *cds_2_hostname
+
+    # CDS 3:
+    - ip: *cds_3_ip
+      fqdn: *cds_3_fqdn
+      hostname: *cds_3_hostname
+
+    # HA-Proxy 1:
+    - ip: *haproxy_1_ip
+      fqdn: *haproxy_1_fqdn
+      hostname: *haproxy_1_hostname
+
+    # HA-Proxy 2:
+    - ip: *haproxy_2_ip
+      fqdn: *haproxy_2_fqdn
+      hostname: *haproxy_2_hostname
+
+  rhn:
+    account: YOUR_RHN_ACCOUNT
+
+  gpg:
+    passpharase: rhui-secret
+
+  test:
+    # change DNS server addresses to gateway's one:
+    #mod_for_test_env: "sed -e 's,ks.cfg,test.ks.cfg,g'
+
+# vim:sw=2:ts=2:et:
