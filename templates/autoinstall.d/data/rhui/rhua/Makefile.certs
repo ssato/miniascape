@@ -8,9 +8,10 @@
 #   * Use /usr/share/rh-rhua/rhui_certs/create_rhui_ssl_certs.sh instead ?
 #     (but it does not look support unattended certs generation...)
 #
-GEN_KEY	= openssl genrsa -out $@ {{ cert.key_length }}
+GEN_KEY	= openssl genrsa -out $@ {{ cert.key_length|default('2048') }}
 DAYS	?= {{ cert.expiration_dates }}
 SUBJ_BASE	?= {{ cert.subject }}
+DIGEST_OPT ?= -sha256
 
 RHUA_FQDN ?= {{ fqdn }}
 {% for cds in cdsservers -%}
@@ -29,7 +30,7 @@ rhui-ca.srl:
 # Generate the RHUI CA private key, certificate signing request (csr) and
 # certificate at once:
 rhui-ca.crt rhui-ca.key:
-	openssl req -new -x509 -extensions v3_ca -days $(DAYS) -nodes -keyout rhui-ca.key -subj "$(SUBJ_BASE)RHUI CA" -out $@
+	openssl req -new -x509 -extensions v3_ca -days $(DAYS) -nodes -keyout rhui-ca.key -subj "$(SUBJ_BASE)RHUI CA" -out $@ $(DIGEST_OPT)
 
 # Generate the private key for RHUA:
 $(RHUA_FQDN).key:
@@ -37,11 +38,11 @@ $(RHUA_FQDN).key:
 
 # Generate the certificate signing request (csr) for RHUA:
 $(RHUA_FQDN).csr: $(RHUA_FQDN).key
-	openssl req -new -key $< -subj "$(SUBJ_BASE)$(RHUA_FQDN)" -out $@
+	openssl req -new -key $< -subj "$(SUBJ_BASE)$(RHUA_FQDN)" -out $@ $(DIGEST_OPT)
 
 # Generate the certificate for RHUA:
 $(RHUA_FQDN).crt: rhui-ca.crt rhui-ca.key $(RHUA_FQDN).csr
-	openssl x509 -req -days $(DAYS) -CA rhui-ca.crt -CAkey rhui-ca.key -in $(RHUA_FQDN).csr -out $@
+	openssl x509 -req -days $(DAYS) -CA rhui-ca.crt -CAkey rhui-ca.key -in $(RHUA_FQDN).csr -out $@ $(DIGEST_OPT)
 
 # Generate the private key for CDS-es:
 {% for cds in cdsservers -%}
@@ -50,18 +51,18 @@ $(CDS_{{ loop.index }}_FQDN).key:
 
 # Generate the certificate signing request (csr) for CDS:
 $(CDS_{{ loop.index }}_FQDN).csr: $(CDS_{{ loop.index }}_FQDN).key
-	openssl req -new -key $< -subj "$(SUBJ_BASE)$(CDS_{{ loop.index }}_FQDN)" -out $@
+	openssl req -new -key $< -subj "$(SUBJ_BASE)$(CDS_{{ loop.index }}_FQDN)" -out $@ $(DIGEST_OPT)
 
 # Generate the certificate for CDS:
 $(CDS_{{ loop.index }}_FQDN).crt: rhui-ca.crt rhui-ca.key $(CDS_{{ loop.index }}_FQDN).csr
-	openssl x509 -req -days $(DAYS) -CA rhui-ca.crt -CAkey rhui-ca.key -in $(CDS_{{ loop.index }}_FQDN).csr -out $@
+	openssl x509 -req -days $(DAYS) -CA rhui-ca.crt -CAkey rhui-ca.key -in $(CDS_{{ loop.index }}_FQDN).csr -out $@ $(DIGEST_OPT)
 
 {% endfor -%}
 # Generate the entitlement-signing CA private key and certificate:
 #
 # NOTE: Remove the option '-nodes' if you want to set pass-phrase:
 entitlement-ca.crt entitlement-ca-key.pem:
-	openssl req -new -x509 -extensions v3_ca -days $(DAYS) -nodes -keyout entitlement-ca-key.pem -subj "$(SUBJ_BASE)$(RHUA_FQDN) Entitlement CA" -out $@
+	openssl req -new -x509 -extensions v3_ca -days $(DAYS) -nodes -keyout entitlement-ca-key.pem -subj "$(SUBJ_BASE)$(RHUA_FQDN) Entitlement CA" -out $@ $(DIGEST_OPT)
 
 #clean:
 #	-rm -f $(wildcard *.crt) $(wildcard *.key) $(wildcard *.csr) $(wildcard *.srl)
