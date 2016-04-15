@@ -38,7 +38,7 @@ path={{ disk.path }}
 ,shareable=on
 {%-    endif -%}
 {%     if disk.format == 'raw' and disk.sparse is defined -%}
-,sparse={% if disk.sparse %}true{% else %}false{% endif -%}
+,sparse={% if disk.sparse %}yes{% else %}no{% endif -%}
 {%     endif -%}
 {% endmacro -%}
 set -ex
