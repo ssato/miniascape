@@ -1,6 +1,7 @@
 audit
 bash-completion
 curl
+hardlink
 lftp
 make
 ntpdate
