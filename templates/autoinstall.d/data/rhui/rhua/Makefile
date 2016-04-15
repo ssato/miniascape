@@ -65,6 +65,7 @@ $(WORKDIR)/check.stamp:
 	date
 	fqdn=`hostname -f`; test "x$$fqdn" = 'x{{ fqdn }}'
 	rpm -q ntp && service ntpd status && which ntptime && ntptime || :
+	test -f check.sh && bash -x ./check.sh || :
 	touch $@
 
 fetch: $(RHUI_ISO)
