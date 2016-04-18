@@ -7,6 +7,9 @@ FQDN ?= {{ fqdn }}
 
 # @see http://red.ht/RAKEyc :
 RHUI_ISO ?= $(WORKDIR)/RHEL-6-RHUI-2-LATEST-Server-x86_64-DVD.iso
+GPG_PUB_KEY ?= $(WORKDIR)/RPM-GPG-KEY-rhui-custom
+RHUI_CONFIG_RPM ?= $(wildcard $(WORKDIR)/rh-{{ hostname }}-config-*.el6.noarch.rpm)
+
 
 all: check install
 
@@ -22,4 +25,14 @@ $(WORKDIR)/install-cds.stamp: $(RHUI_ISO)
 	cd /mnt && ./install_CDS.sh && cd - && umount /mnt
 	touch $@
 
-.PHONY: check install
+setup:
+	rpm -q pulp-cds
+	install -m 644 $(GPG_PUB_KEY) /etc/pki/rpm-gpg/
+	rpm --import /etc/pki/rpm-gpg/$(notdir $(GPG_PUB_KEY))
+	test -f $(RHUI_CONFIG_RPM)
+	rpm --checksig $(RHUI_CONFIG_RPM)
+	yum install -y $(RHUI_CONFIG_RPM)
+	service pulp-cds status
+	service pulp-cds restart
+
+.PHONY: check install setup
