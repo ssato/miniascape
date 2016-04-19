@@ -16,14 +16,13 @@ FETCH_PROG ?= curl
 
 ifeq ($(FETCH_PROG),curl)
 # TODO: curl doesn't look work well:
-fetch_RHUI_ISO = curl --cert $(RHUI_CERT)
+fetch_RHUI_ISO = curl -v --cacert /etc/rhsm/ca/redhat-uep.pem --cert $(RHUI_CERT) -O
 {% if proxy is defined and proxy.fqdn is defined -%}
 fetch_RHUI_ISO += --proxy https://{{ proxy.fqdn }}:{{ proxy.port|default("443") }}
 {%     if proxy.user is defined -%}
 fetch_RHUI_ISO += --proxy-user {{ proxy.user }}:{{ proxy.password }}
 {%-    endif %}
 {%- endif %}
-fetch_RHUI_ISO += -v --insecure -O
 else
 {% if proxy is defined and proxy.fqdn is defined -%}
 fetch_RHUI_ISO = env https_proxy=https://{{ proxy.fqdn }}:{{ proxy.port|default("443") }} wget --certificate $(RHUI_CERT)
@@ -31,9 +30,8 @@ fetch_RHUI_ISO = env https_proxy=https://{{ proxy.fqdn }}:{{ proxy.port|default(
 fetch_RHUI_ISO += --proxy-user={{ proxy.user }} --proxy-password={{ proxy.password }}
 {%-    endif %}
 {% else -%}
-fetch_RHUI_ISO = wget --certificate $(RHUI_CERT)
+fetch_RHUI_ISO = wget --ca-certificate /etc/rhsm/ca/redhat-uep.pem --certificate $(RHUI_CERT) --secure-protocol=SSLv3
 {%- endif %}
-fetch_RHUI_ISO += --no-check-certificate --secure-protocol=SSLv3
 endif
 
 CDS_CLUSTER ?= {{ cds.clusters }}
