@@ -25,9 +25,13 @@ $(CURDIR)/vmbuild-test.sh: $(CURDIR)/vmbuild.sh
 
 # make ks floppy:
 floppy_iso_name ?= {{ '%s' % name_prefix if name_prefix }}{{ '%s' % hostname or name }}-kscfg.iso
+floppy_flp_name ?= $(floppy_iso_name:.iso=.flp)
 
-floppy: $(CURDIR)/$(floppy_iso_name)
+floppy: $(CURDIR)/$(floppy_flp_name)
 $(CURDIR)/$(floppy_iso_name): $(CURDIR)/ks.cfg
 	mkisofs -R -J -o $(floppy_iso_name) ks.cfg
+
+$(CURDIR)/$(floppy_flp_name): $(CURDIR)/$(floppy_iso_name)
+	ln $< $@
 
 .PHONY: netregist build floppy
