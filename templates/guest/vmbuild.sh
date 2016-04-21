@@ -84,7 +84,7 @@ virt-install \
 --vcpus={{ virtinst.vcpus }} \
 {{     ' --cpu %s' % virtinst.cpu if virtinst.cpu }} \
 --graphics {{ virtinst.graphics|default('vnc') -}}
-{{-    ',keymap=%s' % keyboard if keyboard }} \
+{{-    ',keymap=%s' % virtinst.keyboard if virtinst.keyboard else keyboard|default('us') }} \
 --os-type={{ virtinst.os_type|default('linux') }} \
 --os-variant={{ virtinst.os_variant }} \
 {%     if use_serial_console and virtinst.os_variant and virtinst.os_variant == 'rhel7' -%}
