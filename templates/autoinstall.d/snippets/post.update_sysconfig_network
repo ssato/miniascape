@@ -13,7 +13,7 @@ if test -f $f; then
 {%  if not kickstart.ipv6 -%}
     grep -Eq "^NETWORKING_IPV6=no" $f 2>/dev/null 1>/dev/null || echo "NETWORKING_IPV6=no" >> $f
 {%- endif %}
-    test "x${gateway}" = "x" || echo "GATEWAY=${gateway}" >> $f
+    test "x${gateway}" = "x" || (grep -q ${gateway} ${f:?} 2>/dev/null || echo "GATEWAY=${gateway}" >> $f)
 else
     f=/etc/hostname
     if test -f $f; then
