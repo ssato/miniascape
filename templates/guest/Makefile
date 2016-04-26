@@ -32,6 +32,6 @@ $(CURDIR)/$(floppy_iso_name): $(CURDIR)/ks.cfg
 	mkisofs -R -J -o $(floppy_iso_name) ks.cfg
 
 $(CURDIR)/$(floppy_flp_name): $(CURDIR)/$(floppy_iso_name)
-	ln $< $@
+	ln -f $< $@
 
 .PHONY: netregist build floppy
