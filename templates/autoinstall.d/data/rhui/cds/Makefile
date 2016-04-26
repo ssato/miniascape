@@ -1,4 +1,4 @@
-# Makefile to install RHUI RPMs in CDS.
+# Makefile to install RHUI RPMs into CDS and setup it.
 # Author: Satoru SATOH <ssato@redhat.com>
 # License: MIT
 #
@@ -17,6 +17,7 @@ check: $(WORKDIR)/check.stamp
 $(WORKDIR)/check.stamp:
 	date
 	fqdn=`hostname -f`; test "x$(FQDN)" != "x" -a "x$$fqdn" = "x$(FQDN)"
+	test -f check.sh && bash -x ./check.sh || :
 	touch $@
 
 install: $(WORKDIR)/install-cds.stamp
