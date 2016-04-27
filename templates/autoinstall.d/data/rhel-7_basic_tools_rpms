@@ -2,12 +2,14 @@ NetworkManager-config-server
 bash-completion
 bind-utils
 chrony
+elinks
 lftp
+make
 pcp
 rsync
 screen
 sos
 strace
 tcpdump
+tmux
 vim-enhanced
-w3m
