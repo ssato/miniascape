@@ -12,7 +12,7 @@ find_bootdev () {
 #   'bond=bond0; slaves=em1,em2; bond_opts=mode=active-backup,downdelay=5000'
 #   or an empty string means parse failure.
 parse_bond_spec () {
-    echo "$1" | sed -nr 's/^(bond[^:]+):([^:]+)(:([^:]+))?/bond=\1; slaves=\2; bond_opts=\4/p'
+    echo "$1" | sed -nr 's/^(bond[^:]+):([^:]+)(:([^:]+))?/bond=\1;slaves=\2;bond_opts=\4/p'
 }
 
 # $1: ip spec, e.g. '(dhcp|dhcp6|auto6|ibft)'.
@@ -32,7 +32,7 @@ parse_ip_spec__auto_config_all_bootproto () {
 # output: Link up interface device names or an empty string
 list_linkup_interfaces () {
     local out="${1:-$(/sbin/ip -o link show up)}"
-    cat << EOF | sed -nr '/ lo:/d; / virbr[[:digit:]]+:/d; s/^[[:digit:]]+: ([^:]+): .*/\1/p'
+    cat << EOF | sed -nr '/ lo:/d; / virbr[[:digit:]]+:/d; / docker[[:digit:]]+:/d; s/^[[:digit:]]+: ([^:]+): .*/\1/p'
 ${out}
 EOF
 }
@@ -41,13 +41,13 @@ EOF
 # output: interface name and automatic configuration bootproto, or an empty string
 # see: function:`ip_auto_config_all_bootproto`
 parse_ip_spec__auto_config () {
-    local iface_method=$(echo "$1" | sed -nr 's/^([^:]+):([^:]+)$/iface=\1; method=\2/p')
+    local iface_method=$(echo "$1" | sed -nr 's/^([^:]+):([^:]+)$/iface=\1;method=\2/p')
     if test -z "${iface_method}"; then
         echo ''
     else
-        local method=$(echo "${iface_method}" | sed -nr 's/^iface=[^;]+; method=(.+)$/\1/p')
+        local method=$(echo "${iface_method}" | sed -nr 's/^iface=[^;]+;method=(.+)$/\1/p')
         test ${method} = "ibft" && bootproto=ibft || bootproto=dhcp
-        echo "${iface_method}; bootproto=${bootproto}"
+        echo "${iface_method};bootproto=${bootproto}"
     fi
 }
 
@@ -55,5 +55,5 @@ parse_ip_spec__auto_config () {
 # output: interface static config def. (iface name, ip, gateway, netmask,
 #   hostname) or an empty string
 parse_ip_spec__static_config () {
-    echo "$1" | sed -nr 's/^([^:]+)::([^:]+)?:([^:]+):([^:]+)?:([^:]+):none$/ip=\1; gateway=\2; netmask=\3; hostname=\4; iface=\5/p'
+    echo "$1" | sed -nr 's/^([^:]+)::([^:]+)?:([^:]+):([^:]+)?:([^:]+):none$/ip=\1;gateway=\2;netmask=\3;hostname=\4;iface=\5/p'
 }
