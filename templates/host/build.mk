@@ -20,7 +20,8 @@ setup:
 	for d in $(wildcard $(TOPDIR)/out/guests.d/*); do test -d $$d && make -C $$d setup || :; done 
 
 doc:
-	test -d $(TOPDIR)/doc || \
+	test -d $(TOPDIR)/doc || mkdir -p $(TOPDIR)/doc
+	test -f $(TOPDIR)/doc/Makefile || \
 	docutils-exts-bootstrap -w $(TOPDIR)/doc -C '$(TOPDIR)/$(SITE)/*.yml' \
 		`anyconfig_cli -T --get doc.name '$(TOPDIR)/$(SITE)/*.yml'` \
 		-t `anyconfig_cli -T --get doc.type '$(TOPDIR)/$(SITE)/*.yml'` -D -R
