@@ -5,6 +5,7 @@ chrony
 elinks
 lftp
 make
+nfs-utils
 pcp
 rsync
 screen
