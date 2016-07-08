@@ -3,15 +3,52 @@
 # License: MIT
 #
 # Overview of the steps:
-#   1. Checks
-#   2. Installation
-#   3. Setup
-#   4. Sync
-#   5. Promote & Publish
+#   0. Checks:
+#      a. Check FQDN: hostname -f
+#      b. Check date and time: date, ntptime, etc.
+#
+#   1. Installation:
+#      a. Satellite RPM Installation: ./install_packages in Satellite ISO image
+#      b. Satellite Installation: katello-installer
+#
+#   2. Setup:
+#      a. Setup hammer user configuration and check access: cat ... & hammer ping
+#      b. Setup Organization [option; if default organization is not used]: hammer organization create
+#      c. Setup Location [option; if default location is not used]: hammer location create
+#      d. Upload Satellite manifest: hammer subscription upload
+#      e. Setup Lifecycle Environments: hammer lifecycle-environment create
+#      f. Setup Yum Repos: hammer repository-set enable
+#      g. Setup Sync Plan:
+#         - online: hammer sync-plan create --enabled true
+#         - offline: hammer sync-plan create --enabled false
+#
+#      h. Setup Host Collection: hammer host-collection create
+#      i. Setup Content View [option]: hammer content-view create, hammer content-view add-repository
+#      j. Setup Activation Keys: hammer activation-key create
+#      k. Setup Users [option]:
+#         - setup LDAP or other auth sources [option]: ex. hammer auth-source ldap create ...
+#         - create a user: hammer user create
+#
+#   3. Sync:
+#      a. Check access to CDN: curl https://cdn.redhat.com
+#      b. Sync Yum Repos: hammer repository synchronize
+#      c. Enable Sync Plan [option: if offline -> online]: hammer sync-plan update --enabled true
+#
+#   4. Publish & Promote:
+#      a. Publish Content Views [option]: hammer content-view publish
+#      b. Promote Content Views [option]: hammer content-view version promote
+#
+#   5. Test clients:
+#      a. [client]: Install Satellite SSL CA RPM: yum install -y
+#      b. [client]: Register: subscription-manager register
+#      c. [satellite]: Check registration of content host: hammer content-host list
+#      d. [client]: Test access to Satellite: yum repolist, yum updateinfo list, etc.
 #
 # References:
-#   - Satellite 6.1 Installation Guide
 #   - Red Hat Satellite 6.1 Guide: https://access.redhat.com/articles/1380023
+#   - https://github.com/Katello/hammer-cli-katello/tree/master/lib/hammer_cli_katello
+#   - https://access.redhat.com/solutions/1607873
+#   - https://access.redhat.com/solutions/1229603
 #
 
 # Load variables, etc.
