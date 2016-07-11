@@ -1,139 +1,45 @@
-# Common variables:
-WORKDIR ?= /root/setup
-LOGDIR ?= $(WORKDIR)/logs
+# Makefile to define custom variables, rules and targets.
+# Author: Satoru SATOH <ssato/redhat.com>
+# License: MIT
+#
+SATELLITE_HOSTNAME ?= {{ hostname|default('') }}
 
-# Custom definitions.
-{% if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
-PROXY_URL ?= {{ "http://%s" % proxy.fqdn }}{{ ":%s" % proxy.port|default('8080') }}
-CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
-{% else -%}
-PROXY_URL ?=
-CURL_PROXY_OPT ?=
-{% endif %}
-
-{% if virtinst and virtinst.os_variant in ('rhel7', 'fedora21', 'fedora22') -%}
-CHECK_IF_NTPD_IS_RUNNING_AND_ENABLED ?= rpm -q ntp 2>/dev/null && systemctl status ntpd && systemctl is-enabled ntpd
-{% else -%}
-CHECK_IF_NTPD_IS_RUNNING_AND_ENABLED ?= rpm -q ntp 2>/dev/null && service ntpd status && chkconfig ntpd
-{% endif %}
-
-SUBSCRIPTION_MANAGER_REGISTER_OPTS ?= \
-{{ "--consumerid %s" % rhn.uuid if rhn and rhn.uuid is defined and rhn.uuid }}
-
-SATELLITE_ISO ?= satellite.iso
-
-# Katello
-{%  if satellite.admin is defined -%}
-ADMIN_NAME ?= {{ satellite.admin.name|default('admin') }}
-ADMIN_PASSWORD ?= {{ satellite.admin.password|default('') }}
-{%  else -%}
-ADMIN_NAME ?= admin
-ADMIN_PASSWORD ?=
-{%  endif -%}
-
-{%  if satellite.organization is defined -%}
-ORG_NAME ?= {{ satellite.organization.name|default('Default Organization') }}
-ORG_LABEL ?= {{ satellite.organization.label|default('Default_Organization') }}
-{%  else -%}
-ORG_NAME ?= Default Organization
-ORG_LABEL ?= Default_Organization
-{%  endif -%}
-
-LOCATION_NAME ?= {{ satellite.location|default('Default Location') }}
-MANIFEST_FILE ?= manifest.zip
-PRODUCT ?= Red Hat Enterprise Linux Server
-LIFECYCLE_ENVIRONMENT_PATHS ?= \
-{{ satellite.lifecycle_environments|join(' ', attribute='name') if satellite.lifecycle_environments else 'Test Prod' }}
-HOST_COLLECTIONS ?= {{ satellite.host_collections|join(' ', attribute='name') if satellite.host_collections }}
-
-KATELLO_INSTALLER_OPTIONS   ?= \
---foreman-admin-username=$(ADMIN_NAME) \
-{{ "--foreman-admin-password='%s'" % satellite.admin.password if satellite.admin.password }} \
+{% if satellite -%}
+{%     if satellite.admin -%}
+ADMIN_NAME = {{ satellite.admin.name|default("admin") }}
+KATELLO_INSTALLER_OPTIONS ?= \
+--verbose --foreman-admin-username=$(ADMIN_NAME) \
 {{ "--foreman-admin-email=%s" % satellite.admin.email if satellite.admin.email }} \
 {{ "--foreman-admin-first-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
-{{ "--foreman-admin-last-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
-{%  if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
-{{      "--katello-proxy-url=http://%s" % proxy.fqdn }} \
+{{ "--foreman-admin-last-name=%s" % satellite.admin.last_name if satellite.admin.last_name }} \
+{%        if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
+{{ "--katello-proxy-url='http://%s'" % proxy.fqdn }} \
 --katello-proxy-port={{ proxy.port|default('8080') }} \
 {{ "--katello-proxy-username=%s" % proxy.username if proxy.username }} \
-{{ "--katello-proxy-password=%s" % proxy.password if proxy.password }} \
+{{ "--katello-proxy-password=%s" % proxy.password if proxy.password }}
+{%        endif -%}
+{%     endif -%}
+ORG_NAME ?= {{ satellite.organization|default("Default Organization") }}
+LOCATION_NAME ?= {{ satellite.location|default("Default Location") }}
+{% else -%}
+ADMIN_NAME ?= admin
+KATELLO_INSTALLER_OPTIONS ?= --verbose --foreman-admin-username=$(ADMIN_NAME)
 {% endif -%}
-$(NULL)
 
-HAMMER_SYS_CONF ?= /etc/hammer/cli.modules.d/foreman.yml
-HAMMER_USER_CONF ?= $(HOME)/.hammer/cli_config.yml
-HAMMER_ADMIN_NAME = $(ADMIN_NAME)
-# http://gsw-hammer.documentation.rocks/initial_configuration,_adding_red_repos/hammer_credentials.html
-HAMMER_ADMIN_PASSWORD ?= \
-$(shell sed -nr 's/^ *admin_password: ([^[:blank:]]+) *$$/\1/p' \
-  /etc/katello-installer/answers.katello-installer.yaml)
+PROXY_URL ?= {{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) if proxy and proxy.fqdn }}
+ifneq ($(PROXY_URL),)
+CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+endif
 
-SETUP_REPOS ?= \
-{%  for repo in satellite.repos if repo.name and repo.releasever -%}
-hammer repository-set enable \
-  --organization "$(ORG_NAME)" --product "$(PRODUCT)" --name '{{ repo.name }}' \
-  --basearch {{ repo.arch|default("x86_64") }} --releasever '{{ repo.releasever }}';
-{%- else -%}
-hammer repository-set enable \
-  --organization "$(ORG_NAME)" --product "$(PRODUCT)" --basearch x86_64 \
-  --name 'Red Hat Enterprise Linux 6 Server (RPMs)' --releasever 6Server && \
-hammer repository-set enable \
-  --organization "$(ORG_NAME)" --product "$(PRODUCT)" --basearch x86_64 \
-  --name 'Red Hat Enterprise Linux 6 Server - Optional (RPMs)' --releasever 6Server
-{%- endfor %}
+LIFECYCLE_ENV_PATHS ?= Test Prod
+HOST_COLLECTIONS ?= HC_RHEL_7 HC_RHEL_6
+SYNC_PLAN_NAME ?= Daily Sync
 
-SETUP_LIFECYCLE_ENV_PATHS ?= \
-{%  for env in satellite.lifecycle_environments if env.name and env.prior -%}
-hammer lifecycle-environment create --organization "$(ORG_NAME)" \
-  --prior "{{ env.prior }}" --name "{{ env.name }}";
-{%- else -%}
-hammer lifecycle-environment create --organization "$(ORG_NAME)" --prior Library --name Test && \
-hammer lifecycle-environment create --organization "$(ORG_NAME)" --prior Test --name Prod
-{%- endfor %}
+#CLIENT_YUM_REPO_0 ?= \
+#--basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
+#--name 'Red Hat Enterprise Linux 7 Server (RPMs)' --releasever 7Server
 
-SETUP_CONTENT_VIEWS ?= \
-{%  for cv in satellite.cvs if cv.name and cv.repo_pattern -%}
-(hammer content-view list --organization "$(ORG_NAME)" | grep "{{ cv.name }}" 2>/dev/null || \
- (hammer content-view create --organization "$(ORG_NAME)" --name "{{ cv.name }}" && \
-  for rid in `hammer --csv repository list --organization "$(ORG_NAME)" | sed -nr "s/^([[:digit:]]+),{{ cv.repo_pattern }}.*/\1/p"`; do \
-      hammer content-view add-repository --organization "$(ORG_NAME)" \
-        --name "{{ cv.name }}" --repository-id $${rid}; \
-  done));
-{%- else -%}
-hammer content-view create --organization "$(ORG_NAME)" --name CV_RHEL_6_x86_64_Latest && \
-for rid in `hammer --csv repository list --organization "$(ORG_NAME)" | \
-    sed -nr "s/^([[:digit:]]+),Red Hat Enterprise Linux 6.*/\1/p"`; do \
-        hammer content-view add-repository --organization "$(ORG_NAME)" \
-            --name "CV_RHEL_6_x86_64_Latest" --repository-id $${rid}; \
-done
-{%- endfor %}
-
-AKEYS_LIST_0 = $(LOGDIR)/akeys.0.txt
-HCS_LIST_0 = $(LOGDIR)/hcs.0.txt
-
-SETUP_ACTIVATION_KEYS ?= \
-hammer activation-key list --organization "$(ORG_NAME)" --by ID | tee $(AKEYS_LIST_0) && \
-{%  for akey in satellite.activation_keys if akey.name and akey.cv and akey.env -%}
-grep "{{ akey.name }}" $(AKEYS_LIST_0) 2>/dev/null || \
-hammer activation-key create --organization "$(ORG_NAME)" --name "{{ akey.name }}" \
-    --content-view "{{ akey.cv }}" --lifecycle-environment "{{ akey.env }}";
-{%- else -%}
-grep "AK_RHEL_6_x86_64_Latest_Test" $(AKEYS_LIST_0) 2>/dev/null || \
-hammer activation-key create --organization "$(ORG_NAME)" --name AK_RHEL_6_x86_64_Latest_Test \
-    --content-view "CV_RHEL_6_x86_64_Latest" --lifecycle-environment "Test" && \
-grep "AK_RHEL_6_x86_64_Latest_Prod" $(AKEYS_LIST_0) 2>/dev/null || \
-hammer activation-key create --organization "$(ORG_NAME)" --name AK_RHEL_6_x86_64_Latest_Prod \
-    --content-view "CV_RHEL_6_x86_64_Latest" --lifecycle-environment "Prod"
-{%- endfor %}
-
-SETUP_HOST_COLLECTIONS ?= \
-hammer host-collection list --organization "$(ORG_NAME)" | tee $(HCS_LIST_0) && \
-{%  for hc in satellite.host_collections if hc.name -%}
-grep "{{ hc.name }}" $(HCS_LIST_0) 2>/dev/null || \
-hammer host-collection create --organization "$(ORG_NAME)" --name "{{ hc.name }}";
-{%- else -%}
-hammer host-collection create --organization "$(ORG_NAME)" --name "HC_RHEL_6_x86_64_Latest_Test" && \
-hammer host-collection create --organization "$(ORG_NAME)" --name "HC_RHEL_6_x86_64_Latest_Prod"
-{%- endfor %}
+SATELLITE_ACTIVATION_KEY ?= key_HC_RHEL_7
+SATELLITE_ORG ?= $(ORG_LABEL)
 
 # vim:noet:ft=make:
