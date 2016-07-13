@@ -4,6 +4,7 @@ curl
 hardlink
 lftp
 make
+nfs-utils
 ntpdate
 rpm-build
 rsync
