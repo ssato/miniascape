@@ -125,6 +125,7 @@ CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
 {% else -%}
 PROXY_URL ?=
 CURL_PROXY_OPT ?=
-{% endif -%}
+{%- endif %}
 
 # vim:noet:ft=make:
+{# #}
