@@ -1,0 +1,8 @@
+satellite:
+  foo: 1
+
+proxy:
+  fqdn: proxy.example.com
+  username: jdoe
+  password: secret
+

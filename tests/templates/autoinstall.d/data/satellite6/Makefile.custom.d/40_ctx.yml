@@ -1,0 +1,60 @@
+satellite:
+  organization: ACME
+  location: Tokyo
+  lifecycle_environments:
+    - name: Test Env
+    - name: Prod Env
+      label: prod_env
+      prior: Test Env
+      description: Production Environment
+
+  products:
+    - name: &product_0 Red Hat Enterprise Linux Server
+    - name: &product_1 Red Hat Satellite
+    - name: &product_2 Red Hat Software Collections for RHEL Server
+    - sync: False
+
+  repos:
+    - name: &repo_rhel_7_rpms Red Hat Enterprise Linux 7 Server (RPMs)
+      # product: *product_0
+      releasever: 7Server
+
+    - name: &repo_rhel_7_sat61_tools_rpms Red Hat Satellite Tools 6.1 (For RHEL 7 Server) (RPMs)
+      product: *product_1
+      arch: i386
+
+    - label: dummy
+      sync: False
+
+  host_collections:
+    - name: &hc_rhel_7_hosts RHEL 7 Latest Hosts
+    - description: Dummy Hosts
+    - name: RHEL 6 Latest Hosts
+      description: RHEL 6 Up-to-date hosts
+      max: 10
+      hosts:
+        - rhel-6-www-0
+        - rhel-6-www-1
+        - rhel-6-www-2
+
+  sync_plans:
+    - name: Daily Sync
+      interval: daily
+
+  content_views:
+    - name: RHEL 7 Latest
+      description: CV of RHEL 7 Latest repos
+      label: rhel-7-latest
+      repos:
+        - *repo_rhel_7_rpms
+        - *repo_rhel_7_sat61_tools_rpms
+
+    - name: RHEL 6 Latest
+
+  activation_keys:
+    - name: Key for RHEL 7 Latest hosts
+      env: Test Env
+      #max: 10
+      hc: *hc_rhel_7_hosts
+
+# vim:sw=2:ts=2:et:

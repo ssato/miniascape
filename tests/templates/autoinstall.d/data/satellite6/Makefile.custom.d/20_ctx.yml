@@ -1,0 +1,5 @@
+proxy:
+  fqdn: proxy.example.com
+  username: jdoe
+  password: secret
+

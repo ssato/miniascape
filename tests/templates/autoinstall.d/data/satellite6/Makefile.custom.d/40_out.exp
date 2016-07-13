@@ -1,0 +1,116 @@
+# Makefile to define custom variables, rules and targets.
+# Author: Satoru SATOH <ssato/redhat.com>
+# License: MIT
+#
+ORG_NAME ?= ACME
+LOCATION_NAME ?= Tokyo
+
+define create-lifecycle-environments =
+hammer --output=yaml lifecycle-environment list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/lifecycle_envs_00.txt
+grep ',Test Env,' ~/.hammer/lifecycle_envs_00.txt || \
+hammer lifecycle-environment create --organization-id `cat $<` \
+--name 'Test Env' --label Test_Env \
+--prior 'Library' \
+
+grep ',Prod Env,' ~/.hammer/lifecycle_envs_00.txt || \
+hammer lifecycle-environment create --organization-id `cat $<` \
+--name 'Prod Env' --label prod_env \
+--prior 'Test Env' \
+--description="Production Environment"
+
+endef
+
+define enable-repos-for-clients =
+hammer repository-set enable --organization-id `cat $<` \
+--basearch x86_64 \
+--product 'Red Hat Enterprise Linux Server' \
+--name 'Red Hat Enterprise Linux 7 Server (RPMs)' --releasever 7Server || :
+hammer repository-set enable --organization-id `cat $<` \
+--basearch i386 \
+--product 'Red Hat Satellite' \
+--name 'Red Hat Satellite Tools 6.1 (For RHEL 7 Server) (RPMs)'  || :
+
+endef
+
+define create-and-setup-sync-plans-for-products =
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true
+hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1
+hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Satellite' --sync-plan-id 1
+hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Software Collections for RHEL Server' --sync-plan-id 1
+
+endef
+
+define create-host-collections =
+hammer --output=yaml host-collection list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/host_collections_00.txt
+grep ',RHEL 7 Latest Hosts,' ~/.hammer/host_collections_00.txt || \
+hammer host-collection create --organization-id `cat $<` \
+--name 'RHEL 7 Latest Hosts' \
+ \
+ \
+
+grep ',RHEL 6 Latest Hosts,' ~/.hammer/host_collections_00.txt || \
+hammer host-collection create --organization-id `cat $<` \
+--name 'RHEL 6 Latest Hosts' \
+--description "RHEL 6 Up-to-date hosts" \
+--max-content-hosts 10 \
+--systems rhel-6-www-0,rhel-6-www-1,rhel-6-www-2
+
+endef
+
+define sync-repos-by-products =
+hammer product synchronize --organization-id `cat $<` --async --name 'Red Hat Enterprise Linux Server'
+hammer product synchronize --organization-id `cat $<` --async --name 'Red Hat Satellite'
+hammer product synchronize --organization-id `cat $<` --async --name 'Red Hat Software Collections for RHEL Server'
+
+endef
+
+define sync-repos-by-repos =
+hammer repository synchronize --organization-id `cat $<` --async \
+--basearch x86_64 \
+--product 'Red Hat Enterprise Linux Server' \
+--name 'Red Hat Enterprise Linux 7 Server (RPMs)' --releasever 7Server
+hammer repository synchronize --organization-id `cat $<` --async \
+--basearch i386 \
+--product 'Red Hat Satellite' \
+--name 'Red Hat Satellite Tools 6.1 (For RHEL 7 Server) (RPMs)' 
+
+endef
+
+define create-content-views =
+hammer --output=yaml content-view list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
+grep ',RHEL 7 Latest,' ~/.hammer/content_views_00.txt || \
+hammer content-view create --organization-id `cat $<` \
+--name 'RHEL 7 Latest' --label rhel-7-latest \
+--description "CV of RHEL 7 Latest repos" \
+--repositories "Red Hat Enterprise Linux 7 Server (RPMs),Red Hat Satellite Tools 6.1 (For RHEL 7 Server) (RPMs)"
+grep ',RHEL 6 Latest,' ~/.hammer/content_views_00.txt || \
+hammer content-view create --organization-id `cat $<` \
+--name 'RHEL 6 Latest' --label RHEL_6_Latest \
+ \
+
+
+endef
+
+define create-activation-keys =
+hammer --output=yaml activation-key list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/activation_keys_00.txt
+grep ',Key for RHEL 7 Latest hosts,' ~/.hammer/activation_keys_00.txt || \
+hammer activation-key create --organization-id `cat $<` --name 'Key for RHEL 7 Latest hosts' \
+ \
+--content-view 'Default Organization View' \ 
+--lifecycle-environment 'Test Env' \
+--unlimited-content-hosts true && \
+hammer add-host-collection --organization-id `cat $<` --name 'Key for RHEL 7 Latest hosts' \
+--host-collection 'RHEL 7 Latest Hosts'
+
+endef
+
+
+
+PROXY_URL ?=
+CURL_PROXY_OPT ?=
+
+# vim:noet:ft=make:

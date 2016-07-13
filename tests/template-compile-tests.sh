@@ -12,7 +12,7 @@ $(sed '/^#.*/d' ${curdir}/template-compile-tests.targets)
 fi
 
 for tgt in ${targets}; do
-    workdir=${1:-$(mktemp -d)}
+    workdir=${2:-$(mktemp -d)}
     test -d ${workdir:?} || mkdir -p ${workdir}
 
     tmpl_test_datadir=${curdir}/${tgt}.d

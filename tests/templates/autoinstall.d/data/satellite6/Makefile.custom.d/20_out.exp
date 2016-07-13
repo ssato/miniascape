@@ -1,0 +1,17 @@
+# Makefile to define custom variables, rules and targets.
+# Author: Satoru SATOH <ssato/redhat.com>
+# License: MIT
+#
+ADMIN_NAME ?= admin
+KATELLO_INSTALLER_OPTIONS ?= --verbose --foreman-admin-username=$(ADMIN_NAME)
+
+
+KATELLO_INSTALLER_OPTIONS += \
+--katello-proxy-url='http://proxy.example.com' \
+--katello-proxy-port=8080 \
+--katello-proxy-username=jdoe \
+--katello-proxy-password=secret
+PROXY_URL ?= http://proxy.example.com:8080
+CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+
+# vim:noet:ft=make:

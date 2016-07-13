@@ -1,0 +1,59 @@
+# Makefile to define custom variables, rules and targets.
+# Author: Satoru SATOH <ssato/redhat.com>
+# License: MIT
+#
+ORG_NAME ?= Default Organization
+LOCATION_NAME ?= Default Location
+
+define create-lifecycle-environments =
+hammer --output=yaml lifecycle-environment list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/lifecycle_envs_00.txt
+
+endef
+
+define enable-repos-for-clients =
+@echo "Repos to enable are not defined"
+endef
+
+define create-and-setup-sync-plans-for-products =
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true
+@echo "Do not set sync plan for products"
+endef
+
+define create-host-collections =
+hammer --output=yaml host-collection list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/host_collections_00.txt
+
+endef
+
+define sync-repos-by-products =
+@echo "Products to sync are not defined"
+endef
+
+define sync-repos-by-repos =
+@echo "Yum repos to sync are not defined"
+endef
+
+define create-content-views =
+hammer --output=yaml content-view list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
+
+endef
+
+define create-activation-keys =
+hammer --output=yaml activation-key list --organization-id `cat $<` | \
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/activation_keys_00.txt
+
+endef
+
+
+
+KATELLO_INSTALLER_OPTIONS += \
+--katello-proxy-url='http://proxy.example.com' \
+--katello-proxy-port=8080 \
+--katello-proxy-username=jdoe \
+--katello-proxy-password=secret
+PROXY_URL ?= http://proxy.example.com:8080
+CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+
+# vim:noet:ft=make:
