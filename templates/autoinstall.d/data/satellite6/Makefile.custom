@@ -8,7 +8,7 @@ ADMIN_NAME = {{ satellite.admin.name|default("admin") }}
 KATELLO_INSTALLER_OPTIONS ?= \
 --verbose --foreman-admin-username=$(ADMIN_NAME) \
 {{ "--foreman-admin-email=%s" % satellite.admin.email if satellite.admin.email }} \
-{{ "--foreman-admin-first-name=%s" % satellite.admin.fist_name if satellite.admin.fist_name }} \
+{{ "--foreman-admin-first-name=%s" % satellite.admin.first_name if satellite.admin.first_name }} \
 {{ "--foreman-admin-last-name=%s" % satellite.admin.last_name if satellite.admin.last_name }} \
 {{ satellite.installer_extra_options }}
 {%     endif -%}
