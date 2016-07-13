@@ -21,6 +21,12 @@ KATELLO_INSTALLER_OPTIONS ?= \
 {%     endif -%}
 ORG_NAME ?= {{ satellite.organization|default("Default Organization") }}
 LOCATION_NAME ?= {{ satellite.location|default("Default Location") }}
+{%     for repo in satellite.client.repos if repo.name and repo.releasever -%}
+CLIENT_YUM_REPO_{{ loop.index0 }} ?= \
+--basearch {{ repo.arch|default('x86_64') }} \
+--product {{ repo.product|default('Red Hat Enterprise Linux Server') }} \
+--name {{ repo.name }} --releasever {{ repo.releasever }}
+{%     endfor %}
 {% else -%}
 ADMIN_NAME ?= admin
 KATELLO_INSTALLER_OPTIONS ?= --verbose --foreman-admin-username=$(ADMIN_NAME)
@@ -34,10 +40,6 @@ endif
 LIFECYCLE_ENV_PATHS ?= Test Prod
 HOST_COLLECTIONS ?= HC_RHEL_7 HC_RHEL_6
 SYNC_PLAN_NAME ?= Daily Sync
-
-#CLIENT_YUM_REPO_0 ?= \
-#--basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
-#--name 'Red Hat Enterprise Linux 7 Server (RPMs)' --releasever 7Server
 
 SATELLITE_ACTIVATION_KEY ?= key_HC_RHEL_7
 SATELLITE_ORG ?= $(ORG_LABEL)

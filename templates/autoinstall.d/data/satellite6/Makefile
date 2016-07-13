@@ -279,9 +279,6 @@ setup-yum-repos: $(ORG_ID_FILE)
 	test -z "$(CLIENT_YUM_REPO_3)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_3)
 	test -z "$(CLIENT_YUM_REPO_4)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_4)
 	test -z "$(CLIENT_YUM_REPO_5)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_5)
-	test -z "$(CLIENT_YUM_REPO_6)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_6)
-	test -z "$(CLIENT_YUM_REPO_7)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_7)
-	test -z "$(CLIENT_YUM_REPO_8)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_7)
 
 .PHONY: setup-yum-repos
 
@@ -387,17 +384,20 @@ SYNC_REPOS_BY_REPO = hammer repository synchronize --organization "$(ORG_NAME)" 
 
 sync-by-product: sync-by-product.stamp
 sync-by-product.stamp:
-	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Enterprise Linux Server"
-	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Software Collections for RHEL Server"
-	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Satellite"
+	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Enterprise Linux Server" || :
+	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Satellite" || :
+	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Software Collections for RHEL Server" || :
 	touch $@
 
 sync-by-reop: sync-by-reop.stamp
-#sync-by-reop.stamp:
-#	$(SYNC_REPOS_BY_REPO) --name "Red Hat Enterprise Linux Server"
-#	$(SYNC_REPOS_BY_REPO) --name "Red Hat Software Collections for RHEL Server"
-#	$(SYNC_REPOS_BY_REPO) --name "Red Hat Satellite"
-#	touch $@
+sync-by-reop.stamp:
+	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_0) || :
+	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_1) || :
+	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_2) || :
+	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_3) || :
+	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_4) || :
+	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_5) || :
+	touch $@
 
 .PHONY: sync-by-product sync-by-repo
 
