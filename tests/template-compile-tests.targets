@@ -21,6 +21,8 @@ templates/autoinstall.d/snippets/ks/post.services.rhel-7
 
 templates/autoinstall.d/data/rhel-7-cluster/Makefile
 templates/autoinstall.d/data/rhel-7-cluster/Makefile.custom
+templates/autoinstall.d/data/satellite6/Makefile
+templates/autoinstall.d/data/satellite6/Makefile.custom
 
 #templates/autoinstall.d/snippets/ks/main.partitions
 #templates/guest/rpm/rpm.mk
@@ -36,7 +38,6 @@ templates/autoinstall.d/data/rhel-7-cluster/Makefile.custom
 #templates/autoinstall.d/data/satellite6/partition.txt
 #templates/autoinstall.d/data/satellite6/required_rpms.txt
 #templates/autoinstall.d/data/satellite6/initial-setup.sh
-#templates/autoinstall.d/data/satellite6/Makefile
 #templates/autoinstall.d/data/rhds_rpms_min
 #templates/autoinstall.d/data/rhevm_rhev_rpms
 #templates/autoinstall.d/data/satellite/partition.txt
