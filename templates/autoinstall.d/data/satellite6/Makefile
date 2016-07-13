@@ -54,8 +54,11 @@ WORKDIR ?= /root/setup
 LOGDIR ?= $(WORKDIR)/logs
 SATELLITE_ISO_DIR ?= $(WORKDIR)
 
+# Load variables, etc.
+-include Makefile.custom
+
 # Defaults if not set in the above Makefile:
-SATELLITE_HOSTNAME ?= $(shell hostname)
+SATELLITE_HOSTNAME ?= $(shell hostname -s)
 TIMESTAMP = $(shell date +%F_%T)
 
 # Options for katello-installer. Customize this as needed.
@@ -70,48 +73,38 @@ ADMIN_NAME = admin
 ORG_NAME ?= Default Organization
 ORG_LABEL ?= Default_Organization
 LOCATION_NAME ?= Default Location
-
-LIFECYCLE_ENV_PATHS ?= Test Prod
-HOST_COLLECTIONS ?= HC_RHEL_7 HC_RHEL_6
-SYNC_PLAN_NAME ?= Daily Sync
-
-CLIENT_YUM_REPO_0 ?= \
---basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
---name 'Red Hat Enterprise Linux 7 Server (RPMs)' --releasever 7Server
-
-CLIENT_YUM_REPO_1 ?= \
---basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
---name 'Red Hat Enterprise Linux 7 Server - Optional (RPMs)' --releasever 7Server
-
-CLIENT_YUM_REPO_3 ?= \
---basearch x86_64 --product 'Red Hat Software Collections for RHEL Server' \
---name 'Red Hat Software Collections RPMs For Red Hat Enterprise Linux 7 Server'
-
-CLIENT_YUM_REPO_4 ?= \
---basearch x86_64 --product 'Red Hat Satellite' \
---name 'Red Hat Satellite 6.1 (For RHEL 7 Server) (RPMs)'
-
-CLIENT_YUM_REPO_5 ?= \
---basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
---name 'Red Hat Satellite Tools 6.1 (For RHEL 7 Server) (RPMs)'
-
-#CLIENT_YUM_REPO_6 ?= \
-#--basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
-#--name 'Red Hat Enterprise Linux 6 Server (RPMs)' --releasever 6Server
-#
-#CLIENT_YUM_REPO_7 ?= \
-#-basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
-#--name 'Red Hat Enterprise Linux 6 Server - Optional (RPMs)' --releasever 6Server
-#
-#CLIENT_YUM_REPO_8 ?= \
-#--basearch x86_64 --product 'Red Hat Enterprise Linux Server' \
-#--name 'Red Hat Satellite Tools 6.1 (For RHEL 6 Server) (RPMs)'
-
-SATELLITE_ACTIVATION_KEY ?= key_HC_RHEL_7
 SATELLITE_ORG ?= $(ORG_LABEL)
 
-# Load variables, etc.
--include Makefile.custom
+ifeq ($(strip $(create-lifecycle-environments)),)
+define create-lifecycle-environments =
+hammer lifecycle-environment create --organization-id `cat $<` \
+--name Test --label Test --description 'Test/QA Environment' --prior Library && \
+hammer lifecycle-environment create --organization-id `cat $<` \
+--name Prod --label Prod --description 'Production Environment' --prior Test
+endef
+endif
+
+ifeq ($(strip $(create-host-collections)),)
+define create-host-collections =
+hammer host-collection create --organization-id `cat $<` --name 'RHEL 7 Hosts'
+endef
+endif
+
+ifeq ($(strip $(create-content-views)),)
+define create-content-views =
+hammer content-view create --organization-id `cat $<` \
+--name 'RHEL 7 Latest' --description 'CV of RHEL 7 Latest repos' \
+--repositories 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server,Red Hat Enterprise Linux 7 Server - Optional RPMs x86_64 7Server'
+endef
+endif
+
+ifeq ($(strip $(create-activation-keys)),)
+define create-activation-keys =
+hammer activation-key create --organization-id `cat $<` \
+--name 'Key for RHEL 7 Hosts' --content-view 'Default Organization View' \
+--lifecycle-environment 'Library' --unlimited-content-hosts true
+endef
+endif
 
 
 ## main:
@@ -258,27 +251,14 @@ upload-manifest.stamp: $(MANIFEST_ZIP) $(ORG_ID_FILE)
 # e. Setup Lifecycle Environments: hammer lifecycle-environment create
 #
 setup-lifecycle-environments: $(ORG_ID_FILE)
-	les=$$(hammer --csv lifecycle-environment list --organization-id `cat $(ORG_ID_FILE)`); \
-	prev_le=Library; \
-	for cur_le in $(LIFECYCLE_ENV_PATHS); do \
-		echo "$$les" | grep -qE ",$$cur_le," || \
-		hammer lifecycle-environment create --organization-id `cat $(ORG_ID_FILE)` \
-			--prior "$$prev_le" --name "$$cur_le"; \
-		prev_le=$$cur_le; \
-	done
+	$(create-lifecycle-environments)
 
 .PHONY: setup-lifecycle-environments
 
 # f. Setup Yum Repos: hammer repository-set enable
 #
-HAMMER_ENABLE_REPO = hammer repository-set enable --organization-id `cat $(ORG_ID_FILE)` 
 setup-yum-repos: $(ORG_ID_FILE)
-	test -z "$(CLIENT_YUM_REPO_0)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_0)
-	test -z "$(CLIENT_YUM_REPO_1)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_1)
-	test -z "$(CLIENT_YUM_REPO_2)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_2)
-	test -z "$(CLIENT_YUM_REPO_3)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_3)
-	test -z "$(CLIENT_YUM_REPO_4)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_4)
-	test -z "$(CLIENT_YUM_REPO_5)" || $(HAMMER_ENABLE_REPO) $(CLIENT_YUM_REPO_5)
+	$(enable-repos-for-clients)
 
 .PHONY: setup-yum-repos
 
@@ -286,61 +266,34 @@ setup-yum-repos: $(ORG_ID_FILE)
 #    - online: hammer sync-plan create --enabled true
 #    - offline: hammer sync-plan create --enabled false
 #
-# Note: --sync-plan does not looks valid option for hammer product set-sync-plan.
-#
 setup-sync-plan: $(ORG_ID_FILE)
-	spid=$$(hammer --output=yaml sync-plan list --organization-id `cat $(ORG_ID_FILE)` \
-		--name '$(SYNC_PLAN_NAME)' | sed -nr 's/.*ID: //p'); \
-	if test "x$$spid" = "x"; then \
-	hammer sync-plan create --organization-id `cat $(ORG_ID_FILE)` \
-		--interval daily --name '$(SYNC_PLAN_NAME)' --enabled false; \
-	hammer product set-sync-plan --organization-id `cat $(ORG_ID_FILE)` \
-	  --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1 && \
-	hammer product set-sync-plan --organization-id `cat $(ORG_ID_FILE)` \
-	  --name 'Red Hat Satellite' --sync-plan-id 1 && \
-	hammer product set-sync-plan --organization-id `cat $(ORG_ID_FILE)` \
-	  --name 'Red Hat Software Collections for RHEL Server' --sync-plan-id 1; \
-	fi
+	$(create-and-setup-sync-plans-for-products)
 
 .PHONY: setup-sync-plan
 
 # h. Setup Host Collection: hammer host-collection create
 #
 setup-host-collections: $(ORG_ID_FILE)
-	hcs=$$(hammer --csv host-collection list --organization-id `cat $(ORG_ID_FILE)`); \
-	for hc in $(HOST_COLLECTIONS); do \
-		echo "$$hcs" | grep -qE ",$$hc," || \
-		hammer host-collection create --organization-id `cat $(ORG_ID_FILE)` --name "$$hc"; \
-	done
+	$(create-host-collections)
 
 .PHONY: setup-host-collections
 
 # i. Setup Content View [option]:
 #    hammer content-view create, hammer content-view add-repository
 #
-# TODO:
-SETUP_CONTENT_VIEWS ?= :
+setup-content-views: $(ORG_ID_FILE)
+	$(create-content-views)
 
+.PHONY: setup-content-views
 
 # j. Setup Activation Keys: hammer activation-key create
 #
-# TODO:
-# - fix names of activation keys
 # - add subscriptions:
 #   hammer activation-key add-subscription --organization "<organization_name>" 
 #     --name <key_name> --subscription-id <subscription_id> --quantity <quantity>
 #
 setup-activation-keys: $(ORG_ID_FILE)
-	aks=$$(hammer --csv activation-key list --organization-id `cat $(ORG_ID_FILE)`); \
-	for hc in $(HOST_COLLECTIONS); do \
-		akey=key_$$hc; \
-		echo "$$aks" | grep -qE ",$$akey," 2>/devnull || \
-		(hammer activation-key create --organization-id `cat $(ORG_ID_FILE)` \
-			--name "$$akey" --content-view 'Default Organization View' \
-			--lifecycle-environment 'Library' --unlimited-content-hosts true && \
-		hammer activation-key add-host-collection --organization-id `cat $(ORG_ID_FILE)` \
-			--host-collection "$$hc" --name "$$akey"); \
-	done
+	$(create-activation-keys)
 
 .PHONY: setup-activation-keys
 
@@ -369,6 +322,7 @@ setup-all: upload-manifest
 setup-all: setup-lifecycle-environments
 setup-all: setup-sync-plan
 setup-all: setup-host-collections
+setup-all: setup-content-views
 setup-all: setup-activation-keys
 
 # Require access to cdn.redhat.com:
@@ -379,27 +333,17 @@ setup: setup-all
 .PHONY: setup setup-all
 
 # Yum Repository synchronization by manual
-SYNC_REPOS_BY_PRODUCT = hammer product synchronize --organization-id `cat $(ORGID_FILE)` --async
-SYNC_REPOS_BY_REPO = hammer repository synchronize --organization "$(ORG_NAME)" --async
-
 sync-by-product: sync-by-product.stamp
-sync-by-product.stamp:
-	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Enterprise Linux Server" || :
-	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Satellite" || :
-	$(SYNC_REPOS_BY_PRODUCT) --name "Red Hat Software Collections for RHEL Server" || :
+sync-by-product.stamp: $(ORG_ID_FILE)
+	$(sync-repos-by-products)
 	touch $@
 
-sync-by-reop: sync-by-reop.stamp
-sync-by-reop.stamp:
-	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_0) || :
-	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_1) || :
-	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_2) || :
-	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_3) || :
-	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_4) || :
-	$(SYNC_REPOS_BY_REPO) $(CLIENT_YUM_REPO_5) || :
+sync-by-repo: sync-by-repo.stamp
+sync-by-repo.stamp: $(ORG_ID_FILE)
+	$(sync-repos-by-repos)
 	touch $@
 
-.PHONY: sync-by-product sync-by-repo
+.PHONY: sync sync-by-product sync-by-repo
 
 sync: sync-by-product # sync-by-repo
 
