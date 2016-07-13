@@ -21,21 +21,21 @@ sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/lifecycle_envs_00.txt
 {%     for env in satellite.lifecycle_environments if env.name -%}
 grep ',{{ env.name }},' ~/.hammer/lifecycle_envs_00.txt || \
 hammer lifecycle-environment create --organization-id `cat $<` \
---name '{{ env.name }}' --label {{ env.label if env.label else env.name|join('_') }} \
---prior {{ env.prior|default('Library') }} \
+--name '{{ env.name }}' --label {{ env.label if env.label else env.name|replace(' ', '_') }} \
+--prior '{{ env.prior|default('Library') }}' \
 {{ '--description="%s"' % env.description if env.description }}
-{%     endfor %}
+{%    endfor %}
 endef
 
 define enable-repos-for-clients =
-{%     for repo in satellite.repos if repo.name and repo.product -%}
+{%     for repo in satellite.repos if repo.name -%}
 hammer repository-set enable --organization-id `cat $<` \
 --basearch {{ repo.arch|default('x86_64') }} \
---product {{ repo.product|default('Red Hat Enterprise Linux Server') }} \
---name {{ repo.name }} {{ '--releasever %s' % repo.releasever if repo.releasever }} || :
+--product '{{ repo.product|default("Red Hat Enterprise Linux Server") }}' \
+--name '{{ repo.name }}' {{ '--releasever %s' % repo.releasever if repo.releasever }} || :
 {%     else -%}
 @echo "Repos to enable are not defined"
-{%     endfor %}
+{%-    endfor %}
 endef
 
 define create-and-setup-sync-plans-for-products =
@@ -44,7 +44,7 @@ hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Dail
 hammer product set-sync-plan --organization-id `cat $<` --name '{{ prod.name }}' --sync-plan-id 1
 {%     else -%}
 @echo "Do not set sync plan for products"
-{%     endfor %}
+{%-    endfor %}
 endef
 
 define create-host-collections =
@@ -57,7 +57,7 @@ hammer host-collection create --organization-id `cat $<` \
 {{ '--description "%s"' % hc.description if hc.description }} \
 {{ '--max-content-hosts %s' % hc.max if hc.max }} \
 {{ '--systems %s' % hc.hosts|join(',') if hc.hosts }}
-{%     endfor %}
+{%   endfor %}
 endef
 
 define sync-repos-by-products =
@@ -65,19 +65,18 @@ define sync-repos-by-products =
 hammer product synchronize --organization-id `cat $<` --async --name '{{ prod.name }}'
 {%     else -%}
 @echo "Products to sync are not defined"
-{%     endfor %}
+{%-    endfor %}
 endef
 
 define sync-repos-by-repos =
-{%     for repo in satellite.repos if (repo.sync or repo.sync is not defined) and
-                                      repo.name and repo.releasever -%}
+{%     for repo in satellite.repos if (repo.sync or repo.sync is not defined) and repo.name -%}
 hammer repository synchronize --organization-id `cat $<` --async \
 --basearch {{ repo.arch|default('x86_64') }} \
---product {{ repo.product|default('Red Hat Enterprise Linux Server') }} \
---name {{ repo.name }} --releasever {{ repo.releasever }}
+--product '{{ repo.product|default("Red Hat Enterprise Linux Server") }}' \
+--name '{{ repo.name }}' {{ '--releasever %s' % repo.releasever if repo.releasever }}
 {%     else -%}
 @echo "Yum repos to sync are not defined"
-{%     endfor %}
+{%-    endfor %}
 endef
 
 define create-content-views =
@@ -86,10 +85,10 @@ sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
 {%     for cv in satellite.content_views if cv.name -%}
 grep ',{{ cv.name }},' ~/.hammer/content_views_00.txt || \
 hammer content-view create --organization-id `cat $<` \
---name '{{ cv.name }}' --label {{ cv.label if cv.label else cv.name|join('_') }} \
+--name '{{ cv.name }}' --label {{ cv.label if cv.label else cv.name|replace(' ', '_') }} \
 {{ '--description "%s"' % cv.description if cv.description }} \
 {{ '--repositories "%s"' % cv.repos|join(',') if cv.repos }}
-{%     endfor %}
+{%    endfor %}
 endef
 
 define create-activation-keys =
@@ -106,7 +105,7 @@ hammer activation-key create --organization-id `cat $<` --name '{{ key.name }}' 
 hammer add-host-collection --organization-id `cat $<` --name '{{ key.name }}' \
 --host-collection '{{ key.hc }}'
 {%-        endif %}{# TODO: hammer add-subscription ... #}
-{%     endfor %}
+{%    endfor %}
 endef
 
 {% else -%}
@@ -122,7 +121,7 @@ KATELLO_INSTALLER_OPTIONS += \
 {{ "--katello-proxy-password=%s" % proxy.password if proxy.password }}
 PROXY_URL ?= {{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }}
 CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
-{% else -%}
+{%- else -%}
 PROXY_URL ?=
 CURL_PROXY_OPT ?=
 {%- endif %}
