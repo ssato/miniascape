@@ -2,6 +2,8 @@
 
 WORKDIR ?= /root/setup
 
+RPMS ?= pcs fence-agents-common fence-agents-all
+
 #SETUP_FORCE ?= --force
 SETUP_FORCE ?=
 
