@@ -64,15 +64,17 @@ TIMESTAMP = $(shell date +%F_%T)
 # Options for katello-installer. Customize this as needed.
 # ex. KATELLO_INSTALLER_OPTIONS ?= --verbose --foreman-admin-email=foo@example.com --proxy-url ...
 #
-KATELLO_INSTALLER_OPTIONS ?= --verbose
+KATELLO_INSTALLER_OPTIONS ?=
 
 PROXY_URL ?=
 CURL_PROXY_OPT ?=
 
 ADMIN_NAME = admin
 ORG_NAME ?= Default Organization
-ORG_LABEL ?= Default_Organization
-LOCATION_NAME ?= Default Location
+ORG_LABEL ?= $(shell echo $(ORG_NAME) | sed -e 's/ /_/g')
+ifeq ($(strip $(LOCATION_NAME)),)
+LOCATION_NAME = Default Location
+endif
 SATELLITE_ORG ?= $(ORG_LABEL)
 
 ifeq ($(strip $(create-lifecycle-environments)),)
@@ -93,8 +95,10 @@ endif
 ifeq ($(strip $(create-content-views)),)
 define create-content-views =
 hammer content-view create --organization-id `cat $<` \
---name 'RHEL 7 Latest' --description 'CV of RHEL 7 Latest repos' \
---repositories 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server,Red Hat Enterprise Linux 7 Server - Optional RPMs x86_64 7Server'
+--name 'RHEL 7 Latest' --description 'CV of RHEL 7 Latest repos' && \
+hammer content-view add-repository --organization-id `cat $<` \
+--name 'RHEL 7 Latest' --product 'Red Hat Enterprise Linux Server' \
+--repository 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
 endef
 endif
 
@@ -102,7 +106,23 @@ ifeq ($(strip $(create-activation-keys)),)
 define create-activation-keys =
 hammer activation-key create --organization-id `cat $<` \
 --name 'Key for RHEL 7 Hosts' --content-view 'Default Organization View' \
---lifecycle-environment 'Library' --unlimited-content-hosts true
+--lifecycle-environment 'Library' --unlimited-content-hosts 1
+endef
+endif
+
+ifeq ($(strip $(create-and-setup-sync-plans-for-products)),)
+define create-and-setup-sync-plans-for-products =
+hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true
+hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1
+endef
+endif
+
+ifeq ($(strip $(enable-repos-for-clients)),)
+define enable-repos-for-clients =
+hammer repository-set enable --organization-id `cat $<` --basearch x86_64 \
+--product 'Red Hat Enterprise Linux Server' \
+--name 'Red Hat Enterprise Linux 6 Server (RPMs)' --releasever 6Server
 endef
 endif
 
@@ -167,7 +187,7 @@ install: install.stamp
 install.stamp: $(LOGDIR)
 	rpm -q katello || $(INSTALL_SATELLITE_RPMS_FROM_ISO)
 	katello-installer $(KATELLO_INSTALLER_OPTIONS) 2>&1 | \
-		tee $(LOGDIR)/katello-installer.$(TIMESTAMP).log)
+		tee $(LOGDIR)/katello-installer.$(TIMESTAMP).log
 	touch $@
 
 .PHONY: install
@@ -258,6 +278,7 @@ setup-lifecycle-environments: $(ORG_ID_FILE)
 # f. Setup Yum Repos: hammer repository-set enable
 #
 setup-yum-repos: $(ORG_ID_FILE)
+	$(TWEAK_SELINUX_POLICY)
 	$(enable-repos-for-clients)
 
 .PHONY: setup-yum-repos
@@ -322,11 +343,13 @@ setup-all: upload-manifest
 setup-all: setup-lifecycle-environments
 setup-all: setup-sync-plan
 setup-all: setup-host-collections
-setup-all: setup-content-views
-setup-all: setup-activation-keys
 
 # Require access to cdn.redhat.com:
 setup-all: setup-yum-repos
+
+# Depends on setup-yum-repos:
+setup-all: setup-content-views
+setup-all: setup-activation-keys
 
 setup: setup-all
 

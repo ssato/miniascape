@@ -39,6 +39,7 @@ hammer repository-set enable --organization-id `cat $<` \
 endef
 
 define create-and-setup-sync-plans-for-products =
+hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
 hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true
 {%     for prod in satellite.products if prod.name and (prod.sync or prod.sync is not defined) -%}
 hammer product set-sync-plan --organization-id `cat $<` --name '{{ prod.name }}' --sync-plan-id 1
@@ -79,6 +80,8 @@ hammer repository synchronize --organization-id `cat $<` --async \
 {%-    endfor %}
 endef
 
+# --repositories option does not work.
+# see also: https://bugzilla.redhat.com/show_bug.cgi?id=1254977
 define create-content-views =
 hammer --output=yaml content-view list --organization-id `cat $<` | \
 sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
@@ -87,7 +90,10 @@ grep ',{{ cv.name }},' ~/.hammer/content_views_00.txt || \
 hammer content-view create --organization-id `cat $<` \
 --name '{{ cv.name }}' --label {{ cv.label if cv.label else cv.name|replace(' ', '_') }} \
 {{ '--description "%s"' % cv.description if cv.description }} \
-{{ '--repositories "%s"' % cv.repos|join(',') if cv.repos }}
+{%          for repo in cv.repos if repo.name and repo.product -%}
+&& hammer content-view add-repository --organization-id `cat $<` \
+--name '{{ cv.name }}' --repository '{{ repo.name }}' --product '{{ repo.product }}'
+{%          endfor -%}
 {%    endfor %}
 endef
 
@@ -96,14 +102,13 @@ hammer --output=yaml activation-key list --organization-id `cat $<` | \
 sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/activation_keys_00.txt
 {%     for key in satellite.activation_keys if key.name -%}
 grep ',{{ key.name }},' ~/.hammer/activation_keys_00.txt || \
-hammer activation-key create --organization-id `cat $<` --name '{{ key.name }}' \
-{{ '--description "%s"' % key.description if key.description }} \
---content-view '{{ key.cv or "Default Organization View" }}' \ 
---lifecycle-environment '{{ key.env or "Library" }}' \
-{{ '--max-content-hosts %s' % key.max if key.max else '--unlimited-content-hosts true' }} && \
+hammer activation-key create --organization-id `cat $<` \
+--name '{{ key.name }}' {{ '--description "%s"' % key.description if key.description }} \
+--content-view '{{ key.cv or "Default Organization View" }}' \
+--lifecycle-environment '{{ key.env or "Library" }}' {{ '--max-content-hosts %s' % key.max if key.max  }} && \
 {%         if key.hc -%}
-hammer add-host-collection --organization-id `cat $<` --name '{{ key.name }}' \
---host-collection '{{ key.hc }}'
+hammer activation-key add-host-collection --organization-id `cat $<` \
+--name '{{ key.name }}' --host-collection '{{ key.hc }}'
 {%-        endif %}{# TODO: hammer add-subscription ... #}
 {%    endfor %}
 endef
@@ -121,9 +126,11 @@ KATELLO_INSTALLER_OPTIONS += \
 {{ "--katello-proxy-password=%s" % proxy.password if proxy.password }}
 PROXY_URL ?= {{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }}
 CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+TWEAK_SELINUX_POLICY ?= semanage port -at foreman_proxy_port_t -p tcp {{ proxy.port|default('8080') }}
 {%- else -%}
 PROXY_URL ?=
 CURL_PROXY_OPT ?=
+TWEAK_SELINUX_POLICY ?= :
 {%- endif %}
 
 # vim:noet:ft=make:
