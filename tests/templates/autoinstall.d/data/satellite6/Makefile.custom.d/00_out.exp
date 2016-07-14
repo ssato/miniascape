@@ -3,10 +3,11 @@
 # License: MIT
 #
 ADMIN_NAME ?= admin
-KATELLO_INSTALLER_OPTIONS ?= --verbose --foreman-admin-username=$(ADMIN_NAME)
+KATELLO_INSTALLER_OPTIONS ?= --foreman-admin-username=$(ADMIN_NAME)
 
 
 PROXY_URL ?=
 CURL_PROXY_OPT ?=
+TWEAK_SELINUX_POLICY ?= :
 
 # vim:noet:ft=make:

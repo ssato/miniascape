@@ -46,8 +46,9 @@ satellite:
       description: CV of RHEL 7 Latest repos
       label: rhel-7-latest
       repos:
-        - *repo_rhel_7_rpms
-        - *repo_rhel_7_sat61_tools_rpms
+        - name: Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server
+          product: *product_0
+        - product: *product_1
 
     - name: RHEL 6 Latest
 

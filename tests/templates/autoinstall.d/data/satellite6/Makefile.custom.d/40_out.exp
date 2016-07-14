@@ -34,6 +34,7 @@ hammer repository-set enable --organization-id `cat $<` \
 endef
 
 define create-and-setup-sync-plans-for-products =
+hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
 hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true
 hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1
 hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Satellite' --sync-plan-id 1
@@ -78,6 +79,8 @@ hammer repository synchronize --organization-id `cat $<` --async \
 
 endef
 
+# --repositories option does not work.
+# see also: https://bugzilla.redhat.com/show_bug.cgi?id=1254977
 define create-content-views =
 hammer --output=yaml content-view list --organization-id `cat $<` | \
 sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
@@ -85,12 +88,12 @@ grep ',RHEL 7 Latest,' ~/.hammer/content_views_00.txt || \
 hammer content-view create --organization-id `cat $<` \
 --name 'RHEL 7 Latest' --label rhel-7-latest \
 --description "CV of RHEL 7 Latest repos" \
---repositories "Red Hat Enterprise Linux 7 Server (RPMs),Red Hat Satellite Tools 6.1 (For RHEL 7 Server) (RPMs)"
+&& hammer content-view add-repository --organization-id `cat $<` \
+--name 'RHEL 7 Latest' --repository 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --product 'Red Hat Enterprise Linux Server'
 grep ',RHEL 6 Latest,' ~/.hammer/content_views_00.txt || \
 hammer content-view create --organization-id `cat $<` \
 --name 'RHEL 6 Latest' --label RHEL_6_Latest \
  \
-
 
 endef
 
@@ -98,13 +101,12 @@ define create-activation-keys =
 hammer --output=yaml activation-key list --organization-id `cat $<` | \
 sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/activation_keys_00.txt
 grep ',Key for RHEL 7 Latest hosts,' ~/.hammer/activation_keys_00.txt || \
-hammer activation-key create --organization-id `cat $<` --name 'Key for RHEL 7 Latest hosts' \
- \
---content-view 'Default Organization View' \ 
---lifecycle-environment 'Test Env' \
---unlimited-content-hosts true && \
-hammer add-host-collection --organization-id `cat $<` --name 'Key for RHEL 7 Latest hosts' \
---host-collection 'RHEL 7 Latest Hosts'
+hammer activation-key create --organization-id `cat $<` \
+--name 'Key for RHEL 7 Latest hosts'  \
+--content-view 'Default Organization View' \
+--lifecycle-environment 'Test Env'  && \
+hammer activation-key add-host-collection --organization-id `cat $<` \
+--name 'Key for RHEL 7 Latest hosts' --host-collection 'RHEL 7 Latest Hosts'
 
 endef
 
@@ -112,5 +114,6 @@ endef
 
 PROXY_URL ?=
 CURL_PROXY_OPT ?=
+TWEAK_SELINUX_POLICY ?= :
 
 # vim:noet:ft=make:

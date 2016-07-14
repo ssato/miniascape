@@ -3,7 +3,7 @@
 # License: MIT
 #
 ADMIN_NAME ?= admin
-KATELLO_INSTALLER_OPTIONS ?= --verbose --foreman-admin-username=$(ADMIN_NAME)
+KATELLO_INSTALLER_OPTIONS ?= --foreman-admin-username=$(ADMIN_NAME)
 
 
 KATELLO_INSTALLER_OPTIONS += \
@@ -13,5 +13,6 @@ KATELLO_INSTALLER_OPTIONS += \
 --katello-proxy-password=secret
 PROXY_URL ?= http://proxy.example.com:8080
 CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+TWEAK_SELINUX_POLICY ?= semanage port -at foreman_proxy_port_t -p tcp 8080
 
 # vim:noet:ft=make:

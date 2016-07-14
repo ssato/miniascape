@@ -16,6 +16,7 @@ define enable-repos-for-clients =
 endef
 
 define create-and-setup-sync-plans-for-products =
+hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
 hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true
 @echo "Do not set sync plan for products"
 endef
@@ -34,6 +35,8 @@ define sync-repos-by-repos =
 @echo "Yum repos to sync are not defined"
 endef
 
+# --repositories option does not work.
+# see also: https://bugzilla.redhat.com/show_bug.cgi?id=1254977
 define create-content-views =
 hammer --output=yaml content-view list --organization-id `cat $<` | \
 sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
@@ -55,5 +58,6 @@ KATELLO_INSTALLER_OPTIONS += \
 --katello-proxy-password=secret
 PROXY_URL ?= http://proxy.example.com:8080
 CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+TWEAK_SELINUX_POLICY ?= semanage port -at foreman_proxy_port_t -p tcp 8080
 
 # vim:noet:ft=make:
