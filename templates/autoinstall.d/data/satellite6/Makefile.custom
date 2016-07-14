@@ -91,8 +91,8 @@ hammer content-view create --organization-id `cat $<` \
 --name '{{ cv.name }}' --label {{ cv.label if cv.label else cv.name|replace(' ', '_') }} \
 {{ '--description "%s"' % cv.description if cv.description }} \
 {%          for repo in cv.repos if repo.name and repo.product -%}
-&& hammer content-view add-repository --organization-id `cat $<` \
---name '{{ cv.name }}' --repository '{{ repo.name }}' --product '{{ repo.product }}'
+hammer content-view add-repository --organization-id `cat $<` \
+--name '{{ cv.name }}' --repository '{{ repo.name }}' --product '{{ repo.product }}' || :
 {%          endfor -%}
 {%    endfor %}
 endef
@@ -126,7 +126,9 @@ KATELLO_INSTALLER_OPTIONS += \
 {{ "--katello-proxy-password=%s" % proxy.password if proxy.password }}
 PROXY_URL ?= {{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }}
 CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
-TWEAK_SELINUX_POLICY ?= semanage port -at foreman_proxy_port_t -p tcp {{ proxy.port|default('8080') }}
+TWEAK_SELINUX_POLICY ?= \
+semanage port -at foreman_proxy_port_t -p tcp {{ proxy.port|default('8080') }} || :; \
+katello-service restart; foreman-rake katello:reindex
 {%- else -%}
 PROXY_URL ?=
 CURL_PROXY_OPT ?=

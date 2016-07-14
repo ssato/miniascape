@@ -348,8 +348,8 @@ setup-all: setup-host-collections
 setup-all: setup-yum-repos
 
 # Depends on setup-yum-repos:
-setup-all: setup-content-views
 setup-all: setup-activation-keys
+setup-all: setup-content-views
 
 setup: setup-all
 
