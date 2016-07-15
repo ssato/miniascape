@@ -8,8 +8,9 @@ cat /etc/redhat-release
 uname -a
 hostname; hostname -s; hostname -f || :
 date
-which ntpq && ntpq -p || :
-rpm -q ntp && service ntpd status && which ntptime && ntptime || :
+which chronyc && \
+(systemctl status chronyd && systemctl is-enabled chronyd && chronyc sources) || \
+(which ntpq && systemctl status ntpd && systemctl is-enabled ntpd && ntptime))
 /sbin/ip a
 /sbin/ip r
 df -h
