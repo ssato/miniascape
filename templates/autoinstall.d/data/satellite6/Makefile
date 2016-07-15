@@ -138,7 +138,7 @@ all:
 # TODO: How to check the clock if chrony is used ?
 #
 CHECK_CDN_ACCESS ?= \
-curl -v --cacet /etc/rhsm/ca/redhat-uep.pem --connect-timeout 5 \
+curl -v --cacert /etc/rhsm/ca/redhat-uep.pem --connect-timeout 5 \
 $(CURL_PROXY_OPT) https://cdn.redhat.com
 
 CHECK_FQDN ?= \
