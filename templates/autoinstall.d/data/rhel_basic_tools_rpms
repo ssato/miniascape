@@ -1,7 +1,9 @@
 audit
 bash-completion
 curl
+device-mapper-multipath
 hardlink
+iscsi-initiator-utils
 lftp
 make
 nfs-utils
