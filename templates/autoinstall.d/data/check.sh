@@ -10,7 +10,7 @@ hostname; hostname -s; hostname -f || :
 date
 which chronyc && \
 (systemctl status chronyd && systemctl is-enabled chronyd && chronyc sources) || \
-(which ntpq && systemctl status ntpd && systemctl is-enabled ntpd && ntptime))
+(which ntpq && systemctl status ntpd && systemctl is-enabled ntpd && ntptime)
 /sbin/ip a
 /sbin/ip r
 df -h
