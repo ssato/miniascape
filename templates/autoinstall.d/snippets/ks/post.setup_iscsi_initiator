@@ -1,0 +1,7 @@
+{% if iscsi and iscsi.initiatorname -%}
+f=/etc/iscsi/initiatorname.iscsi
+test -f $f && (
+test -f $f.save || cp $f $f.save
+sed -i -e 's,^InitiatorName=.*,InitiatorName={{ iscsi.initiatorname }},' $f
+) || :
+{% endif %}
