@@ -89,7 +89,7 @@ sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
 grep ',{{ cv.name }},' ~/.hammer/content_views_00.txt || \
 hammer content-view create --organization-id `cat $<` \
 --name '{{ cv.name }}' --label {{ cv.label if cv.label else cv.name|replace(' ', '_') }} \
-{{ '--description "%s"' % cv.description if cv.description }} \
+{{ '--description "%s"' % cv.description if cv.description }}; \
 {%          for repo in cv.repos if repo.name and repo.product -%}
 hammer content-view add-repository --organization-id `cat $<` \
 --name '{{ cv.name }}' --repository '{{ repo.name }}' --product '{{ repo.product }}' || :
