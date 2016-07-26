@@ -86,3 +86,5 @@ wget
 xalan-j2
 xerces-j2
 xml-commons-apis
+# Recommended. see also: https://access.redhat.com/articles/2356131
+tuned
