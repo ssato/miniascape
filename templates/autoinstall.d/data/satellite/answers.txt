@@ -4,7 +4,7 @@ rhn-username = {{ rhn.username|default('') }}
 rhn-password = {{ rhn.password|default('') }}
 {%   if proxy is defined and proxy.fqdn is defined and proxy.fqdn -%}
 rhn-http-proxy = {{ proxy.fqdn }}
-rhn-http-proxy-username = {{ proxy.username|default('') }}
+rhn-http-proxy-username = {{ proxy.user|default('') }}
 rhn-http-proxy-password = {{ proxy.password|default('') }}
 {%-  endif %}
 ssl-set-org = {{ satellite.ssl.org }}

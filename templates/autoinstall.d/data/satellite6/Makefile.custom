@@ -122,10 +122,10 @@ KATELLO_INSTALLER_OPTIONS ?= --foreman-admin-username=$(ADMIN_NAME)
 KATELLO_INSTALLER_OPTIONS += \
 {{ "--katello-proxy-url='http://%s'" % proxy.fqdn }} \
 --katello-proxy-port={{ proxy.port|default('8080') }} \
-{{ "--katello-proxy-username=%s" % proxy.username if proxy.username }} \
+{{ "--katello-proxy-username=%s" % proxy.user if proxy.user }} \
 {{ "--katello-proxy-password=%s" % proxy.password if proxy.password }}
 PROXY_URL ?= {{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }}
-CURL_PROXY_OPT ?= --proxy $(PROXY_URL)
+CURL_PROXY_OPT ?= --proxy $(PROXY_URL){{ " --proxy-user %s:%s" % (proxy.user, proxy.password) if proxy.user and proxy.password }}
 TWEAK_SELINUX_POLICY ?= \
 semanage port -at foreman_proxy_port_t -p tcp {{ proxy.port|default('8080') }} || :; \
 katello-service restart; foreman-rake katello:reindex

@@ -6,8 +6,8 @@ if test -f $f; then
     sed -i -e '
 s/^proxy_hostname =.*/proxy_hostname = {{ proxy.fqdn }}/
 s/^proxy_port =.*/proxy_port = {{ proxy.port|default('8080') }}/
-{%         if proxy.username is defined and proxy.username -%}
-s/^proxy_user =.*/proxy_user = {{ proxy.username }}/
+{%         if proxy.user is defined and proxy.user -%}
+s/^proxy_user =.*/proxy_user = {{ proxy.user }}/
 {%-        endif %}
 {%         if proxy.password is defined and proxy.password -%}
 s/^proxy_password =.*/proxy_password = {{ proxy.password }}/
