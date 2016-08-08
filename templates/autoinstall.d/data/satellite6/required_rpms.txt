@@ -27,6 +27,8 @@ boost-system
 boost-thread
 libxslt
 libicu
+openscap
+openscap*
 python-deltarpm
 python-ldap
 python-saslwrapper
@@ -35,6 +37,8 @@ qpid-cpp-client
 qpid-cpp-client-ssl
 qpid-cpp-server
 qpid-cpp-server-ssl
+scap-security-guide
+squid
 syslinux
 tftp-server
 xinetd

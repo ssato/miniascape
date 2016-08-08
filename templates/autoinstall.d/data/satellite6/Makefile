@@ -113,7 +113,7 @@ endif
 ifeq ($(strip $(create-and-setup-sync-plans-for-products)),)
 define create-and-setup-sync-plans-for-products =
 hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
-hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true --sync-date "$(shell date +%Y-%m-%d)"
 hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1
 endef
 endif
@@ -186,7 +186,7 @@ cd - && umount /mnt
 install: install.stamp
 install.stamp: $(LOGDIR)
 	rpm -q katello || $(INSTALL_SATELLITE_RPMS_FROM_ISO)
-	katello-installer $(KATELLO_INSTALLER_OPTIONS) 2>&1 | \
+	satellite-installer --scenario satellite $(KATELLO_INSTALLER_OPTIONS) 2>&1 | \
 		tee $(LOGDIR)/katello-installer.$(TIMESTAMP).log
 	touch $@
 
@@ -203,7 +203,7 @@ HAMMER_ADMIN_NAME ?= $(ADMIN_NAME)
 # http://gsw-hammer.documentation.rocks/initial_configuration,_adding_red_repos/hammer_credentials.html
 HAMMER_ADMIN_PASSWORD ?= \
 $(shell sed -nr 's/^ *admin_password: ([^[:blank:]]+) *$$/\1/p' \
-  /etc/katello-installer/answers.katello-installer.yaml)
+  /etc/foreman-installer/scenarios.d/satellite-answers.yaml)
 
 $(HAMMER_USER_CONF_DIR):
 	mkdir -p -m 0700 $@
