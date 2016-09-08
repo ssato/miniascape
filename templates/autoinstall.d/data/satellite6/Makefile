@@ -113,7 +113,7 @@ endif
 ifeq ($(strip $(create-and-setup-sync-plans-for-products)),)
 define create-and-setup-sync-plans-for-products =
 hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
-hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true --sync-date "$(shell date +%Y-%m-%d)"
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled false --sync-date "`date --iso-8601=minutes`"
 hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1
 endef
 endif
@@ -233,15 +233,8 @@ setup-organization: $(ORG_ID_FILE)
 # c. Setup Location [option; if default location is not used]:
 #    hammer location create
 #
-LOC_ID_FILE ?= ~/.hammer/location_id.txt
-
-$(LOC_ID_FILE):
-	hammer --csv location list | grep -qE ',$(LOCATION_NAME)$$' 2>/dev/null || \
-	hammer location create --name '$(LOCATION_NAME)'
-	hammer --output=yaml location info --name '$(LOCATION_NAME)' | sed -nr "s/^Id: //p" > $@.t
-	test -s $@.t && mv $@.t $@
-
-setup-location: $(LOC_ID_FILE)
+setup-location:
+	$(create-locations)
 
 .PHONY: setup-location
 
@@ -348,8 +341,8 @@ setup-all: setup-host-collections
 setup-all: setup-yum-repos
 
 # Depends on setup-yum-repos:
-setup-all: setup-activation-keys
 setup-all: setup-content-views
+setup-all: setup-activation-keys
 
 setup: setup-all
 
