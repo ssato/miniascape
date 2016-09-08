@@ -3,6 +3,7 @@ fqdn="${hostname}"    # May be defined in ${bp}.
 gateway="${gateway}"  # Likewise.
 test "x${fqdn}" != "x" || fqdn={{ fqdn|default('localhost.localdomain') }}
 test "x${gateway}" != "x" || gateway={{ gateway|default('') }}
+test "x${gatewaydev}" != "x" || gatewaydev={{ gatewaydev|default('') }}
 f=/etc/sysconfig/network
 if test -f $f; then
     test -f $f.save || cp $f $f.save
@@ -14,6 +15,7 @@ if test -f $f; then
     grep -Eq "^NETWORKING_IPV6=no" $f 2>/dev/null 1>/dev/null || echo "NETWORKING_IPV6=no" >> $f
 {%- endif %}
     test "x${gateway}" = "x" || (grep -q ${gateway} ${f:?} 2>/dev/null || echo "GATEWAY=${gateway}" >> $f)
+    test "x${gatewaydev}" = "x" || (grep -q ${gatewaydev} ${f:?} 2>/dev/null || echo "GATEWAYDEV=${gatewaydev}" >> $f)
 else
     f=/etc/hostname
     if test -f $f; then
