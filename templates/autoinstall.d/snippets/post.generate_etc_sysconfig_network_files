@@ -42,7 +42,9 @@ cp $f /root/setup/$f
 f=/etc/sysconfig/network-scripts/route-{{ ni.device }}
 bf=/root/setup/$f.save
 test -f $bf || cp $f $bf
-echo "{{ ni.route }}" > $f
+cat << EOF > $f
+{{ ni.route }}
+EOF
 cp $f /root/setup/$f
 {%-       endif %}
 {%-     else -%}
