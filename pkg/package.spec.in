@@ -37,12 +37,12 @@ rm -rf $RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{python_sitelib}/*.egg-info
 
 # Hack to setup symlinks:
-for d in $RPM_BUILD_ROOT%{_sysconfdir}/miniascape.d/{hacluster,openshift,openstack,rhui}; do
-    for f in 00_base.yml 10_networks.yml; do
-        (cd $d && test -f $f && ln -sf ../default/$f ./ || :)
-    done
-    for f in 00_includes; do (cd $d && test -d $f && rm -rf $f && ln -sf ../default/$f ./ || :); done
-done
+#for d in $RPM_BUILD_ROOT%{_sysconfdir}/miniascape.d/{hacluster,openshift,openstack,rhui}; do
+#    for f in 00_base.yml 10_networks.yml; do
+#        (cd $d && test -f $f && ln -sf ../default/$f ./ || :)
+#    done
+#    for f in 00_includes; do (cd $d && test -d $f && rm -rf $f && ln -sf ../default/$f ./ || :); done
+#done
 
 # Generate some file lists:
 find $RPM_BUILD_ROOT%{_datadir}/%{name}/templates -type f | \
@@ -71,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %config %{pkgconfdir}/*/*.yml
 %config %{pkgconfdir}/*/*/*.j2
 %config %{pkgconfdir}/*/*/*.yml
-%config %{pkgconfdir}/*/*_includes
+%dir %{pkgconfdir}/*/00_includes
 %{python_sitelib}/*
 
 %changelog
