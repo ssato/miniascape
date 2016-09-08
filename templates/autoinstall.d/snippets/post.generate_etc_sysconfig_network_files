@@ -29,7 +29,7 @@ NETMASK={{ ni.netmask if ni.netmask else (netmask or default('255.255.255.0')) }
 ONBOOT={{ ni.onboot|default('yes') }}
 BOOTPROTO={{ ni.bootproto|default('static') }}
 USERCTL={{ ni.userctl|default('no') }}
-NM_CONTROLLED={{ ni.nm_controlled|default('no') }}
+NM_CONTROLLED={{ "yes" if ni.nm_controlled else 'no' }}
 PEERDNS={{ 'no' if ni.nodns else 'yes' }}
 {%        if ni.extra_options -%}
 {%          for eopt in ni.extra_options -%}
