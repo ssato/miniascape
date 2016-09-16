@@ -120,7 +120,8 @@ grep ',{{ key.name }},' ~/.hammer/activation_keys_00.txt || \
 hammer activation-key create --organization-id `cat $<` \
 --name '{{ key.name }}' {{ '--description "%s"' % key.description if key.description }} \
 --content-view '{{ key.cv or "Default Organization View" }}' \
---lifecycle-environment '{{ key.env or "Library" }}' {{ '--max-content-hosts %s' % key.max if key.max  }} && \
+{{ '--lifecycle-environment %s' % key.env if key.env }} \
+{{ '--max-content-hosts %s' % key.max if key.max  }} && \
 {%         if key.hc -%}
 hammer activation-key add-host-collection --organization-id `cat $<` \
 --name '{{ key.name }}' --host-collection '{{ key.hc }}'
