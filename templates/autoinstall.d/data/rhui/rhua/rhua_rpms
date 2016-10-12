@@ -1,4 +1,5 @@
 # package groups and packages
+PyYAML
 boost
 boost-graph
 boost-iostreams
