@@ -80,6 +80,13 @@ certs: $(CERTSDIR)/certs.stamp
 $(CERTSDIR)/certs.stamp:
 	test -f $@ || make -C $(CERTSDIR)
 
+# TODO:
+#$(CERTSDIR)/certs.stamp:
+#	/usr/share/rh-rhua/rhui_certs/create_rhui_ssl_certs.sh \
+#		--country {{ rhui.ssl.country|default('JP') }} \
+#		--state {{ rhui.ssl.state|default('Tokyo') }} \
+#		$(shell hostname) {{ cdsservers|join(' ', attribute='fqdn') }}
+
 genconf: $(WORKDIR)/genconf.stamp
 $(WORKDIR)/genconf.stamp: $(CERTSDIR)/certs.stamp $(WORKDIR)/answers.txt
 	rhui-installer $(WORKDIR)/answers.txt 2>&1 | tee $(WORKDIR)/rhui-install.log
