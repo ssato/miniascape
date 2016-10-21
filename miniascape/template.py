@@ -41,16 +41,16 @@ def renders_to(template, context=None, output=None, at_paths=None):
     anytemplate.utils.write_to_output(res, output)
 
 
-def render_to(template, context=None, output=None, at_paths=None):
+def render_to(template, context=None, output=None, tpaths=None):
     """
     :param template: Template file path
     :param context: A dict or dict-like object to instantiate given
         template file
     :param output: File path to write the rendered result string to or None/'-'
         to print it to stdout
-    :param at_paths: Template search paths
+    :param tpaths: Template search paths
     """
-    anytemplate.render_to(template, context, output, at_paths,
+    anytemplate.render_to(template, context, output, at_paths=tpaths,
                           at_engine="jinja2", at_ask_missing=True,
                           extensions=_JINJA2_EXTS)
 

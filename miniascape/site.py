@@ -106,10 +106,12 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
 
     # ex. /usr/share/miniascape/templates/config/
     tpaths = [os.path.join(d, "config") for d in tmpldirs]
+    logging.debug("Template paths for site confs: %r", tpaths)
     for net in conf.get("networks", []):
         noutdir = os.path.join(outdir, "networks.d", net["name"])
-        miniascape.template.render_to("network.j2", net,
-                                      os.path.join(noutdir, baseyml), tpaths)
+        miniascape.template.render_to("network.j2", context=net,
+                                      output=os.path.join(noutdir, baseyml),
+                                      tpaths=tpaths)
 
     guests_key = "guests"
     for ggroup in conf.get("guests", []):
