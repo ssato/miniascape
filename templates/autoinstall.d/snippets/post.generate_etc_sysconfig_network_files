@@ -30,6 +30,8 @@ ONBOOT={{ ni.onboot|default('yes') }}
 BOOTPROTO={{ ni.bootproto|default('static') }}
 USERCTL={{ ni.userctl|default('no') }}
 NM_CONTROLLED={{ "yes" if ni.nm_controlled else 'no' }}
+DEFROUTE={{ 'no' if ni.nodefroute else 'yes' }}
+{{ 'GATEWAY=%s' % ni.gateway if ni.gateway and not ni.nodefroute else '#GATEWAY=' }}
 PEERDNS={{ 'no' if ni.nodns else 'yes' }}
 {%        if ni.extra_options -%}
 {%          for eopt in ni.extra_options -%}
