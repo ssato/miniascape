@@ -1,0 +1,15 @@
+# Required to install rhui-installer
+augeas-libs
+libselinux-ruby
+libyaml
+net-tools
+ruby
+ruby-irb
+ruby-libs
+rubygem-bigdecimal
+rubygem-io-console
+rubygem-json
+rubygem-psych
+rubygem-rdoc
+rubygems
+#
