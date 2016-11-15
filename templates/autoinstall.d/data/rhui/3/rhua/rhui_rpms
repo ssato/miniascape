@@ -12,4 +12,16 @@ rubygem-json
 rubygem-psych
 rubygem-rdoc
 rubygems
-#
+# Required during running rhui-installer
+glusterfs-fuse
+httpd
+nfs-utils
+policycoreutils-python
+postgresql-contrib
+postgresql-devel
+postgresql-docs
+postgresql-jdbc
+postgresql-plperl
+postgresql-plpython
+postgresql-server
+python-psycopg2
