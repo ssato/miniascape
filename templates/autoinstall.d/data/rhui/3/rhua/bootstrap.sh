@@ -68,7 +68,7 @@ cat << EOF > /etc/yum.repos.d/rhui-3-beta1-iso.repo
 name=RHUI 3 beta 1
 baseurl=http://$(hostname -f)/${RHUI_SUBDIR}/
 enabled=1
-# TODO: Which GPG pub key to import
+# FIXME:
 gpgcheck=0
 EOF
 
@@ -83,6 +83,9 @@ yum install -y rhui-installer
 
 ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 remote_nodes="{{ rhui.lb.servers|join(' ') }} {{ rhui.cdses|join(' ') }}"
-for node in ${remote_nodes}; do ssh-copy-id ${node}; done
+for node in ${remote_nodes}
+do
+    ssh-copy-id ${node} && scp /etc/yum.repos/*.repo ${node}:/etc/yum.repos.d/
+done
 
-# vim:sw=2:ts=2:et:
+# vim:sw=4:ts=4:et:
