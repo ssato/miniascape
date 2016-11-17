@@ -3,6 +3,7 @@ augeas-libs
 libselinux-ruby
 libyaml
 net-tools
+rpm-sign
 ruby
 ruby-irb
 ruby-libs
