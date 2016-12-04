@@ -59,7 +59,7 @@ fi
 %{_datadir}/libvirt/networks/*.xml
 
 %files -n       miniascape-host-data-common
-%{_sysconfdir}/modprobe.d/kvm.conf
+%{_sysconfdir}/modprobe.d/miniascape-kvm.conf
 %{_libexecdir}/miniascape/*.sh
 %{_libexecdir}/miniascape/default/*.sh
 

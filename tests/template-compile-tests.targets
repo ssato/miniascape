@@ -201,7 +201,7 @@ templates/autoinstall.d/data/satellite6/Makefile.custom
 #templates/host/etc/httpd/conf.d/miniascape_autoinst.conf
 #templates/host/etc/auto.isos
 #templates/host/etc/auto.master.d/isos.autofs
-#templates/host/etc/modprobe.d/kvm.conf
+#templates/host/etc/modprobe.d/miniascape-kvm.conf
 #templates/host/etc/cluster/fence_virt.conf
 #templates/host/usr/libexec/miniascape/register_libvirt_network.sh
 #templates/host/usr/libexec/miniascape/guest_network_register.sh
