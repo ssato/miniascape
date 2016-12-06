@@ -36,7 +36,7 @@ host:
 
     # Enable nested KVM feature:
     enable_nested_kvm:
-      src: host/etc/modprobe.d/kvm.conf
+      src: host/etc/modprobe.d/miniascape-kvm.conf
 
     # For VM fencing in HA cluster and GFS environments:
     fence_virt:

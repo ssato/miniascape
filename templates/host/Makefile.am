@@ -20,4 +20,4 @@ etc/fence_virt.conf
 
 pkgdata6dir = /etc/modprobe.d
 dist_pkgdata6_DATA = \
-etc/modprobe.d/kvm.conf
+etc/modprobe.d/miniascape-kvm.conf
