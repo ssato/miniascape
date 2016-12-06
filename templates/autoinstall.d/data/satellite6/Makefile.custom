@@ -21,11 +21,11 @@ define create-locations =
 hammer --csv location list | grep -qE ',{{ loc }}$$' 2>/dev/null || \
 hammer location create --name '{{ loc }}'
 {%          if loop.first -%}
-hammer --output=yaml location info --name '{{ loc }}' | sed -nr "s/^Id: //p" > $(LOC_ID_FILE) && test -s $(LOC_ID_FILE).t && mv $(LOC_ID_FILE).t $(LOC_ID_FILE) || :
+hammer --output=yaml location info --name '{{ loc }}' | sed -nr "s/^Id: //p" > $(LOC_ID_FILE).t && test -s $(LOC_ID_FILE).t && mv $(LOC_ID_FILE).t $(LOC_ID_FILE) || :
 {%-         endif %}
 {%      endfor %}
 {%- else %}
-hammer --output=yaml location info --name '$(LOCATION_NAME)' | sed -nr "s/^Id: //p" > $(LOC_ID_FILE) && \
+hammer --output=yaml location info --name '$(LOCATION_NAME)' | sed -nr "s/^Id: //p" > $(LOC_ID_FILE).t && \
 test -s $(LOC_ID_FILE).t && mv $(LOC_ID_FILE).t $(LOC_ID_FILE);
 {%- endif %}
 endef
