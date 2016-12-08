@@ -152,7 +152,7 @@ rpm -q chrony 2>/dev/null && \
 (rpm -q ntp 2>/dev/null && systemctl status ntpd && systemctl is-enabled ntpd && ntptime))
 
 $(LOGDIR):
-	mkdir -p $@
+	test -d $@ || mkdir -p $@
 
 check: check.stamp
 check.stamp: $(LOGDIR)
@@ -209,11 +209,12 @@ $(HAMMER_USER_CONF_DIR):
 	mkdir -p -m 0700 $@
 
 $(HAMMER_USER_CONF): $(HAMMER_SYS_CONF) $(HAMMER_USER_CONF_DIR)
-	install -m 600 $(HAMMER_SYS_CONF) $(HAMMER_USER_CONF)
+	test -f $@ || \
+	(install -m 600 $(HAMMER_SYS_CONF) $(HAMMER_USER_CONF); \
 	echo "" >> $(HAMMER_USER_CONF) && \
 	echo '  :username: $(HAMMER_ADMIN_NAME)' >> $(HAMMER_USER_CONF) && \
 	echo '  :password: $(HAMMER_ADMIN_PASSWORD)' >> $(HAMMER_USER_CONF) && \
-	echo "" >> $(HAMMER_USER_CONF)
+	echo "" >> $(HAMMER_USER_CONF))
 
 # b. Setup Organization [option; if default organization is not used]:
 #    hammer organization create
@@ -226,17 +227,15 @@ $(ORG_ID_FILE): $(HAMMER_USER_CONF)
 	hammer --output=yaml organization info --label '$(ORG_LABEL)' | sed -nr "s/^Id: //p" > $@.t
 	test -s $@.t && mv $@.t $@
 
-setup-organization: $(ORG_ID_FILE)
-
-.PHONY: setup-organization
+setup-organization.stamp: $(ORG_ID_FILE)
+	touch $@
 
 # c. Setup Location [option; if default location is not used]:
 #    hammer location create
 #
-setup-location:
-	$(create-locations)
-
-.PHONY: setup-location
+setup-location.stamp:
+	test -f $@ || $(create-locations)
+	touch $@
 
 # d. Upload Satellite manifest: hammer subscription upload
 # - manifest.zip may be base64-encoded.
@@ -245,7 +244,7 @@ MANIFEST_ZIP_BASE64 = $(strip $(firstword $(wildcard manifest*.zip.base64)))
 ifneq ($(MANIFEST_ZIP_BASE64),)
 MANIFEST_ZIP = $(MANIFEST_ZIP_BASE64:.base64=)
 $(MANIFEST_ZIP): $(MANIFEST_ZIP_BASE64)
-	base64 -d $< > $@
+	test -f $@ || base64 -d $< > $@
 else
 MANIFEST_ZIP ?= $(strip $(firstword $(wildcard manifest*.zip)))
 endif
@@ -254,51 +253,42 @@ ifeq ($(MANIFEST_ZIP),)
 $(error Neither Manifest zip file nor its base64 encoded version are missing!)
 endif
 
-upload-manifest: upload-manifest.stamp
 upload-manifest.stamp: $(MANIFEST_ZIP) $(ORG_ID_FILE)
 	hammer subscription upload --organization-id `cat $(ORG_ID_FILE)` --file $(MANIFEST_ZIP)
 	touch $@
 
-.PHONY: upload-manifest
-
 # e. Setup Lifecycle Environments: hammer lifecycle-environment create
 #
-setup-lifecycle-environments: $(ORG_ID_FILE)
+setup-lifecycle-environments.stamp: $(ORG_ID_FILE)
 	$(create-lifecycle-environments)
-
-.PHONY: setup-lifecycle-environments
 
 # f. Setup Yum Repos: hammer repository-set enable
 #
-setup-yum-repos: $(ORG_ID_FILE)
+setup-yum-repos.stamp: $(ORG_ID_FILE)
 	$(TWEAK_SELINUX_POLICY)
 	$(enable-repos-for-clients)
-
-.PHONY: setup-yum-repos
+	touch $@
 
 # g. Setup Sync Plan:
 #    - online: hammer sync-plan create --enabled true
 #    - offline: hammer sync-plan create --enabled false
 #
-setup-sync-plan: $(ORG_ID_FILE)
+setup-sync-plan.stamp: $(ORG_ID_FILE)
 	$(create-and-setup-sync-plans-for-products)
-
-.PHONY: setup-sync-plan
+	touch $@
 
 # h. Setup Host Collection: hammer host-collection create
 #
-setup-host-collections: $(ORG_ID_FILE)
+setup-host-collections.stamp: $(ORG_ID_FILE)
 	$(create-host-collections)
-
-.PHONY: setup-host-collections
+	touch $@
 
 # i. Setup Content View [option]:
 #    hammer content-view create, hammer content-view add-repository
 #
-setup-content-views: $(ORG_ID_FILE)
+setup-content-views.stamp: $(ORG_ID_FILE)
 	$(create-content-views)
-
-.PHONY: setup-content-views
+	touch $@
 
 # j. Setup Activation Keys: hammer activation-key create
 #
@@ -306,10 +296,9 @@ setup-content-views: $(ORG_ID_FILE)
 #   hammer activation-key add-subscription --organization "<organization_name>" 
 #     --name <key_name> --subscription-id <subscription_id> --quantity <quantity>
 #
-setup-activation-keys: $(ORG_ID_FILE)
+setup-activation-keys.stamp: $(ORG_ID_FILE)
 	$(create-activation-keys)
-
-.PHONY: setup-activation-keys
+	touch $@
 
 # 5. Test clients:
 #    a. [client]: Install Satellite SSL CA RPM: yum install -y
@@ -330,19 +319,19 @@ register-self.stamp:
 .PHONY: register-self
 
 # main:
-setup-all: setup-organization
-setup-all: setup-location
-setup-all: upload-manifest
-setup-all: setup-lifecycle-environments
-setup-all: setup-sync-plan
-setup-all: setup-host-collections
+setup-all: setup-organization.stamp
+setup-all: setup-location.stamp
+setup-all: upload-manifest.stamp
+setup-all: setup-lifecycle-environments.stamp
+setup-all: setup-sync-plan.stamp
+setup-all: setup-host-collections.stamp
 
 # Require access to cdn.redhat.com:
-setup-all: setup-yum-repos
+setup-all: setup-yum-repos.stamp
 
 # Depends on setup-yum-repos:
-setup-all: setup-content-views
-setup-all: setup-activation-keys
+setup-all: setup-content-views.stamp
+setup-all: setup-activation-keys.stamp
 
 setup: setup-all
 
