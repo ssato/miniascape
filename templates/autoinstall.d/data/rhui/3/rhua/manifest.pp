@@ -9,7 +9,7 @@
 #
 
 $rhui_installer_stamp_dir = "/root/setup/rhui-installer.d"
-$rhui_installer_common_options = "{{ '-v' if rhui.rhui_installer.verbose }} {{ '--cds-lb-hostname %s' % rhui.lb.hostname }} {{ '--certs-country %s' % rhui.certs.country|default('JP') }} {{ '--certs-state %s' % rhui.certs.state|default('Tokyo') }} {{ '--certs-city %s' % rhui.certs.city|default('Shibuya-ku') }} {{ '--certs-org %s' % rhui.certs.org }} {{ '--certs-org-unit %s' % rhui.certs.unit|default('Unit') }} {{ rhui.rhui_installer.extra_options|default('') }}"
+$rhui_installer_common_options = "{{ '-v' if rhui.rhui_installer.verbose }} {{ '--cds-lb-hostname %s' % rhui.lb.hostname }} {{ '--certs-country %s' % rhui.certs.country|default('JP') }} {{ '--certs-state %s' % rhui.certs.state|default('Tokyo') }} {{ '--certs-city \'%s\'' % rhui.certs.city|default('Shibuya-ku') }} {{ '--certs-org \'%s\'' % rhui.certs.org }} {{ '--certs-org-unit \'%s\'' % rhui.certs.unit|default('Unit') }} {{ rhui.rhui_installer.extra_options|default('') }}"
 
 
 file { "${rhui_installer_stamp_dir}":
@@ -22,12 +22,9 @@ package { "rhui-installer":
 }
 
 {% for fs in rhui.remote_fs if fs.server and fs.path -%}
-$remote_fs_{{ loop.index }}_stamp="${rhui_installer_stamp_dir}/{{ fs.server }}.stamp"
-
-exec { "run rhui-installer for {{ server }}":
+exec { "run rhui-installer for {{ fs.server }}":
     command => "rhui-installer ${rhui_installer_common_options} --remote-fs-type={{ fs.type|default('glusterfs') }} --remote-fs-server={{ fs.server }}:{{ fs.path }}",
-    creates => $remote_fs_{{ loop.index }}_stamp,
-    unless => "test -f ${remote_fs_{{ loop.index }}_stamp}",
+    creates => "${rhui_installer_stamp_dir}/{{ fs.server }}.stamp"
 }
 {% endfor %}
 
