@@ -146,10 +146,16 @@ CHECK_FQDN ?= \
 ping -c1 -w3 localhost && ping -c1 -w3 `hostname -s` && \
 ping -c1 -w3 `hostname -f`)
 
-CHECK_DATETIME = (date && \
+CHECK_DATETIME_LEGACY = (date && \
+rpm -q ntp 2>/dev/null && service ntpd status && \
+chkconfig --list ntpd | grep -q 3:on && ntptime)
+
+CHECK_DATETIME = test -d /etc/systemd && \
+(date && \
 rpm -q chrony 2>/dev/null && \
 (systemctl status chronyd && systemctl is-enabled chronyd && chronyc sources) || \
-(rpm -q ntp 2>/dev/null && systemctl status ntpd && systemctl is-enabled ntpd && ntptime))
+(rpm -q ntp 2>/dev/null && systemctl status ntpd && systemctl is-enabled ntpd && ntptime)) || \
+$(CHECK_DATETIME_LEGACY)
 
 $(LOGDIR):
 	test -d $@ || mkdir -p $@
