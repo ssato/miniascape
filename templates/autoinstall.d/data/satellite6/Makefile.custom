@@ -15,91 +15,78 @@ KATELLO_INSTALLER_OPTIONS ?= \
 ORG_NAME ?= {{ satellite.organization|default("Default Organization") }}
 LOCATION_NAME ?= {{ satellite.location|default("Default Location") }}
 LOC_ID_FILE ?= ~/.hammer/location_id.txt
-define create-locations =
+CREATE_LOCATIONS = \
 {%  if satellite.locations -%}
 {%      for loc in satellite.locations -%}
 hammer --csv location list | grep -qE ',{{ loc }}$$' 2>/dev/null || \
-hammer location create --name '{{ loc }}'
+hammer location create --name '{{ loc }}'; \
 {%          if loop.first -%}
-hammer --output=yaml location info --name '{{ loc }}' | sed -nr "s/^Id: //p" > $(LOC_ID_FILE).t && test -s $(LOC_ID_FILE).t && mv $(LOC_ID_FILE).t $(LOC_ID_FILE) || :
+hammer --output=yaml location info --name '{{ loc }}' | sed -nr "s/^Id: //p" > $(LOC_ID_FILE).t && test -s $(LOC_ID_FILE).t && mv $(LOC_ID_FILE).t $(LOC_ID_FILE) || :; \
 {%-         endif %}
-{%      endfor %}
-{%- else %}
+{%      endfor %} \
+{%- else -%}
 hammer --output=yaml location info --name '$(LOCATION_NAME)' | sed -nr "s/^Id: //p" > $(LOC_ID_FILE).t && \
 test -s $(LOC_ID_FILE).t && mv $(LOC_ID_FILE).t $(LOC_ID_FILE);
 {%- endif %}
-endef
 
-define create-lifecycle-environments =
+CREATE_LIFECYCLE_ENVIRONMENTS = \
 hammer --output=yaml lifecycle-environment list --organization-id `cat $<` | \
-sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/lifecycle_envs_00.txt
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/lifecycle_envs_00.txt; \
 {%     for env in satellite.lifecycle_environments if env.name -%}
 grep ',{{ env.name }},' ~/.hammer/lifecycle_envs_00.txt || \
 hammer lifecycle-environment create --organization-id `cat $<` \
 --name '{{ env.name }}' --label {{ env.label if env.label else env.name|replace(' ', '_') }} \
 --prior '{{ env.prior|default('Library') }}' \
-{{ '--description="%s"' % env.description if env.description }}
+{{ '--description="%s"' % env.description if env.description }}; \
 {%    endfor %}
-endef
 
-define enable-repos-for-clients =
+ENABLE_REPOS_FOR_CLIENTS = \
 {%     for repo in satellite.repos if repo.name -%}
 hammer repository-set enable --organization-id `cat $<` \
 --basearch {{ repo.arch|default('x86_64') }} \
 --product '{{ repo.product|default("Red Hat Enterprise Linux Server") }}' \
---name '{{ repo.name }}' {{ '--releasever %s' % repo.releasever if repo.releasever }} || :
-{%     else -%}
-@echo "Repos to enable are not defined"
-{%-    endfor %}
-endef
+--name '{{ repo.name }}' {{ '--releasever %s' % repo.releasever if repo.releasever }} || :; \
+{%     endfor %}
 
-define create-and-setup-sync-plans-for-products =
+CREATE_AND_SETUP_SYNC_PLANS = \
 hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
-hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true --sync-date `date --iso-8601=seconds`
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled true --sync-date `date --iso-8601=seconds`; \
 {%     for prod in satellite.products if prod.name and (prod.sync or prod.sync is not defined) -%}
-hammer product set-sync-plan --organization-id `cat $<` --name '{{ prod.name }}' --sync-plan-id 1
-{%     else -%}
-@echo "Do not set sync plan for products"
-{%-    endfor %}
-endef
+hammer product set-sync-plan --organization-id `cat $<` --name '{{ prod.name }}' --sync-plan-id 1; \
+{%     endfor %}
 
-define create-host-collections =
+CREATE_HOST_COLLECTIONS = \
 hammer --output=yaml host-collection list --organization-id `cat $<` | \
-sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/host_collections_00.txt
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/host_collections_00.txt; \
 {%     for hc in satellite.host_collections if hc.name -%}
 grep ',{{ hc.name }},' ~/.hammer/host_collections_00.txt || \
 hammer host-collection create --organization-id `cat $<` \
 --name '{{ hc.name }}' \
 {{ '--description "%s"' % hc.description if hc.description }} \
 {{ '--max-content-hosts %s' % hc.max if hc.max }} \
-{{ '--systems %s' % hc.hosts|join(',') if hc.hosts }}
+{{ '--systems %s' % hc.hosts|join(',') if hc.hosts }}; \
 {%   endfor %}
-endef
 
-define sync-repos-by-products =
-{%     for prod in satellite.products if (prod.sync or prod.sync is not defined) and prod.name -%}
-hammer product synchronize --organization-id `cat $<` --async --name '{{ prod.name }}'
+SYNC_REPOS_BY_PRODUCTS = \
+{%     for prod in satellite.products if prod.sync and prod.name -%}
+hammer product synchronize --organization-id `cat $<` --async --name '{{ prod.name }}'; \
 {%     else -%}
-@echo "Products to sync are not defined"
+hammer product synchronize --organization-id `cat $<` --async --name 'Red Hat Enterprise Linux Server'
 {%-    endfor %}
-endef
 
-define sync-repos-by-repos =
+SYNC_REPOS_BY_REPOS = \
 {%     for repo in satellite.repos if (repo.sync or repo.sync is not defined) and repo.name -%}
 hammer repository synchronize --organization-id `cat $<` --async \
 --basearch {{ repo.arch|default('x86_64') }} \
 --product '{{ repo.product|default("Red Hat Enterprise Linux Server") }}' \
---name '{{ repo.name }}' {{ '--releasever %s' % repo.releasever if repo.releasever }}
-{%     else -%}
-@echo "Yum repos to sync are not defined"
+--name '{{ repo.name }}' {{ '--releasever %s' % repo.releasever if repo.releasever }}; \
 {%-    endfor %}
-endef
 
 # --repositories option does not work.
 # see also: https://bugzilla.redhat.com/show_bug.cgi?id=1254977
-define create-content-views =
+CREATE_CONTENT_VIEWS = \
 hammer --output=yaml content-view list --organization-id `cat $<` | \
-sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/content_views_00.txt; \
 {%     for cv in satellite.content_views if cv.name -%}
 grep ',{{ cv.name }},' ~/.hammer/content_views_00.txt || \
 hammer content-view create --organization-id `cat $<` \
@@ -107,27 +94,25 @@ hammer content-view create --organization-id `cat $<` \
 {{ '--description "%s"' % cv.description if cv.description }}; \
 {%          for repo in cv.repos if repo.name and repo.product -%}
 hammer content-view add-repository --organization-id `cat $<` \
---name '{{ cv.name }}' --repository '{{ repo.name }}' --product '{{ repo.product }}' || :
+--name '{{ cv.name }}' --repository '{{ repo.name }}' --product '{{ repo.product }}' || :; \
 {%          endfor -%}
 {%    endfor %}
-endef
 
-define create-activation-keys =
+CREATE_ACTIVATION_KEYS = \
 hammer --output=yaml activation-key list --organization-id `cat $<` | \
-sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/activation_keys_00.txt
+sed -nr 's/.*Name: (.+)$$/,\1,/p' > ~/.hammer/activation_keys_00.txt; \
 {%     for key in satellite.activation_keys if key.name -%}
 grep ',{{ key.name }},' ~/.hammer/activation_keys_00.txt || \
 hammer activation-key create --organization-id `cat $<` \
 --name '{{ key.name }}' {{ '--description "%s"' % key.description if key.description }} \
 --content-view '{{ key.cv or "Default Organization View" }}' \
-{{ '--lifecycle-environment %s' % key.env if key.env }} \
+{{ '--lifecycle-environment %s' % key.env|default('Library') }} \
 {{ '--max-content-hosts %s' % key.max if key.max  }} && \
 {%         if key.hc -%}
 hammer activation-key add-host-collection --organization-id `cat $<` \
---name '{{ key.name }}' --host-collection '{{ key.hc }}'
+--name '{{ key.name }}' --host-collection '{{ key.hc }}'; \
 {%-        endif %}{# TODO: hammer add-subscription ... #}
 {%    endfor %}
-endef
 
 {% else -%}
 ADMIN_NAME ?= admin
