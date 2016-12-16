@@ -108,8 +108,8 @@ endif
 
 ifeq ($(strip $(CREATE_AND_SETUP_SYNC_PLANS)),)
 CREATE_AND_SETUP_SYNC_PLANS = \
-hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
-hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled false --sync-date "`date --iso-8601=minutes`"; \
+hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' 2> /dev/null || \
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled false --sync-date "`date --iso-8601=minutes --date '6 hour'`"; \
 hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1
 endif
 
