@@ -73,57 +73,51 @@ ADMIN_NAME = admin
 ORG_NAME ?= Default Organization
 ORG_LABEL ?= $(shell echo $(ORG_NAME) | sed -e 's/ /_/g')
 ifeq ($(strip $(LOCATION_NAME)),)
-LOCATION_NAME = Default Location
+LOCATION_NAME ?= Default Location
 endif
 SATELLITE_ORG ?= $(ORG_LABEL)
 
-ifeq ($(strip $(create-lifecycle-environments)),)
-define create-lifecycle-environments =
+ifeq ($(strip $(CREATE_LIFECYCLE_ENVIRONMENTS)),)
+CREATE_LIFECYCLE_ENVIRONMENTS = \
 hammer lifecycle-environment create --organization-id `cat $<` \
 --name Test --label Test --description 'Test/QA Environment' --prior Library && \
 hammer lifecycle-environment create --organization-id `cat $<` \
 --name Prod --label Prod --description 'Production Environment' --prior Test
-endef
 endif
 
-ifeq ($(strip $(create-host-collections)),)
-define create-host-collections =
+ifeq ($(strip $(CREATE_HOST_COLLECTIONS)),)
+CREATE_HOST_COLLECTIONS = \
 hammer host-collection create --organization-id `cat $<` --name 'RHEL 7 Hosts'
-endef
 endif
 
-ifeq ($(strip $(create-content-views)),)
-define create-content-views =
+ifeq ($(strip $(CREATE_CONTENT_VIEWS)),)
+CREATE_CONTENT_VIEWS = \
 hammer content-view create --organization-id `cat $<` \
 --name 'RHEL 7 Latest' --description 'CV of RHEL 7 Latest repos' && \
 hammer content-view add-repository --organization-id `cat $<` \
 --name 'RHEL 7 Latest' --product 'Red Hat Enterprise Linux Server' \
 --repository 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
-endef
 endif
 
-ifeq ($(strip $(create-activation-keys)),)
-define create-activation-keys =
+ifeq ($(strip $(CREATE_ACTIVATION_KEYS)),)
+CREATE_ACTIVATION_KEYS = \
 hammer activation-key create --organization-id `cat $<` \
 --name 'Key for RHEL 7 Hosts' --content-view 'Default Organization View' \
 --lifecycle-environment 'Library' --unlimited-content-hosts 1
-endef
 endif
 
-ifeq ($(strip $(create-and-setup-sync-plans-for-products)),)
-define create-and-setup-sync-plans-for-products =
+ifeq ($(strip $(CREATE_AND_SETUP_SYNC_PLANS)),)
+CREATE_AND_SETUP_SYNC_PLANS = \
 hammer sync-plan info --organization-id `cat $<` --name 'Daily Sync' || \
-hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled false --sync-date "`date --iso-8601=minutes`"
+hammer sync-plan create --organization-id `cat $<` --interval daily --name 'Daily Sync' --enabled false --sync-date "`date --iso-8601=minutes`"; \
 hammer product set-sync-plan --organization-id `cat $<` --name 'Red Hat Enterprise Linux Server' --sync-plan-id 1
-endef
 endif
 
-ifeq ($(strip $(enable-repos-for-clients)),)
-define enable-repos-for-clients =
+ifeq ($(strip $(ENABLE_REPOS_FOR_CLIENTS)),)
+ENABLE_REPOS_FOR_CLIENTS = \
 hammer repository-set enable --organization-id `cat $<` --basearch x86_64 \
 --product 'Red Hat Enterprise Linux Server' \
 --name 'Red Hat Enterprise Linux 6 Server (RPMs)' --releasever 6Server
-endef
 endif
 
 
@@ -240,7 +234,7 @@ setup-organization.stamp: $(ORG_ID_FILE)
 #    hammer location create
 #
 setup-location.stamp:
-	test -f $@ || $(create-locations)
+	test -f $@ || $(CREATE_LOCATIONS)
 	touch $@
 
 # d. Upload Satellite manifest: hammer subscription upload
@@ -266,13 +260,13 @@ upload-manifest.stamp: $(MANIFEST_ZIP) $(ORG_ID_FILE)
 # e. Setup Lifecycle Environments: hammer lifecycle-environment create
 #
 setup-lifecycle-environments.stamp: $(ORG_ID_FILE)
-	$(create-lifecycle-environments)
+	$(CREATE_LIFECYCLE_ENVIRONMENTS)
 
 # f. Setup Yum Repos: hammer repository-set enable
 #
 setup-yum-repos.stamp: $(ORG_ID_FILE)
 	$(TWEAK_SELINUX_POLICY)
-	$(enable-repos-for-clients)
+	$(ENABLE_REPOS_FOR_CLIENTS)
 	touch $@
 
 # g. Setup Sync Plan:
@@ -280,20 +274,20 @@ setup-yum-repos.stamp: $(ORG_ID_FILE)
 #    - offline: hammer sync-plan create --enabled false
 #
 setup-sync-plan.stamp: $(ORG_ID_FILE)
-	$(create-and-setup-sync-plans-for-products)
+	$(CREATE_AND_SETUP_SYNC_PLANS)
 	touch $@
 
 # h. Setup Host Collection: hammer host-collection create
 #
 setup-host-collections.stamp: $(ORG_ID_FILE)
-	$(create-host-collections)
+	$(CREATE_HOST_COLLECTIONS)
 	touch $@
 
 # i. Setup Content View [option]:
 #    hammer content-view create, hammer content-view add-repository
 #
 setup-content-views.stamp: $(ORG_ID_FILE)
-	$(create-content-views)
+	$(CREATE_CONTENT_VIEWS)
 	touch $@
 
 # j. Setup Activation Keys: hammer activation-key create
@@ -303,7 +297,7 @@ setup-content-views.stamp: $(ORG_ID_FILE)
 #     --name <key_name> --subscription-id <subscription_id> --quantity <quantity>
 #
 setup-activation-keys.stamp: $(ORG_ID_FILE)
-	$(create-activation-keys)
+	$(CREATE_ACTIVATION_KEYS)
 	touch $@
 
 # 5. Test clients:
@@ -344,18 +338,16 @@ setup: setup-all
 .PHONY: setup setup-all
 
 # Yum Repository synchronization by manual
-sync-by-product: sync-by-product.stamp
 sync-by-product.stamp: $(ORG_ID_FILE)
-	$(sync-repos-by-products)
+	$(SYNC_REPOS_BY_PRODUCTS)
 	touch $@
 
-sync-by-repo: sync-by-repo.stamp
 sync-by-repo.stamp: $(ORG_ID_FILE)
-	$(sync-repos-by-repos)
+	$(SYNC_REPOS_BY_REPOS)
 	touch $@
 
-.PHONY: sync sync-by-product sync-by-repo
+.PHONY: sync
 
-sync: sync-by-product # sync-by-repo
+sync: sync-by-product.stamp # sync-by-repo.stamp
 
 # vim:noet:ft=make:
