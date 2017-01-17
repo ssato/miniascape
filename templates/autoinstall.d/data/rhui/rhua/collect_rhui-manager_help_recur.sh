@@ -197,7 +197,6 @@ set -e
 
 list_subcmds_from_out () {
     test "x$@" = "x" || echo "$@" | sed -nr 's/\s+([^\s:]+):.*/\1/p'
-    #sed -nr '/COMMANDS/,/Options:/s/\s+([^\s:]+):.*/\1/p'
 }
 list_subcmds_recur () {
     local sc=$@
