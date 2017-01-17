@@ -1,7 +1,13 @@
 #! /bin/bash
-set -e
-
-# Example session:
+#
+# An experiemental shell script to collect help texts of rhui-manager's commands.
+#
+# Author: Satoru SATOH <ssato at redhat.com>
+# License: MIT
+#
+# Usage: ./collect_rhui-manager_help_recur.sh
+#
+# Example:
 #
 # [root@rhui-2 ~]# ./collect_rhui-manager_help_recur.sh
 # rhui-manager
@@ -187,6 +193,7 @@ set -e
 #     --dir - directory where the rpm will be created (required)
 # [root@rhui-2 ~]#
 #
+set -e
 
 list_subcmds_from_out () {
     test "x$@" = "x" || echo "$@" | sed -nr 's/\s+([^\s:]+):.*/\1/p'
