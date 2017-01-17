@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# An experiemental shell script to collect help texts of rhui-manager's commands.
+# A script to collect help texts of rhui-manager's commands recursively.
 #
 # Author: Satoru SATOH <ssato at redhat.com>
 # License: MIT
