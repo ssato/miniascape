@@ -166,6 +166,8 @@ init.stamp: $(RHUI_CERT_INSTALLED)
 	for c in s e u i; do cs="$$cs<\n$$c\n"; done; \
 	cs=$$cs"q\n"; echo -ne "$$cs" | rhui-manager; echo
 	bash -x $(SHOW_RHUI_MANAGER_HELP_TEXTS)
+	rhui-manager client labels | sort
+	rhui-manager status
 
 .PHONY: install init setup
 
