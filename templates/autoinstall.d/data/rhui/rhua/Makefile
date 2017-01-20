@@ -171,3 +171,8 @@ init.stamp: $(RHUI_CERT_INSTALLED)
 
 .PHONY: install init setup
 
+build-client-config-rpms.stamp: init.stamp
+	test -f $@ || $(BUILD_CLIENT_CONFIG_RPMS)
+	touch $@
+
+
