@@ -57,7 +57,7 @@ def build(argv):
     # suppress logs from anyconfig unless the environment variable
     # 'ANYCONFIG_DEBUG' is set to 1.
     if os.environ.get("ANYCONFIG_DEBUG", None) != '1':
-        anyconfig.set_loglevel(logging.WARN)
+        logging.getLogger("anyconfig").setLevel(logging.WARN)
 
     # configure
     if options.genconf:
