@@ -1,3 +1,4 @@
+@Core
 NetworkManager-config-server
 bash-completion
 bind-utils
