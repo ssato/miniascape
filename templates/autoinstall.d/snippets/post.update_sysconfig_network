@@ -20,6 +20,6 @@ else
     f=/etc/hostname
     if test -f $f; then
         test -f $f.save || cp $f $f.save
-        grep -q ${fqdn} $f 2>/dev/null 1>/dev/null || echo "${fqdn}" > /etc/hostname
+        grep -q ${fqdn} $f 2>/dev/null 1>/dev/null || hostnamectl set-hostname --static ${fqdn}
     fi
 fi
