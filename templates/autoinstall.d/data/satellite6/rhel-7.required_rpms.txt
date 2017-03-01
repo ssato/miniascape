@@ -30,7 +30,7 @@ jakarta-commons-httpclient
 jakarta-commons-io
 jakarta-commons-lang
 jakarta-oro
-java-1.8.0-openjdk
+java-1.7.0-openjdk
 javamail
 javapackages-tools
 javassist
@@ -42,6 +42,7 @@ jna
 jpackage-utils
 jsr-311
 junit
+libkadm5
 libselinux-ruby
 libuuid-devel
 libvirt-client
