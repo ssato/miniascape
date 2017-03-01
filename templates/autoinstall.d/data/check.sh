@@ -15,6 +15,7 @@ which chronyc && \
 /sbin/ip r
 df -h
 mount
+pvscan; vgscan; lvscan
 gendiff /etc .save
 for f in /etc/sysconfig/network-scripts/{ifcfg-*,route*}; do
     echo "# ${f##*/}:"
