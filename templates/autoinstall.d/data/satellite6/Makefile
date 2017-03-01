@@ -185,6 +185,7 @@ cd - && umount /mnt
 
 install: install.stamp
 install.stamp: $(LOGDIR)
+	alternatives --set java java-1.7.0-openjdk.x86_64  # @see https://bugzilla.redhat.com/show_bug.cgi?id=1418410
 	rpm -q katello || $(INSTALL_SATELLITE_RPMS_FROM_ISO)
 	satellite-installer --scenario satellite $(KATELLO_INSTALLER_OPTIONS) 2>&1 | \
 		tee $(LOGDIR)/katello-installer.$(TIMESTAMP).log
