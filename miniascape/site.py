@@ -63,12 +63,12 @@ def load_site_ctxs(ctxs):
     :param ctxs: List of context file[s], glob patterns of context files
         or dirs :: [str]
     """
-    conf = anyconfig.to_container()
+    conf = dict()
     for ctxpath in ctxs:
         diff = load_site_ctx(ctxpath)
 
         if diff:
-            conf.update(diff)
+            anyconfig.merge(conf, diff)
         else:
             logging.warn("No config loaded from: %s", ctxpath)
 
