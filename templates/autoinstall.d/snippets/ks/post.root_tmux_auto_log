@@ -1,0 +1,14 @@
+mkdir -p /root/setup
+f=/root/setup/enable_tmux_auto_log.sh
+test -f $f && \
+(cat << 'EOF' > $f
+if [[ $TERM = screen ]] || [[ $TERM = screen-256color ]] ; then
+  LOGDIR=$HOME/setup/tmux/logs
+  LOGFILE=$(hostname)_$(date +%Y-%m-%d_%H%M%S_%N.log)
+  [ ! -d $LOGDIR ] && mkdir -p $LOGDIR
+  tmux  set-option default-terminal "screen" \; \
+    pipe-pane        "cat >> $LOGDIR/$LOGFILE" \; \
+    display-message  "Started logging to $LOGDIR/$LOGFILE"
+fi
+EOF
+)
