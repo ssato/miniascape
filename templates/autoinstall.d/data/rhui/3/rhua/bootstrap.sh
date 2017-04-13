@@ -18,9 +18,9 @@ set -ex
 # 2. RHUI:
 #    0) Download ISO image from RH site:
 #       https://access.redhat.com/downloads/content/147/ver=3/rhel---7/3.0/x86_64/product-software/
-#    1) mount -o ro,loop <RHUI_3_beta_1.iso> /mnt
+#    1) mount -o ro,loop <RHUI_3_0.iso> /mnt
 #    2) cd /mnt && ./setup_package_repos
-#    3) mkdir -p /var/www/html/pub/rhui/3/beta_1 && mount -o bind /opt/rhui/ /var/www/...
+#    3) mkdir -p /var/www/html/pub/rhui/3.0/ && mount -o bind /opt/rhui/ /var/www/...
 #    4) arrange yum repo file for RHUI repo
 #
 # 3. RH Gluster FS
@@ -43,9 +43,9 @@ RHUI_ISO=$(cd ${ISO_DIR} && ls -1 RHUI-3*.iso | head -n 1)
 RHGS_ISO=$(cd ${ISO_DIR} && ls -1 rhgs-3.1*.iso | head -n 1)
 
 MNT_DIR=/var/www/html
-RHEL_SUBDIR=pub/rhel/7/3/
-RHUI_SUBDIR=pub/rhui/3/beta1/
-RHGS_SUBDIR=pub/rhgs/3.1/
+RHEL_SUBDIR=pub/rhel/7.3/
+RHUI_SUBDIR=pub/rhui/3.0/
+RHGS_SUBDIR=pub/rhgs/3.2/
 
 rpm -q httpd && (systemctl is-active httpd || systemctl start httpd)
 
@@ -63,20 +63,20 @@ enabled=1
 gpgcheck=1
 EOF
 
-cat << EOF > /etc/yum.repos.d/rhui-3-beta1-iso.repo
-[rhui-3-beta-1]
-name=RHUI 3 beta 1
+cat << EOF > /etc/yum.repos.d/rhui-3.0-iso.repo
+[rhui-3.0]
+name=RHUI 3.0
 baseurl=http://$(hostname -f)/${RHUI_SUBDIR}/
 enabled=1
-# FIXME:
-gpgcheck=0
+gpgcheck=1
 EOF
 
-cat << EOF > /etc/yum.repos.d/rhgs-3.1-iso.repo
-[rhgs-3.1]
-name=RH Gluset FS 3.x
+cat << EOF > /etc/yum.repos.d/rhgs-3.2-iso.repo
+[rhgs-3.2]
+name=RH Gluset FS 3.2
 baseurl=http://$(hostname -f)/${RHGS_SUBDIR}/
 enabled=1
+gpgcheck=1
 EOF
 
 yum install -y rhui-installer
