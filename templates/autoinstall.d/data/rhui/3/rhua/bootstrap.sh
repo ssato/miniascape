@@ -40,7 +40,7 @@ ISO_DIR=/root/setup/
 
 RHEL_ISO=rhel-server-7.3-x86_64-dvd.iso
 RHUI_ISO=$(cd ${ISO_DIR} && ls -1 RHUI-3*.iso | head -n 1)
-RHGS_ISO=$(cd ${ISO_DIR} && ls -1 rhgs-3.1*.iso | head -n 1)
+RHGS_ISO=$(cd ${ISO_DIR} && ls -1 rhgs-3.2*.iso | head -n 1)
 
 MNT_DIR=/var/www/html
 RHEL_SUBDIR=pub/rhel/7.3/
