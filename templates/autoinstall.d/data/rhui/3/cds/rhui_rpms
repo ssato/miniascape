@@ -1,4 +1,4 @@
-glusterfs-fuse
+#glusterfs-fuse  # Required but only available from RHGS iso or repo.
 httpd
 nfs-utils
 policycoreutils-python
