@@ -80,13 +80,9 @@ enabled=1
 gpgcheck=1
 EOF
 
-yum install -y rhui-installer
+systemctl is-active httpd || systemctl start httpd
 
-ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
-remote_nodes="{{ rhui.lb.servers|join(' ') }} {{ rhui.cdses|join(' ') }}"
-for node in ${remote_nodes}
-do
-    ssh-copy-id ${node} && scp /etc/yum.repos/*.repo ${node}:/etc/yum.repos.d/
-done
+yum install -y rhui-installer
+yum install -y glusterfs-fuse
 
 # vim:sw=4:ts=4:et:

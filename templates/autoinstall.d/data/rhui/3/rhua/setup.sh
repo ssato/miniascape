@@ -28,7 +28,9 @@ lbs="{{ rhui.lb.servers|join(' ') if rhui.lb.servers else '' }}"
 mkdir -p ${rhui_installer_stamp_dir}
 rpm -q rhui-installer || yum install -y rhui-installer
 
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 for cds in ${cdses:?}; do
+    ssh-copy-id ${cds} && scp /etc/yum.repos.d/*.repo ${cds}:/etc/yum.repos.d/  # .. seealso:: bootstrap.sh
     ssh ${cds} "yum install -y glusterfs-{server,cli} rh-rhua-selinux-policy"
     # ssh ... umount /export && mkfs.xfs -f -i size=512 /dev/mapper/vg1-lv_export && mount /export
     ssh ${cds} "systemctl is-active glusterd || (mkdir -p ${brick} && systemctl enable glusterd && systemctl start glusterd)"
@@ -52,6 +54,12 @@ gluster volume set all cluster.server-quorum-ratio 51%
 "
 fi
 
+if test "x${lbs}" != x; then
+    for lb in ${lbs}; do
+        ssh-copy-id ${lb} && scp /etc/yum.repos.d/*.repo ${lb}:/etc/yum.repos.d/
+    done
+fi
+
 test -f ${rhui_installer_stamp_dir}/${fs}.stamp || \
 (rhui-installer ${rhui_installer_common_options} --remote-fs-type=glusterfs --remote-fs-server=${fs}:rhui_content_0 && \
     touch ${rhui_installer_stamp_dir}/${fs}.stamp)
@@ -63,6 +71,7 @@ done
 
 if test "x${lbs}" != x; then
     for lb in ${lbs}; do
+        ssh-copy-id ${lb} && scp /etc/yum.repos.d/*.repo ${lb}:/etc/yum.repos.d/
         rhui haproxy list -m | grep -E "hostname.: .${lb}" || \
         rhui haproxy add ${lb} root /root/.ssh/id_rsa -u
     done
