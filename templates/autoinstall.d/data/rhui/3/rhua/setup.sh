@@ -7,7 +7,6 @@
 # - CDSes and LBs (HA Proxy nodes) are ready and accessible with ssh from RHUA w/o password
 # - Gluster FS was setup in CDSes and ready to access from RHUA
 #
-
 set -ex
 
 rhui_installer_stamp_dir="/root/setup/rhui-installer.d"
