@@ -39,10 +39,19 @@ ssh ${cds_0} "
 for peer in ${cds_rest:?}; do gluster peer probe ${peer}; done
 gluster peer status
 gluster volume create rhui_content_0 replica ${ncdses} ${bricks}
-gluster volume set rhui_content_0 quorum-type auto
 gluster volume start rhui_content_0
 gluster volume status
 "
+# Client/Server quorum configuration:
+# .. seealso:: Red Hat Gluster Storage 3 Admin Guide, 8.10. Managing Split-brain: http://red.ht/2peSXFo
+if test $ncdses -le 2; then
+    ssh ${cds_0} "gluster volume set rhui_content_0 quorum-type auto"
+else
+    ssh ${cds_0} "
+gluster volume set rhui_content_0 quorum-type server
+gluster volume set all cluster.server-quorum-ratio 51%
+"
+fi
 
 test -f ${rhui_installer_stamp_dir}/${fs}.stamp || \
 (rhui-installer ${rhui_installer_common_options} --remote-fs-type=glusterfs --remote-fs-server=${fs}:rhui_content_0 && \
