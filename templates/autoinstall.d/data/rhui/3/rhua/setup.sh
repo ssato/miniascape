@@ -15,9 +15,9 @@ rhui_installer_common_options="--cds-lb-hostname {{ rhui.lb.hostname }} --certs-
 
 cdses="{{ rhui.cdses|join(' ') }}"
 cds_0="{{ rhui.cdses|first }}"
-cds_rest="{% for cds in rhui.cdses %}
-{% if not loop.first %}{{ cds }}{% endif %}
-{% endfor %}
+cds_rest="{%- for cds in rhui.cdses %}
+{%- if not loop.first %}{{ cds }}{% endif %}
+{%- endfor %}
 "
 ncdses={{ rhui.cdses|length }}
 brick=/export/brick
