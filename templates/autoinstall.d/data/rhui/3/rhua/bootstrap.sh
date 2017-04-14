@@ -35,6 +35,7 @@ set -ex
 # Setup password-less connection to CDS and LB from RHUA:
 #
 #
+set -ex
 
 ISO_DIR=/root/setup/
 
