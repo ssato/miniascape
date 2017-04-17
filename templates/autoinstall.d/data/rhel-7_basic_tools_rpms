@@ -4,6 +4,7 @@ bash-completion
 bind-utils
 chrony
 elinks
+hardlink
 lftp
 make
 nfs-utils
