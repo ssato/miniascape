@@ -76,13 +76,12 @@ cat << EOF > /etc/yum.repos.d/rhgs-3.2-iso.repo
 [rhgs-3.2]
 name=RH Gluset FS 3.2
 baseurl=http://$(hostname -f)/${RHGS_SUBDIR}/
-enabled=1
+enabled=0
 gpgcheck=1
 EOF
 
 systemctl is-active httpd || systemctl start httpd
 
-yum install -y rhui-installer
-yum install -y glusterfs-fuse
+yum install -y --enablerepo=rhgs-3.2 rhui-installer glusterfs-fuse
 
 # vim:sw=4:ts=4:et:
