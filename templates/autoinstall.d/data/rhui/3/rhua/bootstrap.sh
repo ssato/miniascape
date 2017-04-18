@@ -29,11 +29,8 @@ set -ex
 #    1) mkdir -p /var/www/html/pub/rhgs/3.1/ && mount -o ro,loop <RHGS iso> /var/www/...
 #    2) arrange yum repo file for RH GlusterFS repo
 #
-# Install RHUI (rhui-installer) RPMs on RHUA:
-#
-#
 # Setup password-less connection to CDS and LB from RHUA:
-#
+# Install RHUI (rhui-installer) RPMs on RHUA:
 #
 set -ex
 
@@ -44,11 +41,12 @@ RHUI_ISO=$(cd ${ISO_DIR} && ls -1 RHUI-3*.iso | head -n 1)
 RHGS_ISO=$(cd ${ISO_DIR} && ls -1 rhgs-3.2*.iso | head -n 1)
 
 MNT_DIR=/var/www/html
-RHEL_SUBDIR=pub/rhel/7.3/
-RHUI_SUBDIR=pub/rhui/3.0/
-RHGS_SUBDIR=pub/rhgs/3.2/
+RHEL_SUBDIR=pub/rhel-7.3/
+RHUI_SUBDIR=pub/rhui-3.0/
+RHGS_SUBDIR=pub/rhgs-3.2/
 
-rpm -q httpd && (systemctl is-active httpd || systemctl start httpd)
+REPO_SERVER=$(hostname -f)
+CDS_SERVERS=${1:-{{ rhui.cdses|join(' ') }}}
 
 cd ${MNT_DIR}
 mkdir -p ${RHEL_SUBDIR:?} ${RHUI_SUBDIR:?} ${RHGS_SUBDIR:?}
@@ -59,7 +57,7 @@ mount -o ro,loop ${ISO_DIR}/${RHGS_ISO:?}  ${RHGS_SUBDIR}
 cat << EOF > /etc/yum.repos.d/rhel-7.3-iso.repo
 [rhel-7.3]
 name=RHEL 7.3
-baseurl=http://$(hostname -f)/${RHEL_SUBDIR}/
+baseurl=http://$({REPO_SERVER})/${RHEL_SUBDIR}/
 enabled=1
 gpgcheck=1
 EOF
@@ -67,7 +65,7 @@ EOF
 cat << EOF > /etc/yum.repos.d/rhui-3.0-iso.repo
 [rhui-3.0]
 name=RHUI 3.0
-baseurl=http://$(hostname -f)/${RHUI_SUBDIR}/
+baseurl=http://$({REPO_SERVER})/${RHUI_SUBDIR}/
 enabled=1
 gpgcheck=1
 EOF
@@ -75,13 +73,19 @@ EOF
 cat << EOF > /etc/yum.repos.d/rhgs-3.2-iso.repo
 [rhgs-3.2]
 name=RH Gluset FS 3.2
-baseurl=http://$(hostname -f)/${RHGS_SUBDIR}/
+baseurl=http://$({REPO_SERVER})/${RHGS_SUBDIR}/
 enabled=0
 gpgcheck=1
 EOF
 
-systemctl is-active httpd || systemctl start httpd
-
+rpm -q httpd && (systemctl is-active httpd || systemctl start httpd)
 yum install -y --enablerepo=rhgs-3.2 rhui-installer glusterfs-fuse
+
+test -f ~/.ssh/id_rsa || ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+for cds in ${CDS_SERVERS:?}; do
+    grep -E "^$cds" ~/.ssh/known_hosts || ssh-copy-id ${cds}
+    #for f in /etc/yum.repos.d/rh*.repo; do ssh $cds "cat > $f" < sed -r "s,file://,http://${REPO_SERVER},"; done
+    scp /etc/yum.repos.d/*.repo ${cds}:/etc/yum.repos.d/
+done
 
 # vim:sw=4:ts=4:et:
