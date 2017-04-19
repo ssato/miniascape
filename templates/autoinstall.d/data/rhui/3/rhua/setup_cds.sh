@@ -18,13 +18,11 @@ ncdses={{ rhui.cdses|length }}
 brick=/export/brick
 bricks="{% for cds in rhui.cdses %}{{ cds }}:${brick:?} {% endfor %}"
 
-mkdir -p ${rhui_installer_stamp_dir}
 for cds in ${cdses:?}; do
-    ssh ${cds} "yum install -y glusterfs-{server,cli} rh-rhua-selinux-policy"
+    ssh ${cds} "yum install -y --enablerepo=rhgs-3.2 glusterfs-{server,cli} rh-rhua-selinux-policy"
     # ssh ... umount /export && mkfs.xfs -f -i size=512 /dev/mapper/vg1-lv_export && mount /export
     ssh ${cds} "systemctl is-active glusterd || (mkdir -p ${brick} && systemctl enable glusterd && systemctl start glusterd)"
 done
-)
 
 ssh ${cds_0} "for peer in ${cds_rest:?}; do gluster peer probe \${peer}; done; \
 gluster peer status && sleep 10; \

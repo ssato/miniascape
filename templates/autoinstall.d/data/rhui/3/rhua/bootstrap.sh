@@ -46,7 +46,7 @@ RHUI_SUBDIR=pub/rhui-3.0/
 RHGS_SUBDIR=pub/rhgs-3.2/
 
 REPO_SERVER=$(hostname -f)
-CDS_SERVERS=${1:-{{ rhui.cdses|join(' ') }}}
+CDS_SERVERS="${1:-{{ rhui.cdses|join(' ') }}}"
 
 cd ${MNT_DIR}
 mkdir -p ${RHEL_SUBDIR:?} ${RHUI_SUBDIR:?} ${RHGS_SUBDIR:?}
@@ -57,7 +57,7 @@ mount -o ro,loop ${ISO_DIR}/${RHGS_ISO:?}  ${RHGS_SUBDIR}
 cat << EOF > /etc/yum.repos.d/rhel-7.3-iso.repo
 [rhel-7.3]
 name=RHEL 7.3
-baseurl=http://$({REPO_SERVER})/${RHEL_SUBDIR}/
+baseurl=http://${REPO_SERVER}/${RHEL_SUBDIR}/
 enabled=1
 gpgcheck=1
 EOF
@@ -65,7 +65,7 @@ EOF
 cat << EOF > /etc/yum.repos.d/rhui-3.0-iso.repo
 [rhui-3.0]
 name=RHUI 3.0
-baseurl=http://$({REPO_SERVER})/${RHUI_SUBDIR}/
+baseurl=http://${REPO_SERVER}/${RHUI_SUBDIR}/
 enabled=1
 gpgcheck=1
 EOF
@@ -73,7 +73,7 @@ EOF
 cat << EOF > /etc/yum.repos.d/rhgs-3.2-iso.repo
 [rhgs-3.2]
 name=RH Gluset FS 3.2
-baseurl=http://$({REPO_SERVER})/${RHGS_SUBDIR}/
+baseurl=http://${REPO_SERVER}/${RHGS_SUBDIR}/
 enabled=0
 gpgcheck=1
 EOF
