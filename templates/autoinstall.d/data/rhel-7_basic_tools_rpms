@@ -8,6 +8,7 @@ hardlink
 lftp
 make
 nfs-utils
+nmap-ncat
 pcp
 rsync
 screen
