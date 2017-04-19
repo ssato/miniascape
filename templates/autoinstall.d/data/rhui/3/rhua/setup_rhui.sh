@@ -37,9 +37,15 @@ for cds in ${cdses}; do
     rhui ${rhui_auth_opt} cds add ${cds} root /root/.ssh/id_rsa -u
 done
 
-rhui-manager ${rhui_auth_opt} cert upload --cert ${rhui_cert:?}
-rhui-manager ${rhui_auth_opt} repo unused --by_repo_id | tee ${rhui_repos_list:?}
-rhui-manager ${rhui_auth_opt} repo add_by_repo --repo_ids {{ rhui.repos|join(',') }}
+test -f /etc/pki/rhui/redhat/${rhui_cert##*/} || rhui-manager ${rhui_auth_opt} cert upload --cert ${rhui_cert:?}
+test -f ${rhui_repos_list:?} || rhui-manager ${rhui_auth_opt} repo unused --by_repo_id | tee ${rhui_repos_list:?}
+
+rhui-manager repo list > /tmp/rhui-manager_repo_list.txt
+repos=""
+for repo in {{ rhui.repos }}; do
+    grep $repo /tmp/rhui-manager_repo_list.txt || repos="${repos} ${repo}"
+done
+time rhui-manager ${rhui_auth_opt} repo add_by_repo --repo_ids "$(echo ${repos} | sed 's/ /,/g')"
 
 # Generate RPM GPG Key pair to sign built RPMs
 bash -x ${bindir}/gen_rpm_gpgkey.sh
