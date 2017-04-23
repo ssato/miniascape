@@ -681,3 +681,5 @@ redhat-lsb
 # for certification with ccp-client:
 openscap-utils
 scap-security-guide
+# rhcert-cli requires this:
+kernel-abi-whitelists
