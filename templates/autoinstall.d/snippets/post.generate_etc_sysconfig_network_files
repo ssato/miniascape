@@ -21,8 +21,10 @@ test -d /root/setup/$confdir || mkdir -p /root/setup/$confdir
 f=$confdir/ifcfg-{{ ni.device }}
 bf=/root/setup/$f.save
 test -f $bf || cp $f $bf
+hwaddr_line=$(grep -E ^HWADDR $f)
 cat << EOF > $f
 DEVICE={{ ni.device }}
+${hwaddr_line}
 TYPE={{ ni.type|default('Ethernet') }}
 IPADDR={{ ni.ip }} 
 NETMASK={{ ni.netmask if ni.netmask else (netmask or default('255.255.255.0')) }}
@@ -35,8 +37,8 @@ DEFROUTE={{ 'no' if ni.nodefroute else 'yes' }}
 PEERDNS={{ 'no' if ni.nodns else 'yes' }}
 {%        if ni.extra_options -%}
 {%          for eopt in ni.extra_options -%}
-{{ eopt -}}
-{%-         endfor %}
+{{ eopt  }}
+{%          endfor %}
 {%-       endif -%}
 EOF
 cp $f /root/setup/$f
