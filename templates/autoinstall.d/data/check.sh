@@ -15,8 +15,9 @@ which chronyc && \
 /sbin/ip r
 df -h
 mount
+cat /etc/fstab
 pvscan; vgscan; lvscan
-gendiff /etc .save
+which gendiff && gendiff /etc .save || :
 for f in /etc/sysconfig/network-scripts/{ifcfg-*,route*}; do
     echo "# ${f##*/}:"
     cat $f
@@ -24,5 +25,7 @@ done
 ls -l /etc/sysctl.d; sysctl -a > ${logdir}/sysctl-a.txt
 ls -l /etc/sudoers.d
 rpm -qa --qf "%{n},%{v},%{r},%{arch},%{e}\n" | sort > ${logdir}/rpm-qa.0.txt
-test -d /etc/systemd && (systemctl; systemctl list-unit-files) || /sbin/chkconfig --list
+svcs="{{ services.enabled|join(' ')|default('sshd') }}"
+test -d /etc/systemd && (systemctl; systemctl list-unit-files; for s in $svcs; do systemctl status $s; done) || \
+(/sbin/chkconfig --list; for s in $svcs; do service $s status; done)
 ) 2>&1 | tee ${logfile}
