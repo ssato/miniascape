@@ -1,0 +1,87 @@
+{% if rhui is defined and rhui and
+      rhui.cds is defined and rhui.cds and
+      rhui.cds.servers is defined and rhui.cds.servers and
+      keepalived is defined and keepalived -%}
+f=/etc/haproxy/haproxy.cfg
+test -f $f && (
+test -f $f.save || cp $f $f.save
+cat << 'EOF' > $f
+global
+    log         127.0.0.1 local2
+
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+
+defaults
+    mode                    http
+    log                     global
+    option                  log-health-checks
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+
+listen crane00
+    bind :5000 
+    balance roundrobin
+    option tcplog
+    option ssl-hello-chk
+    {% for cds in rhui.cds.servers if cds.fqdn -%}
+    server {{ cds.fqdn }} {{ cds.fqdn }}:5000 check
+    {% endfor %}
+
+listen https00
+    bind :443 
+    balance roundrobin
+    option tcplog
+    option ssl-hello-chk
+    {% for cds in rhui.cds.servers if cds.fqdn -%}
+    server {{ cds.fqdn }} {{ cds.fqdn }}:443 check
+    {% endfor %}
+EOF
+)
+f=/etc/keepalived/keepalived.conf
+test -f $f && (
+test -f $f.save || cp $f $f.save
+cat << 'EOF' > $f
+vrrp_script check_haproxy {
+    script "systemctl is-active --quiet haproxy"
+    interval 2
+}
+
+vrrp_instance VI_1 {
+    interface {{ keepalived.vrrp_interface }}
+    state {{ 'MASTER' if keepalived.is_master is defined and keepalived.is_master else 'BACKCUP' }}
+    virtual_router_id 51
+    priority {{ keepalived.priority|default('100') }}
+
+    virtual_ipaddress {
+        {{ rhui.lb.vip }} dev {{ keepalived.vip_interface }}
+    }
+    unicast_peer {
+        {{ keepalived.unicast_peer }}
+    }
+    track_script {
+        check_haproxy
+    }
+}
+EOF
+)
+{%- endif %}
