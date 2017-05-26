@@ -1,6 +1,9 @@
 boot_params=${1:-/tmp/boot-params}
 test -f ${boot_params} && source ${boot_params}
 
+nics=$(ip -o l | grep -v 'state UP' | cut -d: -f 2 | grep -v lo)
+active_nics=$(ip -o l | grep 'state UP' | cut -d: -f 2)
+
 if test -n "${ip}"; then
     bootproto=static
     netmask=${netmask:-255.255.255.0}
@@ -13,12 +16,14 @@ if test -n "${ip}"; then
         {{ 'hostname_opt="network --hostname=${hostname}"' if os_variant == 'rhel7' }}
     fi
 
-    cat << EOF > /tmp/network-ks.cfg
-network --device=eth0 --bootproto=static --onboot=${onboot} --ip=${ip} --netmask=${netmask} --gateway=${gateway} ${ex_opt}
-#network --device=eth1 --bootproto=dhcp --onboot=no --nodns
-#network --device=eth2 --bootproto=dhcp --nodns
+for $nic in $active_nics; do
+    cat << EOF >> /tmp/network-ks.cfg
+network --device=${nic} --bootproto=static --onboot=${onboot} --ip=${ip} --netmask=${netmask} --gateway=${gateway} ${ex_opt}
 ${hostname_opt}
 EOF
+for $nidx in $(seq 0 ${#nics}); do
+    nidx = $(( $nidx + 1))
+    echo "network --device=${nics[$nidx]} --bootproto=dhcp --onboot=no --nodns" >> /tmp/network-ks.cfg
 else
     onboot=yes
     cat << EOF > /tmp/network-ks.cfg
