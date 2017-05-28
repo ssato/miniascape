@@ -12,38 +12,49 @@
 #
 set -ex
 
-# CDS_SERVERS, BRICK, CDS_0, CDS_REST, NUM_CDS, GLUSTER_BRICKS
+# CDS_SERVERS, BRICK, CDS_0, CDS_REST, BRICK, NUM_CDS, GLUSTER_BRICKS
 source ${0%/*}/config.sh
 
 # Install Gluster RPMs, start glusterd and make bricks on CDS
-for cds in ${CDS_SERVERS:?}
-do
-    cat << EOC | ssh -o ConnectTimeout=5 $cds
+s="\
 yum install -y --enablerepo=rhgs-3.2 glusterfs-{server,cli} rh-rhua-selinux-policy
-systemctl is-active glusterd || systemctl enable glusterd && systemctl start glusterd
+systemctl is-enabled glusterd 2>/dev/null || systemctl enable glusterd
+systemctl is-active glusterd 2>/dev/null || systemctl start glusterd
+systemctl status glusterd
 mkdir -p ${BRICK:?}
+${GLUSTER_ADD_FIREWALL_RULES}
+"
+for cds in ${CDS_SERVERS:?}; do
+    cat << EOC | _ssh_exec_script $cds
+${s:?}
 EOC
 done
 
 # Probe Gluster peers on the primary CDS
-cat << EOC | ssh -o ConnectTimeout=5 ${CDS_0:?}
-for peer in ${CDS_REST:?}; do gluster peer probe \${peer}; done
+cat << EOC | _ssh_exec_script ${CDS_0:?}
+for peer in "${CDS_REST:?}"; do gluster peer probe \${peer}; done
 sleep 5
 gluster peer status
 EOC
 sleep 10
 
 # Create and start Gluster Storage Volumes
-cat << EOC | ssh -o ConnectTimeout=5 ${CDS_0:?}
+s="\
+gluster volume info rhui_content_0 || \
+(
 gluster volume create rhui_content_0 replica ${NUM_CDS:?} ${GLUSTER_BRICKS:?} && \
 gluster volume start rhui_content_0 && \
 gluster volume status
+"
+cat << EOC | _ssh_exec_script ${CDS_0:?}
+${s:?}
 EOC
 
 # Configure Gluster Storage Volume Quorum
-test $NUM_CDS -le 2 && \
-ssh -o ConnectTimeout=5 ${CDS_0} "gluster volume set rhui_content_0 quorum-type auto" || \
-ssh -o ConnectTimeout=5 ${CDS_0} "gluster volume set rhui_content_0 quorum-type server; \
-gluster volume set all cluster.server-quorum-ratio 51%"
+test ${NUM_CDS} -le 2 && \
+_ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 quorum-type auto' || \
+_ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 quorum-type server; \
+gluster volume set all cluster.server-quorum-ratio 51%'
+_ssh_exec ${CDS_0} "gluster volume info rhui_content_0"
 
 # vim:sw=4:ts=4:et:
