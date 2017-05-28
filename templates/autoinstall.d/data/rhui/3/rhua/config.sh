@@ -61,6 +61,11 @@ RHUI_STORAGE_MOUNT_OPTIONS="{{ rhui.storage.mnt_options|join(',')|default('rw') 
 
 RHUI_INSTALLER_TLS_OPTIONS="--certs-country {{ rhui.tls.country|default('JP') }} --certs-state {{ rhui.tls.state|default('Tokyo') }} --certs-city {{ rhui.tls.city }} --certs-org {{ rhui.tls.org }}"
 
+## Comment out the followings as needed.
+#RHUI_USERNAME=admin
+#RHUI_PASSWORD=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer/answers.yaml || echo '')
+#RHUI_AUTH_OPT="--username ${rhui_username:?} --password ${rhui_password:?}"
+
 RHUI_REPO_IDS="
 {%- for repo in rhui.repos if repo.id is defined and repo.id -%}
 {{      repo.id }}

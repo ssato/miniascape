@@ -13,17 +13,14 @@ set -ex
 source ${0%/*}/config.sh
 
 RHUI_CLIENT_WORKDIR=${1:-/root/setup/clients/}
-
-rhui_username=admin
-rhui_password=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer/answers.yaml)
-RHUI_AUTH_OPT="--username ${rhui_username:?} --password ${rhui_password:?}"
+RHUI_AUTH_OPT=""  # Force set empty to avoid to password was printed.
 
 # Generate RPM GPG Key pair to sign RHUI client config RPMs built
 test -f ~/.rpmmacros || bash -x ${0%/*}/gen_rpm_gpgkey.sh
 
 
 # List repos available to clients
-rhui-manager ${RHUI_AUTH_OPT:?} client labels | sort
+rhui-manager ${RHUI_AUTH_OPT} client labels | sort
 
 mkdir -p ${RHUI_CLIENT_WORKDIR:?}
 while read line

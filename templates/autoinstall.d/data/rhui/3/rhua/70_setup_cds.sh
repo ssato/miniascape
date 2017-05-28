@@ -12,12 +12,10 @@ set -ex
 # RHUI_AUTH_OPT, CDS_SERVERS
 source ${0%/*}/config.sh
 
-rhui_username=admin
-rhui_password=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer/answers.yaml)
-RHUI_AUTH_OPT="--username ${rhui_username:?} --password ${rhui_password:?}"
+RHUI_AUTH_OPT=""  # Force set empty to avoid to password was printed.
 
 for cds in ${CDS_SERVERS:?}; do
-    rhui ${RHUI_AUTH_OPT:?} cds list -m | grep -E "hostname.: .${cds}" || \
+    rhui ${RHUI_AUTH_OPT} cds list -m | grep -E "hostname.: .${cds}" || \
     rhui ${RHUI_AUTH_OPT} cds add ${cds} root /root/.ssh/id_rsa -u
 done
 
