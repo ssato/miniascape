@@ -64,7 +64,8 @@ RHUI_INSTALLER_TLS_OPTIONS="--certs-country {{ rhui.tls.country|default('JP') }}
 ## Comment out the followings as needed.
 #RHUI_USERNAME=admin
 #RHUI_PASSWORD=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer/answers.yaml || echo '')
-#RHUI_AUTH_OPT="--username ${rhui_username:?} --password ${rhui_password:?}"
+#test "x${RHUI_PASSWORD}" = "x" && RHUI_AUTH_OPT="" || \
+#RHUI_AUTH_OPT="--username ${RHUI_USERNAME:?} --password ${RHUI_PASSWORD:?}"
 
 RHUI_REPO_IDS="
 {%- for repo in rhui.repos if repo.id is defined and repo.id -%}
