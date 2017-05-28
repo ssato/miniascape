@@ -97,7 +97,9 @@ fi
 # Make yum repos served.
 cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
 (rpm -q httpd || yum install -y httpd) && \
-systemctl is-active httpd || systemctl start httpd
+systemctl is-active httpd 2>/dev/null || systemctl start httpd
+systemctl status httpd
+yum repolist
 EOC
 
 # vim:sw=4:ts=4:et:
