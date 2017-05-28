@@ -46,7 +46,7 @@ GLUSTER_ADD_FIREWALL_RULES="
 systemctl is-active firewalld 2>/dev/null && \
 (
 for nic in ${GLUSTER_FIREWALL_NICS}; do
-    firewall-cmd --add-service=glusterfs --zone=$(firewall-cmd --get-zone-of-interface=${nic}) --permanent
+    firewall-cmd --add-service=glusterfs --zone=\$(firewall-cmd --get-zone-of-interface=\${nic}) --permanent
 done
 firewall-cmd --reload
 )
