@@ -45,6 +45,7 @@ gluster volume info rhui_content_0 || \
 gluster volume create rhui_content_0 replica ${NUM_CDS:?} ${GLUSTER_BRICKS:?} && \
 gluster volume start rhui_content_0 && \
 gluster volume status
+)
 "
 cat << EOC | _ssh_exec_script ${CDS_0:?}
 ${s:?}
