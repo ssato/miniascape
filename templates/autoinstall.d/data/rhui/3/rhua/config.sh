@@ -7,22 +7,22 @@ RHGS_ISO={{ rhui.rhgs_iso|default('rhgs-3.2-rhel-7-x86_64-dvd-1.iso') }}
 RHUA={{ rhui.rhua.fqdn }}
 
 CDS_SERVERS="
-{% for cds in rhui.cds.servers %}
-{{     cds.fqdn }}
-{% endfor %}
+{%- for cds in rhui.cds.servers -%}
+{{      cds.fqdn }}
+{%  endfor -%}
 "
 
 LB_SERVERS="
-{% for lb in rhui.lb.servers %}
-{{     lb.fqdn }}
-{% endfor %}
+{%- for lb in rhui.lb.servers -%}
+{{      lb.fqdn }}
+{% endfor -%}
 "
 
 CDS_0={{ rhui.cds.servers[0].fqdn }}
 CDS_REST="
-{% for cds in rhui.cds.servers %}
-{%     if not loop.first %}{{ cds.fqdn }}{% endif %}
-{% endfor %}
+{%- for cds in rhui.cds.servers -%}
+{%      if not loop.first %}{{ cds.fqdn }}{% endif %}
+{% endfor -%}
 "
 CDS_LB_HOSTNAME={{ rhui.cds.fqdn }}
 
@@ -34,9 +34,19 @@ YUM_REPO_SERVER=${CDS_0:?}
 # If RHUI_STORAGE_TYPE is Gluster Storage.
 BRICK=/export/brick
 GLUSTER_BRICKS="
-{% for cds in rhui.cds.servers %}
-{{     cds.fqdn }}:${BRICK:?}
-{% endfor %}
+{%- for cds in rhui.cds.servers -%}
+{{      cds.fqdn }}:${BRICK:?} {% endfor -%}
+"
+GLUSTER_FIREWALL_NICS="{{ rhui.storage.interfaces|join(' ')|default('') }}"
+test "x${GLUSTER_FIREWALL_NICS}" = "x" || \
+GLUSTER_ADD_FIREWALL_RULES="
+systemctl is-active firewalld 2>/dev/null && \
+(
+for nic in ${GLUSTER_FIREWALL_NICS}; do
+    firewall-cmd --add-service=glusterfs --zone=$(firewall-cmd --get-zone-of-interface=${nic}) --permanent
+done
+firewall-cmd --reload
+)
 "
 
 RHUI_CERT_NAME={{ rhui.rhui_entitlement_cert }}
@@ -49,24 +59,24 @@ RHUI_STORAGE_MOUNT_OPTIONS="{{ rhui.storage.mnt_options|join(',')|default('rw') 
 RHUI_INSTALLER_TLS_OPTIONS="--certs-country {{ rhui.tls.country|default('JP') }} --certs-state {{ rhui.tls.state|default('Tokyo') }} --certs-city {{ rhui.tls.city }} --certs-org {{ rhui.tls.org }}"
 
 RHUI_REPO_IDS="
-{% for repo in rhui.repos if repo.id is defined and repo.id %}
-{{     repo.id }}
-{% endfor %}
+{%- for repo in rhui.repos if repo.id is defined and repo.id -%}
+{{      repo.id }}
+{% endfor -%}
 "
 
 # Name of RPMs and certs are same.
 RHUI_CLIENT_CERTS="
-{% for crpm in rhui.client_rpms %}
-{{ crpm.name }} {{ crpm.repos|join(',') }}
-{% endfor %}
+{%- for crpm in rhui.client_rpms -%}
+{{      crpm.name }} {{ crpm.repos|join(',') }}
+{% endfor -%}
 "
 
 # format: <client_rpm_name> <client_rpm_repo_0> [<client_rpm_repo_1> ...] 
 RHUI_CLIENT_RPMS="
-{% for crpm in rhui.client_rpms if crpm.name is defined and crpm.name and
-                                    crpm.repos is defined and crpm.repos %}
-{{ crpm.name }} {{ crpm.repos|join(' ') }}
-{% endfor %}
+{%- for crpm in rhui.client_rpms if crpm.name is defined and crpm.name and
+                                    crpm.repos is defined and crpm.repos -%}
+{{      crpm.name }} {{ crpm.repos|join(' ') }}
+{% endfor -%}
 "
 
 # vim:sw=4:ts=4:et:
