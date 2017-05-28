@@ -29,7 +29,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
 enabled=1
 EOF
-for cds in ${CDS_SERVERS:?}; scp $f $cds:/etc/yum.repos.d/; done
+for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
 
 cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
 test -d ${MNT_DIR}/${RHEL_SUBDIR}/Packages || (
@@ -54,7 +54,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
 enabled=1
 EOF
-for cds in ${CDS_SERVERS:?}; scp $f $cds:/etc/yum.repos.d/; done
+for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
 
 cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
 test -d ${MNT_DIR}/${RHUI_SUBDIR}/Packages || (
@@ -80,7 +80,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
 enabled=0
 EOF
-    for cds in ${CDS_SERVERS:?}; scp $f $cds:/etc/yum.repos.d/; done
+    for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
     cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
 test -d ${MNT_DIR}/${RHGS_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHGS_SUBDIR}
