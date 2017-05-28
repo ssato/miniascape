@@ -31,7 +31,7 @@ enabled=1
 EOF
 for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
 
-cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
+cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
 test -d ${MNT_DIR}/${RHEL_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHEL_SUBDIR}
 test -f ${ISO_DIR}/${RHEL_ISO} && \
@@ -56,7 +56,7 @@ enabled=1
 EOF
 for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
 
-cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
+cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
 test -d ${MNT_DIR}/${RHUI_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHUI_SUBDIR}
 test -f ${ISO_DIR}/${RHUI_ISO} && \
@@ -81,7 +81,7 @@ gpgcheck=1
 enabled=0
 EOF
     for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
-    cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
+    cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
 test -d ${MNT_DIR}/${RHGS_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHGS_SUBDIR}
 test -f ${ISO_DIR}/${RHGS_ISO} && \
@@ -95,7 +95,7 @@ EOC
 fi
 
 # Make yum repos served.
-cat << EOC | ssh -o ConnectTimeout=5 ${YUM_REPO_SERVER:?}
+cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
 (rpm -q httpd || yum install -y httpd) && \
 systemctl is-active httpd 2>/dev/null || systemctl start httpd
 systemctl status httpd
