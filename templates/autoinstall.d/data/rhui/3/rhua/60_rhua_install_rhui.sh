@@ -30,4 +30,12 @@ rhui-installer ${rhui_installer_common_options} \
 touch ${rhui_installer_stamp}
 )
 
+rhui_username=admin
+rhui_password=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer/answers.yaml)
+#RHUI_AUTH_OPT="--username ${rhui_username:?} --password ${rhui_password:?}"
+
+# Generate auth cache
+grep rhui_manager_password /etc/rhui-installer/answers.yaml
+rhui-manager
+
 # vim:sw=4:ts=4:et:
