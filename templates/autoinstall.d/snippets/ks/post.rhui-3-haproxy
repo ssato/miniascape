@@ -20,7 +20,7 @@ global
     stats socket /var/lib/haproxy/stats
 
 defaults
-    mode                    http
+    #mode                    http
     log                     global
     option                  log-health-checks
     option                  httplog
