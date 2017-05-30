@@ -90,7 +90,7 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
             miniascape.template.renders_to(content, config, out, tpaths)
 
     return subprocess.check_output(
-        "tar --xz -c setup | base64 > setup.tar.xz.base64",
+        "tar --xz --owner=root --group=root -c setup | base64 > setup.tar.xz.base64",
         shell=True, cwd=gworkdir
     )
 
