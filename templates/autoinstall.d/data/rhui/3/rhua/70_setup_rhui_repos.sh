@@ -9,15 +9,18 @@
 #
 set -ex
 
-# RHUI_CERT_NAME, RHUI_AUTH_OPT, RHUI_CERT, RHUI_REPO_IDS
+# RHUI_CERT_NAME, RHUI_AUTH_OPT, RHUI_CERT, RHUI_REPO_IDS, CURL_PROXY_OPT
 source ${0%/*}/config.sh
+
+# Check if RHUA can access https://cdn.redhat.com.
+curl -v ${CURL_PROXY_OPT} --cacert /etc/rhsm/ca/redhat-uep.pem --connect-timeout 5 https://cdn.redhat.com
 
 # Maybe the auth cache will be expired during 'rhui-manager repo ...' commands
 # because it takes some time to finish them. So try to use the auth options...
-RHUI_USERNAME=admin
-RHUI_PASSWORD=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer/answers.yaml || echo '')
-test "x${RHUI_PASSWORD}" = "x" && RHUI_AUTH_OPT="" || \
-RHUI_AUTH_OPT="--username ${RHUI_USERNAME:?} --password ${RHUI_PASSWORD:?}"
+#RHUI_USERNAME=admin
+#RHUI_PASSWORD=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer/answers.yaml || echo '')
+#test "x${RHUI_PASSWORD}" = "x" && RHUI_AUTH_OPT="" || \
+#RHUI_AUTH_OPT="--username ${RHUI_USERNAME:?} --password ${RHUI_PASSWORD:?}"
 
 rhui_installer_logdir="/root/setup/logs"
 rhui_installer_log=${rhui_installer_logdir}/rhui-installer.$(date +%F_%T).log
