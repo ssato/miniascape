@@ -4,8 +4,6 @@ logdir=/root/setup/logs
 logfile=${logdir}/check.sh.log.$(date +%F_%T)
 test -d ${logdir:?} || mkdir -p ${logdir}
 (
-chown -R root.root /root/setup/ || :
-chcon -R --reference . /root/setup/ || :
 cat /etc/redhat-release
 uname -a
 hostname; hostname -s; hostname -f || :
