@@ -7,11 +7,12 @@ RHEL_ISO={{ rhui.rhel_iso|default('rhel-server-7.3-x86_64-dvd.iso') }}
 RHUI_ISO={{ rhui.rhui_iso|default('RHUI-3.0-RHEL-7-20170321.0-RHUI-x86_64-dvd1.iso') }}  # 2017-03-27
 RHGS_ISO={{ rhui.rhgs_iso|default('rhgs-3.2-rhel-7-x86_64-dvd-1.iso') }}
 
-{% if proxy is defined and proxy.fqdn is defined -%}
+{%- if proxy is defined and proxy.fqdn is defined %}
 CURL_PROXY_OPT="--proxy https://{{ proxy.fqdn }}:{{ proxy.port|default("443") }}"
-{%     if proxy.user is defined -%}
+{%-    if proxy.user is defined %}
 CURL_PROXY_OPT="${CURL_PROXY_OPT} --proxy-user {{ proxy.user }}:{{ proxy.password }}"
 {%-    endif %}
+{% endif %}
 
 RHUA={{ rhui.rhua.fqdn }}
 
