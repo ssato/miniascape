@@ -1,7 +1,18 @@
 {% if rhui is defined and rhui and
       rhui.cds is defined and rhui.cds and
       rhui.cds.servers is defined and rhui.cds.servers and
+      rhui.lb is defined and rhui.lb and
       keepalived is defined and keepalived -%}
+{%-   if rhui.lb.vrrp_firewalld_zone is defined and
+         rhui.lb.vrrp_firewalld_zone %}
+zone={{ rhui.lb.vrrp_firewalld_zone }}
+f=/etc/firewalld/zones/${zone}.xml
+test -f $f || cp ${f/etc/usr\/lib/} $f
+sed -i.save '
+$ i \
+  <rule><protocol value="vrrp"/><accept/></rule>
+' $f
+{%-   endif %}
 f=/etc/haproxy/haproxy.cfg
 test -f $f && (
 test -f $f.save || cp $f $f.save
@@ -67,13 +78,13 @@ vrrp_script check_haproxy {
 }
 
 vrrp_instance VI_1 {
-    interface {{ keepalived.vrrp_interface }}
+    interface {{ rhui.lb.vrrp_interface }}
     state {{ 'MASTER' if keepalived.is_master is defined and keepalived.is_master else 'BACKCUP' }}
     virtual_router_id 51
     priority {{ keepalived.priority|default('100') }}
 
     virtual_ipaddress {
-        {{ rhui.lb.vip }} dev {{ keepalived.vip_interface }}
+        {{ rhui.lb.vip }} dev {{ rhui.lb.vip_interface }}
     }
     unicast_peer {
         {{ keepalived.unicast_peer }}
