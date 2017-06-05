@@ -11,7 +11,7 @@ EOF
 {%         if tar_xz -%}
 cd ${outdir} && base64 --decode setup.tar.xz.base64 | tar --xz --owner=root --group=root --no-same-owner -xC ${outdir}/ && cd -
 {%-        else -%}
-cd ${outdir} && base64 -i -d setup.tar.xz.base64 > setup.tar.xz && xz -d setup.tar.xz && tar -xf --owner=root --group=root setup.tar -C ${outdir}/ && cd -
+cd ${outdir} && base64 -i -d setup.tar.xz.base64 > setup.tar.xz && xz -d setup.tar.xz && tar -xf --owner=root --group=root --no-same-owner setup.tar -C ${outdir}/ && cd -
 {%-        endif %}
 {%         for data in setup_data if data.install is defined -%}
 idir=$(dirname {{ data.install.dst }}); test -d $idir || install -d $idir;
