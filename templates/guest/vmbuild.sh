@@ -97,6 +97,7 @@ ${location_opts} \
 {%     endfor %} \
 {%     for nic in interfaces -%}
 --network {{ net_option(nic) }} \
-{%     endfor %}
+{%     endfor %} \
+{{     ' --clock %s' % virtinst.clock if virtinst.clock }} \
 {% endblock %}
 # vim:sw=4:ts=4:et:
