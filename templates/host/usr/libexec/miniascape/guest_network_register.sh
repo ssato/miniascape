@@ -19,7 +19,7 @@ set -e
 
 # defaults:
 network=default
-macaddr=random
+macaddr=RANDOM
 check_if_dns=no  # or 'yes'
 
 function show_help () {
@@ -27,7 +27,7 @@ function show_help () {
 Usage: $0 [Options] FQDN IP
 Options:
   -n    specify libvirt's virtual network [$network]
-  -m    specify MAC address of the guest, or special keyword 'random' to
+  -m    specify MAC address of the guest, or special keyword 'RANDOM' to
         generate random mac address, or 'no' not to register DHCP entry for
         the guest [$macaddr]
   -h    show this help
@@ -166,7 +166,7 @@ shift $(($OPTIND - 1))
 fqdn=$1
 ip=$2
 
-if test "x$macaddr" = "xrandom"; then
+if test "x$macaddr" = "xRANDOM"; then
     macaddr=$(gen_macaddr)
     echo "[Info] Generated mac address: $macaddr"
 else
