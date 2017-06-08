@@ -16,7 +16,7 @@ set -ex
 source ${0%/*}/config.sh
 
 # Install Gluster RPMs, start glusterd and make bricks on CDS
-s="\
+cmds="\
 yum install -y --enablerepo=rhgs-3.2 glusterfs-{server,cli} rh-rhua-selinux-policy
 systemctl is-enabled glusterd 2>/dev/null || systemctl enable glusterd
 systemctl is-active glusterd 2>/dev/null || systemctl start glusterd
@@ -26,7 +26,7 @@ ${GLUSTER_ADD_FIREWALL_RULES}
 "
 for cds in ${CDS_SERVERS:?}; do
     cat << EOC | _ssh_exec_script $cds
-${s:?}
+${cmds:?}
 EOC
 done
 
@@ -39,7 +39,7 @@ EOC
 sleep 10
 
 # Create and start Gluster Storage Volumes
-s="\
+cmds="\
 gluster volume info rhui_content_0 || \
 (
 gluster volume create rhui_content_0 replica ${NUM_CDS:?} ${GLUSTER_BRICKS:?} && \
@@ -48,7 +48,7 @@ gluster volume status
 )
 "
 cat << EOC | _ssh_exec_script ${CDS_0:?}
-${s:?}
+${cmds:?}
 EOC
 
 # Configure Gluster Storage Volume Quorum

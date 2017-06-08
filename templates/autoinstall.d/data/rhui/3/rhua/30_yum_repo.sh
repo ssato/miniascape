@@ -56,16 +56,19 @@ enabled=1
 EOF
 for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
 
-cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
+cmds="
 test -d ${MNT_DIR}/${RHUI_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHUI_SUBDIR}
 test -f ${ISO_DIR}/${RHUI_ISO} && \
 mount -o ro,loop ${ISO_DIR}/${RHUI_ISO:?} ${MNT_DIR}/${RHUI_SUBDIR} || \
 {
-    echo "*** ${ISO_DIR}/${RHUI_ISO} was not found! ***";
-    echo "*** Copy its contents into ${MNT_DIR}/${RHUI_SUBDIR}/ somehow by yourself. ***";
+    echo \"*** ${ISO_DIR}/${RHUI_ISO} was not found! ***\";
+    echo \"*** Copy its contents into ${MNT_DIR}/${RHUI_SUBDIR}/ somehow by yourself. ***\";
 }
 )
+"
+cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
+${cmds:?}
 EOC
 
 # RHGS
@@ -81,25 +84,30 @@ gpgcheck=1
 enabled=0
 EOF
     for cds in ${CDS_SERVERS:?}; do scp $f $cds:/etc/yum.repos.d/; done
-    cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
-test -d ${MNT_DIR}/${RHGS_SUBDIR}/Packages || (
+        cmds="test -d ${MNT_DIR}/${RHGS_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHGS_SUBDIR}
 test -f ${ISO_DIR}/${RHGS_ISO} && \
 mount -o ro,loop ${ISO_DIR}/${RHGS_ISO:?} ${MNT_DIR}/${RHGS_SUBDIR} || \
 {
-    echo "*** ${ISO_DIR}/${RHGS_ISO} was not found! ***";
-    echo "*** Copy its contents into ${MNT_DIR}/${RHGS_SUBDIR}/ somehow by yourself. ***";
+    echo \"*** ${ISO_DIR}/${RHGS_ISO} was not found! ***\";
+    echo \"*** Copy its contents into ${MNT_DIR}/${RHGS_SUBDIR}/ somehow by yourself. ***\";
 }
 )
+"
+    cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
+${cmds:?}
 EOC
 fi
 
 # Make yum repos served.
-cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
+cmds="
 (rpm -q httpd || yum install -y httpd) && \
 systemctl is-active httpd 2>/dev/null || systemctl start httpd
 systemctl status httpd
 yum repolist
+"
+cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
+${cmds:?}
 EOC
 
 # vim:sw=4:ts=4:et:

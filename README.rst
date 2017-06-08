@@ -1085,4 +1085,25 @@ Once ks.cfg and vm build script are dumped, just run it to build VMs like this.
   Domain installation still in progress. Waiting 20 minutes for installation to complete.
   ssato@localhost%
 
+
+How to build and install
+=========================
+
+Build RPMs from source: It's easy to build miniascape with using rpm-build and mock:
+
+.. code-block:: console
+
+  $ [_SNAPSHOT_BUILD=1] python setup.py srpm && mock dist/.src.rpm
+
+or:
+
+.. code-block:: console
+
+    $ [_SNAPSHOT_BUILD] python setup.py rpm
+
+and install built RPMs.
+
+Set environment variable _SNAPSHOT_BUILD=1 if you want to build snapthost version.
+(I recommend this if you want to build it by yourself.)
+
 .. vim:sw=2:ts=2:et:
