@@ -44,7 +44,7 @@ sleep 10
 cmds="\
 gluster volume info rhui_content_0 || \
 (
-gluster volume create rhui_content_0 replica ${NUM_CDS:?} ${GLUSTER_BRICKS:?} && \
+gluster volume create rhui_content_0 replica ${NUM_CDS:?} ${GLUSTER_BRICKS:?} force && \
 gluster volume start rhui_content_0 && \
 gluster volume status
 )
