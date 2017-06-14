@@ -31,10 +31,12 @@ EOC
 done
 
 # Probe Gluster peers on the primary CDS
-cat << EOC | _ssh_exec_script ${CDS_0:?}
+cmds="\
 for peer in "${CDS_REST:?}"; do gluster peer probe \${peer}; done
 sleep 5
 gluster peer status
+"
+cat << EOC | _ssh_exec_script ${CDS_0:?}
 EOC
 sleep 10
 
