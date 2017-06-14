@@ -29,12 +29,7 @@ LB_SERVERS="
 "
 
 CDS_0={{ rhui.cds.servers[0].fqdn }}
-CDS_REST="
-{%- for cds in rhui.cds.servers -%}
-{%      if not loop.first %}{{ cds.fqdn }}{% endif %}
-{% endfor -%}
-"
-
+CDS_REST="{% for cds in rhui.cds.servers %}{% if not loop.first %}{{ cds.fqdn }} {% endif %}{% endfor %}"
 CDS_LB_HOSTNAME={{ rhui.cds.fqdn }}
 
 NUM_CDS={{ rhui.cds.servers|length }}
