@@ -26,6 +26,7 @@ httpcomponents-client
 httpcomponents-core
 httpd
 ipmitool
+ipxe-bootimgs
 jakarta-commons-httpclient
 jakarta-commons-io
 jakarta-commons-lang
@@ -59,6 +60,7 @@ policycoreutils-python
 postgresql
 postgresql-jdbc
 postgresql-server
+pyOpenSSL
 python-babel
 python-cherrypy
 python-imaging
