@@ -32,13 +32,15 @@ done
 
 # Probe Gluster peers on the primary CDS
 cmds="\
+sleep 5
 for peer in "${CDS_REST:?}"; do gluster peer probe \${peer}; done
 sleep 5
 gluster peer status
+sleep 5
 "
 cat << EOC | _ssh_exec_script ${CDS_0:?}
+${cmds:?}
 EOC
-sleep 10
 
 # Create and start Gluster Storage Volumes
 cmds="\
