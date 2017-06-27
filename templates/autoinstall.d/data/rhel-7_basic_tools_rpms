@@ -16,5 +16,5 @@ screen
 sos
 strace
 tcpdump
-tmux
+#tmux
 vim-enhanced
