@@ -4,8 +4,12 @@ gateway="${gateway}"  # Likewise.
 test "x${fqdn}" != "x" || fqdn={{ fqdn|default('localhost.localdomain') }}
 test "x${gateway}" != "x" || gateway={{ gateway|default('') }}
 test "x${gatewaydev}" != "x" || gatewaydev={{ gatewaydev|default('') }}
-f=/etc/sysconfig/network
+f=/etc/hostname
 if test -f $f; then
+    test -f $f.save || cp $f $f.save
+    grep -q ${fqdn} $f 2>/dev/null 1>/dev/null || hostnamectl set-hostname ${fqdn}
+else
+    f=/etc/sysconfig/network
     test -f $f.save || cp $f $f.save
     grep -Eq "^HOSTNAME=${fqdn}" $f 2>/dev/null 1>/dev/null || echo "HOSTNAME=${fqdn}" >> $f
 {%  if kickstart.nozeroconf -%}
@@ -16,10 +20,4 @@ if test -f $f; then
 {%- endif %}
     test "x${gateway}" = "x" || (grep -q ${gateway} ${f:?} 2>/dev/null || echo "GATEWAY=${gateway}" >> $f)
     test "x${gatewaydev}" = "x" || (grep -q ${gatewaydev} ${f:?} 2>/dev/null || echo "GATEWAYDEV=${gatewaydev}" >> $f)
-else
-    f=/etc/hostname
-    if test -f $f; then
-        test -f $f.save || cp $f $f.save
-        grep -q ${fqdn} $f 2>/dev/null 1>/dev/null || hostnamectl set-hostname --static ${fqdn}
-    fi
 fi
