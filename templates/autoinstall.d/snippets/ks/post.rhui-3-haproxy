@@ -86,6 +86,7 @@ vrrp_instance VI_1 {
     virtual_ipaddress {
         {{ rhui.lb.vip }} dev {{ rhui.lb.vip_interface }}
     }
+    unicast_src_ip {{ keepalived.unicast_src_ip }}
     unicast_peer {
         {{ keepalived.unicast_peer }}
     }
