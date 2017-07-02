@@ -145,5 +145,20 @@ ACTIVATION_KEYS_WITH_SUBSCRIPTIONS="
 {%  endfor -%}
 "
 
+PRODUCTS_TO_SYNC="
+{%- for p in satellite.products if p.name and p.sync is defined and p.sync -%}
+{{      p.name }}
+{%  endfor -%}
+"
+
+REPOS_TO_SYNC="
+{%- for p in satellite.products if p.name and
+                                   p.repos is defined and p.repos -%}
+{%-     for r in p.repos if r.name is defined and r.name -%}
+{{          r.name }} --product '{{ p.name }}'
+{%      endfor -%}
+{%  endfor -%}
+"
+
 # vim:sw=2:ts=2:et:
 {# #}
