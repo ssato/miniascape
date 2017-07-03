@@ -45,7 +45,7 @@ name=RHEL 7.3
 baseurl=${BASE_URL_PREFIX:?}/${RHEL_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
-enabled=1
+enabled=0
 EOF
 
 test -d ${MNT_DIR}/${RHEL_SUBDIR}/Packages || (
@@ -62,12 +62,21 @@ name=RH Satellite 6.x
 baseurl=${BASE_URL_PREFIX:?}/${RHS_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
-enabled=1
+enabled=0
+
+[rhscl]
+name=RHEL Software Collection
+baseurl=${BASE_URL_PREFIX:?}/${RHS_SUBDIR}/RHSCL/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+gpgcheck=1
+enabled=0
 EOF
 test -d ${MNT_DIR}/${RHS_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHS_SUBDIR}
 mount -o ro,loop ${ISO_DIR}/${RHS_ISO:?} ${MNT_DIR}/${RHS_SUBDIR}
 )
+
+yum install --disablerepo='*' --enablerepo=rhel-7.3 --enablerepo=rhs-3.x --enablerepo=rhscl -y satellite
 )
 
 test -d ${LOGDIR:?} || mkdir -p ${LOGDIR}
