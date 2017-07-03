@@ -31,10 +31,8 @@ ${YUM_REPOS_FOR_CLIENTS:?}
 EOC
 
 # Create and setup sync plans if not yet
-hammer sync-plan info ${HAMMER_ORG_ID_OPT:?} --name 'Daily Sync' 2> /dev/null || \
+hammer sync-plan info ${HAMMER_ORG_ID_OPT:?} --name 'Daily Sync' 2> /dev/null || (
 hammer sync-plan create ${HAMMER_ORG_ID_OPT} --interval daily --name 'Daily Sync' --enabled true --sync-date "$(date --iso-8601=minutes --date '6 hour')"
-
-# Set sync plan for products
 while read line; do
     test "x$line" = "x" || (
     hammer product set-sync-plan ${HAMMER_ORG_ID_OPT} --name "${line}" --sync-plan "Daily Sync" || :
@@ -42,6 +40,7 @@ while read line; do
 done << EOC
 ${PRODUCTS:?}
 EOC
+)
 
 # vim:sw=4:ts=4:et:
 {#
