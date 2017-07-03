@@ -81,7 +81,7 @@ yum install --disablerepo='*' --enablerepo=rhel-7.3 --enablerepo=rhs-3.x --enabl
 )
 
 f=${LOGDIR}/satellite-installer.stamp
-test ${f} || (
+test -f ${f} || (
 test -d ${LOGDIR:?} || mkdir -p ${LOGDIR}
 satellite-installer --scenario satellite \
   ${SATELLITE_INSTALLER_OPTIONS:?} | \
