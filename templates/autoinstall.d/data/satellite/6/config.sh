@@ -56,7 +56,7 @@ LOGDIR=${WORKDIR}/logs
 
 ISO_DIR=${WORKDIR}
 RHEL_ISO=$(ls -1 ${ISO_DIR}/rhel*.iso | head -n 1)
-RHS_ISO=$(ls -1 ${ISO_DIR}/satellite*.iso | head -n 1)
+SATELLITE_ISO=$(ls -1 ${ISO_DIR}/satellite*.iso | head -n 1)
 USE_RPM_INSTALL_SCRIPT=no
 
 SATELLITE_INSTALLER_OPTIONS="
@@ -113,14 +113,14 @@ HOST_COLLECTIONS='
 
 LIFECYCLE_ENVIRONMENTS='
 {% for le in satellite.lifecycle_environments if le.name -%}
---name "{{    le.name }}"  {{ '--prior %s' % le.prior|default('Library') }} {{ '--description \'s\'' % le.description if le.description is defined and le.description }}
+--name "{{    le.name }}" {{ '--prior %s' % le.prior|default('Library') }} {{ '--description "%s"' % le.description if le.description is defined and le.description }}
 {% endfor -%}
 '
 
 CONTENT_VIEWS='
-{%- for cv in satellite.content_views if cv.name -%}
+{% for cv in satellite.content_views if cv.name -%}
 --name "{{ cv.name }}" {{ '--description "%s"' % cv.description if cv.description is defined and cv.description }}
-{%  endfor -%}
+{% endfor -%}
 '
 
 CONTENT_VIEWS_WITH_REPOS='
@@ -165,6 +165,5 @@ REPOS_TO_SYNC='
 {%     endfor -%}
 {% endfor -%}
 '
-
 # vim:sw=2:ts=2:et:
 {# #}

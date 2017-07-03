@@ -19,14 +19,12 @@ test -f ${HAMMER_SYS_CONF:?}
 test -f ${SYS_ANSER_FILE:?}
 
 # http://gsw-hammer.documentation.rocks/initial_configuration,_adding_red_repos/hammer_credentials.html
-ADMIN_PASSWORD=$(shell sed -nr 's/^ *admin_password: ([^[:blank:]]+) *$/\1/p' ${SYS_ANSER_FILE})
-
+ADMIN_PASSWORD=$(sed -nr 's/^ *admin_password: ([^[:blank:]]+) *$/\1/p' ${SYS_ANSER_FILE})
 test -d ${HAMMER_USER_CONF_DIR} || mkdir -p -m 0700 ${HAMMER_USER_CONF_DIR}
-
 install -m 600 ${HAMMER_SYS_CONF} ${HAMMER_USER_CONF}
 cat << EOF >> ${HAMMER_USER_CONF}
   :username: admin
-  :password: ${HAMMER_ADMIN_PASSWORD}
+  :password: ${ADMIN_PASSWORD}
 EOF
 
 # Test hammer works w/o password authentication.

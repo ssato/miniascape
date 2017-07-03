@@ -16,8 +16,8 @@
 # - 
 set -ex
 
-# SATELLITE_INSTALLER_OPTIONS, LOGDIR, USE_RPM_INSTALL_SCRIPT, ISO_DIR,
-# RHEL_ISO, RHS_ISO
+# SATELLITE_INSTALLER_OPTIONS, LOGDIR, USE_RPM_INSTALL_SCRIPT, RHEL_ISO,
+# SATELLITE_ISO
 source ${0%/*}/config.sh
 
 rpm -q katello || (
@@ -30,8 +30,8 @@ cd - && umount /mnt
 ) || (
 MNT_DIR=/var/www/html
 RHEL_SUBDIR=pub/rhel-7.3/
-RHS_SUBDIR=pub/satellite-6/
-BASE_URL_PREFIX=file:///${MNT_DIR:?}
+SATELLITE_SUBDIR=pub/satellite-6/
+BASE_URL_PREFIX=file://${MNT_DIR:?}
 
 test -f ${RHEL_ISO:?}
 test -f ${SATELLITE_ISO:?}
@@ -45,12 +45,12 @@ name=RHEL 7.3
 baseurl=${BASE_URL_PREFIX:?}/${RHEL_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
-enabled=0
+enabled=1
 EOF
 
 test -d ${MNT_DIR}/${RHEL_SUBDIR}/Packages || (
 mkdir -p ${MNT_DIR}/${RHEL_SUBDIR}
-mount -o ro,loop ${ISO_DIR}/${RHEL_ISO:?} ${MNT_DIR}/${RHEL_SUBDIR}
+mount -o ro,loop ${RHEL_ISO:?} ${MNT_DIR}/${RHEL_SUBDIR}
 )
 
 # RH Satellite
@@ -59,30 +59,33 @@ test -f $f || \
 cat << EOF > /etc/yum.repos.d/rhs-6.x-iso.repo
 [rhs-3.x]
 name=RH Satellite 6.x
-baseurl=${BASE_URL_PREFIX:?}/${RHS_SUBDIR}/
+baseurl=${BASE_URL_PREFIX:?}/${SATELLITE_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
-enabled=0
+enabled=1
 
 [rhscl]
 name=RHEL Software Collection
-baseurl=${BASE_URL_PREFIX:?}/${RHS_SUBDIR}/RHSCL/
+baseurl=${BASE_URL_PREFIX:?}/${SATELLITE_SUBDIR}/RHSCL/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
-enabled=0
+enabled=1
 EOF
-test -d ${MNT_DIR}/${RHS_SUBDIR}/Packages || (
-mkdir -p ${MNT_DIR}/${RHS_SUBDIR}
-mount -o ro,loop ${ISO_DIR}/${RHS_ISO:?} ${MNT_DIR}/${RHS_SUBDIR}
+test -d ${MNT_DIR}/${SATELLITE_SUBDIR}/Packages || (
+mkdir -p ${MNT_DIR}/${SATELLITE_SUBDIR}
+mount -o ro,loop ${SATELLITE_ISO:?} ${MNT_DIR}/${SATELLITE_SUBDIR}
 )
 
 yum install --disablerepo='*' --enablerepo=rhel-7.3 --enablerepo=rhs-3.x --enablerepo=rhscl -y satellite
 )
+)
 
+f=${LOGDIR}/satellite-installer.stamp
+test ${f} || (
 test -d ${LOGDIR:?} || mkdir -p ${LOGDIR}
 satellite-installer --scenario satellite \
   ${SATELLITE_INSTALLER_OPTIONS:?} | \
-		tee 2>&1 ${LOGDIR}/satellite-installer.$(date +%F_%T).log
+		tee 2>&1 ${LOGDIR}/satellite-installer.$(date +%F_%T).log && touch $f
 )
 
 # vim:sw=2:ts=2:et:
