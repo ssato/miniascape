@@ -11,7 +11,7 @@
 #
 set -ex
 
-# CURL_PROXY_OPT, HAMMER_ORG_ID_OPT, YUM_REPOS_FOR_CLIENTS, PRODUCTS
+# CURL_PROXY_OPT, HAMMER_ORG_ID_OPT, ENABLE_YUM_REPOS_FOR_CLIENTS, PRODUCTS
 source ${0%/*}/config.sh
 
 # Check if satellite host can access RH CDN.
@@ -22,12 +22,8 @@ curl ${CURL_PROXY_OPT} https://cdn.redhat.com/
 #tweak_selinux_policy
 
 # Enable Yum repos will be provided for clients
-while read line; do
-    test "x$line" = "x" || (
-    hammer repository-set enable ${HAMMER_ORG_ID_OPT} ${line} || :
-    )
-done << EOC
-${YUM_REPOS_FOR_CLIENTS:?}
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${ENABLE_YUM_REPOS_FOR_CLIENTS:?}
 EOC
 
 # Create and setup sync plans if not yet

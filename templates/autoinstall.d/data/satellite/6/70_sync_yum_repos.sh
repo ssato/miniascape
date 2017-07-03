@@ -13,16 +13,14 @@ source ${0%/*}/config.sh
 while read line; do
   test "x$line" = "x" || (
   hammer product synchronize ${HAMMER_ORG_ID_OPT} --name "${line}" --async
+  )
 done << EOC
 ${PRODUCTS_TO_SYNC:?}
 EOC
 
 # TODO:
-#while read line; do
-#  test "x$line" = "x" || (
-#  hammer product synchronize ${HAMMER_ORG_ID_OPT} ${line} --async
-#done << EOC
-#${REPOS_TO_SYNC:?}
+#while read line; do test "x$line" = "x" || (eval "${line}" || :) done << EOC
+#${SYNC_BY_REPOS:?}
 #EOC
 
 # vim:sw=2:ts=2:et:

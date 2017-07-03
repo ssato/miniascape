@@ -10,47 +10,31 @@
 #
 set -ex
 
-# HAMMER_ORG_ID_OPT, HOST_COLLECTIONS, LIFECYCLE_ENVIRONMENTS, CONTENT_VIEWS,
-# CONTENT_VIEWS_WITH_REPOS
+# HAMMER_ORG_ID_OPT, CREATE_HOST_COLLECTIONS, CREATE_LIFECYCLE_ENVIRONMENTS,
+# CREATE_CONTENT_VIEWS, ADD_REPOS_TO_CONTENT_VIEWS
 source ${0%/*}/config.sh
 
 # Create Host Collections
 hammer host-collection list ${HAMMER_ORG_ID_OPT:?} | grep -qE '^1,' || (
-while read line; do
-  test "x$line" = "x" || (
-  hammer host-collection create ${HAMMER_ORG_ID_OPT} ${line} || :
-  )
-done << EOC
-${HOST_COLLECTIONS:?}
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${CREATE_HOST_COLLECTIONS:?}
 EOC
 )
 
 # Create Lifecycle Environments
 hammer lifecycle-environment list ${HAMMER_ORG_ID_OPT:?} | grep -qE '^1,' || (
-while read line; do
-  test "x$line" = "x" || (
-  hammer lifecycle-environment create ${HAMMER_ORG_ID_OPT} ${line} || :
-  )
-done << EOC
-${LIFECYCLE_ENVIRONMENTS:?}
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${CREATE_LIFECYCLE_ENVIRONMENTS:?}
 EOC
 )
 
 # Create and setup Content Views
 hammer content-view list ${HAMMER_ORG_ID_OPT:?} | grep -qE '^2,' || (
-while read line; do
-  test "x$line" = "x" || (
-  hammer content-view create ${HAMMER_ORG_ID_OPT} ${line} || :
-  )
-done << EOC
-${CONTENT_VIEWS:?}
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${CREATE_CONTENT_VIEWS:?}
 EOC
-while read line; do
-  test "x$line" = "x" || (
-  hammer content-view add-repository ${HAMMER_ORG_ID_OPT} ${line} || :
-  )
-done << EOC
-${CONTENT_VIEWS_WITH_REPOS:?}
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${ADD_REPOS_TO_CONTENT_VIEWS:?}
 EOC
 )
 

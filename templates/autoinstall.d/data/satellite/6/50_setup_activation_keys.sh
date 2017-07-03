@@ -7,33 +7,21 @@
 #
 set -ex
 
-# HAMMER_ORG_ID_OPT, ACTIVATION_KEYS, ACTIVATION_KEYS_WITH_HOST_COLLECTIONS,
-# ACTIVATION_KEYS_WITH_SUBSCRIPTIONS
+# HAMMER_ORG_ID_OPT, CREATE_ACTIVATION_KEYS,
+# ADD_HOST_COLLECTION_TO_ACTIVATION_KEYS, ADD_SUBSCRIPTION_TO_ACTIVATION_KEYS
 source ${0%/*}/config.sh
 
 hammer --csv activation-key list ${HAMMER_ORG_ID_OPT:?} | grep -E '^1,' || (
-while read line; do
-  test "x$line" = "x" || (
-  hammer activation-key create ${HAMMER_ORG_ID_OPT} ${line}
-  )
-done << EOC
-${ACTIVATION_KEYS:?}
+while read line; do test "x$line" = "x" || (eval "${line}" || :); done << EOC
+${CREATE_ACTIVATION_KEYS:?}
 EOC
 
-while read line; do
-  test "x$line" = "x" || (
-  hammer activation-key add-host-collection ${HAMMER_ORG_ID_OPT} ${line} || :
-  )
-done << EOC
-${ACTIVATION_KEYS_WITH_HOST_COLLECTIONS:?}
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${ADD_HOST_COLLECTION_TO_ACTIVATION_KEYS:?}
 EOC
 
-while read line; do
-  test "x$line" = "x" || (
-  hammer activation-key add-subscription ${HAMMER_ORG_ID_OPT} ${line} || :
-  )
-done << EOC
-${ACTIVATION_KEYS_WITH_SUBSCRIPTIONS:?}
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${ADD_SUBSCRIPTION_TO_ACTIVATION_KEYS:?}
 EOC
 )
 
