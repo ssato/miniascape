@@ -30,7 +30,6 @@ global
     stats socket /var/lib/haproxy/stats
 
 defaults
-    #mode                    http
     log                     global
     option                  log-health-checks
     option                  httplog
@@ -50,7 +49,7 @@ defaults
 
 listen crane00
     bind :5000 
-    balance roundrobin
+    balance leastconn
     option tcplog
     option ssl-hello-chk
     {% for cds in rhui.cds.servers if cds.fqdn -%}
@@ -59,7 +58,7 @@ listen crane00
 
 listen https00
     bind :443 
-    balance roundrobin
+    balance leastconn
     option tcplog
     option ssl-hello-chk
     {% for cds in rhui.cds.servers if cds.fqdn -%}
