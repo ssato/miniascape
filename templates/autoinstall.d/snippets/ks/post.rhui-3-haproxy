@@ -79,14 +79,15 @@ vrrp_script check_haproxy {
 
 vrrp_instance VI_1 {
     interface {{ rhui.lb.vrrp_interface }}
-    state {{ 'MASTER' if keepalived.is_master is defined and keepalived.is_master else 'BACKCUP' }}
-    virtual_router_id 51
+    state BACKUP
+    nopreempt
     priority {{ keepalived.priority|default('100') }}
+    virtual_router_id 51
 
     virtual_ipaddress {
         {{ rhui.lb.vip }} dev {{ rhui.lb.vip_interface }}
     }
-    unicast_src_ip {{ keepalived.unicast_src_ip }}
+    #unicast_src_ip {{ keepalived.unicast_src_ip }}
     unicast_peer {
         {{ keepalived.unicast_peer }}
     }
