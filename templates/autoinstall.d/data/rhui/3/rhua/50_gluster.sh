@@ -56,9 +56,8 @@ ${cmds:?}
 EOC
 
 # Configure Gluster Storage Volume Quorum
-test ${NUM_CDS} -le 2 && \
-_ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 cluster.server-quorum-type auto' || \
-_ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 cluster.server-quorum-type server; gluster volume set all cluster.server-quorum-ratio 51%'
+test ${NUM_CDS} -le 2 && _ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 quorum-type auto auto'
+test ${NUM_CDS} -le 2 || _ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 cluster.server-quorum-type server; gluster volume set all cluster.server-quorum-ratio 51%'
 _ssh_exec ${CDS_0} "gluster volume info rhui_content_0"
 
 # vim:sw=4:ts=4:et:
