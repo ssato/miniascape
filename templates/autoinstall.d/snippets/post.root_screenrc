@@ -1,7 +1,7 @@
 mkdir -p /root/setup/screen/logs
 cat << 'EOF' > /root/setup/screen/rc
 escape ^t^t
-defscrollback 10000
+defscrollback 100000
 defutf8 on
 deflog on
 logfile $HOME/.screen/logs/screen-%Y%m%d-%n.log
