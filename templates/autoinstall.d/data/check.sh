@@ -9,7 +9,7 @@ uname -a
 hostname; hostname -s; hostname -f || :
 date
 which chronyc && \
-(systemctl status chronyd && systemctl is-enabled chronyd && chronyc sources) || \
+(systemctl status chronyd && systemctl is-enabled chronyd && chronyc sources; chronyc tracking) || \
 (which ntpq && systemctl status ntpd && systemctl is-enabled ntpd && ntptime)
 /sbin/ip a
 /sbin/ip r
