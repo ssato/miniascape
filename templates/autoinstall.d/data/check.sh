@@ -26,6 +26,7 @@ ls -l /etc/sysctl.d; sysctl -a > ${logdir}/sysctl-a.txt
 ls -l /etc/sudoers.d
 rpm -qa --qf "%{n},%{v},%{r},%{arch},%{e}\n" | sort > ${logdir}/rpm-qa.0.txt
 svcs="{{ services.enabled|join(' ')|default('sshd') }}"
-test -d /etc/systemd && (systemctl; systemctl list-unit-files; for s in $svcs; do systemctl status $s; done) || \
+test -d /etc/systemd && \
+(systemctl list-unit-files --state=enabled; systemctl --failed; for s in $svcs; do systemctl status $s; done) || \
 (/sbin/chkconfig --list; for s in $svcs; do service $s status; done)
 ) 2>&1 | tee ${logfile}
