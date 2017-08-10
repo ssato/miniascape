@@ -23,16 +23,19 @@ bf=/root/setup/$f.save
 test -f $bf || cp $f $bf
 hwaddr_line=$(grep -E ^HWADDR $f)
 cat << EOF > $f
+NAME={{ ni.device }}
 DEVICE={{ ni.device }}
 ${hwaddr_line}
 TYPE={{ ni.type|default('Ethernet') }}
 IPADDR={{ ni.ip }} 
 NETMASK={{ ni.netmask if ni.netmask else (netmask or default('255.255.255.0')) }}
 ONBOOT={{ ni.onboot|default('yes') }}
-BOOTPROTO={{ ni.bootproto|default('static') }}
-USERCTL={{ ni.userctl|default('no') }}
+BOOTPROTO={{ ni.bootproto|default('none') }}
+USERCTL={{ ni.userctl|default('yes') }}
 NM_CONTROLLED={{ "yes" if ni.nm_controlled else 'no' }}
-DEFROUTE={{ 'no' if ni.nodefroute else 'yes' }}
+{%        if ni.nodefroute is defined and ni.nodefroute -%}
+DEFROUTE=no
+{%-       endif %}
 {{ 'GATEWAY=%s' % ni.gateway if ni.gateway and not ni.nodefroute else '#GATEWAY=' }}
 PEERDNS={{ 'no' if ni.nodns else 'yes' }}
 {%        if ni.extra_options -%}
@@ -40,6 +43,7 @@ PEERDNS={{ 'no' if ni.nodns else 'yes' }}
 {{ eopt  }}
 {%          endfor %}
 {%-       endif -%}
+NOZEROCONF={{ kickstart.nozeroconf|default('yes') }}
 EOF
 cp $f /root/setup/$f
 {%        if ni.route -%}

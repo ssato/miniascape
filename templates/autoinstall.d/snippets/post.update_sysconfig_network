@@ -12,8 +12,8 @@ else
     f=/etc/sysconfig/network
     test -f $f.save || cp $f $f.save
     grep -Eq "^HOSTNAME=${fqdn}" $f 2>/dev/null 1>/dev/null || echo "HOSTNAME=${fqdn}" >> $f
-{%  if kickstart.nozeroconf -%}
-    grep -Eq "^NOZEROCONF=yes" $f 2>/dev/null 1>/dev/null || echo "NOZEROCONF=yes" >> $f
+{%  if kickstart.nozeroconf is defined and kickstart.nozeroconf -%}
+    grep -Eq "^NOZEROCONF=yes" $f 2>/dev/null 1>/dev/null || echo "NOZEROCONF={{ kickstart.nozeroconf }}" >> $f
 {%- endif %}
 {%  if not kickstart.ipv6 -%}
     grep -Eq "^NETWORKING_IPV6=no" $f 2>/dev/null 1>/dev/null || echo "NETWORKING_IPV6=no" >> $f
