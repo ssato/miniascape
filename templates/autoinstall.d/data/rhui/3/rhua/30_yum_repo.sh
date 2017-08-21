@@ -14,16 +14,16 @@ source ${0%/*}/config.sh
 ISO_DIR=${1:-/root/setup/}
 
 MNT_DIR=/var/www/html
-RHEL_SUBDIR=pub/rhel-7.3/
+RHEL_SUBDIR=pub/rhel-7.4/
 RHUI_SUBDIR=pub/rhui-3.0/
 RHGS_SUBDIR=pub/rhgs-3.2/
 
 # RHEL
-f=/etc/yum.repos.d/rhel-7.3-iso.repo
+f=/etc/yum.repos.d/rhel-7.4-iso.repo
 test -f $f || \
-cat << EOF > /etc/yum.repos.d/rhel-7.3-iso.repo
-[rhel-7.3]
-name=RHEL 7.3
+cat << EOF > /etc/yum.repos.d/rhel-7.4-iso.repo
+[rhel-7.4]
+name=RHEL 7.4
 baseurl=http://${YUM_REPO_SERVER:?}/${RHEL_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
@@ -72,7 +72,7 @@ ${cmds:?}
 EOC
 
 # RHGS
-if test "${RHUI_STORAGE_TYPE:?}" = "glusterfs"; then
+if test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs"; then
     f=/etc/yum.repos.d/rhgs-3.2-iso.repo
     test -f $f || \
     cat << EOF > /etc/yum.repos.d/rhgs-3.2-iso.repo
