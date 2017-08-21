@@ -20,11 +20,26 @@ rhui_installer_stamp=${rhui_installer_logdir}/rhui-installer.stamp
 mkdir -p ${rhui_installer_logdir}
 test -f ${rhui_installer_stamp} || \
 (
-rhui-installer ${rhui_installer_common_options} \
-    --cds-lb-hostname ${CDS_LB_HOSTNAME:?} \
-    --remote-fs-type=${RHUI_STORAGE_TYPE:?} \
-    --remote-fs-server=${RHUI_STORAGE_MOUNT:?} \
-    --rhua-mount-options=${RHUI_STORAGE_MOUNT_OPTIONS:?} \
+if test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs"; then
+    rhui_installer_options="\
+--cds-lb-hostname ${CDS_LB_HOSTNAME:?} \
+--remote-fs-type=${RHUI_STORAGE_TYPE:?} \
+--remote-fs-server=${RHUI_STORAGE_MOUNT:?} \
+--rhua-mount-options=${RHUI_STORAGE_MOUNT_OPTIONS:?} \
+"
+else
+    # --remote-fs-type should not be given if NFS is used because its type (nfs
+    # or nfs4) is automatically configured by the installer.
+    rhui_installer_options="\
+--cds-lb-hostname ${CDS_LB_HOSTNAME:?} \
+--remote-fs-server=${RHUI_STORAGE_MOUNT:?} \
+--rhua-mount-options=${RHUI_STORAGE_MOUNT_OPTIONS:?} \
+"
+fi
+
+rhui-installer \
+    ${rhui_installer_common_options} \
+    ${rhui_installer_options:?} \
     ${RHUI_INSTALLER_TLS_OPTIONS:?} \
 | tee 2>&1 ${rhui_installer_log} && \
 touch ${rhui_installer_stamp}
