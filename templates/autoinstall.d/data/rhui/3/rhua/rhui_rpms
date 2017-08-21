@@ -17,6 +17,7 @@ rubygems
 #glusterfs-fuse  # Required but only available from RHGS iso or repo.
 httpd
 nfs-utils
+pciutils
 policycoreutils-python
 postgresql-contrib
 postgresql-devel
