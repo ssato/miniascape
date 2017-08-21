@@ -31,8 +31,8 @@ IPADDR={{ ni.ip }}
 NETMASK={{ ni.netmask if ni.netmask else (netmask or default('255.255.255.0')) }}
 ONBOOT={{ ni.onboot|default('yes') }}
 BOOTPROTO={{ ni.bootproto|default('none') }}
-USERCTL={{ ni.userctl|default('yes') }}
-NM_CONTROLLED={{ "yes" if ni.nm_controlled else 'no' }}
+USERCTL={{ ni.userctl|default('no') }}
+NM_CONTROLLED={{ ni.nm_controlled|default('no') }}
 {%        if ni.nodefroute is defined and ni.nodefroute -%}
 DEFROUTE=no
 {%-       endif %}

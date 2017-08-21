@@ -8,7 +8,7 @@
 set -ex
 source ${0%/*}/config.sh   # RHUI_STORAGE_TYPE
 
-test "${RHUI_STORAGE_TYPE:?}" = "glusterfs" && \
+test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs" && \
 yum install -y --enablerepo=rhgs-3.2 rhui-installer glusterfs-fuse || \
 yum install -y rhui-installer
 
