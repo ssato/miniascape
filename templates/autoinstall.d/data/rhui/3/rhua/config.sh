@@ -21,12 +21,13 @@ CDS_SERVERS="
 {{      cds.fqdn }}
 {%  endfor -%}
 "
-
+{%- if rhui.lb is defined and rhui.lb -%}
 LB_SERVERS="
-{%- for lb in rhui.lb.servers -%}
-{{      lb.fqdn }}
-{% endfor -%}
+{%-     for lb in rhui.lb.servers -%}
+{{          lb.fqdn }}
+{%      endfor -%}
 "
+{%- endif %}
 
 CDS_0={{ rhui.cds.servers[0].fqdn }}
 CDS_REST="{% for cds in rhui.cds.servers %}{% if not loop.first %}{{ cds.fqdn }} {% endif %}{% endfor %}"
