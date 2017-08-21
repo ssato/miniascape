@@ -17,13 +17,9 @@ RHUI_AUTH_OPT=""  # Force set empty to avoid to password was printed.
 for cds in ${CDS_SERVERS:?}; do
     rhui ${RHUI_AUTH_OPT} cds list -m | grep -E "hostname.: .${cds}" || \
     rhui ${RHUI_AUTH_OPT} cds add ${cds} root /root/.ssh/id_rsa -u
-done
 
-# workaround to mount /var/lib/rhui/remote_share on boot @ cds
-sed -i.save -r '
-s/^.*:rhui_content_0 .*$/#&/
-$ a \
-/export/brick   /var/lib/rhui/remote_share  none    ro,bind 0 0
-' /etc/fstab
+    # workaround to mount /var/lib/rhui/remote_share on boot @ cds
+    ssh ${cds} "sed -i.save 's/^.*:rhui_content_0.*/#&/' /etc/fstab; echo '/export/brick   /var/lib/rhui/remote_share  none  ro,bind 0 0' >> /etc/fstab"
+done
 
 # vim:sw=4:ts=4:et:
