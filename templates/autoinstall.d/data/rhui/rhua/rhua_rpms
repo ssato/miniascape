@@ -9,6 +9,7 @@ boost-signals
 boost-test
 boost-wave
 libpcap
+pciutils
 policycoreutils-python
 python-ldap
 python-setuptools
