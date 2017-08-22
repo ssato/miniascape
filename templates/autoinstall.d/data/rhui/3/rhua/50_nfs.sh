@@ -19,6 +19,8 @@ setsebool httpd_use_nfs on
 "
 
 eval ${cmds:?}
-for cds in ${CDS_SERVERS:?}; do _ssh_exec ${cds} 'eval ${cmds}'; done
+for cds in ${CDS_SERVERS:?}; do
+    _ssh_exec ${cds} "${cmds}; yum install -y rh-rhua-selinux-policy"
+done
 
 # vim:sw=4:ts=4:et:
