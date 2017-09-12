@@ -1,3 +1,4 @@
+-*-firmware
 -NetworkManager-t*
 -NetworkManager-w*
 -Red_Hat_Enterprise_Linux-Release_Notes-*
@@ -6,6 +7,7 @@
 -biosdevname
 -bluez*
 -bridge-utils
+-btrfs-progs
 -conman
 -coolkey
 -dmraid*
@@ -17,7 +19,7 @@
 -hunspell*
 -iprutils
 -isdn4k*
--*-firmware
+-java-1.8.0-openjdk*
 -ledmon
 -mcstrans
 -mdadm
@@ -29,10 +31,9 @@
 -rdate
 -rdist
 -rdma
--rhnlib
--rhn-*
--yum-rhn-plugin
 -rfkill
+-rhn-*
+-rhnlib
 -rng-tools
 -rp-pppoe
 -setuptool
@@ -40,3 +41,4 @@
 -system-config-*
 -talk*
 -teamd*
+-yum-rhn-plugin
