@@ -53,6 +53,8 @@ qpid-cpp-server-ssl
 gnupg2
 # Required precedential to generate RHUI entitlement certs (content certs):
 subscription-manager
+# repoquery
+yum-utils
 #
 # Excluded as installed when resolving dependencies:
 #

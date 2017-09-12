@@ -3,3 +3,5 @@ httpd
 nfs-utils
 policycoreutils-python
 nc
+# repoquery
+yum-utils
