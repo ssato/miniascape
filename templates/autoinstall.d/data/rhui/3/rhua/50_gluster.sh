@@ -24,7 +24,7 @@ yum install -y --enablerepo=rhgs-3.2 --disablerepo=rhel-7.4 glusterfs-{server,cl
 systemctl is-enabled glusterd 2>/dev/null || systemctl enable glusterd
 systemctl is-active glusterd 2>/dev/null || systemctl start glusterd
 systemctl status glusterd
-mkdir -p ${BRICK:?}
+mkdir -v -p ${BRICK:?}
 ${GLUSTER_ADD_FIREWALL_RULES}
 "
 for cds in ${CDS_SERVERS:?}; do
