@@ -6,7 +6,11 @@ network --device={{ ni.device }}
 {{-        " --ip=%s" % ni.ip -}}
 {{-        " --netmask=%s" % ni.netmask|default('255.255.255.0') -}}
 {{-        " --gateway=%s" % ni.gateway if ni.gateway -}}
-{{-        " --nameserver=%s" % ni.nameserver if ni.nameserver -}}
+{%-        if ni.nameserver -%}
+{{-            " --nameserver=%s" % ni.nameserver -}}
+{%-        elif interfaces|length == 1 and nameservers is defined and nameservers -%}
+{{-            " --nameserver=%s" % nameservers|map(attribute='ip')|join(',') -}}
+{%-        endif -%}
 {{-        " --hostname=%s" % ni.fqdn if ni.fqdn -}}
 {%-    endif -%}
 {{-    " --activate" if ni.activate -}}
