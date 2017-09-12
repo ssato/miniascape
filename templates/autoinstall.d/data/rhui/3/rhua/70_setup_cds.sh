@@ -19,7 +19,8 @@ for cds in ${CDS_SERVERS:?}; do
     rhui ${RHUI_AUTH_OPT} cds add ${cds} root /root/.ssh/id_rsa -u
 
     # workaround to mount /var/lib/rhui/remote_share on boot @ cds
-    ssh ${cds} "sed -i.save 's/^.*:rhui_content_0.*/#&/' /etc/fstab; echo '/export/brick   /var/lib/rhui/remote_share  none  ro,bind 0 0' >> /etc/fstab"
+    test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs" && \
+    ssh ${cds} "sed -i.save 's/^.*:rhui_content_0.*/#&/' /etc/fstab; echo '/export/brick   /var/lib/rhui/remote_share  none  ro,bind 0 0' >> /etc/fstab" || :
 done
 
 # vim:sw=4:ts=4:et:
