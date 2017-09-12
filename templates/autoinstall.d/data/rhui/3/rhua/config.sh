@@ -1,13 +1,7 @@
 CURDIR=${0%/*}
 
-function _ssh_exec () { echo "# ssh: $@"; ssh -o ConnectTimeout=5 $@; }
-function _ssh_exec_script () {
-    echo "# ssh:"
-    cat << EOM | sed 's/^/# /g'
-$1
-EOM
-    ssh -o ConnectTimeout=5 $1 /bin/bash
-}
+function _ssh_exec () { ssh -o ConnectTimeout=5 $@; }
+function _ssh_exec_script () { ssh -o ConnectTimeout=5 $1 /bin/bash; }
 
 RHEL_ISO={{ rhui.rhel_iso|default('rhel-server-7.3-x86_64-dvd.iso') }}
 RHUI_ISO={{ rhui.rhui_iso|default('RHUI-3.0-RHEL-7-20170321.0-RHUI-x86_64-dvd1.iso') }}  # 2017-03-27
