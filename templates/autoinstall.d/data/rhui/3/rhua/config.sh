@@ -1,7 +1,13 @@
 CURDIR=${0%/*}
 
-function _ssh_exec () { ssh -o ConnectTimeout=5 $@; }
-function _ssh_exec_script () { ssh -o ConnectTimeout=5 $1 /bin/bash; }
+function _ssh_exec () { echo "# ssh: $@"; ssh -o ConnectTimeout=5 $@; }
+function _ssh_exec_script () {
+    echo "# ssh:"
+    cat << EOM | sed 's/^/# /g'
+$1
+EOM
+    ssh -o ConnectTimeout=5 $1 /bin/bash
+}
 
 RHEL_ISO={{ rhui.rhel_iso|default('rhel-server-7.3-x86_64-dvd.iso') }}
 RHUI_ISO={{ rhui.rhui_iso|default('RHUI-3.0-RHEL-7-20170321.0-RHUI-x86_64-dvd1.iso') }}  # 2017-03-27
@@ -21,7 +27,7 @@ CDS_SERVERS="
 {{      cds.fqdn }}
 {%  endfor -%}
 "
-{%- if rhui.lb is defined and rhui.lb -%}
+{% if rhui.lb is defined and rhui.lb -%}
 LB_SERVERS="
 {%-     for lb in rhui.lb.servers -%}
 {{          lb.fqdn }}
@@ -55,7 +61,7 @@ for nic in ${GLUSTER_FIREWALL_NICS}; do
     firewall-cmd --add-service=glusterfs --zone=\${zone}
 done
 firewall-cmd --reload
-)
+) || :
 "
 
 RHUI_CERT_NAME={{ rhui.rhui_entitlement_cert }}
