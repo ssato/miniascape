@@ -16,7 +16,7 @@ ISO_DIR=${1:-/root/setup/}
 MNT_DIR=/var/www/html
 RHEL_SUBDIR=pub/rhel-7.4/
 RHUI_SUBDIR=pub/rhui-3.0/
-RHGS_SUBDIR=pub/rhgs-3.2/
+RHGS_SUBDIR=pub/rhgs-3.3/
 
 # RHEL
 f=/etc/yum.repos.d/rhel-7.4-iso.repo
@@ -73,10 +73,10 @@ EOC
 
 # RHGS
 if test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs"; then
-    f=/etc/yum.repos.d/rhgs-3.2-iso.repo
+    f=/etc/yum.repos.d/rhgs-3.3-iso.repo
     test -f $f || \
-    cat << EOF > /etc/yum.repos.d/rhgs-3.2-iso.repo
-[rhgs-3.2]
+    cat << EOF > /etc/yum.repos.d/rhgs-3.3-iso.repo
+[rhgs-3.3]
 name=RH Gluset FS 3.2
 baseurl=http://${YUM_REPO_SERVER}/${RHGS_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
