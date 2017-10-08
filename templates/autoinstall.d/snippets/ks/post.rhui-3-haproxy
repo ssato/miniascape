@@ -81,7 +81,13 @@ vrrp_instance VI_1 {
     virtual_router_id 51
 
     virtual_ipaddress {
+        {% if rhui.lb.vips is defined and rhui.lb.vips -%}
+        {%     for vip in rhui.lb.vips if vip.addr and vip.interface -%}
+        {{         vip.addr }} dev {{ vip.interface }}
+        {%     endfor %}
+        {% else -%}
         {{ rhui.lb.vip }} dev {{ rhui.lb.vip_interface }}
+        {% endif -%}
     }
     unicast_peer {
         {{ keepalived.unicast_peer }}
