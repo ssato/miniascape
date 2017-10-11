@@ -9,7 +9,7 @@ set -ex
 source ${0%/*}/config.sh   # RHUI_STORAGE_TYPE
 
 test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs" && \
-yum install -y --enablerepo=rhgs-3.2 rhui-installer glusterfs-fuse || \
+yum install -y --enablerepo=rhgs-3.3 rhui-installer glusterfs-fuse || \
 yum install -y rhui-installer
 
 # vim:sw=4:ts=4:et:
