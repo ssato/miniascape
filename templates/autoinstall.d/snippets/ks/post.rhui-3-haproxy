@@ -32,7 +32,7 @@ defaults
     option                  httplog
     option                  dontlognull
     option http-server-close
-    option forwardfor       except 127.0.0.0/8
+    #option forwardfor       except 127.0.0.0/8
     option                  redispatch
     retries                 3
     timeout http-request    10s
@@ -49,8 +49,8 @@ listen crane00
     balance leastconn
     option tcplog
     option ssl-hello-chk
-    {% for cds in rhui.cds.servers if cds.fqdn -%}
-    server {{ cds.fqdn }} {{ cds.fqdn }}:5000 check
+    {% for cds in rhui.cds.servers if cds.ip -%}
+    server {{ cds.ip }} {{ cds.ip }}:5000 check
     {% endfor %}
 
 listen https00
@@ -58,8 +58,8 @@ listen https00
     balance leastconn
     option tcplog
     option ssl-hello-chk
-    {% for cds in rhui.cds.servers if cds.fqdn -%}
-    server {{ cds.fqdn }} {{ cds.fqdn }}:443 check
+    {% for cds in rhui.cds.servers if cds.ip -%}
+    server {{ cds.ip }} {{ cds.ip }}:443 check
     {% endfor %}
 EOF
 )
