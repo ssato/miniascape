@@ -18,9 +18,8 @@ source ${0%/*}/config.sh
 test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs" || exit 0
 
 # Install Gluster RPMs, start glusterd and make bricks on CDS
-# .. note:: RHEL 7.4 repo must be disabled to install RHGS 3.2 currently (20170811).
 cmds="\
-yum install -y --enablerepo=rhgs-3.2 --disablerepo=rhel-7.4 glusterfs-{server,cli} rh-rhua-selinux-policy
+yum install -y --enablerepo=rhgs-3.3 --disablerepo=rhel-7.4 glusterfs-{server,cli} rh-rhua-selinux-policy
 systemctl is-enabled glusterd 2>/dev/null || systemctl enable glusterd
 systemctl is-active glusterd 2>/dev/null || systemctl start glusterd
 systemctl status glusterd
