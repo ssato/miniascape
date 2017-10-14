@@ -16,6 +16,7 @@ network --device={{ ni.device }}
 {{-    " --activate" if ni.activate -}}
 {{-    " --nodefroute" if ni.nodefroute -}}
 {{-    " --nodns" if ni.nodns -}}
+{{-    " --noipv6" if (ipv6 is defined and not ipv6) or (noipv6 is defined and noipv6) -}}
 {{-    " %s" % ni.options if ni.options }}
 {% endfor %}
 {# {%- if virtinst and virtinst.os_variant == 'rhel7' and fqdn -%}
