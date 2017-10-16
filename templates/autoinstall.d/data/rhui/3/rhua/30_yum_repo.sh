@@ -77,7 +77,7 @@ if test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs"; then
     test -f $f || \
     cat << EOF > /etc/yum.repos.d/rhgs-3.3-iso.repo
 [rhgs-3.3]
-name=RH Gluset FS 3.2
+name=RH Gluset Storage 3.3
 baseurl=http://${YUM_REPO_SERVER}/${RHGS_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
