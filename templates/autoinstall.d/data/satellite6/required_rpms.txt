@@ -42,3 +42,12 @@ squid
 syslinux
 tftp-server
 xinetd
+# satellite-6.2.12.iso includes libdb-cxx-5.3.21-19.
+# In the other hande, rhel-7.4 includes libdb-5.3.21-20.
+# If libdb-5.3.21-20 is not installed in the kick start stage,
+# satellite-installer tries to libdb-cxx-5.3.21-19 in the iso.
+# The version(-19) doesn't much with the version of libdb
+# package (libdb-5.3.21-20.el7.x86_64), which is installed
+# in the kick start stage implicitly. This mismatch makes
+# running satellite-installer failed.
+libdb-cxx
