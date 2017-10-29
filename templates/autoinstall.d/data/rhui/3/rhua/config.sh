@@ -33,6 +33,9 @@ CDS_0={{ rhui.cds.servers[0].fqdn }}
 CDS_REST="{% for cds in rhui.cds.servers %}{% if not loop.first %}{{ cds.fqdn }} {% endif %}{% endfor %}"
 CDS_LB_HOSTNAME={{ rhui.cds.fqdn }}
 
+# Set to 1 if run 'rhui cds add ...' more than twice.
+FORCE_ADD_CDS=0
+
 NUM_CDS={{ rhui.cds.servers|length }}
 
 # RHUA, CDS and LB will access yum repos via http on this host.
