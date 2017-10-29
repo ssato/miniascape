@@ -29,7 +29,7 @@ cd - && umount /mnt
 #alternatives --set java java-1.7.0-openjdk.x86_64  # @see https://bugzilla.redhat.com/show_bug.cgi?id=1418410
 ) || (
 MNT_DIR=/var/www/html
-RHEL_SUBDIR=pub/rhel-7.3/
+RHEL_SUBDIR=pub/rhel-7/
 SATELLITE_SUBDIR=pub/satellite-6/
 BASE_URL_PREFIX=file://${MNT_DIR:?}
 
@@ -37,11 +37,11 @@ test -f ${RHEL_ISO:?}
 test -f ${SATELLITE_ISO:?}
 
 # RHEL
-f=/etc/yum.repos.d/rhel-7.3-iso.repo
+f=/etc/yum.repos.d/rhel-7.x-iso.repo
 test -f $f || \
-cat << EOF > /etc/yum.repos.d/rhel-7.3-iso.repo
-[rhel-7.3]
-name=RHEL 7.3
+cat << EOF > /etc/yum.repos.d/rhel-7.x-iso.repo
+[rhel-7.x]
+name=RHEL 7.x
 baseurl=${BASE_URL_PREFIX:?}/${RHEL_SUBDIR}/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 gpgcheck=1
@@ -76,7 +76,7 @@ mkdir -p ${MNT_DIR}/${SATELLITE_SUBDIR}
 mount -o ro,loop ${SATELLITE_ISO:?} ${MNT_DIR}/${SATELLITE_SUBDIR}
 )
 
-yum install --disablerepo='*' --enablerepo=rhel-7.3 --enablerepo=rhs-3.x --enablerepo=rhscl -y satellite
+yum install --disablerepo='*' --enablerepo=rhel-7.x --enablerepo=rhs-3.x --enablerepo=rhscl -y satellite
 )
 )
 
