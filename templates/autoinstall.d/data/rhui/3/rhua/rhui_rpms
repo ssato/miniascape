@@ -67,3 +67,6 @@ yum-utils
 # qpid-cpp-client
 # qpid-cpp-client-ssl
 # qpid-cpp-server
+#
+# removes:
+- tmux
