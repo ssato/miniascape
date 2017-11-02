@@ -2,3 +2,8 @@ haproxy
 keepalived
 nmap-ncat
 rpm-build
+# removes
+-nfs-utils
+-rpcbind
+-screen
+-tmux
