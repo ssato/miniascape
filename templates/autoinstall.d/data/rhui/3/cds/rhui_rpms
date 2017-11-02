@@ -2,6 +2,10 @@
 httpd
 nfs-utils
 policycoreutils-python
+rpm-build
 nc
 # repoquery
 yum-utils
+# removes
+-screen
+-tmux
