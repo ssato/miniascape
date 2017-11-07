@@ -68,7 +68,7 @@ RHUI_STORAGE_TYPE={{ rhui.storage.fstype }}
 RHUI_STORAGE_MOUNT={{ rhui.storage.server }}:{{ rhui.storage.mnt }}
 RHUI_STORAGE_MOUNT_OPTIONS="{{ rhui.storage.mnt_options|join(',')|default('rw') }}"
 
-RHUI_INSTALLER_TLS_OPTIONS="--certs-country {{ rhui.tls.country|default('JP') }} --certs-state {{ rhui.tls.state|default('Tokyo') }} --certs-city {{ rhui.tls.city }} --certs-org {{ rhui.tls.org }} --certs-unit {{ rhui.tls.unit|default('Cloud') }}"
+RHUI_INSTALLER_TLS_OPTIONS="--certs-country {{ rhui.tls.country|default('JP') }} --certs-state {{ rhui.tls.state|default('Tokyo') }} --certs-city {{ rhui.tls.city }} --certs-org {{ rhui.tls.org }} --certs-org-unit {{ rhui.tls.unit|default('Cloud') }}"
 {%- if proxy is defined and proxy.fqdn is defined %}
 RHUI_INSTALLER_TLS_OPTIONS="${RHUI_INSTALLER_TLS_OPTIONS:?} --proxy-protocol={{ proxy.protocol|default('http') }} --proxy-hostname={{ proxy.fqdn }} --proxy-port={{ proxy.port|default("443") }}"
 {%-    if proxy.user is defined %}
