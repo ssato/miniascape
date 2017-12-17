@@ -9,7 +9,8 @@ source ${0%/*}/config.sh
 test -f ~/.ssh/id_rsa || ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 
 for cds in ${CDS_SERVERS:?}; do
-    grep -E "^$cds" ~/.ssh/known_hosts || ssh-copy-id ${cds}
+    (test -f ~/.ssh/known_hosts && \
+     grep -E "^$cds" ~/.ssh/known_hosts 2>/dev/null ) || ssh-copy-id ${cds}
 done
 
 # vim:sw=4:ts=4:et:
