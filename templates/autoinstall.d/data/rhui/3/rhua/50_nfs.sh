@@ -15,7 +15,7 @@ source ${0%/*}/config.sh
 
 cmds="
 rpm -q nfs-utils || yum install -y nfs-utils;
-setsebool httpd_use_nfs on
+setsebool -P httpd_use_nfs on
 "
 
 eval ${cmds:?}
