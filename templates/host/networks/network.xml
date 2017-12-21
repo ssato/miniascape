@@ -11,7 +11,7 @@
     <host ip='{{ h.ip }}'><hostname>{{ h.fqdn if h.fqdn is defined else '%s.%s' % (h.host, domain) }}</hostname></host>
 {%       endfor %}
 {%- if dns is defined %}
-    {%   for d in dns -%}
+    {%   for d in dns if d.ip and d.hostname -%}
     <host ip='{{ d.ip }}'><hostname>{{ d.hostname }}</hostname></host>
     {%       endfor %}
 {%    endif %}
