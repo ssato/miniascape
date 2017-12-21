@@ -10,6 +10,11 @@
     {%   for h in hosts|sort(attribute="ip") if h.fqdn is defined or h.host is defined -%}
     <host ip='{{ h.ip }}'><hostname>{{ h.fqdn if h.fqdn is defined else '%s.%s' % (h.host, domain) }}</hostname></host>
 {%       endfor %}
+{%- if dns is defined %}
+    {%   for d in dns -%}
+    <host ip='{{ d.ip }}'><hostname>{{ d.hostname }}</hostname></host>
+    {%       endfor %}
+{%    endif %}
   </dns>
 {%- endif %}
 {%  if gateway is defined and gateway -%}

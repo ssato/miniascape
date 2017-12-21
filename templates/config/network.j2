@@ -5,6 +5,12 @@ domain: {{ domain }}
 gateway: {{ gateway }}
 netmask: {{ netmask }}
 network: {{ network }}
+{% if dns is defined -%}
+dns:
+{% for d in dns %}  - ip: {{ d.ip }}
+    hostname: {{ d.hostname }}
+{% endfor -%}
+{%- endif -%}
 {% if dhcp is defined and dhcp.start is defined -%}
 dhcp:
   start: {{ dhcp.start }}
