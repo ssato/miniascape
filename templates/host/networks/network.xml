@@ -13,7 +13,7 @@
 {%- if dns is defined %}
     {%   for d in dns if d.ip and d.hostname -%}
     <host ip='{{ d.ip }}'><hostname>{{ d.hostname }}</hostname></host>
-    {%       endfor %}
+    {%   endfor %}
 {%    endif %}
   </dns>
 {%- endif %}
