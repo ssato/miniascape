@@ -12,11 +12,12 @@ set -ex
 TLS_CA_CERT=/etc/rhsm/ca/redhat-uep.pem
 TLS_CLI_CERT=${1:-$(ls -1 /etc/pki/rhui/redhat/*.pem | head -n 1)}
 TIMEOUT=${2:-5}  # [sec]
+MAX_TIMEOUT=60
 RH_CDN_URL=${3:-https://cdn.redhat.com/content/dist/rhel/rhui/server/7/7Server/x86_64/os/repodata/repomd.xml}
 CHECK_KEYWORD='200 OK'   # primary.xml, ...
 
 #timeout ${TIMEOUT:?} \
-curl -v --connect-timeout ${TIMEOUT:?} \
+curl -v --connect-timeout ${TIMEOUT:?} --max-timeout ${MAX_TIMEOUT:?} \
 --cacert ${TLS_CA_CERT:?} --cert ${TLS_CLI_CERT:?} ${RH_CDN_URL:?} 2>&1 | grep -q "${CHECK_KEYWORD:?}"
 
 # vim:sw=4:ts=4:et:
