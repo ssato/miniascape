@@ -1,7 +1,8 @@
 {% if hosts is defined -%}
 f=/etc/hosts
 test -f $f.save || cp $f $f.save
-{% for h in hosts -%}
-{% if h.fqdn is defined and h.fqdn -%}
-echo "{{ h.ip }} {{ h.fqdn }} {{ h.hostname|default('') }}" >> $f{% endif %}
+{% for h in hosts if h.fqdn is defined and h.fqdn and
+                     ((h.in_hosts is defined and h.in_hosts)
+                      or h.in_hosts is not defined) -%}
+echo "{{ h.ip }} {{ h.fqdn }} {{ h.hostname|default('') }}" >> $f
 {% endfor %}{% endif %}
