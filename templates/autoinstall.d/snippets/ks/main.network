@@ -14,7 +14,7 @@ network --device={{ ni.device }}
 {%-        endif -%}
 {{-        " --hostname=%s" % ni.fqdn if ni.fqdn -}}
 {%-    endif -%}
-{{-    " --activate" if ni.activate -}}
+{{-    " --activate" if ni.activate is defined and ni.activate -}}
 {{-    " --nodefroute" if ni.nodefroute -}}
 {{-    " --nodns" if ni.nodns -}}
 {{-    " --noipv6" if (ipv6 is defined and not ipv6) or (noipv6 is defined and noipv6) -}}
