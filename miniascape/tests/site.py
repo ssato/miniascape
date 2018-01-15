@@ -41,7 +41,7 @@ class Test_00_effectful_functions(unittest.TestCase):
         C.cleanup_workdir(self.workdir)
 
     def test_10_gen_site_conf_files(self):
-        conf = anyconfig.load(CTXS)
+        conf = anyconfig.load(CTXS, ac_template=True)
         tmpldirs = [TMPLDIR]
 
         confdir = TT.gen_site_conf_files(conf, tmpldirs, self.workdir)
