@@ -64,6 +64,8 @@ firewall-cmd --reload
 RHUI_CERT_NAME={{ rhui.rhui_entitlement_cert }}
 RHUI_CERT=/root/setup/${RHUI_CERT_NAME:?}
 
+RH_CDN_URL=https://cdn.redhat.com/content/dist/rhel/rhui/server/7/7Server/x86_64/os/repodata/repomd.xml
+
 RHUI_STORAGE_TYPE={{ rhui.storage.fstype }}
 RHUI_STORAGE_MOUNT={{ rhui.storage.server }}:{{ rhui.storage.mnt }}
 RHUI_STORAGE_MOUNT_OPTIONS="{{ rhui.storage.mnt_options|join(',')|default('rw') }}"
