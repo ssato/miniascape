@@ -90,7 +90,8 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
             miniascape.template.renders_to(content, config, out, tpaths)
 
     return subprocess.check_output(
-        "tar --xz --owner=root --group=root -c setup | base64 > setup.tar.xz.base64",
+        "tar --xz --owner=root --group=root -c setup | base64 > "
+        "setup.tar.xz.base64",
         shell=True, cwd=gworkdir
     )
 
@@ -138,6 +139,7 @@ def mk_distdata_g(guests, tmpl=_DISTDATA_MAKEFILE_AM_TMPL,
     """
     Make up distdata snippet in Makefile.am to package files to build guests.
     """
+    # pylint: disable=no-member
     ig = itertools.count()
     fs = ["ks.cfg", "net_register.sh", "vmbuild.sh"]  # FIXME: Ugly!
 

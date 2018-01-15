@@ -165,6 +165,7 @@ def main(argv):
     cf = miniascape.config.ConfFiles(options.confdir)
 
     houtdir = os.path.join(options.workdir, G.M_HOST_CONF_SUBDIR)
+    # pylint: disable=undefined-variable
     if os.path.exists(houtdir) and not options.force:
         yesno = raw_input("Are you sure to generate networks in {} ? "
                           "[y/n]: ".format(options.workdir))

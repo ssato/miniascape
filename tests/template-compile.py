@@ -14,7 +14,8 @@ _JINJA2_EXTS = [jinja2.ext.do, jinja2.ext.with_, jinja2.ext.loopcontrols,
 
 def main(argv=sys.argv):
     if len(argv) < 5:
-        print("Usage: %s TEMPLATE_FILE CONTEXT_FILE OUTPUT_FILE TPATHS" % argv[0])
+        print("Usage: %s TEMPLATE_FILE "
+              "CONTEXT_FILE OUTPUT_FILE TPATHS" % argv[0])
         sys.exit(-1)
 
     (template, context_f, output, paths) = argv[1:5]
@@ -24,6 +25,7 @@ def main(argv=sys.argv):
     anytemplate.render_to(template, context, output, at_paths=tpaths,
                           at_engine="jinja2", at_ask_missing=True,
                           extensions=_JINJA2_EXTS)
+
 
 if __name__ == '__main__':
     main(sys.argv)
