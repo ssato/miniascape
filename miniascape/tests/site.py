@@ -29,7 +29,7 @@ TMPLDIR = os.path.join(PKGDIR, "templates")
 
 
 # Suppress verbose logging messages from anyconfig.
-anyconfig.set_loglevel(logging.WARN)
+logging.getLogger(__name__).setLevel(logging.WARN)
 
 
 class Test_00_effectful_functions(unittest.TestCase):
