@@ -8,7 +8,8 @@ network --device={{ ni.device }}
 {{-        " --gateway=%s" % ni.gateway if ni.gateway -}}
 {%-        if ni.nameserver -%}
 {{-            " --nameserver=%s" % ni.nameserver -}}
-{%-        elif interfaces|length == 1 and nameservers is defined and nameservers -%}
+{%-        elif (nameservers is defined and nameservers) and
+                (ni.nodns is undefined or not ni.nodns) -%}
 {{-            " --nameserver=%s" % nameservers|map(attribute='ip')|join(',') -}}
 {%-        endif -%}
 {{-        " --hostname=%s" % ni.fqdn if ni.fqdn -}}
