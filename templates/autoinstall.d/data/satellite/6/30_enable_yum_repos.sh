@@ -15,7 +15,7 @@ set -ex
 source ${0%/*}/config.sh
 
 # Check if satellite host can access RH CDN.
-curl ${CURL_PROXY_OPT} https://cdn.redhat.com/
+curl --connect-timeout 10 --cacert /etc/rhsm/ca/redhat-uep.pem ${CURL_PROXY_OPT} https://cdn.redhat.com/
 
 # Customize SELinux policy to allow proxy access.
 # (Looks fixed in the later ones, disabled it.)
