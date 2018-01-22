@@ -22,8 +22,9 @@ CURL_PROXY_OPT=  # ex. --proxy https://proxy.example.com:8080 --proxy-user foo:*
 test -f ${SELF_DIR:?}/config.sh && source ${SELF_DIR:?}/config.sh
 
 #timeout ${TIMEOUT:?} \
+#--connect-timeout ${TIMEOUT:?} --max-timeout ${MAX_TIMEOUT:?} \
 curl -v ${CURL_PROXY_OPT} \
---connect-timeout ${TIMEOUT:?} --max-timeout ${MAX_TIMEOUT:?} \
+--connect-timeout ${TIMEOUT:?} \
 --cacert ${TLS_CA_CERT:?} --cert ${TLS_CLI_CERT:?} ${RH_CDN_URL:?} 2>&1 | grep -q "${CHECK_KEYWORD:?}"
 
 # vim:sw=4:ts=4:et:
