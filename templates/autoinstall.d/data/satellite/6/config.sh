@@ -95,7 +95,7 @@ tweak_selinux_policy () { :; }
 
 ENABLE_YUM_REPOS_FOR_CLIENTS="
 {% for repo in satellite.repos if repo.name -%}
-hammer repository-set enable ${HAMMER_ORG_ID_OPT} --name '{{ repo.name }}' --product '{{ repo.product|default('Red Hat Enterprise Linux Server') }}' {{ '--basearch %s' % repo.arch|default('x86_64') }} {{ '--releasever %s' % repo.releasever if repo.releasever is defined and repo.releasever }}
+hammer repository-set enable ${HAMMER_ORG_ID_OPT} --name '{{ repo.name }}' --product '{{ repo.product|default('Red Hat Enterprise Linux Server') }}' {{ '--basearch %s' % repo.arch|default('x86_64') }} {{ '--releasever %s' % repo.releasever if repo.releasever is defined and repo.releasever }} || :
 {% endfor -%}
 "
 
