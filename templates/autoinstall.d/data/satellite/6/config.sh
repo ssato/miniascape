@@ -134,7 +134,7 @@ hammer content-view add-repository --name '{{ cv.name }}' --product '{{ repo.pro
 
 CREATE_ACTIVATION_KEYS="
 {% for ak in satellite.activation_keys if ak.name -%}
-hammer activation-key create --name '{{ ak.name }}' --content-view '{{ ak.cv|default('Default Organization View') }}' --lifecycle-environment '{{ ak.env|default('Library') }}' {{ '--max-hosts %s' % ak.max if ak.max is defined and ak.max }} {{ _desc_opt(ak) }}
+hammer activation-key create --name '{{ ak.name }}' --content-view '{{ ak.cv|default('Default Organization View') }}' --lifecycle-environment '{{ ak.env|default('Library') }}' {{ '--max-hosts %s' % ak.max if ak.max is defined and ak.max }} {{ _desc_opt(ak) }} {{ '--content-view-id %s' % ak.content_view_id if ak.content_view_id is defined and ak.content_view_id }}
 {% endfor -%}
 "
 
