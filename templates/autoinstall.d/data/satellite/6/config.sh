@@ -76,6 +76,10 @@ ORG_NAME="{{ satellite.organization|default('Default Organization') }}"
 ORG_LABEL="${ORG_NAME/ /_}"
 LOC_NAME="Default Location"
 
+ORG_ID_FILE=${HOME}/.hammer/organization_id.txt
+HAMMER_ORG_ID_OPT=""
+test -f ${ORG_ID_FILE:?} && HAMMER_ORG_ID_OPT="--organization-id $(cat ${ORG_ID_FILE:?})" || :
+
 CURL_PROXY_OPT="-v --cacert /etc/rhsm/ca/redhat-uep.pem --connect-timeout 5"
 {% if proxy and proxy.fqdn -%}
 PROXY_URL={{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }}
@@ -140,16 +144,17 @@ hammer activation-key create --name '{{ ak.name }}' --content-view '{{ ak.cv|def
 
 ADD_HOST_COLLECTION_TO_ACTIVATION_KEYS="
 {% for ak in satellite.activation_keys if ak.name and ak.hc is defined and ak.hc -%}
-hammer activation-key add-host-collection --name '{{ ak.name }}' --host-collection '{{ ak.hc }}'
+hammer activation-key add-host-collection --name '{{ ak.name }}' --host-collection '{{ ak.hc }}' ${HAMMER_ORG_ID_OPT}
 {% endfor -%}
 "
 
-ADD_SUBSCRIPTION_TO_ACTIVATION_KEYS="
+ADD_SUBSCRIPTION_TO_ACTIVATION_KEYS='
 {% for ak in satellite.activation_keys if ak.name and
                                           ak.subscription is defined and ak.subscription -%}
-hammer activation-key add-subscription --name '{{ ak.name }}' --subscription-id '{{ ak.subscription }}' --quantity {{ ak.quantity|default('1') }}
+sub_id=$(hammer --csv subscription list | sed -nr "s/.+,([^,]+),{{ ak.subscription }},.*/\1/p"; \
+hammer activation-key add-subscription --name "{{ ak.name }}" --subscription-id ${sub_id} --quantity {{ ak.quantity|default("1") }}
 {% endfor -%}
-"
+'
 
 OVERRIDE_CONTENTS_OF_ACTIVATION_KEYS="
 {% for ak in satellite.activation_keys if ak.name and

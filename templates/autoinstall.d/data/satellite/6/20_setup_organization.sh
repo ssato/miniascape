@@ -25,6 +25,10 @@ org_id=$(hammer --output=yaml organization info --label "${ORG_LABEL}" | sed -nr
 loc_id=$(hammer --output=yaml location info --name "${LOC_NAME}" | sed -nr "s/^Id: //p")
 echo "[Info] Organization ID: '${org_id:?}', Location ID: '${loc_id:?}'"
 
+test -f ${ORG_ID_FILE} || (
+echo ${org_id} > ${ORG_ID_FILE:?}.t && mv ${ORG_ID_FILE}.t ${ORG_ID_FILE}
+)
+
 # see: Satellite 6.2 Hammer CLI Guide, 1.4. Setting a Default Organization:
 # http://red.ht/2Dv8A2x
 hammer defaults add --param-name organization_id --param-value ${org_id}
