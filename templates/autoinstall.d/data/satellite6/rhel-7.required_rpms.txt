@@ -43,6 +43,7 @@ jna
 jpackage-utils
 jsr-311
 junit
+libdb-cxx
 libkadm5
 libselinux-ruby
 libuuid-devel
@@ -61,6 +62,7 @@ postgresql
 postgresql-jdbc
 postgresql-server
 pyOpenSSL
+pyserial
 python-babel
 python-cherrypy
 python-imaging
