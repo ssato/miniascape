@@ -76,10 +76,6 @@ ORG_NAME="{{ satellite.organization|default('Default Organization') }}"
 ORG_LABEL="${ORG_NAME/ /_}"
 LOC_NAME="Default Location"
 
-ORG_ID_FILE=${HOME}/.hammer/organization_id.txt
-HAMMER_ORG_ID_OPT=""
-test -f ${ORG_ID_FILE:?} && HAMMER_ORG_ID_OPT="--organization-id $(cat ${ORG_ID_FILE:?})" || :
-
 CURL_PROXY_OPT="-v --cacert /etc/rhsm/ca/redhat-uep.pem --connect-timeout 5"
 {% if proxy and proxy.fqdn -%}
 PROXY_URL={{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }}
@@ -95,7 +91,7 @@ tweak_selinux_policy () { :; }
 
 ENABLE_YUM_REPOS_FOR_CLIENTS="
 {% for repo in satellite.repos if repo.name -%}
-hammer repository-set enable ${HAMMER_ORG_ID_OPT} --name '{{ repo.name }}' --product '{{ repo.product|default('Red Hat Enterprise Linux Server') }}' {{ '--basearch %s' % repo.arch|default('x86_64') }} {{ '--releasever %s' % repo.releasever if repo.releasever is defined and repo.releasever }} || :
+hammer repository-set enable --name '{{ repo.name }}' --product '{{ repo.product|default('Red Hat Enterprise Linux Server') }}' {{ '--basearch %s' % repo.arch|default('x86_64') }} {{ '--releasever %s' % repo.releasever if repo.releasever is defined and repo.releasever }} || :
 {% endfor -%}
 "
 
@@ -107,7 +103,7 @@ PRODUCTS="
 
 CREATE_HOST_COLLECTIONS="
 {% for h in satellite.host_collections if h.name -%}
-hammer host-collection create ${HAMMER_ORG_ID_OPT} --name '{{ h.name }}' {{ '--max-hosts %s' % h.max if h.max is defined and h.max }} {{ '--hosts %s' % h.hosts|join(',') if h.hosts is defined and h.hosts }}
+hammer host-collection create --name '{{ h.name }}' {{ '--max-hosts %s' % h.max if h.max is defined and h.max }} {{ '--hosts %s' % h.hosts|join(',') if h.hosts is defined and h.hosts }}
 {% endfor -%}
 "
 
@@ -117,13 +113,13 @@ hammer host-collection create ${HAMMER_ORG_ID_OPT} --name '{{ h.name }}' {{ '--m
 
 CREATE_LIFECYCLE_ENVIRONMENTS="
 {% for le in satellite.lifecycle_environments if le.name -%}
-hammer lifecycle-environment create ${HAMMER_ORG_ID_OPT} --name '{{ le.name }}' {{ '--prior %s' % le.prior|default('Library') }} {{ _desc_opt(le) }}
+hammer lifecycle-environment create --name '{{ le.name }}' {{ '--prior %s' % le.prior|default('Library') }} {{ _desc_opt(le) }}
 {% endfor -%}
 "
 
 CREATE_CONTENT_VIEWS="
 {% for cv in satellite.content_views if cv.name -%}
-hammer content-view create ${HAMMER_ORG_ID_OPT} --name '{{ cv.name }}' {{ _desc_opt(cv) }}
+hammer content-view create --name '{{ cv.name }}' {{ _desc_opt(cv) }}
 {% endfor -%}
 "
 
@@ -131,27 +127,27 @@ ADD_REPOS_TO_CONTENT_VIEWS="
 {% for cv in satellite.content_views if cv.name and cv.repos -%}
 {%     for repo in cv.repos if repo.name is defined and repo.name and
                                repo.product is defined and repo.product -%}
-hammer content-view add-repository ${HAMMER_ORG_ID_OPT} --name '{{ cv.name }}' --product '{{ repo.product }}' --repository '{{ repo.name }}'
+hammer content-view add-repository --name '{{ cv.name }}' --product '{{ repo.product }}' --repository '{{ repo.name }}'
 {%     endfor -%}
 {% endfor -%}
 "
 
 CREATE_ACTIVATION_KEYS="
 {% for ak in satellite.activation_keys if ak.name -%}
-hammer activation-key create ${HAMMER_ORG_ID_OPT} --name '{{ ak.name }}' --content-view '{{ ak.cv|default('Default Organization View') }}' --lifecycle-environment '{{ ak.env|default('Library') }}' {{ '--max-hosts %s' % ak.max if ak.max is defined and ak.max }} {{ _desc_opt(ak) }}
+hammer activation-key create --name '{{ ak.name }}' --content-view '{{ ak.cv|default('Default Organization View') }}' --lifecycle-environment '{{ ak.env|default('Library') }}' {{ '--max-hosts %s' % ak.max if ak.max is defined and ak.max }} {{ _desc_opt(ak) }}
 {% endfor -%}
 "
 
 ADD_HOST_COLLECTION_TO_ACTIVATION_KEYS="
 {% for ak in satellite.activation_keys if ak.name and ak.hc is defined and ak.hc -%}
-hammer activation-key add-host-collection ${HAMMER_ORG_ID_OPT} --name '{{ ak.name }}' --host-collection '{{ ak.hc }}'
+hammer activation-key add-host-collection --name '{{ ak.name }}' --host-collection '{{ ak.hc }}'
 {% endfor -%}
 "
 
 ADD_SUBSCRIPTION_TO_ACTIVATION_KEYS="
 {% for ak in satellite.activation_keys if ak.name and
                                           ak.subscription is defined and ak.subscription -%}
-hammer activation-key add-subscription ${HAMMER_ORG_ID_OPT} --name '{{ ak.name }}' --subscription-id '{{ ak.subscription }}' --quantity {{ ak.quantity|default('1') }}
+hammer activation-key add-subscription --name '{{ ak.name }}' --subscription-id '{{ ak.subscription }}' --quantity {{ ak.quantity|default('1') }}
 {% endfor -%}
 "
 
@@ -165,7 +161,7 @@ SYNC_BY_REPOS="
 {% for p in satellite.products if p.name and
                                    p.repos is defined and p.repos -%}
 {%     for r in p.repos if r.name is defined and r.name -%}
-hammer repository synchronize ${HAMMER_ORG_ID_OPT} --name '{{ r.name }}' --product '{{ p.name }}' --async
+hammer repository synchronize --name '{{ r.name }}' --product '{{ p.name }}' --async
 {%     endfor -%}
 {% endfor -%}
 "
