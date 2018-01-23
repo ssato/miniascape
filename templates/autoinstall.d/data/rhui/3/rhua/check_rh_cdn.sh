@@ -12,7 +12,7 @@ set -ex
 SELF_DIR=${0%/*}
 
 TLS_CA_CERT=/etc/rhsm/ca/redhat-uep.pem
-TLS_CLI_CERT=${1:-$(ls -t /etc/pki/rhui/redhat/*.pem | head -n 1)}
+TLS_CLI_CERT=${1:-$(ls -1t /etc/pki/rhui/redhat/*.pem | head -n 1)}
 TIMEOUT=${2:-5}  # [sec]
 MAX_TIMEOUT=60
 RH_CDN_URL=${3:-https://cdn.redhat.com/content/dist/rhel/rhui/server/7/7Server/x86_64/os/repodata/repomd.xml}
