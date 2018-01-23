@@ -10,26 +10,26 @@
 #
 set -ex
 
-# HAMMER_ORG_ID_OPT, CREATE_HOST_COLLECTIONS, CREATE_LIFECYCLE_ENVIRONMENTS,
+# CREATE_HOST_COLLECTIONS, CREATE_LIFECYCLE_ENVIRONMENTS,
 # CREATE_CONTENT_VIEWS, ADD_REPOS_TO_CONTENT_VIEWS
 source ${0%/*}/config.sh
 
 # Create Host Collections
-hammer host-collection list ${HAMMER_ORG_ID_OPT:?} | grep -qE '^1,' || (
+hammer host-collection list | grep -qE '^1,' || (
 while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${CREATE_HOST_COLLECTIONS:?}
 EOC
 )
 
 # Create Lifecycle Environments
-hammer lifecycle-environment list ${HAMMER_ORG_ID_OPT:?} | grep -qE '^1,' || (
+hammer lifecycle-environment list | grep -qE '^1,' || (
 while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${CREATE_LIFECYCLE_ENVIRONMENTS:?}
 EOC
 )
 
 # Create and setup Content Views
-hammer content-view list ${HAMMER_ORG_ID_OPT:?} | grep -qE '^2,' || (
+hammer content-view list | grep -qE '^2,' || (
 while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${CREATE_CONTENT_VIEWS:?}
 EOC

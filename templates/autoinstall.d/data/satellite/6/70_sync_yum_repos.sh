@@ -7,13 +7,11 @@
 #
 set -ex
 
-# HAMMER_ORG_ID_OPT, PRODUCTS_TO_SYNC, REPOS_TO_SYNC
+# PRODUCTS_TO_SYNC, REPOS_TO_SYNC
 source ${0%/*}/config.sh
 
 while read line; do
-  test "x$line" = "x" || (
-  hammer product synchronize ${HAMMER_ORG_ID_OPT} --name "${line}" --async
-  )
+  test "x$line" = "x" || hammer product synchronize --name "${line}" --async
 done << EOC
 ${PRODUCTS_TO_SYNC:?}
 EOC

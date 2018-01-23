@@ -11,7 +11,7 @@
 #
 set -ex
 
-# CURL_PROXY_OPT, HAMMER_ORG_ID_OPT, ENABLE_YUM_REPOS_FOR_CLIENTS, PRODUCTS
+# CURL_PROXY_OPT, ENABLE_YUM_REPOS_FOR_CLIENTS, PRODUCTS
 source ${0%/*}/config.sh
 
 # Check if satellite host can access RH CDN.
@@ -27,11 +27,11 @@ ${ENABLE_YUM_REPOS_FOR_CLIENTS:?}
 EOC
 
 # Create and setup sync plans if not yet
-hammer sync-plan info ${HAMMER_ORG_ID_OPT:?} --name 'Daily Sync' 2> /dev/null || (
-hammer sync-plan create ${HAMMER_ORG_ID_OPT} --interval daily --name 'Daily Sync' --enabled true --sync-date "$(date --iso-8601=minutes --date '6 hour')"
+hammer sync-plan info --name 'Daily Sync' 2> /dev/null || (
+hammer sync-plan create --interval daily --name 'Daily Sync' --enabled true --sync-date "$(date --iso-8601=minutes --date '6 hour')"
 while read line; do
     test "x$line" = "x" || (
-    hammer product set-sync-plan ${HAMMER_ORG_ID_OPT} --name "${line}" --sync-plan "Daily Sync" || :
+    hammer product set-sync-plan --name "${line}" --sync-plan "Daily Sync" || :
     )
 done << EOC
 ${PRODUCTS:?}
