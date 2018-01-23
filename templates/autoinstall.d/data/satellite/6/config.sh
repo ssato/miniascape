@@ -151,6 +151,15 @@ hammer activation-key add-subscription --name '{{ ak.name }}' --subscription-id 
 {% endfor -%}
 "
 
+OVERRIDE_CONTENTS_OF_ACTIVATION_KEYS="
+{% for ak in satellite.activation_keys if ak.name and
+                                          ak.contents is defined and ak.contents -%}
+{%     for cl in ak.contents if cl.label is defined and cl.label -%}
+hammer activation-key content-override --name '{{ ak.name }}' --content-label '{{ cl.label }}' --value {{ cl.value|default('1') }}
+{%     endfor -%}
+{% endfor -%}
+"
+
 PRODUCTS_TO_SYNC="
 {% for p in satellite.products if p.name and p.sync is defined and p.sync -%}
 {{     p.name }}

@@ -23,6 +23,10 @@ EOC
 while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${ADD_SUBSCRIPTION_TO_ACTIVATION_KEYS:?}
 EOC
+
+while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
+${OVERRIDE_CONTENTS_OF_ACTIVATION_KEYS:?}
+EOC
 )
 
 # vim:sw=2:ts=2:et:
