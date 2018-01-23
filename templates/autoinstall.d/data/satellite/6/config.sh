@@ -55,8 +55,8 @@ WORKDIR=${CURDIR:?}
 LOGDIR=${WORKDIR}/logs
 
 ISO_DIR=${WORKDIR}
-RHEL_ISO=$(ls -1 ${ISO_DIR}/rhel*.iso | head -n 1)
-SATELLITE_ISO=$(ls -1 ${ISO_DIR}/satellite*.iso | head -n 1)
+RHEL_ISO=$(ls -1t ${ISO_DIR}/rhel*.iso | head -n 1)
+SATELLITE_ISO=$(ls -1t ${ISO_DIR}/satellite*.iso | head -n 1)
 USE_RPM_INSTALL_SCRIPT=no
 
 SATELLITE_INSTALLER_OPTIONS="
