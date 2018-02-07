@@ -80,7 +80,7 @@ ORG_ID_FILE=${HOME}/.hammer/organization_id.txt
 HAMMER_ORG_ID_OPT=""
 test -f ${ORG_ID_FILE:?} && HAMMER_ORG_ID_OPT="--organization-id $(cat ${ORG_ID_FILE:?})" || :
 
-CURL_PROXY_OPT="-v --cacert /etc/rhsm/ca/redhat-uep.pem --connect-timeout 5"
+CURL_PROXY_OPT=""
 {% if proxy and proxy.fqdn -%}
 PROXY_URL={{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }}
 CURL_PROXY_OPT="${CURL_PROXY_OPT} --proxy ${PROXY_URL} {{ ' --proxy-user %s:%s' % (proxy.user, proxy.password) if proxy.user and proxy.password }}"
@@ -151,7 +151,7 @@ hammer activation-key add-host-collection --name '{{ ak.name }}' --host-collecti
 ADD_SUBSCRIPTION_TO_ACTIVATION_KEYS='
 {% for ak in satellite.activation_keys if ak.name and
                                           ak.subscription is defined and ak.subscription -%}
-sub_id=$(hammer --csv subscription list | sed -nr "s/.+,([^,]+),{{ ak.subscription }},.*/\1/p"); hammer activation-key add-subscription --name "{{ ak.name }}" --subscription-id ${sub_id} --quantity {{ ak.quantity|default("1") }}
+sub_id=$(hammer --csv subscription list | sed -nr "s/.+,([^,]+),{{ ak.subscription }},.*/\\1/p"); hammer activation-key add-subscription --name "{{ ak.name }}" --subscription-id ${sub_id} --quantity {{ ak.quantity|default("1") }}
 {% endfor -%}
 '
 
