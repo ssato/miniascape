@@ -38,7 +38,7 @@ hammer defaults list
 # Upload Satellite manifest
 # .. note:: manifest.zip may be base64-encoded.
 #
-MANIFEST_ZIP_BASE64=$(ls -1 ${WORKDIR}/manifest*.zip.base64 | head -n 1)
+MANIFEST_ZIP_BASE64=$(ls -1t ${WORKDIR}/manifest*.zip.base64 | head -n 1)
 MANIFEST_ZIP=${MANIFEST_ZIP_BASE64/.base64/}
 
 test -f ${MANIFEST_ZIP:?} || \
