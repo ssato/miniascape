@@ -90,6 +90,9 @@ def _guest_add_missings(conf):
         if "fqdn" not in conf:
             conf["fqdn"] = "{hostname}.{domain}".format(**conf)
 
+    assert len(conf["fqdn"]) <= 64, \
+        "Up to 64 chars are allowed as fqdn: " + conf["fqdn"]
+
     # TODO: Automatic (static) dhcp address assignment:
     # if conf.get("ip", None) == "auto":
     #    ...
