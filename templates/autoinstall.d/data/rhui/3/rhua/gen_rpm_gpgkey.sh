@@ -7,16 +7,19 @@ custom_gpg_conf=/root/setup/rhui-gpg.conf
 test -d /root/setup || mkdir -p /root/setup
 test -f ${custom_gpg_conf} || (
 cat << EOF > ${custom_gpg_conf}
-Key-Type: RSA
-Key-Length: 1024
+# Default is RSA:
+Key-Type: default
+# Needed if there are RHEL 5 Clients.
 # No subkey, RSA (sign only), to keep compatibility w/ RHEL 5 clients:
-Key-Usage: sign
+#Key-Usage: sign
+#Key-Length: 1024
+Key-Length: 4096
+Subkey-Type: default
 Expire-Date: 0
 Name-Real: RHUI Admin
-Name-Comment: GPG key for custom RPMs from RHUI
+Name-Comment: GPG key for RHUI client config RPMs
 Passphrase: {{ gpg.passpharase }}
 %no-protection
-%transient-key
 %commit
 EOF
 )
@@ -36,17 +39,18 @@ test -f /root/dot.rpmmacros || (
 cat << EOF > /root/dot.rpmmacros
 %_signature gpg
 %_gpg_name ${keyid:?}
-%__gpg_sign_cmd %{__gpg} \
-  gpg --force-v3-sigs --digest-algo=sha1 --batch --no-verbose --no-armor \
-      --passphrase-fd 3 --no-secmem-warning -u "%{_gpg_name}" \
-      -sbo %{__signature_filename} %{__plaintext_filename}
-
+# Needed if there are RHEL 5 Clients
 # see: https://access.redhat.com/solutions/874193
-%_binary_payload w9.gzdio
-%_source_payload w9.gzdio
-%_source_filedigest_algorithm 1
-%_binary_filedigest_algorithm 1
-%_default_patch_fuzz 2
+#%__gpg_sign_cmd %{__gpg} \
+#  gpg --force-v3-sigs --digest-algo=sha1 --batch --no-verbose --no-armor \
+#      --passphrase-fd 3 --no-secmem-warning -u "%{_gpg_name}" \
+#      -sbo %{__signature_filename} %{__plaintext_filename}
+#
+#%_binary_payload w9.gzdio
+#%_source_payload w9.gzdio
+#%_source_filedigest_algorithm 1
+#%_binary_filedigest_algorithm 1
+#%_default_patch_fuzz 2
 EOF
 )
 
