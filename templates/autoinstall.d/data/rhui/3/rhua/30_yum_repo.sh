@@ -110,4 +110,8 @@ cat << EOC | _ssh_exec_script ${YUM_REPO_SERVER:?}
 ${cmds:?}
 EOC
 
+# Check
+yum repolist
+yum repolist --enablerepo rhgs-3.3
+
 # vim:sw=4:ts=4:et:

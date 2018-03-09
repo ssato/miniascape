@@ -13,4 +13,10 @@ for cds in ${CDS_SERVERS:?}; do
      grep -E "^$cds" ~/.ssh/known_hosts 2>/dev/null ) || ssh-copy-id ${cds}
 done
 
+# Check
+for cds in ${CDS_SERVERS:?}; do
+    echo "# Check ${cds}"
+    ssh $cds "test -f ./setup/check.sh && time ./setup/check.sh || (hostname -f; date; ip a; ip r)"
+done
+
 # vim:sw=4:ts=4:et:

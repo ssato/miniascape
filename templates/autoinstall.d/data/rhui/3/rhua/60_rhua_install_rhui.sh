@@ -53,4 +53,8 @@ rhui_password=$(awk '/rhui_manager_password:/ { print $2; }' /etc/rhui-installer
 grep rhui_manager_password /etc/rhui-installer/answers.yaml
 rhui-manager
 
+# Check
+s=${0%/*}/collect_rhui-manager_help_recur.sh
+test -x $s && time $s || :
+
 # vim:sw=4:ts=4:et:

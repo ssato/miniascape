@@ -48,6 +48,8 @@ done
 # It'll take some time to finish the following, e.g. 20 ~ 30 min.
 time rhui-manager ${RHUI_AUTH_OPT} repo add_by_repo --repo_ids "$(echo ${repos} | sed 's/ /,/g')"
 
+# Check
 rhui-manager ${RHUI_AUTH_OPT} repo list
+rhui-manager status
 
 # vim:sw=4:ts=4:et:

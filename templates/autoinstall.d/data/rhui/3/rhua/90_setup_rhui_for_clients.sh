@@ -34,4 +34,7 @@ done << EOC
 ${RHUI_CLIENT_CERTS:?}
 EOC
 
+# Check
+ls -a ${RHUI_CLIENT_WORKDIR}/*
+
 # vim:sw=4:ts=4:et:

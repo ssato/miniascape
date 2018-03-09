@@ -64,4 +64,13 @@ test ${NUM_CDS} -eq 3 && _ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 q
 #test ${NUM_CDS} -le 2 || _ssh_exec ${CDS_0} 'gluster volume set rhui_content_0 cluster.server-quorum-type server; gluster volume set all cluster.server-quorum-ratio 51%'
 _ssh_exec ${CDS_0} "gluster volume info rhui_content_0"
 
+# Check
+mount -o ro -t glusterfs ${CDS_0}:rhui_content_0 /mnt
+ls -a /mnt
+umount /mnt
+for cds in ${CDS_SERVERS:?}; do
+    echo "# ${cds}"
+    _ssh_exec ${cds} "ls -a ${BRICK}"
+done
+
 # vim:sw=4:ts=4:et:

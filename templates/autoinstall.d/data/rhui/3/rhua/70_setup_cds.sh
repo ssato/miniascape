@@ -27,4 +27,7 @@ for cds in ${CDS_SERVERS:?}; do
     ssh ${cds} "sed -i.save 's/^.*:rhui_content_0.*/#&/' /etc/fstab; echo '/export/brick   /var/lib/rhui/remote_share  none  ro,bind 0 0' >> /etc/fstab" || :
 done
 
+# Check
+rhui cds list
+
 # vim:sw=4:ts=4:et:
