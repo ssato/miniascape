@@ -18,7 +18,7 @@ hammer --csv organization list | grep -qE ",${ORG_LABEL}," 2>/dev/null || \
 hammer organization create --name="${ORG_NAME}" --label="${ORG_LABEL}"
 
 # Create Location if not found.
-hammer --csv location list | grep -qE ",${LOC_NAME}$" 2>/dev/null || \
+hammer --csv location list | grep -qE ",${LOC_NAME}," 2>/dev/null || \
 hammer location create --name="${LOC_NAME}"
 
 org_id=$(hammer --output=yaml organization info --label "${ORG_LABEL}" | sed -nr "s/^Id: //p")
