@@ -63,6 +63,13 @@ SATELLITE_INSTALLER_OPTIONS="
 {{- '--foreman-admin-email=%s' % satellite.admin.email|default('root@localhost') }} \
 {{  '--foreman-initial-organization=%s' % satellite.organization if satellite.organization }} \
 {{  '--foreman-initial-location=%s' % satellite.location if satellite.location }} \
+{% if satellite.tls is defined -%} \
+{{    '--certs-country=%s' % satellite.tls.country if satellite.tls.country else 'JP' }} \
+{{    '--certs-state=%s' % satellite.tls.state if satellite.tls.state else 'Tokyo' }} \
+{{    '--certs-city=%s' % satellite.tls.city if satellite.tls.city else 'Shibuya-ku' }} \
+{{    '--certs-org=%s' % satellite.tls.org if satellite.tls.org }} \
+{{    '--certs-org-unit=%s' % satellite.tls.unit if satellite.tls.unit }} \
+{% endif -%} \
 {{ satellite.installer_extra_options|default('') }} \
 {% if proxy and proxy.fqdn -%} \
 {{     '--katello-proxy-url=http://%s' % proxy.fqdn }} \
