@@ -8,6 +8,7 @@ cat /etc/redhat-release
 uname -a
 hostname; hostname -s; hostname -f || :
 date
+cat /proc/cmdline
 which chronyc && \
 (systemctl status chronyd && systemctl is-enabled chronyd && chronyc sources; chronyc tracking) || \
 (which ntpq && systemctl status ntpd && systemctl is-enabled ntpd && ntptime)
@@ -17,8 +18,8 @@ df -h
 mount
 cat /etc/fstab
 pvscan; vgscan; lvscan
-which gendiff && gendiff /etc .save || :
-for f in /etc/sysconfig/network-scripts/{ifcfg-*,route*}; do
+which gendiff 2>/dev/null && gendiff /etc .save || :
+for f in $(ls -1t /etc/sysconfig/network-scripts/{ifcfg-*,route*} 2>/dev/null); do
     echo "# ${f##*/}:"
     cat $f
 done
@@ -29,4 +30,5 @@ svcs="{{ services.enabled|join(' ')|default('sshd') }}"
 test -d /etc/systemd && \
 (systemctl list-unit-files --state=enabled; systemctl --failed; for s in $svcs; do systemctl status $s; done) || \
 (/sbin/chkconfig --list; for s in $svcs; do service $s status; done)
+test -d /root/setup && ls -l /root/setup || :
 ) 2>&1 | tee ${logfile}
