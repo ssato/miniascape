@@ -26,10 +26,14 @@ cat << EOF >> ${HAMMER_USER_CONF}
   :username: admin
   :password: ${ADMIN_PASSWORD}
 EOF
+)
+
+# Check the content of hammer user configuration file.
+cat ${HAMMER_USER_CONF}
 
 # Test hammer works w/o password authentication.
 hammer ping
 hammer --output=yaml organization list
-)
+hammer --output=yaml location list
 
 # vim:sw=2:ts=2:et:
