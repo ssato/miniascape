@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# Create and setup activation keys
+# Synchronize repos by products.
 #
 # Author: Satoru SATOH <ssato/redhat.com>
 # License: MIT
