@@ -20,6 +20,7 @@ while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${CREATE_HOST_COLLECTIONS:?}
 EOC
 )
+hammer --csv host-collection list
 
 # Create Lifecycle Environments
 hammer lifecycle-environment list | grep -qE '^1,' || (
@@ -27,6 +28,7 @@ while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${CREATE_LIFECYCLE_ENVIRONMENTS:?}
 EOC
 )
+hammer --csv lifecycle-environment list
 
 # Create and setup Content Views
 hammer content-view list | grep -qE '^2,' || (
@@ -37,6 +39,7 @@ while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${ADD_REPOS_TO_CONTENT_VIEWS:?}
 EOC
 )
+hammer --csv content-view list
 
 # vim:sw=2:ts=2:et:
 {#
