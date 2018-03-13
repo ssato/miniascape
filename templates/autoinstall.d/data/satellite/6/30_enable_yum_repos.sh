@@ -17,9 +17,26 @@ source ${0%/*}/config.sh
 # Check if satellite host can access RH CDN.
 curl --connect-timeout 10 --cacert /etc/rhsm/ca/redhat-uep.pem ${CURL_PROXY_OPT} https://cdn.redhat.com/
 
+_PROCUCTS_REPOS_ENABLED_FOR_CLIENTS="$(cat << EOC | sort | uniq
+${PROCUCTS_REPOS_ENABLED_FOR_CLIENTS}
+EOC
+)
+"
+
+# List products and repository-sets (all available repos) by products.
+hammer --csv product list --by name
+while read line; do test "x$line" = "x" || hammer --csv repository-set list --product "$line"; done << EOC
+${_PROCUCTS_REPOS_ENABLED_FOR_CLIENTS}
+EOC
+
 # Enable Yum repos will be provided for clients
 while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${ENABLE_YUM_REPOS_FOR_CLIENTS:?}
+EOC
+
+# List repositories (enabled repos) by products.
+while read line; do test "x$line" = "x" || hammer --csv repository list --product "$line" --by name; done << EOC
+${_PROCUCTS_REPOS_ENABLED_FOR_CLIENTS}
 EOC
 
 # Create and setup sync plans if not yet
