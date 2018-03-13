@@ -105,17 +105,15 @@ ENABLE_YUM_REPOS_FOR_CLIENTS="
 hammer repository-set enable --name '{{ repo.name }}' --product '{{ repo.product|default('Red Hat Enterprise Linux Server') }}' {{ '--basearch %s' % repo.arch|default('x86_64') }} {{ '--releasever %s' % repo.releasever if repo.releasever is defined and repo.releasever }} || :
 {% endfor -%}
 "
-PROCUCTS_REPOS_ENABLED_FOR_CLIENTS="
-Red Hat Enterprise Linux Server
-{% for repo in satellite.repos if repo.name and
-                                  repo.product != 'Red Hat Enterprise Linux Server' -%}
-{{ repo.product }}
-{% endfor -%}
-"
-
 PRODUCTS="
 {% for p in satellite.products if p.name -%}
 {{      p.name }}
+{% endfor -%}
+"
+
+LIST_REPOSITORY_SET_BY_PRODUCTS="
+{% for p in satellite.products if p.name -%}
+hammer --csv repository list --product '{{ p.name }}' --by name
 {% endfor -%}
 "
 
