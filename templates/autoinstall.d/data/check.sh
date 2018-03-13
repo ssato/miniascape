@@ -30,5 +30,5 @@ svcs="{{ services.enabled|join(' ')|default('sshd') }}"
 test -d /etc/systemd && \
 (systemctl list-unit-files --state=enabled; systemctl --failed; for s in $svcs; do systemctl status $s; done) || \
 (/sbin/chkconfig --list; for s in $svcs; do service $s status; done)
-test -d /root/setup && ls -l /root/setup || :
+test -d /root/setup && ls -lh /root/setup || :
 ) 2>&1 | tee ${logfile}
