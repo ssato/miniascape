@@ -20,7 +20,7 @@ test -f ~/.rpmmacros || bash -x ${0%/*}/gen_rpm_gpgkey.sh
 
 
 # List repos available to clients
-rhui-manager ${RHUI_AUTH_OPT} client labels | sort
+rhui-manager ${RHUI_AUTH_OPT} client labels
 
 mkdir -p ${RHUI_CLIENT_WORKDIR:?}
 while read line
