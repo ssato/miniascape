@@ -23,7 +23,8 @@ while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${LIST_REPOSITORY_SET_BY_PRODUCTS}
 EOC
 
-# Enable Yum repos will be provided for clients
+# Enable Yum repos will be provided for clients and also change the download
+# policy of reops A/N.
 while read line; do test "x$line" = "x" || (eval ${line} || :); done << EOC
 ${ENABLE_YUM_REPOS_FOR_CLIENTS:?}
 EOC
