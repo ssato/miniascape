@@ -103,6 +103,9 @@ tweak_selinux_policy () { :; }
 ENABLE_YUM_REPOS_FOR_CLIENTS="
 {% for repo in satellite.repos if repo.name -%}
 hammer repository-set enable --name '{{ repo.set_name or repo.name }}' --product '{{ repo.product|default('Red Hat Enterprise Linux Server') }}' {{ '--basearch %s' % repo.arch|default('x86_64') }} {{ '--releasever %s' % repo.releasever if repo.releasever is defined and repo.releasever }} || :
+{%      if repo.download_policy and repo.download_policy != 'on_demand' -%}{# on_demand is default #}
+hammer repository update --download-policy '{{ repo.download_policy }}' --name '{{ repo.name }}' --product '{{ repo.product|default('Red Hat Enterprise Linux Server') }}' || :
+{%      endif %}
 {% endfor -%}
 "
 
@@ -111,15 +114,6 @@ PRODUCTS="
 {{      p.name }}
 {% endfor -%}
 "
-
-#PRODUCTS_TO_SYNC="
-#{% for p in satellite.products
-#       if p.name and p.download_policy and p.download_policy != 'on_demand' -%}
-#for rid in $(hammer --output=yaml repository list --product '{{ p.name }}' | sed -nr 's/ID: (.*)/\1/p'); do
-#   hammer repository update --download-policy '{{ p.download_policy }}' --id ${rid:?} --product '{{ p.name }}'
-#done
-#{% endfor -%}
-#"
 
 LIST_REPOSITORY_SET_BY_PRODUCTS="
 {% for p in satellite.products if p.name -%}
