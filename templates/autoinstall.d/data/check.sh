@@ -15,7 +15,7 @@ which chronyc && \
 /sbin/ip a
 /sbin/ip r
 df -h
-mount -t ext4,xfs,nfs || mount
+mount -t ext3,ext4,xfs,nfs,vfat,cifs,iso9660 || mount
 cat /etc/fstab
 pvscan; vgscan; lvscan
 which gendiff 2>/dev/null && gendiff /etc .save || :
