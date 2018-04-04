@@ -20,6 +20,7 @@ cat /etc/fstab
 pvscan; vgscan; lvscan
 free
 swapon --summary
+test -f /etc/kdump.conf && grep -Ev '^#' /etc/kdump.conf || :
 which gendiff 2>/dev/null && gendiff /etc .save || :
 for f in $(ls -1t /etc/sysconfig/network-scripts/{ifcfg-*,route*} 2>/dev/null); do
     echo "# ${f##*/}:"
