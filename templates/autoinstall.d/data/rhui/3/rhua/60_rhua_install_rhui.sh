@@ -32,6 +32,7 @@ else
     # or nfs4) is automatically configured by the installer.
     rhui_installer_options="\
 --cds-lb-hostname ${CDS_LB_HOSTNAME:?} \
+--remote-fs-type=${RHUI_STORAGE_TYPE:?} \
 --remote-fs-server=${RHUI_STORAGE_MOUNT:?} \
 --rhua-mount-options=${RHUI_STORAGE_MOUNT_OPTIONS:?} \
 "
