@@ -1,7 +1,7 @@
 #! /bin/bash
 set -x
 logdir=/root/setup/logs
-logfile=${logdir}/check.sh.log.$(date +%F_%T)
+logfile=${logdir}/check.sh.log.$(date +%F_%H%M%S)
 test -d ${logdir:?} || mkdir -p ${logdir}
 (
 cat /etc/redhat-release
