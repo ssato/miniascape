@@ -112,6 +112,6 @@ EOC
 
 # Check
 yum repolist
-yum repolist --enablerepo rhgs-3.3
+test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs" && yum repolist --enablerepo rhgs-3.3 || :
 
 # vim:sw=4:ts=4:et:
