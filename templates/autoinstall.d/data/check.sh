@@ -18,6 +18,8 @@ df -h
 mount -t ext3,ext4,xfs,nfs,vfat,cifs,iso9660 || mount
 cat /etc/fstab
 pvscan; vgscan; lvscan
+free
+swapon --summary
 which gendiff 2>/dev/null && gendiff /etc .save || :
 for f in $(ls -1t /etc/sysconfig/network-scripts/{ifcfg-*,route*} 2>/dev/null); do
     echo "# ${f##*/}:"
@@ -30,5 +32,7 @@ svcs="{{ services.enabled|join(' ')|default('sshd') }}"
 test -d /etc/systemd && \
 (systemctl list-unit-files --state=enabled; systemctl --failed; for s in $svcs; do systemctl status $s; done) || \
 (/sbin/chkconfig --list; for s in $svcs; do service $s status; done)
+uesrs="{% for u in kickstart.users if kickstart and kickstart.users and u.name %}{{ u.name }} {% endfor %}"
+for u in root ${users};do id ${u}; done
 test -d /root/setup && ls -lh /root/setup || :
 ) 2>&1 | tee ${logfile}
