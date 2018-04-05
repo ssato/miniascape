@@ -28,8 +28,6 @@ if test "x${RHUI_STORAGE_TYPE:?}" = "xglusterfs"; then
 --rhua-mount-options=${RHUI_STORAGE_MOUNT_OPTIONS:?} \
 "
 else
-    # --remote-fs-type should not be given if NFS is used because its type (nfs
-    # or nfs4) is automatically configured by the installer.
     rhui_installer_options="\
 --cds-lb-hostname ${CDS_LB_HOSTNAME:?} \
 --remote-fs-type=${RHUI_STORAGE_TYPE:?} \
