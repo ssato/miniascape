@@ -1,0 +1,3 @@
+[submodule "miniascape-templates"]
+	path = templates
+	url = https://github.com/ssato/miniascape-templates.git
