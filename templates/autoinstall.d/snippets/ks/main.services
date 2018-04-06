@@ -1,7 +1,0 @@
-{%  block services -%}
-{%-     if services -%}
-services
-{{-       " --enabled %s" % services.enabled|join(',') if services.enabled -}}
-{{-       " --disabled %s" % services.disabled|join(',') if services.disabled }}
-{%      endif -%}
-{%- endblock %}

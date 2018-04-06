@@ -1,3 +1,0 @@
-{% set IS_RHEL_7_OR_LATER_OR_SIMILAR = true
-       if virtinst and virtinst.os_variant in ("rhel7", "fedora21")
-%}

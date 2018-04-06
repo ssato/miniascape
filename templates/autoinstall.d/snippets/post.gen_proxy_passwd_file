@@ -1,3 +1,0 @@
-{% if squid.auth is defined %}{% if squid.auth.username is defined -%}
-htpasswd -bc /etc/squid/passwd {{ squid.auth.username }} {{ squid.auth.password|default('secret') }}
-{%- endif %}{%- endif %}

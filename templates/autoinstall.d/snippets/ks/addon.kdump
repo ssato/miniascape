@@ -1,6 +1,0 @@
-{# see: https://github.com/dashea/kdump-anaconda-addon -#}
-{%  if kdump -%}
-%addon com_redhat_kdump --enable --reserve-mb='{{ kdump.reserve|default("auto") }}'
-{{ kdump.conf if kdump.conf }}
-%end
-{% endif %}

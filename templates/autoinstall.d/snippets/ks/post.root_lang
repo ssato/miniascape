@@ -1,8 +1,0 @@
-f=/root/.bashrc
-test -f $f && \
-echo "export LC_ALL={{ lang|default('en_US.UTF-8') }}" >> $f || \
-(cat << EOF > $f
-test -f /etc/bashrc && . /etc/bashrc || :
-export LC_ALL={{ lang|default('en_US.UTF-8') }}
-EOF
-)

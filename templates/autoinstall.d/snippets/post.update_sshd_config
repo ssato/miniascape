@@ -1,2 +1,0 @@
-f=/etc/ssh/sshd_config
-sed -i.save -e 's/.*PermitRootLogin yes/PermitRootLogin no/g' $f

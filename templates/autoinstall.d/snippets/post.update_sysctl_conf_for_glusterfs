@@ -1,7 +1,0 @@
-cp /etc/sysctl.conf /etc/sysctl.conf.save
-cat << EOF >> /etc/sysctl.conf
-# for glusterfs:
-vm.swappiness = 10
-vm.dirty_background_ratio = 1
-kernel.sched_wakeup_granularity_ns = 15
-EOF

@@ -1,9 +1,0 @@
-{%- if services -%}
-{%-     if services.enabled -%}
-for svc in {{ services.enabled|join(' ') }}; do systemctl enable $svc; done;
-{%-     endif %}
-{%-     if services.disabled %}
-for svc in {{ services.disabled|join(' ') }}; do systemctl disable $svc; done
-{%-     endif %}
-{%- endif %}
-{# #}

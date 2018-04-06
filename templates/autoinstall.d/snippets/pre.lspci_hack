@@ -1,8 +1,0 @@
-# Make up dummy lspci to avoid the anaconda bug similar to bz#445974.
-if test ! -x /sbin/lspci; then
-    cat << EOF > /sbin/lspci
-#! /bin/sh
-exit 0
-EOF
-    chmod +x /sbin/lspci
-fi

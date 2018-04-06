@@ -1,7 +1,0 @@
-# RPMs to register and access RHN Classic:
-rhn-check
-rhn-client-tools
-rhn-setup
-rhnlib
-rhnsd
-yum-rhn-plugin

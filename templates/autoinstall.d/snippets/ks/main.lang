@@ -1,2 +1,0 @@
-lang {{ lang|default('en_US.UTF-8') }}
-{# #}

@@ -1,7 +1,0 @@
-{% if auth and auth.options -%}
-authconfig --enableshadow {{ auth.options }}
-{%  elif kickstart and kickstart.auth -%}
-authconfig --enableshadow {{ kickstart.auth|join(' ') }}
-{%  else -%}
-authconfig --enableshadow
-{% endif -%}

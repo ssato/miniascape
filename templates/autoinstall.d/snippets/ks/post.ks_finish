@@ -1,2 +1,0 @@
-test -d /root/setup || mkdir -p /root/setup
-touch /root/setup/kickstart.post.stamp

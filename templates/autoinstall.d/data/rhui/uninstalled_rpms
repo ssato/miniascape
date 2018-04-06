@@ -1,6 +1,0 @@
-# RHN Classic based RHN are not used for RHUI servers nor clients as usual:
--rhnsd
--rhnlib
--yum-rhn-plugin
-# These are not used/needed in general also:
--dosfstools

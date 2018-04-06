@@ -1,5 +1,0 @@
-timezone {{ timezone.timezone if timezone and timezone.timezone else 'Asia/Tokyo' -}}
-         {{ ' --isUtc' if timezone and timezone.utc -}}
-         {{ ' --nontp' if timezone and timezone.nontp -}}
-         {{ ' --ntpservers=%s' % ntp.servers|join(',', attribute='hostname') if ntp and ntp.servers }}
-{# #}

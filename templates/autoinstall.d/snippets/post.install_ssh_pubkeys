@@ -1,5 +1,0 @@
-test -d /root/.ssh || mkdir -m 0700 -p /root/.ssh
-test -f /root/.ssh/authorized_keys || cat << EOF > /root/.ssh/authorized_keys
-{% include "{{ ssh.pubkey }}" %}
-EOF
-chmod 0600 /root/.ssh/authorized_keys

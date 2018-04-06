@@ -1,3 +1,0 @@
-# How to disable Ctrl-Alt-Del in RHEL7 ?:
-# https://access.redhat.com/solutions/1123873
-ln -sf /dev/null /usr/lib/systemd/system/ctrl-alt-del.target

@@ -1,2 +1,0 @@
-# Force relabel on initial boot to fix issues because of files w/ wrong SELinux label.
-touch /.autorelabel

@@ -1,6 +1,0 @@
-{%  if firewall -%}
-firewall {{ '--disabled' if firewall.disabled else '--enabled --ssh' }}
-{%-       for rule in firewall.rules -%}
-{{-           ' --%s' % rule -}}
-{%-       endfor %}
-{%  endif %}
