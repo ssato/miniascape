@@ -20,6 +20,7 @@ from __future__ import print_function
 from miniascape.globals import LOGGER as logging
 
 import itertools
+import glob
 import os.path
 import os
 import subprocess
@@ -51,7 +52,51 @@ def _guests_workdir(topdir, subdir=G.M_GUESTS_CONF_SUBDIR):
     return os.path.join(topdir, subdir)
 
 
-def arrange_setup_data(gtmpldirs, config, gworkdir):
+def _find_templates_from_glob_path(tmpl, gtmpldirs):
+    """Find templates from globa path such as 'data/*/*.sh".
+
+    :return: A generator yields (template_rel_path, template_dir)
+    """
+    for prefix in gtmpldirs:
+        srcs = [f for f in glob.glob(os.path.join(prefix, tmpl))
+                if os.path.isfile(f)]
+        if not srcs:
+            continue
+
+        for src in srcs:
+            yield (src.replace(prefix, '')[1:], prefix)
+        break
+
+
+def _template_paths_itr(tmpl, gtmpldirs):
+    """compute template search paths from template path.
+
+    This is an iterator version yields it one by one.
+    """
+    tmpldir = os.path.dirname(tmpl)
+    for prefix in gtmpldirs:
+        tdir = os.path.join(prefix, tmpldir)
+        if os.path.isdir(tdir):
+            yield tdir
+
+
+def _template_paths(tmpl, gtmpldirs):
+    """compute template search paths from template path, etc."""
+    return gtmpldirs + list(_template_paths_itr(tmpl, gtmpldirs))
+
+
+def _render_template(tmpl, config, gworkdir, tpaths, dest=None):
+    """
+    """
+    if dest is None:
+        dest = tmpl
+
+    out = os.path.join(gworkdir, "setup", dest)
+    logging.debug("Generating %s from %s", out, tmpl)
+    miniascape.template.render_to(tmpl, config, out, tpaths)
+
+
+def arrange_setup_data(gtmpldirs, config, gworkdir, glob_marker='*'):
     """
     Arrange setup data to be embedded in kickstart files.
 
@@ -70,14 +115,14 @@ def arrange_setup_data(gtmpldirs, config, gworkdir):
         if content is None:
             assert src is not None, "'src' must not be empty if content isn't!"
 
-            dst = t.get("dst", src)
-            out = os.path.join(gworkdir, "setup", dst)
-            tpaths = gtmpldirs + \
-                [os.path.join(d, os.path.dirname(src)) for d in gtmpldirs] + \
-                [os.path.dirname(out)]
-
-            logging.debug("Generating %s from %s", out, src)
-            miniascape.template.render_to(src, config, out, tpaths)
+            if glob_marker in src:
+                for src_, sdir in _find_templates_from_glob_path(src,
+                                                                 gtmpldirs):
+                    _render_template(src_, config, gworkdir, [sdir])
+            else:
+                dst = t.get("dst", src)
+                tpaths = _template_paths(src, gtmpldirs)
+                _render_template(src, config, gworkdir, tpaths, dst)
         else:
             dst = t.get("dst", None)
             assert dst is not None, "'dst' must be given if content is set!"
