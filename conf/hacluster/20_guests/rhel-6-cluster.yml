@@ -7,7 +7,7 @@
       repos:
         - name: "RHEL 6 x86_64 - Cluster"
           #baseurl: "http://ks/kstree/rhel/6/3/x86_64/HighAvailability"
-          baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.5/os/x86_64/"
+          baseurl: "ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.10/os/x86_64/"
 
     disks:
       - pool: default
