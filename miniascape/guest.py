@@ -53,7 +53,7 @@ def _guests_workdir(topdir, subdir=G.M_GUESTS_CONF_SUBDIR):
 
 
 def _find_templates_from_glob_path(tmpl, gtmpldirs):
-    """Find templates from globa path such as 'data/*/*.sh".
+    """Find templates from global path such as 'data/*/*.sh".
 
     :return: A generator yields (template_rel_path, template_dir)
     """
