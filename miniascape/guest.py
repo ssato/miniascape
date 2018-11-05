@@ -118,7 +118,8 @@ def arrange_setup_data(gtmpldirs, config, gworkdir, glob_marker='*'):
             if glob_marker in src:
                 for src_, sdir in _find_templates_from_glob_path(src,
                                                                  gtmpldirs):
-                    _render_template(src_, config, gworkdir, [sdir])
+                    tpaths = _template_paths(src_, [sdir])
+                    _render_template(src_, config, gworkdir, tpaths)
             else:
                 dst = t.get("dst", src)
                 tpaths = _template_paths(src, gtmpldirs)
