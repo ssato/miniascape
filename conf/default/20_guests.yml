@@ -11,12 +11,10 @@ guests:
 {% include "20_guests/rhel-6-lvs.yml" %}
 {% include "20_guests/rhel-6-mrg-m.yml" %}
 {% include "20_guests/rhel-6-proxy.yml" %}
-{% include "20_guests/rhel-6-satellite-6.yml" %}
 {% include "20_guests/rhel-7-clients.yml" %}
 {% include "20_guests/rhev.yml" %}
 {% include "20_guests/rhs.yml" %}
 {% include "20_guests/sam.yml" %}
-{% include "20_guests/satellite.yml" %}
 {% include "20_guests/satellite6.yml" %}
 
 # vim:sw=2:ts=2:et:

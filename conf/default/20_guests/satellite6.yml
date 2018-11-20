@@ -37,17 +37,38 @@
       activationkeys: "REPLACE_THIS_WITH_YOUR_ACTIVATION_KEY"
 
     setup_data:
-      - src: data/satellite6/Makefile
-        dst: Makefile
-      - src: data/satellite6/Makefile.custom
-        dst: Makefile.custom
-      # - src: data/satellite6/initial-setup.sh
-      #       #  dst: initial-setup.sh
-      - src: data/satellite6/check-pulp-rpm-checksums.sh
+      - src: data/check.sh
+        dst: check.sh
+      - src: data/satellite/6/check-pulp-rpm-checksums.sh
         dst: check-pulp-rpm-checksums.sh
       # base64 manifests.zip > manifests.zip.base64:
-      - src: manifests.zip.base64
-        dst: manifests.zip.base64
+      - src: &manifest_filename manifest.zip.base64
+        dst: *manifest_filename
+      # https://access.redhat.com/solutions/1615073
+      - src: data/satellite/6/etc/virt-who.d/vcenter.conf
+        dst: etc/virt-who.d/vcenter.conf
+      - src: data/satellite/6/etc/sysconfig/virt-who.add
+        dst: etc/sysconfig/virt-who.add
+      - src: data/satellite/6/10_install.sh
+        dst: 10_install.sh
+      - src: data/satellite/6/20_setup_organization.sh
+        dst: 20_setup_organization.sh
+      - src: data/satellite/6/30_enable_yum_repos.sh
+        dst: 30_enable_yum_repos.sh
+      - src: data/satellite/6/40_setup_hc_le_cv.sh
+        dst: 40_setup_hc_le_cv.sh
+      - src: data/satellite/6/50_setup_activation_keys.sh
+        dst: 50_setup_activation_keys.sh
+      - src: data/satellite/6/60_setup_content_isos.sh
+        dst: 60_setup_content_isos.sh
+      - src: data/satellite/6/70_sync_yum_repos.sh
+        dst: 70_sync_yum_repos.sh
+      - src: data/satellite/6/config.sh
+        dst: config.sh
+      - src: data/satellite/6/collect_info_hammer_recur.sh
+        dst: collect_info_hammer_recur.sh
+      - src: data/satellite/6/hammer_list_commands.sh
+        dst: hammer_list_commands.sh
 
     templates:
       autoinst:
@@ -59,4 +80,5 @@
         interfaces:
           - mac: "52:54:00:05:00:16"
             network: service
+
 
