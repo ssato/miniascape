@@ -1,9 +1,9 @@
-from distutils.core import setup, Command
 from glob import glob
 
 import os
 import subprocess
 import sys
+import setuptools.command.bdist_rpm
 
 curdir = os.getcwd()
 sys.path.append(curdir)
@@ -46,54 +46,37 @@ data_files += concat(list_data_files_g(p, d) for p, d in
                       ))
 
 
-class SrpmCommand(Command):
+class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
+    """Override the default content of the RPM SPEC.
+    """
+    spec_tmpl = os.path.join(os.path.abspath(os.curdir),
+                             "pkg/package.spec.in")
 
-    user_options = []
-    build_stage = "s"
+    def _replace(self, line):
+        """Replace some strings in the RPM SPEC template"""
+        if "@VERSION@" in line:
+            return line.replace("@VERSION@", VERSION)
 
-    curdir = os.path.abspath(os.curdir)
-    rpmspec = os.path.join(curdir, "pkg/package.spec")
+        if "Source0:" in line:  # Dirty hack
+            return "Source0: %{name}-%{version}.tar.gz"
 
-    def initialize_options(self):
-        pass
+        return line
 
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        self.pre_sdist()
-        self.run_command('sdist')
-        self.build_rpm()
-
-    def pre_sdist(self):
-        c = open(self.rpmspec + ".in").read()
-        open(self.rpmspec, "w").write(c.replace("@VERSION@", VERSION))
-
-    def build_rpm(self):
-        rpmbuild = os.path.join(self.curdir, "pkg/rpmbuild-wrapper.sh")
-        workdir = os.path.join(self.curdir, "dist")
-
-        cmd_s = "%s -w %s -s %s %s" % (rpmbuild, workdir, self.build_stage,
-                                       self.rpmspec)
-        subprocess.check_call(cmd_s, shell=True)
+    def _make_spec_file(self):
+        return [self._replace(l.rstrip()) for l
+                in open(self.spec_tmpl).readlines()]
 
 
-class RpmCommand(SrpmCommand):
-
-    build_stage = "b"
-
-
-setup(name=PACKAGE,
-      version=VERSION,
-      description="Personal cloud building and management tool",
-      author="Satoru SATOH",
-      author_email="ssato@redhat.com",
-      license="GPLv3+",
-      url="https://github.com/ssato/miniascape",
-      packages=["miniascape", "miniascape/tests"],
-      scripts=glob("tools/*"),
-      data_files=data_files,
-      cmdclass=dict(srpm=SrpmCommand,
-                    rpm=RpmCommand))
+setuptools.setup(name=PACKAGE,
+                 version=VERSION,
+                 description="Personal cloud building and management tool",
+                 author="Satoru SATOH",
+                 author_email="ssato@redhat.com",
+                 license="GPLv3+",
+                 url="https://github.com/ssato/miniascape",
+                 packages=["miniascape", "miniascape/tests"],
+                 scripts=glob("tools/*"),
+                 data_files=data_files,
+                 cmdclass=dict(bdist_rpm=bdist_rpm))
 
 # vim:sw=4:ts=4:et:
