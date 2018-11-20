@@ -33,9 +33,6 @@ Personal cloud building tool for libvirt/KVM.
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
-# Some cleanups:
-rm -f $RPM_BUILD_ROOT%{python_sitelib}/*.egg-info
-
 # Hack to setup symlinks:
 #for d in $RPM_BUILD_ROOT%{_sysconfdir}/miniascape.d/{hacluster,openshift,openstack,rhui}; do
 #    for f in 00_base.yml 10_networks.yml; do
