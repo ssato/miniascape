@@ -191,8 +191,9 @@ def mk_distdata_g(guests, tmpl=_DISTDATA_MAKEFILE_AM_TMPL,
 
     for name in guests:
         files = ' '.join(os.path.join(name, f) for f in fs)
-        yield tmpl % dict(i=ig.next(), dir=os.path.join(datadir, name),
-                          files=files)
+        for idx in ig:
+            yield tmpl % dict(i=idx, dir=os.path.join(datadir, name),
+                              files=files)
 
 
 def gen_all(cf, tmpldirs, workdir):
