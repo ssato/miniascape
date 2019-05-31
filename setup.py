@@ -67,13 +67,7 @@ class bdist_rpm(setuptools.command.bdist_rpm.bdist_rpm):
                 in open(self.spec_tmpl).readlines()]
 
 
-setuptools.setup(name=PACKAGE,
-                 version=VERSION,
-                 description="Personal cloud building and management tool",
-                 author="Satoru SATOH",
-                 author_email="ssato@redhat.com",
-                 license="GPLv3+",
-                 url="https://github.com/ssato/miniascape",
+setuptools.setup(version=VERSION,
                  packages=["miniascape", "miniascape/tests"],
                  scripts=glob("tools/*"),
                  data_files=data_files,

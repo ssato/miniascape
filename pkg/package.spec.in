@@ -1,22 +1,42 @@
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-
 # disable debuginfo
 %define debug_package %{nil}
 %define pkgconfdir      %{_sysconfdir}/%{name}.d
+
+%if 0%{?rhel} == 7 || 0%{?epel} == 7
+%bcond_without python2
+%else
+%bcond_with python2
+%endif
 
 Name:           miniascape
 Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Personal cloud building tool
-Group:          Development/Tools
 License:        GPLv3+
 URL:            https://github.com/ssato/miniascape
 Source0:        https://github.com/ssato/%{name}/tarball/master/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
-BuildRequires:  python
-Requires:       python-anyconfig >= 0.0.7
-Requires:       python-anytemplate >= 0.0.5
+%if %{with python2}
+BuildRequires:  python2
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+# for pygettext.py:
+BuildRequires:  python2-tools
+%else
+BuildRequires:  python3
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-tools
+%endif
+
+%if %{with python2}
+Requires:       python2-anyconfig >= 0.0.7
+Requires:       python2-anytemplate >= 0.0.5
+%else
+Requires:       python3-anyconfig >= 0.0.7
+Requires:       python3-anytemplate >= 0.0.5
+%endif
 Obsoletes:      miniascape-data-default <= 0.3.7
 Obsoletes:      miniascape-data-default-devel <= 0.3.7
 
@@ -24,17 +44,38 @@ Obsoletes:      miniascape-data-default-devel <= 0.3.7
 Personal cloud building tool for libvirt/KVM.
 
 %prep
-%setup -q
+%autosetup
 
 %build
-%{__python} setup.py build
+%if %{with python2}
+%py2_build
+%else
+%py3_build
+%endif
 
 %install
-rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+%if %{with python2}
+%py2_install
+test -d %{buildroot}/%{_bindir} || {
+        install -d %{buildroot}/%{_bindir}
+        cat << EOF > %{buildroot}/%{_bindir}/miniascape
+#! /usr/bin/python
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+        sys.exit(
+                load_entry_point('miniascape', 'console_scripts', 'miniascape_cli')()
+        )
+EOF
+}
+chmod +x %{buildroot}/%{_bindir}/miniascape
+%else
+%py3_install
+%endif
 
 # Hack to setup symlinks:
-#for d in $RPM_BUILD_ROOT%{_sysconfdir}/miniascape.d/{hacluster,openshift,openstack,rhui}; do
+#for d in %{buildroot}%{_sysconfdir}/miniascape.d/{hacluster,openshift,openstack,rhui}; do
 #    for f in 00_base.yml 10_networks.yml; do
 #        (cd $d && test -f $f && ln -sf ../default/$f ./ || :)
 #    done
@@ -42,23 +83,23 @@ rm -rf $RPM_BUILD_ROOT
 #done
 
 # Generate some file lists:
-find $RPM_BUILD_ROOT%{_datadir}/%{name}/templates -type f | \
-    sed "s,$RPM_BUILD_ROOT,,g" > templates.list
+find %{buildroot}/%{_datadir}/%{name}/templates -type f | \
+    sed "s,%{buildroot},,g" > templates.list
 
 sites="default openshift openstack rhui"
 for site in $sites; do \
-    find $RPM_BUILD_ROOT%{pkgconfdir}/${site} -type f | \
-        sed "s,$RPM_BUILD_ROOT,,g" > ${site}.conf.list; done
+    find %{buildroot}/%{pkgconfdir}/${site} -type f | \
+        sed "s,%{buildroot},,g" > ${site}.conf.list; done
 
 rm -f default.list && \
   cat templates.list *.conf.list >> files.list
 
 # Remove tests; it's useless maybe.
-rm -rf $RPM_BUILD_ROOT%{_datadir}/%{name}/tests \
-       $RPM_BUILD_ROOT%{python_sitelib}/%{name}/tests
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+%if %{with python2}
+rm -rf %{buildroot}%{_datadir}/%{name}/tests %{buildroot}%{python2_sitelib}/%{name}/tests
+%else
+rm -rf %{buildroot}%{_datadir}/%{name}/tests %{buildroot}%{python3_sitelib}/%{name}/tests
+%endif
 
 %files -f files.list
 %defattr(-,root,root,-)
@@ -69,9 +110,18 @@ rm -rf $RPM_BUILD_ROOT
 %config %{pkgconfdir}/*/*/*.j2
 %config %{pkgconfdir}/*/*/*.yml
 %dir %{pkgconfdir}/*/00_includes
-%{python_sitelib}/*
+%if %{with python2}
+%{python2_sitelib}/*
+%else
+%{python3_sitelib}/*
+%endif
 
 %changelog
+* Mon Jun 15 2015 Satoru SATOH <ssato@redhat.com> - 0.3.11-99
+- New upstream
+- Clean up packaging stufff
+- A lot of minor fixes and enhancements in templates
+
 * Mon Jun 15 2015 Satoru SATOH <ssato@redhat.com> - 0.3.11-1
 - Split some default config files and make them merged on build time with using
   template config support in anyconfig
