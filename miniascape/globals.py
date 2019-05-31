@@ -29,7 +29,7 @@ def timestamp(fmt="%a %b %_d %Y", dtobj=_DTOBJ):
     >>> timestamp(dtobj=dtobj)
     'Sun Oct 20 2013'
     """
-    locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    locale.setlocale(locale.LC_TIME, "C")
     return dtobj.strftime(fmt)
 
 
