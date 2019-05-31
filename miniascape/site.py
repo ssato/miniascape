@@ -120,7 +120,7 @@ def gen_site_conf_files(conf, tmpldirs, workdir):
             os.makedirs(ggoutdir)
 
         ggroup_conf = dict()
-        for k, v in ggroup.iteritems():
+        for k, v in ggroup.items():
             if k != guests_key:
                 ggroup_conf[k] = v
 

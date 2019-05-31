@@ -64,7 +64,7 @@ def compile_conf_templates(conf, tmpldirs, workdir, templates_key="templates"):
     :param workdir: Working dir
     :param template_keys: Template keys to search each templates
     """
-    for k, v in conf.get(templates_key, {}).iteritems():
+    for k, v in conf.get(templates_key, {}).items():
         src = v.get("src", None)
         dst = v.get("dst", src)
 

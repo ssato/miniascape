@@ -133,7 +133,7 @@ def find_dups_in_dicts_list_g(ds, keys):
                     seens[k][v] = [d]
 
     for k in keys:
-        for v, dups in seens[k].iteritems():
+        for v, dups in seens[k].items():
             if len(dups) > 1:  # duplicated entries
                 yield (k, v, dups)
 
@@ -160,7 +160,7 @@ def walk(x, path=None, sep='.', hook=noop):
     :param sep: Path separator
     """
     if is_mergeabledict_or_dict(x):
-        for k, v in x.iteritems():
+        for k, v in x.items():
             curpath = k if path is None else "{}{}{}".format(path, sep, k)
 
             if is_mergeabledict_or_dict(v):
