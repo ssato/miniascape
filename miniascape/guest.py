@@ -19,7 +19,6 @@
 from __future__ import print_function
 from miniascape.globals import LOGGER as logging
 
-import itertools
 import glob
 import os.path
 import os
@@ -186,14 +185,12 @@ def mk_distdata_g(guests, tmpl=_DISTDATA_MAKEFILE_AM_TMPL,
     Make up distdata snippet in Makefile.am to package files to build guests.
     """
     # pylint: disable=no-member
-    ig = itertools.count()
     fs = ["ks.cfg", "net_register.sh", "vmbuild.sh"]  # FIXME: Ugly!
 
-    for name in guests:
+    for (idx, name) in enumerate(guests):
         files = ' '.join(os.path.join(name, f) for f in fs)
-        for idx in ig:
-            yield tmpl % dict(i=idx, dir=os.path.join(datadir, name),
-                              files=files)
+        yield tmpl % dict(i=idx, dir=os.path.join(datadir, name),
+                          files=files)
 
 
 def gen_all(cf, tmpldirs, workdir):
