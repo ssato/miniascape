@@ -34,7 +34,7 @@ def timestamp(fmt="%a %b %_d %Y", dtobj=_DTOBJ):
 
 
 PACKAGE = "miniascape"
-VERSION = "0.3.11"
+VERSION = "0.3.12"
 
 M_SITE_DEFAULT = "default"
 M_VMBUILD_SH = "vmbuild.sh"
