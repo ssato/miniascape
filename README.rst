@@ -146,8 +146,8 @@ Tools and libs
 Build
 ========
 
-Run `python setup.py srpm` and mock dist/SRPMS/<built-srpm>, or 
-run `python setup.py rpm`.
+Run `python setup.py bdist_rpm --source-only` and mock dist/SRPMS/<built-srpm>,
+or run `python setup.py bdist_rpm`.
 
 Installation
 =============
