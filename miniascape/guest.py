@@ -112,7 +112,9 @@ def arrange_setup_data(gtmpldirs, config, gworkdir, glob_marker='*'):
         content = t.get("content", None)
 
         if content is None:
-            assert src is not None, "'src' must not be empty if content isn't!"
+            if src is None:
+                raise ValueError("'src' must not be empty "
+                                 "if 'content' is empty!")
 
             if glob_marker in src:
                 for src_, sdir in _find_templates_from_glob_path(src,
@@ -125,7 +127,9 @@ def arrange_setup_data(gtmpldirs, config, gworkdir, glob_marker='*'):
                 _render_template(src, config, gworkdir, tpaths, dst)
         else:
             dst = t.get("dst", None)
-            assert dst is not None, "'dst' must be given if content is set!"
+            if dst is None:
+                raise ValueError("'dst' must has some value "
+                                 "if 'content' is not empty!")
 
             out = os.path.join(gworkdir, "setup", dst)
             tpaths = gtmpldirs + [os.path.dirname(out)]
