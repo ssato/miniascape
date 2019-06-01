@@ -117,10 +117,9 @@ rm -rf %{buildroot}%{_datadir}/%{name}/tests %{buildroot}%{python3_sitelib}/%{na
 %endif
 
 %changelog
-* Mon Jun 15 2015 Satoru SATOH <ssato@redhat.com> - 0.3.11-99
+* Sun Jun  1 2019 Satoru SATOH <ssato@redhat.com> - 0.3.12-1
 - New upstream
 - Clean up packaging stufff
-- A lot of minor fixes and enhancements in templates
 
 * Mon Jun 15 2015 Satoru SATOH <ssato@redhat.com> - 0.3.11-1
 - Split some default config files and make them merged on build time with using
